@@ -1,0 +1,27 @@
+image:
+  repository: dockerhub.qingcloud.com/kslogging/fluentbit-operator
+  tag: latest
+  pullPolicy: Always
+
+# Namespace to watch fot FluentBitOperator CRD
+watchNamespace: "kubesphere-logging-system"
+
+affinity: {}
+  # key: value
+tolerations: []
+# - key: "key"
+#   operator: "Equal|Exists"
+#   value: "value"
+#   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+rbac:
+  enabled: true
+
+tls:
+  enabled: false
+  secretName: ""
+  sharedKey: ""
+
+fluentbit:
+  enabled: true
+  namespace: "kubesphere-logging-system"

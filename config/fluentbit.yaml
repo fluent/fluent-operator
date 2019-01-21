@@ -1,0 +1,77 @@
+apiVersion: "fluentbit.kubesphere.io/v1alpha1"
+kind: "FluentBitOperator"
+metadata:
+  name: "fluent-bit"
+spec:
+  service:
+    - type: fluentbit_service
+      name: fluentbit-service
+      parameters:
+        - name: flush
+          value: "1"
+        - name: daemon
+          value: "Off"
+        - name: log_level
+          value: "info"
+        - name: parsers_file
+          value: "parsers.conf"
+  input:
+    - type: fluentbit_input
+      name: fluentbit-input
+      parameters:
+        - name: name
+          value: "tail"
+        - name: path
+          value: "/var/log/containers/*.log"
+        - name: parser
+          value: "docker"
+        - name: tag
+          value: "kube.*"
+        - name: refresh_interval
+          value: "5"
+        - name: mem_buf_limit
+          value: "5MB"
+        - name: skip_long_lines
+          value: "On"
+        - name: db
+          value: "/tail-db/tail-containers-state.db"
+        - name: db_sync
+          value: "Normal"
+  filter:
+    - type: fluentbit_filter
+      name: fluentbit-filter
+      parameters:
+        - name: name
+          value: "kubernetes"
+        - name: match
+          value: "kube.*"
+        - name: kube_url
+          value: "https://kubernetes.default.svc:443"
+        - name: kube_ca_file
+          value: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        - name: kube_token_file
+          value: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+  output:
+    - type: fluentbit_output
+      name: fluentbit-output
+      parameters:
+        - name: name
+          value: "es"
+        - name: match
+          value: "kube.*"
+        - name: host
+          value: "elasticsearch-logging-data.kubesphere-logging-system.svc"
+        - name: port
+          value: "9200"
+        - name: logstash_format
+          value: "On"
+        - name: replace_dots
+          value: "on"
+        - name: retry_limit
+          value: "False"
+        - name: type
+          value: "flb_type"
+        - name: time_key
+          value: "@timestamp"
+        - name: logstash_prefix
+          value: "logstash"

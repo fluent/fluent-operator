@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fluentbit-operator.fullname" . }}
+  labels:
+    app: {{ template "fluentbit-operator.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: {{ template "fluentbit-operator.fullname" . }}
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/tolerations: {{ toJson .Values.tolerations | quote }}
+      labels:
+        name: {{ template "fluentbit-operator.fullname" . }}
+    spec:
+      serviceAccountName: {{ template "fluentbit-operator.fullname" . }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ template "fluentbit-operator.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command:
+        - fluentbit-operator
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        env:
+        - name: WATCH_NAMESPACE
+          value: {{ .Values.watchNamespace}}
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: KUBERNETES_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - mountPath: /fluentbit-operator/config
+          name: config
+      volumes:
+      - configMap:
+          name: {{ template "fluentbit-operator.fullname" . }}
+        name: config
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
