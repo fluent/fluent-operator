@@ -78,7 +78,7 @@ func generateFluentbitConfig(crd *v1alpha1.FluentBitOperator, namespace string) 
 			logrus.Infof("Error in rendering template: %s", err)
 			return "", ""
 		}
-		config, err := v1alpha1.RenderPlugin(service, values, namespace)
+		config, err := v1alpha1.RenderPlugin(service, values, namespace, "[SERVICE]")
 		if err != nil {
 			logrus.Infof("Error in rendering template: %s", err)
 			return "", ""
@@ -94,7 +94,7 @@ func generateFluentbitConfig(crd *v1alpha1.FluentBitOperator, namespace string) 
 			logrus.Infof("Error in rendering template: %s", err)
 			return "", ""
 		}
-		config, err := v1alpha1.RenderPlugin(input, values, namespace)
+		config, err := v1alpha1.RenderPlugin(input, values, namespace, "[INPUT]")
 		if err != nil {
 			logrus.Infof("Error in rendering template: %s", err)
 			return "", ""
@@ -110,7 +110,7 @@ func generateFluentbitConfig(crd *v1alpha1.FluentBitOperator, namespace string) 
 			logrus.Infof("Error in rendering template: %s", err)
 			return "", ""
 		}
-		config, err := v1alpha1.RenderPlugin(filter, values, namespace)
+		config, err := v1alpha1.RenderPlugin(filter, values, namespace, "[FILTER]")
 		if err != nil {
 			logrus.Infof("Error in rendering template: %s", err)
 			return "", ""
@@ -126,7 +126,7 @@ func generateFluentbitConfig(crd *v1alpha1.FluentBitOperator, namespace string) 
 			logrus.Infof("Error in rendering template: %s", err)
 			return "", ""
 		}
-		config, err := v1alpha1.RenderPlugin(output, values, namespace)
+		config, err := v1alpha1.RenderPlugin(output, values, namespace, "[OUTPUT]")
 		if err != nil {
 			logrus.Infof("Error in rendering template: %s", err)
 			return "", ""

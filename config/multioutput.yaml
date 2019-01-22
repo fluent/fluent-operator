@@ -75,3 +75,10 @@ spec:
           value: "@timestamp"
         - name: Logstash_Prefix
           value: "logstash"
+    - type: fluentbit_output
+      name: fluentbit-output
+      parameters:
+        - name: Name
+          value: "null"
+        - name: Match
+          value: "*"
