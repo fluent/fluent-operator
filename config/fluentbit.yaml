@@ -75,3 +75,9 @@ spec:
           value: "@timestamp"
         - name: Logstash_Prefix
           value: "logstash"
+  settings:
+    - type: fluentbit_settings
+      name: fluentbit-settings
+      parameters:
+        - name: Enable
+          value: "0"

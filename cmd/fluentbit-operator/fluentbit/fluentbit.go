@@ -62,7 +62,7 @@ func InitFluentBit(labels map[string]string) {
 		err = controllerutil.SetControllerReference(OwnerDeployment, cfgMap, scheme.Scheme)
 		logrus.Error(err)
 		sdkdecorator.CallSdkFunctionWithLogging(sdk.Create)(cfgMap)
-		CreateOrUpdateAppConfig("", "")
+		CreateOrUpdateAppConfig("", "", "")
 		ds := newFluentBitDaemonSet(cfg)
 		err = controllerutil.SetControllerReference(OwnerDeployment, ds, scheme.Scheme)
 		logrus.Error(err)
@@ -185,6 +185,20 @@ func generateConfig(input fluentBitConfig) (*string, error) {
 	return &outputString, nil
 }
 
+func generateSettings(input fluentBitConfig) (*string, error) {
+	output := new(bytes.Buffer)
+	tmpl, err := template.New("test").Parse(fluentBitSettingsTemplate)
+	if err != nil {
+		return nil, err
+	}
+	err = tmpl.Execute(output, input)
+	if err != nil {
+		return nil, err
+	}
+	outputString := output.String()
+	return &outputString, nil
+}
+
 // DeleteAppConfig thread safe config management
 func DeleteAppConfig() {
 	configMap := &corev1.ConfigMap{
@@ -204,7 +218,7 @@ func DeleteAppConfig() {
 }
 
 // CreateOrUpdateAppConfig idempotent thread safe config management
-func CreateOrUpdateAppConfig(name string, appConfig string) {
+func CreateOrUpdateAppConfig(name string, appConfig string, appSettings string) {
 	configMap := &corev1.ConfigMap{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ConfigMap",
@@ -232,6 +246,9 @@ func CreateOrUpdateAppConfig(name string, appConfig string) {
 	if name != "" && appConfig != "" {
 		configMap.Data[name+".conf"] = appConfig
 	}
+	if name != "" && appSettings != "" {
+		configMap.Data["settings.conf"] = appSettings
+	}
 	// The resource not Found so we create it
 	if err != nil {
 		err = controllerutil.SetControllerReference(OwnerDeployment, configMap, scheme.Scheme)
@@ -251,6 +268,10 @@ func newFluentBitConfig(cr *fluentBitDeploymentConfig) (*corev1.ConfigMap, error
 	if err != nil {
 		return nil, err
 	}
+	settings, err := generateSettings(input)
+	if err != nil {
+		return nil, err
+	}
 	configMap := &corev1.ConfigMap{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ConfigMap",
@@ -264,6 +285,7 @@ func newFluentBitConfig(cr *fluentBitDeploymentConfig) (*corev1.ConfigMap, error
 
 		Data: map[string]string{
 			"fluent-bit.conf": *config,
+			"settings.conf": *settings,
 		},
 	}
 	return configMap, nil

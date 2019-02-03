@@ -42,3 +42,13 @@ var FluentBitOutputDefaultValues = map[string]string{
 // FluentBitOutputTemplate for FluentBit Output plugin
 const FluentBitOutputTemplate = `
 `
+// FluentBit Settings name
+const FluentBitSettings = "fluentbit_settings"
+
+// FluentBitSettingsDefaultValues for FluentBit Settings plugin
+var FluentBitSettingsDefaultValues = map[string]string{
+}
+
+// FluentBitSettingsTemplate for FluentBit Settings plugin
+const FluentBitSettingsTemplate = `
+`

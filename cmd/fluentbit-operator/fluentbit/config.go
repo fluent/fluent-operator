@@ -37,3 +37,7 @@ var fluentBitConfigTemplate = `
     Time_Key @timestamp
     Logstash_Prefix logstash
 `
+
+var fluentBitSettingsTemplate = `
+Enable     1
+`

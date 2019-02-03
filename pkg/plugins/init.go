@@ -46,4 +46,5 @@ func init() {
 	RegisterPlugin(FluentBitInput, FluentBitInputTemplate, FluentBitInputDefaultValues)
 	RegisterPlugin(FluentBitFilter, FluentBitFilterTemplate, FluentBitFilterDefaultValues)
 	RegisterPlugin(FluentBitOutput, FluentBitOutputTemplate, FluentBitOutputDefaultValues)
+	RegisterPlugin(FluentBitSettings, FluentBitSettingsTemplate, FluentBitSettingsDefaultValues)
 }
