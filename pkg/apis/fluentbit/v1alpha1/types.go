@@ -1,6 +1,7 @@
 package v1alpha1
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	"github.com/sirupsen/logrus"
@@ -58,6 +59,23 @@ func RenderPlugin(plugin Plugin, baseMap map[string]string, namespace string, co
 	}
 
 	return config, nil
+}
+
+func ProcessSettings(plugin Plugin, settings map[string]string, baseMap map[string]string, namespace string) {
+	for _, param := range plugin.Parameters {
+		k, v := param.GetValue(namespace)
+		settings[k] = v
+	}
+}
+
+func RenderSettings(settings map[string]string) (string, error) {
+	jsonSettings, err := json.Marshal(settings)
+	if err != nil {
+		fmt.Println("json.Marshal failed:", err)
+		return "", err
+	}
+
+	return string(jsonSettings), nil
 }
 
 // Parameter generic parameter type to handle values from different sources

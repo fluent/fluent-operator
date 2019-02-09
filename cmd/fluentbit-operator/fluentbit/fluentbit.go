@@ -247,7 +247,7 @@ func CreateOrUpdateAppConfig(name string, appConfig string, appSettings string) 
 		configMap.Data[name+".conf"] = appConfig
 	}
 	if name != "" && appSettings != "" {
-		configMap.Data["settings.conf"] = appSettings
+		configMap.Data["settings.json"] = appSettings
 	}
 	// The resource not Found so we create it
 	if err != nil {
@@ -285,7 +285,7 @@ func newFluentBitConfig(cr *fluentBitDeploymentConfig) (*corev1.ConfigMap, error
 
 		Data: map[string]string{
 			"fluent-bit.conf": *config,
-			"settings.conf": *settings,
+			"settings.json": *settings,
 		},
 	}
 	return configMap, nil

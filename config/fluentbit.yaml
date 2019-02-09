@@ -80,4 +80,4 @@ spec:
       name: fluentbit-settings
       parameters:
         - name: Enable
-          value: "0"
+          value: "false"

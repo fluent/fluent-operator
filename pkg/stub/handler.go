@@ -61,7 +61,7 @@ func deleteFromConfigMap(name string) {
 		configMap.Data = map[string]string{}
 	}
 	delete(configMap.Data, name+".conf")
-	delete(configMap.Data, "settings.conf")
+	delete(configMap.Data, "settings.json")
 	err = sdk.Update(configMap)
 	if err != nil {
 		logrus.Error(err)
@@ -136,8 +136,8 @@ func generateFluentbitConfigAndSettings(crd *v1alpha1.FluentBitOperator, namespa
 	}
 
 	var finalSettings string
-
 	// Generate settings
+	settings := map[string]string{}
 	for _, setting := range crd.Spec.Settings {
 		logrus.Info("Applying settings")
 		values, err := plugins.GetDefaultValues(setting.Type)
@@ -145,12 +145,12 @@ func generateFluentbitConfigAndSettings(crd *v1alpha1.FluentBitOperator, namespa
 			logrus.Infof("Error in rendering template: %s", err)
 			return "", "", ""
 		}
-		settings, err := v1alpha1.RenderPlugin(setting, values, namespace, "")
-		if err != nil {
-			logrus.Infof("Error in rendering template: %s", err)
-			return "", "", ""
-		}
-		finalSettings += settings
+		v1alpha1.ProcessSettings(setting, settings, values, namespace)
+	}
+	finalSettings, err := v1alpha1.RenderSettings(settings)
+	if err != nil {
+		logrus.Infof("Error in rendering template: %s", err)
+		return "", "", ""
 	}
 
 	return crd.Name, finalConfig, finalSettings
