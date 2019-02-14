@@ -26,16 +26,8 @@ var fluentBitConfigTemplate = `
     Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
 
 [OUTPUT]
-    Name  es
-    Match kube.*
-    Host  elasticsearch-logging-data.{{ .Namespace }}.svc
-    Port  9200
-    Logstash_Format On
-    Replace_Dots on
-    Retry_Limit False
-    Type  flb_type
-    Time_Key @timestamp
-    Logstash_Prefix logstash
+    Name  null
+    Match *
 `
 
 var fluentBitSettingsTemplate = `
