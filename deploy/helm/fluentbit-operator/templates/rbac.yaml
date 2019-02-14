@@ -21,7 +21,7 @@ metadata:
     release: {{ .Release.Name }}
 rules:
 - apiGroups:
-  - fluentbit.kubesphere.io
+  - logging.kubesphere.io
   resources:
   - fluentbitoperators
   verbs:

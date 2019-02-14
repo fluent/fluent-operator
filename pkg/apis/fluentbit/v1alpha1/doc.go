@@ -1,4 +1,4 @@
 // +k8s:deepcopy-gen=package
-// +groupName=fluentbit.kubesphere.io
+// +groupName=logging.kubesphere.io
 
 package v1alpha1

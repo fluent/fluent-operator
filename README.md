@@ -49,7 +49,7 @@ kubectl apply -f secret.yaml
 Create a manifest that defines that you want to parse the nginx logs with the specified regular expressions on the standard output of pods with the `app: nginx` label, and store them in the given S3 bucket.
 
 ```
-apiVersion: "fluentbit.kubesphere.io/v1alpha1"
+apiVersion: "logging.kubesphere.io/v1alpha1"
 kind: "FluentBitOperator"
 metadata:
   name: "nginx-fluentbit-logging"

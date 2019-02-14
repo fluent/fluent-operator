@@ -10,7 +10,7 @@ import (
 
 const (
 	version   = "v1alpha1"
-	groupName = "fluentbit.kubesphere.io"
+	groupName = "logging.kubesphere.io"
 )
 
 var (

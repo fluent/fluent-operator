@@ -8,7 +8,7 @@ import (
 )
 
 var rawData = []byte(`
-apiVersion: "fluentbit.kubesphere.io/v1alpha1"
+apiVersion: "logging.kubesphere.io/v1alpha1"
 kind: "FluentBitOperator"
 metadata:
   name: "nginx-logging"
