@@ -36,7 +36,7 @@ func main() {
 	const (
 		operatorNamespace   = "WATCH_NAMESPACE"
 		operatorResource    = "logging.kubesphere.io/v1alpha1"
-		kind                = "FluentBitOperator"
+		kind                = "FluentBit"
 		kubernetesPodName   = "KUBERNETES_POD_NAME"
 		kubernetesNamespace = "KUBERNETES_NAMESPACE"
 	)

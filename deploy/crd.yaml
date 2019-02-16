@@ -9,5 +9,5 @@ spec:
     listKind: FluentBitList
     plural: fluentbits
     singular: fluentbit
-  scope: Cluster
+  scope: Namespaced
   version: v1alpha1

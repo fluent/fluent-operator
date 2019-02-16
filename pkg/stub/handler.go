@@ -26,7 +26,7 @@ type Handler struct {
 // Handle every event set up by the watcher
 func (h *Handler) Handle(ctx context.Context, event sdk.Event) (err error) {
 	switch o := event.Object.(type) {
-	case *v1alpha1.FluentBitOperator:
+	case *v1alpha1.FluentBit:
 		if event.Deleted {
 			logrus.Infof("Delete CRD: %s", o.Name)
 			deleteFromConfigMap(o.Name)
@@ -69,7 +69,7 @@ func deleteFromConfigMap(name string) {
 }
 
 //
-func generateFluentbitConfigAndSettings(crd *v1alpha1.FluentBitOperator, namespace string) (string, string, string) {
+func generateFluentbitConfigAndSettings(crd *v1alpha1.FluentBit, namespace string) (string, string, string) {
 	var finalConfig string
 	// Generate service
 	for _, service := range crd.Spec.Service {

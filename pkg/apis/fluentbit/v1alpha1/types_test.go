@@ -9,9 +9,10 @@ import (
 
 var rawData = []byte(`
 apiVersion: "logging.kubesphere.io/v1alpha1"
-kind: "FluentBitOperator"
+kind: "FluentBit"
 metadata:
   name: "nginx-logging"
+  namespace: "kubesphere-logging-system"
 spec:
   input:
     label:
@@ -45,7 +46,7 @@ spec:
 `)
 
 func TestExampleCRD(t *testing.T) {
-	output := FluentBitOperator{}
+	output := FluentBit{}
 	jsonData, err := yaml.ToJSON(rawData)
 	if err != nil {
 		t.Error(err)

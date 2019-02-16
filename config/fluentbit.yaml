@@ -1,7 +1,8 @@
 apiVersion: "logging.kubesphere.io/v1alpha1"
-kind: "FluentBitOperator"
+kind: "FluentBit"
 metadata:
   name: "fluent-bit"
+  namespace: "kubesphere-logging-system"
 spec:
   service:
     - type: fluentbit_service

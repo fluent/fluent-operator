@@ -23,7 +23,7 @@ rules:
 - apiGroups:
   - logging.kubesphere.io
   resources:
-  - fluentbitoperators
+  - fluentbits
   verbs:
   - "*"
 - apiGroups:
