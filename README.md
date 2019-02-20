@@ -15,7 +15,7 @@ This is the first version of this operator to showcase our plans of handling log
 ## Installing the operator
 
 ```
-helm repo add kubesphere http://kubernetes-charts.kubesphere.io/branch/master
+helm repo add kubesphere https://github.com/kubesphere/fluentbit-operator/tree/master/deploy/helm
 helm install kubesphere/fluentbit-operator
 ```
 
@@ -111,7 +111,7 @@ spec:
       name: fluentbit-settings
       parameters:
         - name: Enable
-          value: "false"
+          value: "true"
 ```
 
 ## Contributing
