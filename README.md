@@ -1,6 +1,6 @@
 # fluentbit-operator
 
-FluentBit operator for Kubernetes based on Fluentd and Fluent-bit. For more details please follow up with this [post](https://kubesphere.io/blog/k8s-fluentbit-operator/).
+FluentBit operator for Kubernetes based on Fluent-bit.
 
 ## What is this operator for?
 
@@ -15,83 +15,103 @@ This is the first version of this operator to showcase our plans of handling log
 ## Installing the operator
 
 ```
-helm repo add kubesphere http://kubernetes-charts.kubesphere.io/branch/master
+helm repo add kubesphere https://github.com/kubesphere/fluentbit-operator/tree/master/deploy/helm
 helm install kubesphere/fluentbit-operator
 ```
 
 ## Example
 
-The following steps set up an example configuration for sending nginx logs to S3.
-
-### Create Secret
-
-Create a manifest file for the AWS access key:
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: loggings3
-type: Opaque
-data:
-  awsAccessKeyId: <base64encoded>
-  awsSecretAccesKey: <base64encoded>
-```
-
-Submit the secret with kubectl:
-
-```
-kubectl apply -f secret.yaml
-```
+The following steps set up an example configuration for sending nginx logs to ElasticSearch.
 
 ### Create FluentBit resource
 
-Create a manifest that defines that you want to parse the nginx logs with the specified regular expressions on the standard output of pods with the `app: nginx` label, and store them in the given S3 bucket.
+Create a manifest that defines that you want to parse the kubernetes logs on the standard output of pods, and store them in the given ElasticSearch.
 
 ```
 apiVersion: "logging.kubesphere.io/v1alpha1"
 kind: "FluentBit"
 metadata:
-  name: "nginx-fluentbit-logging"
+  name: "fluent-bit"
   namespace: "kubesphere-logging-system"
 spec:
+  service:
+    - type: fluentbit_service
+      name: fluentbit-service
+      parameters:
+        - name: Flush
+          value: "1"
+        - name: Daemon
+          value: "Off"
+        - name: Log_Level
+          value: "info"
+        - name: Parsers_File
+          value: "parsers.conf"
   input:
-    label:
-      app: nginx
+    - type: fluentbit_input
+      name: fluentbit-input
+      parameters:
+        - name: Name
+          value: "tail"
+        - name: Path
+          value: "/var/log/containers/*.log"
+        - name: Parser
+          value: "docker"
+        - name: Tag
+          value: "kube.*"
+        - name: Refresh_Interval
+          value: "5"
+        - name: Mem_Buf_Limit
+          value: "5MB"
+        - name: Skip_Long_Lines
+          value: "On"
+        - name: DB
+          value: "/tail-db/tail-containers-state.db"
+        - name: DB.Sync
+          value: "Normal"
   filter:
-    - type: parser
-      name: parser-nginx
+    - type: fluentbit_filter
+      name: fluentbit-filter
       parameters:
-        - name: format
-          value: '/^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$/'
-        - name: timeFormat
-          value: "%d/%b/%Y:%H:%M:%S %z"
+        - name: Name
+          value: "kubernetes"
+        - name: Match
+          value: "kube.*"
+        - name: Kube_URL
+          value: "https://kubernetes.default.svc:443"
+        - name: Kube_CA_File
+          value: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        - name: Kube_Token_File
+          value: "/var/run/secrets/kubernetes.io/serviceaccount/token"
   output:
-    - type: s3
-      name: outputS3
+    - type: fluentbit_output
+      name: fluentbit-output
       parameters:
-        - name: aws_key_id
-          valueFrom:
-            secretKeyRef:
-              name: loggings3
-              key: awsAccessKeyId
-        - name: aws_sec_key
-          valueFrom:
-            secretKeyRef:
-              name: loggings3
-              key: awsSecretAccesKey
-        - name: s3_bucket
-          value: logging-bucket
-        - name: s3_region
-          value: ap-northeast-1
-```
-
-## All in one example
-
-If you just want to try the fluentbit operator, install the operator and use our `nginx` example:
-
-```
-helm install ./deploy/helm/nginx-test
+        - name: Name
+          value: "es"
+        - name: Match
+          value: "kube.*"
+        - name: Host
+          value: "elasticsearch-logging-data.kubesphere-logging-system.svc"
+        - name: Port
+          value: "9200"
+        - name: Logstash_Format
+          value: "On"
+        - name: Replace_Dots
+          value: "on"
+        - name: Retry_Limit
+          value: "False"
+        - name: Type
+          value: "flb_type"
+        - name: Time_Key
+          value: "@timestamp"
+        - name: Logstash_Prefix
+          value: "logstash"
+  settings:
+    - type: fluentbit_settings
+      name: fluentbit-settings
+      parameters:
+        - name: Enable
+          value: "true"
 ```
 
 ## Contributing
