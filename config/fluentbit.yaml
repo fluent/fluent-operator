@@ -52,7 +52,6 @@ spec:
           value: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
         - name: Kube_Token_File
           value: "/var/run/secrets/kubernetes.io/serviceaccount/token"
-  filter:
     - type: fluentbit_filter
       name: fluentbit-filter-lift
       parameters:
@@ -66,7 +65,6 @@ spec:
           value: "kubernetes"
         - name: Prefix_with
           value: "kubernetes_"
-  filter:
     - type: fluentbit_filter
       name: fluentbit-filter-remove-stream
       parameters:
@@ -76,7 +74,6 @@ spec:
           value: "kube.*"
         - name: Remove
           value: "stream"
-  filter:
     - type: fluentbit_filter
       name: fluentbit-filter-remove-labels
       parameters:
@@ -86,7 +83,6 @@ spec:
           value: "kube.*"
         - name: Remove
           value: "kubernetes_labels"
-  filter:
     - type: fluentbit_filter
       name: fluentbit-filter-remove-annotations
       parameters:
@@ -96,7 +92,6 @@ spec:
           value: "kube.*"
         - name: Remove
           value: "kubernetes_annotations"
-  filter:
     - type: fluentbit_filter
       name: fluentbit-filter-remove-podid
       parameters:
@@ -106,7 +101,6 @@ spec:
           value: "kube.*"
         - name: Remove
           value: "kubernetes_pod_id"
-  filter:
     - type: fluentbit_filter
       name: fluentbit-filter-remove-dockerid
       parameters:
@@ -116,7 +110,6 @@ spec:
           value: "kube.*"
         - name: Remove
           value: "kubernetes_docker_id"
-  filter:
     - type: fluentbit_filter
       name: fluentbit-filter-nest
       parameters:
