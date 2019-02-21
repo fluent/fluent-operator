@@ -40,7 +40,7 @@ spec:
           value: "Normal"
   filter:
     - type: fluentbit_filter
-      name: fluentbit-filter
+      name: fluentbit-filter-kubernetes
       parameters:
         - name: Name
           value: "kubernetes"
@@ -52,6 +52,86 @@ spec:
           value: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
         - name: Kube_Token_File
           value: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+  filter:
+    - type: fluentbit_filter
+      name: fluentbit-filter-lift
+      parameters:
+        - name: Name
+          value: "nest"
+        - name: Match
+          value: "kube.*"
+        - name: Operation
+          value: "lift"
+        - name: Nested_under
+          value: "kubernetes"
+        - name: Prefix_with
+          value: "kubernetes_"
+  filter:
+    - type: fluentbit_filter
+      name: fluentbit-filter-remove-stream
+      parameters:
+        - name: Name
+          value: "modify"
+        - name: Match
+          value: "kube.*"
+        - name: Remove
+          value: "stream"
+  filter:
+    - type: fluentbit_filter
+      name: fluentbit-filter-remove-labels
+      parameters:
+        - name: Name
+          value: "modify"
+        - name: Match
+          value: "kube.*"
+        - name: Remove
+          value: "kubernetes_labels"
+  filter:
+    - type: fluentbit_filter
+      name: fluentbit-filter-remove-annotations
+      parameters:
+        - name: Name
+          value: "modify"
+        - name: Match
+          value: "kube.*"
+        - name: Remove
+          value: "kubernetes_annotations"
+  filter:
+    - type: fluentbit_filter
+      name: fluentbit-filter-remove-podid
+      parameters:
+        - name: Name
+          value: "modify"
+        - name: Match
+          value: "kube.*"
+        - name: Remove
+          value: "kubernetes_pod_id"
+  filter:
+    - type: fluentbit_filter
+      name: fluentbit-filter-remove-dockerid
+      parameters:
+        - name: Name
+          value: "modify"
+        - name: Match
+          value: "kube.*"
+        - name: Remove
+          value: "kubernetes_docker_id"
+  filter:
+    - type: fluentbit_filter
+      name: fluentbit-filter-nest
+      parameters:
+        - name: Name
+          value: "nest"
+        - name: Match
+          value: "kube.*"
+        - name: Operation
+          value: "nest"
+        - name: Wildcard
+          value: "kubernetes_*"
+        - name: Nested_under
+          value: "kubernetes"
+        - name: Remove_prefix
+          value: "kubernetes_"
   output:
     - type: fluentbit_output
       name: fluentbit-output
