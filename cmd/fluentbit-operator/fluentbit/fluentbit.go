@@ -334,7 +334,7 @@ func generateVolumeMounts() (v []corev1.VolumeMount) {
 		{
 			Name:      "varlibcontainers",
 			ReadOnly:  true,
-			MountPath: "/data/var/lib/docker/containers",
+			MountPath: "/var/lib/docker/containers",
 		},
 		{
 			Name:      "config",
@@ -364,7 +364,7 @@ func generateVolume() (v []corev1.Volume) {
 			Name: "varlibcontainers",
 			VolumeSource: corev1.VolumeSource{
 				HostPath: &corev1.HostPathVolumeSource{
-					Path: "/data/var/lib/docker/containers",
+					Path: viper.GetString("fluent-bit.containersLogMountedPath"),
 				},
 			},
 		},
@@ -436,7 +436,7 @@ func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet
 						{
 							// TODO move to configuration
 							Name:  "fluent-bit",
-							Image: "dockerhub.qingcloud.com/kslogging/fluent-bit:1.0.4",
+							Image: viper.GetString("fluent-bit.image"),
 							// TODO get from config translate to const
 							ImagePullPolicy: corev1.PullAlways,
 							Ports: []corev1.ContainerPort{
