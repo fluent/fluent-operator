@@ -455,6 +455,25 @@ func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet
 						},
 						*newConfigMapReloader(),
 					},
+					Tolerations: []corev1.Toleration{
+						{
+							Key: "CriticalAddonsOnly",
+							Operator: "Exists",
+						},
+						{
+							Key: "node-role.kubernetes.io/master",
+							Effect: "NoSchedule",
+						},
+						{
+							Key: "dedicated",
+							Operator: "Exists",
+						},
+						{
+							Key: "node.cloudprovider.kubernetes.io/uninitialized",
+							Value: "true",
+							Effect: "NoSchedule",
+						},
+					},
 				},
 			},
 		},
