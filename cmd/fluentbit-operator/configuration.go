@@ -17,6 +17,8 @@ func Init() {
 	logrus.Info("Initializing configuration")
 	viper.SetDefault("tls.enabled", false)
 	viper.SetDefault("tls.sharedKey", "Thei6pahshubajee")
+	viper.SetDefault("fluent-bit.image", "dockerhub.qingcloud.com/kslogging/fluent-bit:1.0.4")
+	viper.SetDefault("fluent-bit.containersLogMountedPath", "/var/lib/docker/containers")
 	go handleConfigChanges()
 }
 
