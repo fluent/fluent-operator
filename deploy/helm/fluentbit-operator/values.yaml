@@ -25,3 +25,7 @@ tls:
 fluentbit:
   enabled: true
   namespace: "kubesphere-logging-system"
+  image: dockerhub.qingcloud.com/kslogging/fluent-bit:1.0.5
+
+configmap-reload：
+  image: dockerhub.qingcloud.com/kslogging/configmap-reload:latest

@@ -19,6 +19,7 @@ func Init() {
 	viper.SetDefault("tls.sharedKey", "Thei6pahshubajee")
 	viper.SetDefault("fluent-bit.image", "dockerhub.qingcloud.com/kslogging/fluent-bit:1.0.4")
 	viper.SetDefault("fluent-bit.containersLogMountedPath", "/var/lib/docker/containers")
+	viper.SetDefault("configmap-reload.image", "dockerhub.qingcloud.com/kslogging/configmap-reload:latest")
 	go handleConfigChanges()
 }
 

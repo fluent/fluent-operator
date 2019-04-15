@@ -23,3 +23,7 @@ data:
     [fluent-bit]
     enabled = {{ .Values.fluentbit.enabled }}
     namespace = "{{ default .Release.Namespace .Values.fluentbit.namespace }}"
+    image = "{{ .Values.fluentbit.image }}"
+
+    [configmap-reload]
+    image = "{{ .Values.configmap-reload.image }}"
