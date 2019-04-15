@@ -315,7 +315,7 @@ func checkIfDeamonSetExist(cr *fluentBitDeploymentConfig) bool {
 func newConfigMapReloader() *corev1.Container {
 	return &corev1.Container{
 		Name:  "config-reloader",
-		Image: "dockerhub.qingcloud.com/kslogging/configmap-reload:latest",
+		Image: viper.GetString("configmap-reload.image"),
 		Args: []string{
 			"-volume-dir=/fluent-bit/app-config/",
 			"-webhook-url=http://127.0.0.1:24444/api/config.reload",
