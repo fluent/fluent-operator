@@ -334,7 +334,7 @@ func generateVolumeMounts() (v []corev1.VolumeMount) {
 		{
 			Name:      "varlibcontainers",
 			ReadOnly:  true,
-			MountPath: "/var/lib/docker/containers",
+			MountPath: viper.GetString("fluent-bit.containersLogMountedPath"),
 		},
 		{
 			Name:      "config",
