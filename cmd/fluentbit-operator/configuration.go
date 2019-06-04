@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	corev1 "k8s.io/api/core/v1"
-	"kubesphere.io/fluentbit-operator/cmd/fluentbit-operator/fluentbit"
 	"github.com/fsnotify/fsnotify"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	corev1 "k8s.io/api/core/v1"
+	"kubesphere.io/fluentbit-operator/cmd/fluentbit-operator/fluentbit"
 	"path/filepath"
 )
 

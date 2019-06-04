@@ -2,13 +2,13 @@ package stub
 
 import (
 	"context"
-	"kubesphere.io/fluentbit-operator/cmd/fluentbit-operator/fluentbit"
-	"kubesphere.io/fluentbit-operator/pkg/apis/fluentbit/v1alpha1"
-	"kubesphere.io/fluentbit-operator/pkg/plugins"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"kubesphere.io/fluentbit-operator/cmd/fluentbit-operator/fluentbit"
+	"kubesphere.io/fluentbit-operator/pkg/apis/fluentbit/v1alpha1"
+	"kubesphere.io/fluentbit-operator/pkg/plugins"
 )
 
 // NewHandler creates a new Handler struct

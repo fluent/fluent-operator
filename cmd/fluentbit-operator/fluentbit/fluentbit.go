@@ -2,16 +2,16 @@ package fluentbit
 
 import (
 	"bytes"
-	"kubesphere.io/fluentbit-operator/cmd/fluentbit-operator/sdkdecorator"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	corev1 "k8s.io/api/core/v1"
 	extensionv1 "k8s.io/api/extensions/v1beta1"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	rbacv1 "k8s.io/api/rbac/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
+	"kubesphere.io/fluentbit-operator/cmd/fluentbit-operator/sdkdecorator"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sync"
 	"text/template"
@@ -285,7 +285,7 @@ func newFluentBitConfig(cr *fluentBitDeploymentConfig) (*corev1.ConfigMap, error
 
 		Data: map[string]string{
 			"fluent-bit.conf": *config,
-			"settings.json": *settings,
+			"settings.json":   *settings,
 		},
 	}
 	return configMap, nil
@@ -412,7 +412,7 @@ func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet
 	// fluent bit image pull policy
 	pullPolicy := corev1.PullPolicy(viper.GetString("fluent-bit.pullPolicy"))
 	// bad parameter will be interpreted as IfNotPresent
-	if 	pullPolicy != corev1.PullAlways && pullPolicy != corev1.PullNever && pullPolicy !=  corev1.PullIfNotPresent{
+	if pullPolicy != corev1.PullAlways && pullPolicy != corev1.PullNever && pullPolicy != corev1.PullIfNotPresent {
 		pullPolicy = corev1.PullIfNotPresent
 	}
 
@@ -465,20 +465,20 @@ func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet
 					},
 					Tolerations: []corev1.Toleration{
 						{
-							Key: "CriticalAddonsOnly",
+							Key:      "CriticalAddonsOnly",
 							Operator: "Exists",
 						},
 						{
-							Key: "node-role.kubernetes.io/master",
+							Key:    "node-role.kubernetes.io/master",
 							Effect: "NoSchedule",
 						},
 						{
-							Key: "dedicated",
+							Key:      "dedicated",
 							Operator: "Exists",
 						},
 						{
-							Key: "node.cloudprovider.kubernetes.io/uninitialized",
-							Value: "true",
+							Key:    "node.cloudprovider.kubernetes.io/uninitialized",
+							Value:  "true",
 							Effect: "NoSchedule",
 						},
 					},

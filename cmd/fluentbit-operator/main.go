@@ -4,13 +4,13 @@ import (
 	"context"
 	"runtime"
 
-	"kubesphere.io/fluentbit-operator/pkg/stub"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
+	"kubesphere.io/fluentbit-operator/pkg/stub"
 
-	"kubesphere.io/fluentbit-operator/cmd/fluentbit-operator/fluentbit"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"kubesphere.io/fluentbit-operator/cmd/fluentbit-operator/fluentbit"
 	"os"
 )
 
