@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	corev1 "k8s.io/api/core/v1"
 	"kubesphere.io/fluentbit-operator/cmd/fluentbit-operator/fluentbit"
 	"github.com/fsnotify/fsnotify"
 	"github.com/sirupsen/logrus"
@@ -19,6 +20,7 @@ func Init() {
 	viper.SetDefault("tls.sharedKey", "Thei6pahshubajee")
 	viper.SetDefault("fluent-bit.image", "dockerhub.qingcloud.com/kslogging/fluent-bit:1.0.4")
 	viper.SetDefault("fluent-bit.containersLogMountedPath", "/var/lib/docker/containers")
+	viper.SetDefault("fluent-bit.pullPolicy", corev1.PullIfNotPresent)
 	viper.SetDefault("configmap-reload.image", "dockerhub.qingcloud.com/kslogging/configmap-reload:latest")
 	go handleConfigChanges()
 }

@@ -408,6 +408,14 @@ func generateVolume() (v []corev1.Volume) {
 
 // TODO in case of rbac add created serviceAccount name
 func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet {
+
+	// fluent bit image pull policy
+	pullPolicy := corev1.PullPolicy(viper.GetString("fluent-bit.pullPolicy"))
+	// bad parameter will be interpreted as IfNotPresent
+	if 	pullPolicy != corev1.PullAlways && pullPolicy != corev1.PullNever && pullPolicy !=  corev1.PullIfNotPresent{
+		pullPolicy = corev1.PullIfNotPresent
+	}
+
 	return &extensionv1.DaemonSet{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "DaemonSet",
@@ -438,7 +446,7 @@ func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet
 							Name:  "fluent-bit",
 							Image: viper.GetString("fluent-bit.image"),
 							// TODO get from config translate to const
-							ImagePullPolicy: corev1.PullAlways,
+							ImagePullPolicy: pullPolicy,
 							Ports: []corev1.ContainerPort{
 								{
 									Name:          "monitor",
