@@ -2,6 +2,7 @@ package fluentbit
 
 import (
 	"bytes"
+	"encoding/json"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -416,6 +417,20 @@ func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet
 		pullPolicy = corev1.PullIfNotPresent
 	}
 
+	// fluent bit tolerations
+	var tolerations []corev1.Toleration
+	tStr, err := json.Marshal(viper.Get("fluent-bit.tolerations"))
+	if err != nil {
+		logrus.Println("error:", err)
+		tolerations = []corev1.Toleration{{Operator: "Exists"}}
+	} else {
+		err := json.Unmarshal(tStr, &tolerations)
+		if err != nil {
+			logrus.Println("error:", err)
+			tolerations = []corev1.Toleration{{Operator: "Exists"}}
+		}
+	}
+
 	return &extensionv1.DaemonSet{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "DaemonSet",
@@ -463,25 +478,7 @@ func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet
 						},
 						*newConfigMapReloader(),
 					},
-					Tolerations: []corev1.Toleration{
-						{
-							Key:      "CriticalAddonsOnly",
-							Operator: "Exists",
-						},
-						{
-							Key:    "node-role.kubernetes.io/master",
-							Effect: "NoSchedule",
-						},
-						{
-							Key:      "dedicated",
-							Operator: "Exists",
-						},
-						{
-							Key:    "node.cloudprovider.kubernetes.io/uninitialized",
-							Value:  "true",
-							Effect: "NoSchedule",
-						},
-					},
+					Tolerations: tolerations,
 				},
 			},
 		},
