@@ -1,0 +1,20 @@
+FROM golang:1.12-alpine3.9 as golang
+
+ADD . /go/src/kubesphere.io/fluentbit-operator
+WORKDIR /go/src/kubesphere.io/fluentbit-operator
+
+RUN apk add --update --no-cache ca-certificates curl git make
+
+RUN CGO_ENABLED=0 go install ./cmd/fluentbit-operator
+
+
+FROM alpine:3.9
+
+RUN apk add --no-cache ca-certificates
+
+COPY --from=golang /go/bin/fluentbit-operator /usr/local/bin/fluentbit-operator
+
+RUN adduser -D fluentbit-operator
+USER fluentbit-operator
+
+ENTRYPOINT ["/usr/local/bin/fluentbit-operator"]
