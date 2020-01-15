@@ -22,6 +22,7 @@ func Init() {
 	viper.SetDefault("fluent-bit.containersLogMountedPath", "/var/lib/docker/containers")
 	viper.SetDefault("fluent-bit.pullPolicy", corev1.PullIfNotPresent)
 	viper.SetDefault("configmap-reload.image", "dockerhub.qingcloud.com/kslogging/configmap-reload:latest")
+	viper.SetDefault("fluent-bit.tolerations", []corev1.Toleration{{Operator: "Exists"}})
 	go handleConfigChanges()
 }
 

@@ -16,3 +16,7 @@ data:
     enabled = true
     namespace = "default"
     tls_enabled = true
+
+    # Fluent Bit defaults to tolerate everything
+    # [[fluent-bit.tolerations]]
+    # operator = "Exists"
