@@ -6,8 +6,8 @@ import (
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	extensionv1 "k8s.io/api/extensions/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -293,7 +293,7 @@ func newFluentBitConfig(cr *fluentBitDeploymentConfig) (*corev1.ConfigMap, error
 }
 
 func checkIfDeamonSetExist(cr *fluentBitDeploymentConfig) bool {
-	fluentbitDaemonSet := &extensionv1.DaemonSet{
+	fluentbitDaemonSet := &appsv1.DaemonSet{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "DaemonSet",
 			APIVersion: "extensions/v1beta1",
@@ -408,7 +408,7 @@ func generateVolume() (v []corev1.Volume) {
 }
 
 // TODO in case of rbac add created serviceAccount name
-func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet {
+func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *appsv1.DaemonSet {
 
 	// fluent bit image pull policy
 	pullPolicy := corev1.PullPolicy(viper.GetString("fluent-bit.pullPolicy"))
@@ -431,17 +431,20 @@ func newFluentBitDaemonSet(cr *fluentBitDeploymentConfig) *extensionv1.DaemonSet
 		}
 	}
 
-	return &extensionv1.DaemonSet{
+	return &appsv1.DaemonSet{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "DaemonSet",
-			APIVersion: "extensions/v1beta1",
+			APIVersion: "apps/v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name,
 			Namespace: cr.Namespace,
 			Labels:    cr.Labels,
 		},
-		Spec: extensionv1.DaemonSetSpec{
+		Spec: appsv1.DaemonSetSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: cr.Labels,
+			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: cr.Labels,
