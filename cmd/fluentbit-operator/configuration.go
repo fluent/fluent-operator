@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	corev1 "k8s.io/api/core/v1"
@@ -10,8 +11,12 @@ import (
 	"path/filepath"
 )
 
-//Initialize the configuration
-const configFile = "/fluentbit-operator/config/config.toml"
+const (
+	//Initialize the configuration [deprecated]
+	configFile = "/fluentbit-operator/config/config.toml"
+	envFile = "/fluentbit-operator/env/fluent-bit.env"
+	dockerRootDir = "DOCKER_ROOT_DIR"
+)
 
 // Init the configuration
 func Init() {
@@ -19,10 +24,22 @@ func Init() {
 	viper.SetDefault("tls.enabled", false)
 	viper.SetDefault("tls.sharedKey", "Thei6pahshubajee")
 	viper.SetDefault("fluent-bit.image", "dockerhub.qingcloud.com/kslogging/fluent-bit:1.0.4")
-	viper.SetDefault("fluent-bit.containersLogMountedPath", "/var/lib/docker/containers")
 	viper.SetDefault("fluent-bit.pullPolicy", corev1.PullIfNotPresent)
 	viper.SetDefault("configmap-reload.image", "dockerhub.qingcloud.com/kslogging/configmap-reload:latest")
 	viper.SetDefault("fluent-bit.tolerations", []corev1.Toleration{{Operator: "Exists"}})
+
+	// set container log real path
+	logPathKey := "fluent-bit.containersLogMountedPath"
+
+	envs, err := godotenv.Read(envFile)
+	if err != nil || envs[dockerRootDir] == "" {
+		logrus.Info("Failed to load env file.")
+		viper.SetDefault(logPathKey, "/var/lib/docker/containers")
+	} else {
+		logrus.Info("Get DOCKER_ROOT_DIR = %s.", envs[dockerRootDir])
+		viper.SetDefault(logPathKey, envs[dockerRootDir] + "/containers")
+	}
+
 	go handleConfigChanges()
 }
 
