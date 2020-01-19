@@ -12,6 +12,21 @@ spec:
       labels:
         name: fluentbit-operator
     spec:
+      initContainers:
+        - name: setenv
+          image: docker:19.03
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -ex;
+              echo DOCKER_ROOT_DIR=$(docker info -f '{{.DockerRootDir}}') > /fluentbit-operator/env/fluent-bit.env
+          volumeMounts:
+          - mountPath: /fluentbit-operator/env
+            name: env
+          - mountPath: /var/run/docker.sock
+            name: dockersock
+            readOnly: true
       containers:
         - name: fluentbit-operator
           image: dockerhub.qingcloud.com/kslogging/fluentbit-operator:latest
@@ -26,7 +41,14 @@ spec:
           volumeMounts:
           - mountPath: /fluentbit-operator/config
             name: config
+          - mountPath: /fluentbit-operator/env
+            name: env
       volumes:
       - configMap:
           name: fluentbit-operator-config
         name: config
+      - emptyDir: {}
+        name: env
+      - hostPath:
+          path: /var/run/docker.sock
+        name: dockersock
