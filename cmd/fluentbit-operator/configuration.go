@@ -96,7 +96,7 @@ func handleConfigChanges() {
 func configureOperator() {
 	if viper.GetBool("fluent-bit.enabled") {
 		logrus.Info("Trying to init fluent-bit")
-		fluentbit.InitFluentBit(GlobalLabels)
+		fluentbit.DeployFluentBit(GlobalLabels)
 	} else if !viper.GetBool("fluent-bit.enabled") {
 		logrus.Info("Deleting fluent-bit DaemonSet...")
 		fluentbit.DeleteFluentBit(GlobalLabels)
