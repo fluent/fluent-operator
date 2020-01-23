@@ -37,10 +37,10 @@ func initConfig(labels map[string]string) *fluentBitDeploymentConfig {
 	return config
 }
 
-// InitFluentBit initialize fluent-bit
-func InitFluentBit(labels map[string]string) {
+// DeployFluentBit initializes or updates fluent-bit
+func DeployFluentBit(labels map[string]string) {
 	cfg := initConfig(labels)
-	if !checkIfDeamonSetExist(cfg) {
+	if !checkIfDaemonSetExist(cfg) {
 		logrus.Info("Deploying fluent-bit")
 		if viper.GetBool("fluentbit-operator.rbac") {
 			sa := newServiceAccount(cfg)
@@ -69,13 +69,20 @@ func InitFluentBit(labels map[string]string) {
 		logrus.Error(err)
 		sdkdecorator.CallSdkFunctionWithLogging(sdk.Create)(ds)
 		logrus.Info("Fluent-bit deployed successfully")
+	} else {
+		logrus.Info("Updating fluent-bit")
+		ds := newFluentBitDaemonSet(cfg)
+		err := controllerutil.SetControllerReference(OwnerDeployment, ds, scheme.Scheme)
+		logrus.Error(err)
+		sdkdecorator.CallSdkFunctionWithLogging(sdk.Update)(ds)
+		logrus.Info("Fluent-bit updated successfully")
 	}
 }
 
 // DeleteFluentBit deletes fluent-bit if it exists
 func DeleteFluentBit(labels map[string]string) {
 	cfg := initConfig(labels)
-	if checkIfDeamonSetExist(cfg) {
+	if checkIfDaemonSetExist(cfg) {
 		logrus.Info("Deleting fluent-bit")
 		if viper.GetBool("fluentbit-operator.rbac") {
 			sdkdecorator.CallSdkFunctionWithLogging(sdk.Delete)(newServiceAccount(cfg))
@@ -292,11 +299,11 @@ func newFluentBitConfig(cr *fluentBitDeploymentConfig) (*corev1.ConfigMap, error
 	return configMap, nil
 }
 
-func checkIfDeamonSetExist(cr *fluentBitDeploymentConfig) bool {
+func checkIfDaemonSetExist(cr *fluentBitDeploymentConfig) bool {
 	fluentbitDaemonSet := &appsv1.DaemonSet{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "DaemonSet",
-			APIVersion: "extensions/v1beta1",
+			APIVersion: "apps/v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name,
