@@ -1,0 +1,20 @@
+# permissions to do viewer outputs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: output-viewer-role
+rules:
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - outputs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - outputs/status
+  verbs:
+  - get

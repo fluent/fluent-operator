@@ -1,0 +1,19 @@
+domain: kubesphere.io
+repo: kubesphere.io/fluentbit-operator
+resources:
+- group: logging
+  kind: FluentBitConfig
+  version: v1alpha1
+- group: logging
+  kind: FluentBit
+  version: v1alpha1
+- group: logging
+  kind: Input
+  version: v1alpha1
+- group: logging
+  kind: Filter
+  version: v1alpha1
+- group: logging
+  kind: Output
+  version: v1alpha1
+version: "2"

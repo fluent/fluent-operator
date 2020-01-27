@@ -1,0 +1,26 @@
+# permissions to do edit outputs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: output-editor-role
+rules:
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - outputs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - outputs/status
+  verbs:
+  - get
+  - patch
+  - update
