@@ -1,60 +1,80 @@
 
-GOFILES_NOVENDOR = $(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -path "./client/*")
-PKGS=$(shell go list ./... | grep -v /vendor)
+# Image URL to use all building/pushing image targets
+IMG ?= controller:latest
+# Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
+CRD_OPTIONS ?= "crd:trivialVersions=true"
 
-DEP_VERSION = 0.5.0
+# Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
+ifeq (,$(shell go env GOBIN))
+GOBIN=$(shell go env GOPATH)/bin
+else
+GOBIN=$(shell go env GOBIN)
+endif
 
-bin/dep: bin/dep-${DEP_VERSION}
-	@ln -sf dep-${DEP_VERSION} bin/dep
+all: manager
 
-bin/dep-${DEP_VERSION}:
-	@mkdir -p bin
-	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | INSTALL_DIRECTORY=bin DEP_RELEASE_TAG=v${DEP_VERSION} sh
-	@mv bin/dep $@
+# Run tests
+test: generate fmt vet manifests
+	go test ./... -coverprofile cover.out
 
-.PHONY: vendor
-vendor: bin/dep ## Install dependencies
-	bin/dep ensure -v -vendor-only
+# Build manager binary
+manager: generate fmt vet
+	go build -o bin/manager main.go
 
-build: vendor
-	@go build $(PKGS)
+# Run against the configured Kubernetes cluster in ~/.kube/config
+run: generate fmt vet manifests
+	go run ./main.go
 
-vet:
-	@go vet -composites=false ./...
+# Install CRDs into a cluster
+install: manifests
+	kustomize build config/crd | kubectl apply -f -
 
-check-fmt:
-	PKGS="${GOFILES_NOVENDOR}" GOFMT="gofmt" ./scripts/fmt-check.sh
+# Uninstall CRDs from a cluster
+uninstall: manifests
+	kustomize build config/crd | kubectl delete -f -
 
+# Deploy controller in the configured Kubernetes cluster in ~/.kube/config
+deploy: manifests
+	cd config/manager && kustomize edit set image controller=${IMG}
+	kustomize build config/default | kubectl apply -f -
+
+# Generate manifests e.g. CRD, RBAC etc.
+manifests: controller-gen
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+
+# Run go fmt against code
 fmt:
-	@gofmt -w ${GOFILES_NOVENDOR}
+	go fmt ./...
 
-lint: install-golint
-	golint -min_confidence 0.9 -set_exit_status $(PKGS)
+# Run go vet against code
+vet:
+	go vet ./...
 
-install-golint:
-	GOLINT_CMD=$(shell command -v golint 2> /dev/null)
-ifndef GOLINT_CMD
-	go get golang.org/x/lint/golint
+# Generate code
+generate: controller-gen
+	$(CONTROLLER_GEN) object:headerFile=./hack/boilerplate.go.txt paths="./..."
+
+# Build the docker image
+docker-build: test
+	docker build . -t ${IMG}
+
+# Push the docker image
+docker-push:
+	docker push ${IMG}
+
+# find or download controller-gen
+# download controller-gen if necessary
+controller-gen:
+ifeq (, $(shell which controller-gen))
+	@{ \
+	set -e ;\
+	CONTROLLER_GEN_TMP_DIR=$$(mktemp -d) ;\
+	cd $$CONTROLLER_GEN_TMP_DIR ;\
+	go mod init tmp ;\
+	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.4 ;\
+	rm -rf $$CONTROLLER_GEN_TMP_DIR ;\
+	}
+CONTROLLER_GEN=$(GOBIN)/controller-gen
+else
+CONTROLLER_GEN=$(shell which controller-gen)
 endif
-
-check-misspell: install-misspell
-	PKGS="${GOFILES_NOVENDOR}" MISSPELL="misspell" ./scripts/misspell-check.sh
-
-misspell: install-misspell
-	misspell -w ${GOFILES_NOVENDOR}
-
-install-misspell:
-	MISSPELL_CMD=$(shell command -v misspell 2> /dev/null)
-ifndef MISSPELL_CMD
-	go get -u github.com/client9/misspell/cmd/misspell
-endif
-
-ineffassign: install-ineffassign
-	ineffassign ${GOFILES_NOVENDOR}
-
-install-ineffassign:
-	INEFFASSIGN_CMD=$(shell command -v ineffassign 2> /dev/null)
-ifndef INEFFASSIGN_CMD
-	go get -u github.com/gordonklaus/ineffassign
-endif
-

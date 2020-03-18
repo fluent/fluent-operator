@@ -1,3 +1,0 @@
-apiVersion: logging.kubesphere.io/v1alpha1
-kind: FluentBit
-projectName: fluentbit-operator

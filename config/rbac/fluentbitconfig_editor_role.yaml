@@ -1,0 +1,26 @@
+# permissions to do edit fluentbitconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fluentbitconfig-editor-role
+rules:
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - fluentbitconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - fluentbitconfigs/status
+  verbs:
+  - get
+  - patch
+  - update

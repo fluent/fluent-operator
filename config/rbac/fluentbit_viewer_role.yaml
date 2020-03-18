@@ -1,0 +1,20 @@
+# permissions to do viewer fluentbits.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fluentbit-viewer-role
+rules:
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - fluentbits
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - fluentbits/status
+  verbs:
+  - get

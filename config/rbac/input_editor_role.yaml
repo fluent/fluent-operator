@@ -1,0 +1,26 @@
+# permissions to do edit inputs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: input-editor-role
+rules:
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - inputs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - inputs/status
+  verbs:
+  - get
+  - patch
+  - update
