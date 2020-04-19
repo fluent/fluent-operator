@@ -22,7 +22,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
-	loggingv1alpha1 "kubesphere.io/fluentbit-operator/api/v1alpha1"
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/api/v1alpha2"
 	"kubesphere.io/fluentbit-operator/controllers"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
@@ -38,7 +38,7 @@ var (
 func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 
-	_ = loggingv1alpha1.AddToScheme(scheme)
+	_ = loggingv1alpha2.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
 

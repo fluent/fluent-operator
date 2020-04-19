@@ -2,7 +2,7 @@ package filter
 
 import (
 	"fmt"
-	"kubesphere.io/fluentbit-operator/api/v1alpha1/plugins"
+	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins"
 )
 
 // +kubebuilder:object:generate:=true

@@ -1,7 +1,7 @@
 package filter
 
 import (
-	"kubesphere.io/fluentbit-operator/api/v1alpha1/plugins"
+	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins"
 )
 
 // +kubebuilder:object:generate:=true
@@ -9,7 +9,7 @@ import (
 // The Nest Filter plugin allows you to operate on or with nested data. Its modes of operation are
 type Nest struct {
 	// Select the operation nest or lift
-	// +kubebuilder:validation:Enum:=nest;list
+	// +kubebuilder:validation:Enum:=nest;lift
 	Operation string `json:"operation,omitempty"`
 	// Nest records which field matches the wildcard
 	Wildcard []string `json:"wildcard,omitempty"`

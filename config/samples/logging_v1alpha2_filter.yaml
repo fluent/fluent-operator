@@ -1,4 +1,4 @@
-apiVersion: logging.kubesphere.io/v1alpha1
+apiVersion: logging.kubesphere.io/v1alpha2
 kind: Filter
 metadata:
   name: filter-sample

@@ -24,7 +24,7 @@ import (
 
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
-	loggingv1alpha1 "kubesphere.io/fluentbit-operator/api/v1alpha1"
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/api/v1alpha2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -60,28 +60,28 @@ var _ = BeforeSuite(func(done Done) {
 	Expect(err).ToNot(HaveOccurred())
 	Expect(cfg).ToNot(BeNil())
 
-	err = loggingv1alpha1.AddToScheme(scheme.Scheme)
+	err = loggingv1alpha2.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
-	err = loggingv1alpha1.AddToScheme(scheme.Scheme)
+	err = loggingv1alpha2.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
-	err = loggingv1alpha1.AddToScheme(scheme.Scheme)
+	err = loggingv1alpha2.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
-	err = loggingv1alpha1.AddToScheme(scheme.Scheme)
+	err = loggingv1alpha2.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
-	err = loggingv1alpha1.AddToScheme(scheme.Scheme)
+	err = loggingv1alpha2.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
-	err = loggingv1alpha1.AddToScheme(scheme.Scheme)
+	err = loggingv1alpha2.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
-	err = loggingv1alpha1.AddToScheme(scheme.Scheme)
+	err = loggingv1alpha2.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
-	err = loggingv1alpha1.AddToScheme(scheme.Scheme)
+	err = loggingv1alpha2.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
 	// +kubebuilder:scaffold:scheme

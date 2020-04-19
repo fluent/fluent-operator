@@ -23,13 +23,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
-	"kubesphere.io/fluentbit-operator/api/v1alpha1/plugins"
+	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	logging "kubesphere.io/fluentbit-operator/api/v1alpha1"
+	logging "kubesphere.io/fluentbit-operator/api/v1alpha2"
 )
 
 // FluentBitConfigReconciler reconciles a FluentBitConfig object

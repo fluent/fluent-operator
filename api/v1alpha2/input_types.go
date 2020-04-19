@@ -13,14 +13,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+package v1alpha2
 
 import (
 	"bytes"
 	"fmt"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"kubesphere.io/fluentbit-operator/api/v1alpha1/plugins"
-	"kubesphere.io/fluentbit-operator/api/v1alpha1/plugins/input"
+	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins/input"
 	"reflect"
 )
 

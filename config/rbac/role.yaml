@@ -7,58 +7,58 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - logging.kubesphere.io
-  resources:
-  - fluentbits
-  - fluentbitconfigs
-  - inputs
-  - filters
-  - outputs
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
   - apps
   resources:
   - daemonsets
   verbs:
-  - get
   - create
-  - update
-  - patch
   - delete
-- apiGroups:
-  - logging.kubesphere.io
-  resources:
-  - fluentbitconfigs
-  verbs:
   - get
-  - list
-  - watch
-  - create
-  - update
   - patch
-  - delete
-- apiGroups:
-  - logging.kubesphere.io
-  resources:
-  - inputs
-  - filters
-  - outputs
-  verbs:
-  - list
+  - update
 - apiGroups:
   - ""
   resources:
   - configmaps
   verbs:
-  - get
   - create
-  - update
-  - patch
   - delete
+  - get
+  - patch
+  - update
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - filters
+  - fluentbitconfigs
+  - fluentbits
+  - inputs
+  - outputs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - filters
+  - inputs
+  - outputs
+  verbs:
+  - list
+- apiGroups:
+  - logging.kubesphere.io
+  resources:
+  - fluentbitconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch

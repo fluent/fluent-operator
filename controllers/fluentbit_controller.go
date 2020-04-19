@@ -28,7 +28,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	logging "kubesphere.io/fluentbit-operator/api/v1alpha1"
+	logging "kubesphere.io/fluentbit-operator/api/v1alpha2"
 )
 
 // FluentBitReconciler reconciles a FluentBit object
