@@ -41,7 +41,7 @@ type FluentBitConfigReconciler struct {
 
 // +kubebuilder:rbac:groups=logging.kubesphere.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=logging.kubesphere.io,resources=inputs;filters;outputs,verbs=list
-// +kubebuilder:rbac:groups=core,resources=configmaps,verbs=get;create;update;patch;delete
+// +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;create;update;patch;delete
 
 func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
@@ -92,11 +92,11 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 			return ctrl.Result{}, err
 		}
 
-		// Create or update the corresponding ConfigMap
-		var cm corev1.ConfigMap
-		if err := r.Get(ctx, types.NamespacedName{Namespace: cfg.Namespace, Name: cfg.Name}, &cm); err == nil {
-			cm.Data = map[string]string{"fluent-bit.conf": data}
-			if err := r.Update(ctx, &cm); err != nil {
+		// Create or update the corresponding Secret
+		var sec corev1.Secret
+		if err := r.Get(ctx, types.NamespacedName{Namespace: cfg.Namespace, Name: cfg.Name}, &sec); err == nil {
+			sec.Data = map[string][]byte{"fluent-bit.conf": []byte(data)}
+			if err := r.Update(ctx, &sec); err != nil {
 				// resourceVersion conflict
 				if errors.IsConflict(err) {
 					return ctrl.Result{Requeue: true}, nil
@@ -104,19 +104,19 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 				return ctrl.Result{}, err
 			}
 		} else if errors.IsNotFound(err) {
-			cm = corev1.ConfigMap{
+			sec = corev1.Secret{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      req.Name,
 					Namespace: req.Namespace,
 				},
-				Data: map[string]string{"fluent-bit.conf": data},
+				Data: map[string][]byte{"fluent-bit.conf": []byte(data)},
 			}
-			// Set ConfigMap's owner to FluentBitConfig
-			if err := ctrl.SetControllerReference(&cfg, &cm, r.Scheme); err != nil {
+			// Set Secret's owner to FluentBitConfig
+			if err := ctrl.SetControllerReference(&cfg, &sec, r.Scheme); err != nil {
 				return ctrl.Result{}, err
 			}
-			// Create ConfigMap
-			return ctrl.Result{}, r.Create(ctx, &cm)
+			// Create Secret
+			return ctrl.Result{}, r.Create(ctx, &sec)
 		} else {
 			return ctrl.Result{}, err
 		}
@@ -126,10 +126,10 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 }
 
 func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(&corev1.ConfigMap{}, ownerKey, func(rawObj runtime.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(&corev1.Secret{}, ownerKey, func(rawObj runtime.Object) []string {
 		// Grab the job object, extract the owner.
-		cm := rawObj.(*corev1.ConfigMap)
-		owner := metav1.GetControllerOf(cm)
+		sec := rawObj.(*corev1.Secret)
+		owner := metav1.GetControllerOf(sec)
 		if owner == nil {
 			return nil
 		}
@@ -144,7 +144,7 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&logging.FluentBitConfig{}).
-		Owns(&corev1.ConfigMap{}).
+		Owns(&corev1.Secret{}).
 		Watches(&source.Kind{Type: &logging.Input{}}, &handler.EnqueueRequestForObject{}).
 		Watches(&source.Kind{Type: &logging.Filter{}}, &handler.EnqueueRequestForObject{}).
 		Watches(&source.Kind{Type: &logging.Output{}}, &handler.EnqueueRequestForObject{}).

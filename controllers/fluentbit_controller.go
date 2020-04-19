@@ -69,9 +69,9 @@ func (r *FluentBitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return ctrl.Result{}, nil
 	}
 
-	// check if configmap exists and requeue when not found
-	var cm corev1.ConfigMap
-	if err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Spec.FluentBitConfigName}, &cm); err != nil {
+	// check if Secret exists and requeue when not found
+	var sec corev1.Secret
+	if err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Spec.FluentBitConfigName}, &sec); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{Requeue: true}, nil
 		}
@@ -203,10 +203,8 @@ func (r *FluentBitReconciler) constructDaemonSet(fb logging.FluentBit) appsv1.Da
 						{
 							Name: "config",
 							VolumeSource: corev1.VolumeSource{
-								ConfigMap: &corev1.ConfigMapVolumeSource{
-									LocalObjectReference: corev1.LocalObjectReference{
-										Name: fb.Spec.FluentBitConfigName,
-									},
+								Secret: &corev1.SecretVolumeSource{
+									SecretName: fb.Spec.FluentBitConfigName,
 								},
 							},
 						},
