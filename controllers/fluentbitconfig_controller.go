@@ -22,10 +22,10 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/types"
 	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
@@ -93,31 +93,25 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 		}
 
 		// Create or update the corresponding Secret
-		var sec corev1.Secret
-		if err := r.Get(ctx, types.NamespacedName{Namespace: cfg.Namespace, Name: cfg.Name}, &sec); err == nil {
+		sec := &corev1.Secret{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      req.Name,
+				Namespace: req.Namespace,
+			},
+			Data: map[string][]byte{"fluent-bit.conf": []byte(data)},
+		}
+		if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
+			return ctrl.Result{}, err
+		}
+
+		if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, sec, func() error {
 			sec.Data = map[string][]byte{"fluent-bit.conf": []byte(data)}
-			if err := r.Update(ctx, &sec); err != nil {
-				// resourceVersion conflict
-				if errors.IsConflict(err) {
-					return ctrl.Result{Requeue: true}, nil
-				}
-				return ctrl.Result{}, err
+			sec.SetOwnerReferences(nil)
+			if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
+				return err
 			}
-		} else if errors.IsNotFound(err) {
-			sec = corev1.Secret{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      req.Name,
-					Namespace: req.Namespace,
-				},
-				Data: map[string][]byte{"fluent-bit.conf": []byte(data)},
-			}
-			// Set Secret's owner to FluentBitConfig
-			if err := ctrl.SetControllerReference(&cfg, &sec, r.Scheme); err != nil {
-				return ctrl.Result{}, err
-			}
-			// Create Secret
-			return ctrl.Result{}, r.Create(ctx, &sec)
-		} else {
+			return nil
+		}); err != nil {
 			return ctrl.Result{}, err
 		}
 	}
