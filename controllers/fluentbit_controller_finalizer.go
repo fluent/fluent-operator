@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"context"
-	logging "kubesphere.io/fluentbit-operator/api/v1alpha1"
+	logging "kubesphere.io/fluentbit-operator/api/v1alpha2"
 )
 
 func (r *FluentBitReconciler) addFinalizer(ctx context.Context, instance *logging.FluentBit) error {

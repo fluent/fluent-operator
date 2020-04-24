@@ -21,14 +21,14 @@ import (
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	logging "kubesphere.io/fluentbit-operator/api/v1alpha2"
+	"kubesphere.io/fluentbit-operator/pkg/operator"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-
-	logging "kubesphere.io/fluentbit-operator/api/v1alpha1"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
 // FluentBitReconciler reconciles a FluentBit object
@@ -69,217 +69,68 @@ func (r *FluentBitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return ctrl.Result{}, nil
 	}
 
-	// check if configmap exists and requeue when not found
-	var cm corev1.ConfigMap
-	if err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Spec.FluentBitConfigName}, &cm); err != nil {
+	// Check if Secret exists and requeue when not found
+	var sec corev1.Secret
+	if err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Spec.FluentBitConfigName}, &sec); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{Requeue: true}, nil
 		}
 		return ctrl.Result{}, err
 	}
 
-	// install rbac resources for kubernetes filter plugin
-	cr := rbacv1.ClusterRole{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: "fluent-bit",
-		},
-		Rules: []rbacv1.PolicyRule{
-			{
-				Verbs:     []string{"get"},
-				APIGroups: []string{""},
-				Resources: []string{"pods"},
-			},
-		},
+	// Install RBAC resources for the filter plugin kubernetes
+	cr, sa, crb := operator.MakeRBACObjects(fb.Name, fb.Namespace)
+	// Set ServiceAccount's owner to this fluentbit
+	if err := ctrl.SetControllerReference(&fb, &sa, r.Scheme); err != nil {
+		return ctrl.Result{}, err
 	}
 	if err := r.Create(ctx, &cr); err != nil && !errors.IsAlreadyExists(err) {
 		return ctrl.Result{}, err
 	}
-
-	crb := rbacv1.ClusterRoleBinding{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: "fluent-bit",
-		},
-		Subjects: []rbacv1.Subject{
-			{
-				Kind:      rbacv1.ServiceAccountKind,
-				Name:      fb.Name,
-				Namespace: fb.Namespace,
-			},
-		},
-		RoleRef: rbacv1.RoleRef{
-			APIGroup: rbacv1.GroupName,
-			Kind:     "ClusterRole",
-			Name:     "fluent-bit",
-		},
+	if err := r.Create(ctx, &sa); err != nil && !errors.IsAlreadyExists(err) {
+		return ctrl.Result{}, err
 	}
 	if err := r.Create(ctx, &crb); err != nil && !errors.IsAlreadyExists(err) {
 		return ctrl.Result{}, err
 	}
 
 	// Deploy Fluent Bit DaemonSet
-	var ds appsv1.DaemonSet
-	err := r.Get(ctx, req.NamespacedName, &ds)
-	if err == nil {
-		return ctrl.Result{}, r.update(ctx, ds, fb)
-	} else if errors.IsNotFound(err) {
-		return ctrl.Result{}, r.create(ctx, fb)
-	} else {
+	logPath := r.getContainerLogPath(fb)
+	ds := operator.MakeDaemonSet(fb, logPath)
+	if err := ctrl.SetControllerReference(&fb, &ds, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
+
+	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, &ds, r.mutate(&ds, fb)); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	return ctrl.Result{}, nil
 }
 
-func (r *FluentBitReconciler) update(ctx context.Context, raw appsv1.DaemonSet, fb logging.FluentBit) error {
-	ds := r.constructDaemonSet(fb)
-	raw.Labels = fb.Labels
-	raw.Spec = ds.Spec
-	if err := ctrl.SetControllerReference(&fb, &ds, r.Scheme); err != nil {
-		return err
+func (r *FluentBitReconciler) getContainerLogPath(fb logging.FluentBit) string {
+	if fb.Spec.ContainerLogRealPath != "" {
+		return fb.Spec.ContainerLogRealPath
+	} else if r.ContainerLogRealPath != "" {
+		return r.ContainerLogRealPath
+	} else {
+		return "/var/lib/docker/containers"
 	}
-	return r.Update(ctx, &ds)
 }
 
-func (r *FluentBitReconciler) create(ctx context.Context, fb logging.FluentBit) error {
-	sa := corev1.ServiceAccount{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      fb.Name,
-			Namespace: fb.Namespace,
-		},
-	}
-	if err := ctrl.SetControllerReference(&fb, &sa, r.Scheme); err != nil {
-		return err
-	}
-	if err := r.Create(ctx, &sa); err != nil && !errors.IsAlreadyExists(err) {
-		return err
-	}
+func (r *FluentBitReconciler) mutate(ds *appsv1.DaemonSet, fb logging.FluentBit) controllerutil.MutateFn {
+	logPath := r.getContainerLogPath(fb)
+	expected := operator.MakeDaemonSet(fb, logPath)
 
-	ds := r.constructDaemonSet(fb)
-	if err := ctrl.SetControllerReference(&fb, &ds, r.Scheme); err != nil {
-		return err
-	}
-	if err := r.Create(ctx, &ds); err != nil && !errors.IsAlreadyExists(err) {
-		return err
-	}
-	return nil
-}
-
-func (r *FluentBitReconciler) constructDaemonSet(fb logging.FluentBit) appsv1.DaemonSet {
-	logPath := func() string {
-		if fb.Spec.ContainerLogRealPath != "" {
-			return fb.Spec.ContainerLogRealPath
-		} else if r.ContainerLogRealPath != "" {
-			return r.ContainerLogRealPath
-		} else {
-			return "/var/lib/docker/containers"
+	return func() error {
+		ds.Labels = expected.Labels
+		ds.Spec = expected.Spec
+		ds.SetOwnerReferences(nil)
+		if err := ctrl.SetControllerReference(&fb, ds, r.Scheme); err != nil {
+			return err
 		}
-	}()
-
-	ds := appsv1.DaemonSet{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      fb.Name,
-			Namespace: fb.Namespace,
-			Labels:    fb.Labels,
-		},
-		Spec: appsv1.DaemonSetSpec{
-			Selector: &metav1.LabelSelector{
-				MatchLabels: fb.Labels,
-			},
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      fb.Name,
-					Namespace: fb.Namespace,
-					Labels:    fb.Labels,
-				},
-				Spec: corev1.PodSpec{
-					ServiceAccountName: fb.Name,
-					Volumes: []corev1.Volume{
-						{
-							Name: "varlibcontainers",
-							VolumeSource: corev1.VolumeSource{
-								HostPath: &corev1.HostPathVolumeSource{
-									Path: logPath,
-								},
-							},
-						},
-						{
-							Name: "config",
-							VolumeSource: corev1.VolumeSource{
-								ConfigMap: &corev1.ConfigMapVolumeSource{
-									LocalObjectReference: corev1.LocalObjectReference{
-										Name: fb.Spec.FluentBitConfigName,
-									},
-								},
-							},
-						},
-						{
-							Name: "varlogs",
-							VolumeSource: corev1.VolumeSource{
-								HostPath: &corev1.HostPathVolumeSource{
-									Path: "/var/log",
-								},
-							},
-						},
-						{
-							Name:         "positions",
-							VolumeSource: fb.Spec.PositionDB,
-						},
-					},
-					Containers: []corev1.Container{
-						{
-							Name:            "fluent-bit",
-							Image:           fb.Spec.Image,
-							ImagePullPolicy: fb.Spec.ImagePullPolicy,
-							Ports: []corev1.ContainerPort{
-								{
-									Name:          "metrics",
-									ContainerPort: 2020,
-								},
-							},
-							VolumeMounts: []corev1.VolumeMount{
-								{
-									Name:      "varlibcontainers",
-									ReadOnly:  true,
-									MountPath: logPath,
-								},
-								{
-									Name:      "config",
-									ReadOnly:  true,
-									MountPath: "/fluent-bit/config",
-								},
-								{
-									Name:      "positions",
-									MountPath: "/fluent-bit/tail",
-								},
-								{
-									Name:      "varlogs",
-									ReadOnly:  true,
-									MountPath: "/var/log/",
-								},
-							},
-						},
-					},
-					Tolerations: fb.Spec.Tolerations,
-				},
-			},
-		},
+		return nil
 	}
-
-	// Mount Secrets
-	for _, secret := range fb.Spec.Secrets {
-		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, corev1.Volume{
-			Name: secret,
-			VolumeSource: corev1.VolumeSource{
-				Secret: &corev1.SecretVolumeSource{
-					SecretName: secret,
-				},
-			},
-		})
-		ds.Spec.Template.Spec.Containers[0].VolumeMounts = append(ds.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
-			Name:      secret,
-			ReadOnly:  true,
-			MountPath: fmt.Sprintf("/fluent-bit/secrets/%s", secret),
-		})
-	}
-	return ds
 }
 
 func (r *FluentBitReconciler) delete(ctx context.Context, fb *logging.FluentBit) error {

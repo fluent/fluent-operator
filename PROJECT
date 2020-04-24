@@ -3,17 +3,17 @@ repo: kubesphere.io/fluentbit-operator
 resources:
 - group: logging
   kind: FluentBitConfig
-  version: v1alpha1
+  version: v1alpha2
 - group: logging
   kind: FluentBit
-  version: v1alpha1
+  version: v1alpha2
 - group: logging
   kind: Input
-  version: v1alpha1
+  version: v1alpha2
 - group: logging
   kind: Filter
-  version: v1alpha1
+  version: v1alpha2
 - group: logging
   kind: Output
-  version: v1alpha1
+  version: v1alpha2
 version: "2"

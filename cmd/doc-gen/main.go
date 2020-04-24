@@ -40,7 +40,7 @@ func main() {
 
 func plugins() {
 	var srcs []string
-	err := filepath.Walk("api/v1alpha1/plugins", func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk("api/v1alpha2/plugins", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -73,7 +73,7 @@ func plugins() {
 			}
 		}
 
-		src := strings.TrimPrefix(src, "api/v1alpha1/plugins/")
+		src := strings.TrimPrefix(src, "api/v1alpha2/plugins/")
 		src = strings.TrimSuffix(src, "_types.go")
 		dst := fmt.Sprintf("docs/plugins/" + src + ".md")
 		f, _ := os.Create(dst)
@@ -101,7 +101,7 @@ func printTOC(types []KubeTypes) bytes.Buffer {
 
 func crds() {
 	var srcs []string
-	err := filepath.Walk("api/v1alpha1", func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk("api/v1alpha2", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
