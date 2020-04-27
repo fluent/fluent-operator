@@ -11,5 +11,5 @@ Fluent Bit provides integrated support for Transport Layer Security (TLS) and it
 | caPath | Absolute path to scan for certificate files | string |
 | crtFile | Absolute path to Certificate file | string |
 | keyFile | Absolute path to private Key file | string |
-| keyPassword | Optional password for tls.key_file file | *Secret |
+| keyPassword | Optional password for tls.key_file file | *[Secret](secret.md) |
 | vhost | Hostname to be used for TLS SNI extension | string |

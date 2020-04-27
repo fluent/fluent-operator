@@ -1,0 +1,16 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: es
+  namespace: kubesphere-logging-system
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.2.0
+spec:
+  match: kube.*
+  es:
+    host: elasticsearch-logging-data.kubesphere-logging-system.svc
+    port: 9200
+    logstashPrefix: ks-logstash-log
+    logstashFormat: true
+    timeKey: "@timestamp"

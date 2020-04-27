@@ -1,0 +1,308 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: filters.logging.kubesphere.io
+spec:
+  group: logging.kubesphere.io
+  names:
+    kind: Filter
+    listKind: FilterList
+    plural: filters
+    singular: filter
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      description: Filter defines a Filter configuration.
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: Specification of desired Filter configuration.
+          properties:
+            filters:
+              description: A set of filter plugins in order.
+              items:
+                properties:
+                  kubernetes:
+                    description: Kubernetes defines Kubernetes Filter configuration.
+                    properties:
+                      annotations:
+                        description: Include Kubernetes resource annotations in the
+                          extra metadata.
+                        type: boolean
+                      bufferSize:
+                        description: Set the buffer size for HTTP client when reading
+                          responses from Kubernetes API server.
+                        pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                        type: string
+                      dummyMeta:
+                        description: If set, use dummy-meta data (for test/dev purposes)
+                        type: boolean
+                      k8sLoggingExclude:
+                        description: Allow Kubernetes Pods to exclude their logs from
+                          the log processor (read more about it in Kubernetes Annotations
+                          section).
+                        type: boolean
+                      k8sLoggingParser:
+                        description: Allow Kubernetes Pods to suggest a pre-defined
+                          Parser (read more about it in Kubernetes Annotations section)
+                        type: boolean
+                      keepLog:
+                        description: When Keep_Log is disabled, the log field is removed
+                          from the incoming message once it has been successfully
+                          merged (Merge_Log must be enabled as well).
+                        type: boolean
+                      kubeCAFile:
+                        description: CA certificate file
+                        type: string
+                      kubeCAPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      kubeMetaPreloadCacheDir:
+                        description: If set, Kubernetes meta-data can be cached/pre-loaded
+                          from files in JSON format in this directory, named as namespace-pod.meta
+                        type: string
+                      kubeTagPrefix:
+                        description: When the source records comes from Tail input
+                          plugin, this option allows to specify what's the prefix
+                          used in Tail configuration.
+                        type: string
+                      kubeTokenFile:
+                        description: Token file
+                        type: string
+                      kubeURL:
+                        description: API Server end-point
+                        type: string
+                      labels:
+                        description: Include Kubernetes resource labels in the extra
+                          metadata.
+                        type: boolean
+                      mergeLog:
+                        description: When enabled, it checks if the log field content
+                          is a JSON string map, if so, it append the map fields as
+                          part of the log structure.
+                        type: boolean
+                      mergeLogKey:
+                        description: When Merge_Log is enabled, the filter tries to
+                          assume the log field from the incoming message is a JSON
+                          string message and make a structured representation of it
+                          at the same level of the log field in the map. Now if Merge_Log_Key
+                          is set (a string name), all the new structured fields taken
+                          from the original log content are inserted under the new
+                          key.
+                        type: string
+                      mergeLogTrim:
+                        description: When Merge_Log is enabled, trim (remove possible
+                          \n or \r) field values.
+                        type: boolean
+                      mergeParser:
+                        description: Optional parser name to specify how to parse
+                          the data contained in the log key. Recommended use is for
+                          developers or testing only.
+                        type: string
+                      regexParser:
+                        description: Set an alternative Parser to process record Tag
+                          and extract pod_name, namespace_name, container_name and
+                          docker_id. The parser must be registered in a parsers file
+                          (refer to parser filter-kube-test as an example).
+                        type: string
+                      tlsDebug:
+                        description: Debug level between 0 (nothing) and 4 (every
+                          detail).
+                        format: int32
+                        type: integer
+                      tlsVerify:
+                        description: When enabled, turns on certificate validation
+                          when connecting to the Kubernetes API server.
+                        type: boolean
+                      useJournal:
+                        description: When enabled, the filter reads logs coming in
+                          Journald format.
+                        type: boolean
+                    type: object
+                  modify:
+                    description: Modify defines Modify Filter configuration.
+                    properties:
+                      conditions:
+                        description: All conditions have to be true for the rules
+                          to be applied.
+                        items:
+                          description: The plugin supports the following conditions
+                          properties:
+                            aKeyMatches:
+                              description: Is true if a key matches regex KEY
+                              type: string
+                            keyDoesNotExist:
+                              additionalProperties:
+                                type: string
+                              description: Is true if KEY does not exist
+                              type: object
+                            keyExists:
+                              description: Is true if KEY exists
+                              type: string
+                            keyValueDoesNotEqual:
+                              additionalProperties:
+                                type: string
+                              description: Is true if KEY exists and its value is
+                                not VALUE
+                              type: object
+                            keyValueDoesNotMatch:
+                              additionalProperties:
+                                type: string
+                              description: Is true if key KEY exists and its value
+                                does not match VALUE
+                              type: object
+                            keyValueEquals:
+                              additionalProperties:
+                                type: string
+                              description: Is true if KEY exists and its value is
+                                VALUE
+                              type: object
+                            keyValueMatches:
+                              additionalProperties:
+                                type: string
+                              description: Is true if key KEY exists and its value
+                                matches VALUE
+                              type: object
+                            matchingKeysDoNotHaveMatchingValues:
+                              additionalProperties:
+                                type: string
+                              description: Is true if all keys matching KEY have values
+                                that do not match VALUE
+                              type: object
+                            matchingKeysHaveMatchingValues:
+                              additionalProperties:
+                                type: string
+                              description: Is true if all keys matching KEY have values
+                                that match VALUE
+                              type: object
+                            noKeyMatches:
+                              description: Is true if no key matches regex KEY
+                              type: string
+                          type: object
+                        type: array
+                      rules:
+                        description: Rules are applied in the order they appear, with
+                          each rule operating on the result of the previous rule.
+                        items:
+                          description: The plugin supports the following rules
+                          properties:
+                            add:
+                              additionalProperties:
+                                type: string
+                              description: Add a key/value pair with key KEY and value
+                                VALUE if KEY does not exist
+                              type: object
+                            copy:
+                              additionalProperties:
+                                type: string
+                              description: Copy a key/value pair with key KEY to COPIED_KEY
+                                if KEY exists AND COPIED_KEY does not exist
+                              type: object
+                            hardCopy:
+                              additionalProperties:
+                                type: string
+                              description: Copy a key/value pair with key KEY to COPIED_KEY
+                                if KEY exists. If COPIED_KEY already exists, this
+                                field is overwritten
+                              type: object
+                            hardRename:
+                              additionalProperties:
+                                type: string
+                              description: Rename a key/value pair with key KEY to
+                                RENAMED_KEY if KEY exists. If RENAMED_KEY already
+                                exists, this field is overwritten
+                              type: object
+                            remove:
+                              description: Remove a key/value pair with key KEY if
+                                it exists
+                              type: string
+                            removeRegex:
+                              description: Remove all key/value pairs with key matching
+                                regexp KEY
+                              type: string
+                            removeWildcard:
+                              description: Remove all key/value pairs with key matching
+                                wildcard KEY
+                              type: string
+                            rename:
+                              additionalProperties:
+                                type: string
+                              description: Rename a key/value pair with key KEY to
+                                RENAMED_KEY if KEY exists AND RENAMED_KEY does not
+                                exist
+                              type: object
+                            set:
+                              additionalProperties:
+                                type: string
+                              description: Add a key/value pair with key KEY and value
+                                VALUE. If KEY already exists, this field is overwritten
+                              type: object
+                          type: object
+                        type: array
+                    type: object
+                  nest:
+                    description: Nest defines Nest Filter configuration.
+                    properties:
+                      addPrefix:
+                        description: Prefix affected keys with this string
+                        type: string
+                      nestUnder:
+                        description: Nest records matching the Wildcard under this
+                          key
+                        type: string
+                      nestedUnder:
+                        description: Lift records nested under the Nested_under key
+                        type: string
+                      operation:
+                        description: Select the operation nest or lift
+                        enum:
+                        - nest
+                        - lift
+                        type: string
+                      removePrefix:
+                        description: Remove prefix from affected keys if it matches
+                          this string
+                        type: string
+                      wildcard:
+                        description: Nest records which field matches the wildcard
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                type: object
+              type: array
+            match:
+              description: A pattern to match against the tags of incoming records.
+                It's case sensitive and support the star (*) character as a wildcard.
+              type: string
+            matchRegex:
+              description: A regular expression to match against the tags of incoming
+                records. Use this option if you want to use the full regex syntax.
+              type: string
+          type: object
+      type: object
+  version: v1alpha2
+  versions:
+  - name: v1alpha2
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

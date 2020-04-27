@@ -1,0 +1,11 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Input
+metadata:
+  name: dummy
+  namespace: kubesphere-logging-system
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.2.0
+spec:
+  dummy:
+    tag: my_dummy

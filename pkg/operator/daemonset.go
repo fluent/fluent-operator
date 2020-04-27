@@ -12,7 +12,7 @@ import (
 func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.ClusterRole, corev1.ServiceAccount, rbacv1.ClusterRoleBinding) {
 	cr := rbacv1.ClusterRole{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "fluent-bit",
+			Name: "kubesphere:fluent-bit",
 		},
 		Rules: []rbacv1.PolicyRule{
 			{
@@ -32,7 +32,7 @@ func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.ClusterRole, corev1.Ser
 
 	crb := rbacv1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "fluent-bit",
+			Name: "kubesphere:fluent-bit",
 		},
 		Subjects: []rbacv1.Subject{
 			{
@@ -44,7 +44,7 @@ func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.ClusterRole, corev1.Ser
 		RoleRef: rbacv1.RoleRef{
 			APIGroup: rbacv1.GroupName,
 			Kind:     "ClusterRole",
-			Name:     "fluent-bit",
+			Name:     "kubesphere:fluent-bit",
 		},
 	}
 
@@ -95,10 +95,6 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 								},
 							},
 						},
-						{
-							Name:         "positions",
-							VolumeSource: fb.Spec.PositionDB,
-						},
 					},
 					Containers: []corev1.Container{
 						{
@@ -128,10 +124,6 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 									ReadOnly:  true,
 									MountPath: "/var/log/",
 								},
-								{
-									Name:      "positions",
-									MountPath: "/fluent-bit/tail",
-								},
 							},
 						},
 					},
@@ -139,6 +131,18 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 				},
 			},
 		},
+	}
+
+	// Mount Position DB
+	if fb.Spec.PositionDB != (corev1.VolumeSource{}) {
+		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, corev1.Volume{
+			Name:         "positions",
+			VolumeSource: fb.Spec.PositionDB,
+		})
+		ds.Spec.Template.Spec.Containers[0].VolumeMounts = append(ds.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+			Name:      "positions",
+			MountPath: "/fluent-bit/tail",
+		})
 	}
 
 	// Mount Secrets

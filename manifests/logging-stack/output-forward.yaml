@@ -1,0 +1,13 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    logging.kubesphere.io/enabled: "false"
+    app.kubernetes.io/version: v0.2.0
+spec:
+  match: kube.*
+  forward:
+    host: fluentd.kubesphere-logging-system.svc
+    port: 24224

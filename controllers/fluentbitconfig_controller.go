@@ -41,7 +41,7 @@ type FluentBitConfigReconciler struct {
 
 // +kubebuilder:rbac:groups=logging.kubesphere.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=logging.kubesphere.io,resources=inputs;filters;outputs,verbs=list
-// +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;create;update;patch;delete
+// +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
 
 func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()

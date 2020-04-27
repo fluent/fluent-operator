@@ -1,0 +1,13 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: kafka
+  namespace: kubesphere-logging-system
+  labels:
+    logging.kubesphere.io/enabled: "false"
+    app.kubernetes.io/version: v0.2.0
+spec:
+  match: kube.*
+  kafka:
+    brokers: 192.168.1.3:9092,192.168.1.4:9092
+    topics: ks-log
