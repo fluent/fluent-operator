@@ -28,11 +28,15 @@ var (
 		"corev1.SecretKeySelector": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#secretkeyselector-v1-core",
 		"corev1.Toleration":        "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#toleration-v1-core",
 		"corev1.VolumeSource":      "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#volume-v1-core",
+		"plugins.Secret":           "../secret.md",
+		"Secret":                   "secret.md",
+		"plugins.TLS":              "../tls.md",
 	}
 
 	selfLinks = map[string]string{}
 )
 
+// Inspired by coreos/prometheus-operator: https://github.com/coreos/prometheus-operator
 func main() {
 	plugins()
 	crds()
@@ -241,6 +245,14 @@ func fmtRawDoc(rawDoc string) string {
 }
 
 func toLink(typeName string) string {
+	if strings.Contains(typeName, "input.") ||
+		strings.Contains(typeName, "output.") ||
+		strings.Contains(typeName, "filter.") {
+		// Eg. *output.Elasticsearch => ../plugins/output/elasticsearch.md
+		link := fmt.Sprintf("plugins/%s.md", strings.ReplaceAll(strings.ToLower(typeName), ".", "/"))
+		return wrapInLink(typeName, link)
+	}
+
 	selfLink, hasSelfLink := selfLinks[typeName]
 	if hasSelfLink {
 		return wrapInLink(typeName, selfLink)
@@ -284,7 +296,7 @@ func fieldType(typ ast.Expr) string {
 	case *ast.Ident:
 		return toLink(typ.(*ast.Ident).Name)
 	case *ast.StarExpr:
-		return "*" + toLink(fieldType(typ.(*ast.StarExpr).X))
+		return "*" + fieldType(typ.(*ast.StarExpr).X)
 	case *ast.SelectorExpr:
 		e := typ.(*ast.SelectorExpr)
 		pkg := e.X.(*ast.Ident)

@@ -10,8 +10,8 @@ The es output plugin, allows to ingest your records into a Elasticsearch databas
 | path | Elasticsearch accepts new data on HTTP query path \"/_bulk\". But it is also possible to serve Elasticsearch behind a reverse proxy on a subpath. This option defines such path on the fluent-bit side. It simply adds a path prefix in the indexing HTTP POST URI. | string |
 | bufferSize | Specify the buffer size used to read the response from the Elasticsearch HTTP service. This option is useful for debugging purposes where is required to read full responses, note that response size grows depending of the number of records inserted. To set an unlimited amount of memory set this value to False, otherwise the value must be according to the Unit Size specification. | string |
 | pipeline | Newer versions of Elasticsearch allows to setup filters called pipelines. This option allows to define which pipeline the database should use. For performance reasons is strongly suggested to do parsing and filtering on Fluent Bit side, avoid pipelines. | string |
-| httpUser | Optional username credential for Elastic X-Pack access | *plugins.Secret |
-| httpPassword | Password for user defined in HTTP_User | *plugins.Secret |
+| httpUser | Optional username credential for Elastic X-Pack access | *[plugins.Secret](../secret.md) |
+| httpPassword | Password for user defined in HTTP_User | *[plugins.Secret](../secret.md) |
 | index | Index name | string |
 | type | Type name | string |
 | logstashFormat | Enable Logstash format compatibility. This option takes a boolean value: True/False, On/Off | *bool |
@@ -27,4 +27,4 @@ The es output plugin, allows to ingest your records into a Elasticsearch databas
 | traceError | When enabled print the elasticsearch API calls to stdout when elasticsearch returns an error | *bool |
 | currentTimeIndex | Use current time for index generation instead of message record | *bool |
 | logstashPrefixKey | Prefix keys with this string | string |
-| tls |  | *plugins.TLS |
+| tls |  | *[plugins.TLS](../tls.md) |

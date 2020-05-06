@@ -122,8 +122,10 @@ func (cfg FluentBitConfig) Render(sl plugins.SecretLoader, inputs InputList, fil
 	var buf bytes.Buffer
 
 	// The Service defines the global behaviour of the Fluent Bit engine.
-	buf.WriteString("[Service]\n")
-	buf.WriteString(cfg.Spec.Service.Params().String())
+	if cfg.Spec.Service != nil {
+		buf.WriteString("[Service]\n")
+		buf.WriteString(cfg.Spec.Service.Params().String())
+	}
 
 	inputSections, err := inputs.Load(sl)
 	if err != nil {

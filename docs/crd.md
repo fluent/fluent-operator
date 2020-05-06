@@ -37,9 +37,9 @@ Filter defines a Filter configuration.
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| kubernetes | Kubernetes defines Kubernetes Filter configuration. | *filter.Kubernetes |
-| modify | Modify defines Modify Filter configuration. | *filter.Modify |
-| nest | Nest defines Nest Filter configuration. | *filter.Nest |
+| kubernetes | Kubernetes defines Kubernetes Filter configuration. | *[filter.Kubernetes](plugins/filter/kubernetes.md) |
+| modify | Modify defines Modify Filter configuration. | *[filter.Modify](plugins/filter/modify.md) |
+| nest | Nest defines Nest Filter configuration. | *[filter.Nest](plugins/filter/nest.md) |
 
 [Back to TOC](#table-of-contents)
 ## FilterList
@@ -168,8 +168,8 @@ InputSpec defines the desired state of Input
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| dummy | Dummy defines Dummy Input configuration. | *input.Dummy |
-| tail | Tail defines Tail Input configuration. | *input.Tail |
+| dummy | Dummy defines Dummy Input configuration. | *[input.Dummy](plugins/input/dummy.md) |
+| tail | Tail defines Tail Input configuration. | *[input.Tail](plugins/input/tail.md) |
 
 [Back to TOC](#table-of-contents)
 ## Output
@@ -203,11 +203,11 @@ OutputSpec defines the desired state of Output
 | ----- | ----------- | ------ |
 | match | A pattern to match against the tags of incoming records. It's case sensitive and support the star (*) character as a wildcard. | string |
 | matchRegex | A regular expression to match against the tags of incoming records. Use this option if you want to use the full regex syntax. | string |
-| es | Elasticsearch defines Elasticsearch Output configuration. | *output.Elasticsearch |
-| forward | Forward defines Forward Output configuration. | *output.Forward |
-| kafka | Kafka defines Kafka Output configuration. | *output.Kafka |
-| null | Null defines Null Output configuration. | *output.Null |
-| stdout | Stdout defines Stdout Output configuration. | *output.Stdout |
+| es | Elasticsearch defines Elasticsearch Output configuration. | *[output.Elasticsearch](plugins/output/elasticsearch.md) |
+| forward | Forward defines Forward Output configuration. | *[output.Forward](plugins/output/forward.md) |
+| kafka | Kafka defines Kafka Output configuration. | *[output.Kafka](plugins/output/kafka.md) |
+| null | Null defines Null Output configuration. | *[output.Null](plugins/output/null.md) |
+| stdout | Stdout defines Stdout Output configuration. | *[output.Stdout](plugins/output/stdout.md) |
 
 [Back to TOC](#table-of-contents)
 ## Service
