@@ -11,3 +11,5 @@ spec:
   positionDB:
     emptyDir: {}
   fluentBitConfigName: fluent-bit-config
+  tolerations:
+    - operator: Exists
