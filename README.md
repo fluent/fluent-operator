@@ -113,6 +113,7 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
     - [kubernetes](docs/plugins/filter/kubernetes.md)
     - [modify](docs/plugins/filter/modify.md)
     - [nest](docs/plugins/filter/nest.md) 
+    - [parser](docs/plugins/filter/parser.md)
 - [Output](docs/crd.md#output)
     - [elasticsearch](docs/plugins/output/elasticsearch.md)
     - [forward](docs/plugins/output/forward.md)
@@ -142,7 +143,7 @@ Path to file in Fluent Bit config should be well regulated. Fluent Bit Operator 
 
 ## Features In Plan
 
-- [ ] Support parser plugins
+- [ ] Support custom parser plugins
 - [ ] Support custom Input/Filter/Output plugins
 - [ ] Deploy Fluent Bit as deployment
 - [ ] Integrate logging sidecar

@@ -46,6 +46,8 @@ type FilterItem struct {
 	Modify *filter.Modify `json:"modify,omitempty"`
 	// Nest defines Nest Filter configuration.
 	Nest *filter.Nest `json:"nest,omitempty"`
+	// Parser defines Parser Filter configuration.
+	Parser *filter.Parser `json:"parser,omitempty"`
 }
 
 // +kubebuilder:object:root=true
