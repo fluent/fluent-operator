@@ -40,6 +40,7 @@ Filter defines a Filter configuration.
 | kubernetes | Kubernetes defines Kubernetes Filter configuration. | *[filter.Kubernetes](plugins/filter/kubernetes.md) |
 | modify | Modify defines Modify Filter configuration. | *[filter.Modify](plugins/filter/modify.md) |
 | nest | Nest defines Nest Filter configuration. | *[filter.Nest](plugins/filter/nest.md) |
+| parser | Parser defines Parser Filter configuration. | *[filter.Parser](plugins/filter/parser.md) |
 
 [Back to TOC](#table-of-contents)
 ## FilterList

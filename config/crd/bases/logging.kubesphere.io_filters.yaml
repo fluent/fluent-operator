@@ -285,6 +285,29 @@ spec:
                           type: string
                         type: array
                     type: object
+                  parser:
+                    description: Parser defines Parser Filter configuration.
+                    properties:
+                      keyName:
+                        description: Specify field name in record to parse.
+                        type: string
+                      parser:
+                        description: Specify the parser name to interpret the field.
+                          Multiple Parser entries are allowed (split by comma).
+                        type: string
+                      preserveKey:
+                        description: Keep original Key_Name field in the parsed result.
+                          If false, the field will be removed.
+                        type: boolean
+                      reserveData:
+                        description: Keep all other original fields in the parsed
+                          result. If false, all other original fields will be removed.
+                        type: boolean
+                      unescapeKey:
+                        description: 'If the key is a escaped string (e.g: stringify
+                          JSON), unescape the string before to apply the parser.'
+                        type: boolean
+                    type: object
                 type: object
               type: array
             match:
