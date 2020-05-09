@@ -37,6 +37,8 @@ Filter defines a Filter configuration.
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
+| grep | Grep defines Grep Filter configuration. | *[filter.Grep](plugins/filter/grep.md) |
+| recordModifier | RecordModifier defines Record Modifier Filter configuration. | *[filter.RecordModifier](plugins/filter/recordmodifier.md) |
 | kubernetes | Kubernetes defines Kubernetes Filter configuration. | *[filter.Kubernetes](plugins/filter/kubernetes.md) |
 | modify | Modify defines Modify Filter configuration. | *[filter.Modify](plugins/filter/modify.md) |
 | nest | Nest defines Nest Filter configuration. | *[filter.Nest](plugins/filter/nest.md) |

@@ -38,6 +38,18 @@ spec:
               description: A set of filter plugins in order.
               items:
                 properties:
+                  grep:
+                    description: Grep defines Grep Filter configuration.
+                    properties:
+                      exclude:
+                        description: 'Exclude records which field matches the regular
+                          expression. Value Format: FIELD REGEX'
+                        type: string
+                      regex:
+                        description: 'Keep records which field matches the regular
+                          expression. Value Format: FIELD REGEX'
+                        type: string
+                    type: object
                   kubernetes:
                     description: Kubernetes defines Kubernetes Filter configuration.
                     properties:
@@ -307,6 +319,26 @@ spec:
                         description: 'If the key is a escaped string (e.g: stringify
                           JSON), unescape the string before to apply the parser.'
                         type: boolean
+                    type: object
+                  recordModifier:
+                    description: RecordModifier defines Record Modifier Filter configuration.
+                    properties:
+                      records:
+                        description: Append fields. This parameter needs key and value
+                          pair.
+                        items:
+                          type: string
+                        type: array
+                      removeKeys:
+                        description: If the key is matched, that field is removed.
+                        items:
+                          type: string
+                        type: array
+                      whitelistKeys:
+                        description: If the key is not matched, that field is removed.
+                        items:
+                          type: string
+                        type: array
                     type: object
                 type: object
               type: array

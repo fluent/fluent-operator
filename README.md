@@ -114,6 +114,8 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
     - [modify](docs/plugins/filter/modify.md)
     - [nest](docs/plugins/filter/nest.md) 
     - [parser](docs/plugins/filter/parser.md)
+    - [grep](docs/plugins/filter/grep.md)
+    - [record modifier](docs/plugins/filter/recordmodifier.md)
 - [Output](docs/crd.md#output)
     - [elasticsearch](docs/plugins/output/elasticsearch.md)
     - [forward](docs/plugins/output/forward.md)
