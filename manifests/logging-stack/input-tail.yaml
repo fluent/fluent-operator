@@ -5,6 +5,7 @@ metadata:
   namespace: kubesphere-logging-system
   labels:
     logging.kubesphere.io/enabled: "true"
+    logging.kubesphere.io/component: logging
     app.kubernetes.io/version: v0.2.0
 spec:
   tail:
