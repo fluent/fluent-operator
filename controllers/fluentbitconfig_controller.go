@@ -95,8 +95,8 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 		// Create or update the corresponding Secret
 		sec := &corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{
-				Name:      req.Name,
-				Namespace: req.Namespace,
+				Name:      cfg.Name,
+				Namespace: cfg.Namespace,
 			},
 			Data: map[string][]byte{"fluent-bit.conf": []byte(data)},
 		}
