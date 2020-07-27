@@ -104,7 +104,7 @@ Success!
 
 ## API Doc
 
-The listing below shows supported plugins currently. It is based on Fluent Bit v1.3.7. For more information, see API docs of each plugin.
+The listing below shows supported plugins currently. It is based on Fluent Bit v1.5.0. For more information, see API docs of each plugin.
 
 - [Input](docs/crd.md#input)
     - [dummy](docs/plugins/input/dummy.md)
