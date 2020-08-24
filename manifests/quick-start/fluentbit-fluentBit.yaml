@@ -5,7 +5,7 @@ metadata:
   namespace: kubesphere-logging-system
   labels:
     app.kubernetes.io/name: fluent-bit
-    app.kubernetes.io/version: v1.5.0
+    app.kubernetes.io/version: v1.4.6
 spec:
-  image: kubespheredev/fluent-bit:v1.5.0
+  image: kubespheredev/fluent-bit:v1.4.6
   fluentBitConfigName: fluent-bit-config
