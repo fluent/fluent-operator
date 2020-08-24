@@ -34,6 +34,8 @@ type FluentBitSpec struct {
 	PositionDB corev1.VolumeSource `json:"positionDB,omitempty"`
 	// Container log path
 	ContainerLogRealPath string `json:"containerLogRealPath,omitempty"`
+	// NodeSelector
+	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
 	// Tolerations
 	Tolerations []corev1.Toleration `json:"tolerations,omitempty"`
 	// Fluentbitconfig object associated with this Fluentbit
