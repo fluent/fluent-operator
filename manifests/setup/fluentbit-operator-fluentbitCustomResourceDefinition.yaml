@@ -44,6 +44,11 @@ spec:
             imagePullPolicy:
               description: Fluent Bit image pull policy.
               type: string
+            nodeSelector:
+              additionalProperties:
+                type: string
+              description: NodeSelector
+              type: object
             positionDB:
               description: Storage for position db. You will use it if tail input
                 is enabled.

@@ -137,6 +137,7 @@ FluentBitSpec defines the desired state of FluentBit
 | imagePullPolicy | Fluent Bit image pull policy. | corev1.PullPolicy |
 | positionDB | Storage for position db. You will use it if tail input is enabled. | [corev1.VolumeSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#volume-v1-core) |
 | containerLogRealPath | Container log path | string |
+| nodeSelector | NodeSelector | map[string]string |
 | tolerations | Tolerations | [][corev1.Toleration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#toleration-v1-core) |
 | fluentBitConfigName | Fluentbitconfig object associated with this Fluentbit | string |
 | secrets | The Secrets are mounted into /fluent-bit/secrets/<secret-name>. | []string |
