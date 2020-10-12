@@ -16,4 +16,7 @@ resources:
 - group: logging
   kind: Output
   version: v1alpha2
+- group: logging
+  kind: Parser
+  version: v1alpha2
 version: "2"

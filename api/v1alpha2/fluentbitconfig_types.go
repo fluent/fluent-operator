@@ -35,6 +35,8 @@ type FluentBitConfigSpec struct {
 	FilterSelector metav1.LabelSelector `json:"filterSelector,omitempty"`
 	// Select output plugins
 	OutputSelector metav1.LabelSelector `json:"outputSelector,omitempty"`
+	// Select parser plugins
+	ParserSelector metav1.LabelSelector `json:"parserSelector,omitempty"`
 }
 
 type Service struct {
@@ -117,8 +119,7 @@ func (s *Service) Params() *plugins.KVs {
 	return m
 }
 
-func (cfg FluentBitConfig) Render(sl plugins.SecretLoader, inputs InputList, filters FilterList,
-	outputs OutputList) (string, error) {
+func (cfg FluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs InputList, filters FilterList, outputs OutputList) (string, error) {
 	var buf bytes.Buffer
 
 	// The Service defines the global behaviour of the Fluent Bit engine.
@@ -150,6 +151,19 @@ func (cfg FluentBitConfig) Render(sl plugins.SecretLoader, inputs InputList, fil
 	buf.WriteString(inputSections)
 	buf.WriteString(filterSections)
 	buf.WriteString(outputSections)
+
+	return buf.String(), nil
+}
+
+func (cfg FluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers ParserList) (string, error) {
+	var buf bytes.Buffer
+
+	parserSections, err := parsers.Load(sl)
+	if err != nil {
+		return "", err
+	}
+
+	buf.WriteString(parserSections)
 
 	return buf.String(), nil
 }

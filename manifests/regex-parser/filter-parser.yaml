@@ -1,0 +1,14 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: parser
+  namespace: kubesphere-logging-system
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.2.0
+spec:
+  match: "*"
+  filters:
+  - parser:
+      keyName: log
+      parser: my-regex
