@@ -57,6 +57,7 @@ rules:
       - fluentbits
       - inputs
       - outputs
+      - parsers
     verbs:
       - create
       - delete

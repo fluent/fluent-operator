@@ -40,7 +40,7 @@ type FluentBitConfigReconciler struct {
 }
 
 // +kubebuilder:rbac:groups=logging.kubesphere.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=logging.kubesphere.io,resources=inputs;filters;outputs,verbs=list
+// +kubebuilder:rbac:groups=logging.kubesphere.io,resources=inputs;filters;outputs;parsers,verbs=list
 // +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
 
 func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
@@ -86,8 +86,23 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 			return ctrl.Result{}, err
 		}
 
+		// List all parsers matching the label selector.
+		var parsers logging.ParserList
+		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.ParserSelector)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		if err = r.List(ctx, &parsers, client.InNamespace(req.Namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+			return ctrl.Result{}, err
+		}
+
+		// Inject config data into Secret
 		sl := plugins.NewSecretLoader(r.Client, cfg.Namespace, r.Log)
-		data, err := cfg.Render(sl, inputs, filters, outputs)
+		mainCfg, err := cfg.RenderMainConfig(sl, inputs, filters, outputs)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		parserCfg, err := cfg.RenderParserConfig(sl, parsers)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
@@ -98,14 +113,20 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 				Name:      cfg.Name,
 				Namespace: cfg.Namespace,
 			},
-			Data: map[string][]byte{"fluent-bit.conf": []byte(data)},
+			Data: map[string][]byte{
+				"fluent-bit.conf": []byte(mainCfg),
+				"parsers.conf":    []byte(parserCfg),
+			},
 		}
 		if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
 			return ctrl.Result{}, err
 		}
 
 		if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, sec, func() error {
-			sec.Data = map[string][]byte{"fluent-bit.conf": []byte(data)}
+			sec.Data = map[string][]byte{
+				"fluent-bit.conf": []byte(mainCfg),
+				"parsers.conf":    []byte(parserCfg),
+			}
 			sec.SetOwnerReferences(nil)
 			if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
 				return err

@@ -1,0 +1,11 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: FluentBit
+metadata:
+  name: fluent-bit
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/version: v1.4.6
+spec:
+  image: vasth/fluent-bit
+  fluentBitConfigName: fluent-bit-config

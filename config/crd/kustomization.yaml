@@ -7,6 +7,7 @@ resources:
 - bases/logging.kubesphere.io_inputs.yaml
 - bases/logging.kubesphere.io_filters.yaml
 - bases/logging.kubesphere.io_outputs.yaml
+- bases/logging.kubesphere.io_parsers.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:
@@ -18,6 +19,7 @@ patchesStrategicMerge:
 #- patches/webhook_in_filters.yaml
 #- patches/webhook_in_outputs.yaml
 #- patches/webhook_in_dummies.yaml
+#- patches/webhook_in_parsers.yaml
 # +kubebuilder:scaffold:crdkustomizewebhookpatch
 
 # [CERTMANAGER] To enable webhook, uncomment all the sections with [CERTMANAGER] prefix.
@@ -28,6 +30,7 @@ patchesStrategicMerge:
 #- patches/cainjection_in_filters.yaml
 #- patches/cainjection_in_outputs.yaml
 #- patches/cainjection_in_dummies.yaml
+#- patches/cainjection_in_parsers.yaml
 # +kubebuilder:scaffold:crdkustomizecainjectionpatch
 
 # the following config is for teaching kustomize how to do kustomization for CRDs.

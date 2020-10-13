@@ -1,0 +1,19 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Input
+metadata:
+  name: tail
+  namespace: kubesphere-logging-system
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    logging.kubesphere.io/component: logging
+    app.kubernetes.io/version: v0.2.0
+spec:
+  tail:
+    tag: "*"
+    path: /var/log/containers/log-generator_default_log-generator-*.log
+    parser: docker
+    refreshIntervalSeconds: 10
+    memBufLimit: 5MB
+    skipLongLines: true
+    db: /fluent-bit/tail/pos.db
+    dbSync: Normal
