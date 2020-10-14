@@ -508,9 +508,19 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.Elasticsearch)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.File != nil {
+		in, out := &in.File, &out.File
+		*out = new(output.File)
+		**out = **in
+	}
 	if in.Forward != nil {
 		in, out := &in.Forward, &out.Forward
 		*out = new(output.Forward)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.HTTP != nil {
+		in, out := &in.HTTP, &out.HTTP
+		*out = new(output.HTTP)
 		(*in).DeepCopyInto(*out)
 	}
 	if in.Kafka != nil {
@@ -527,6 +537,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		in, out := &in.Stdout, &out.Stdout
 		*out = new(output.Stdout)
 		**out = **in
+	}
+	if in.TCP != nil {
+		in, out := &in.TCP, &out.TCP
+		*out = new(output.TCP)
+		(*in).DeepCopyInto(*out)
 	}
 }
 

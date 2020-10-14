@@ -246,6 +246,39 @@ spec:
                   description: Type name
                   type: string
               type: object
+            file:
+              description: File defines File Output configuration.
+              properties:
+                delimiter:
+                  description: The character to separate each pair. Applicable only
+                    if format is csv or ltsv.
+                  type: string
+                file:
+                  description: Set file name to store the records. If not set, the
+                    file name will be the tag associated with the records.
+                  type: string
+                format:
+                  description: 'The format of the file content. See also Format section.
+                    Default: out_file.'
+                  enum:
+                    - out_file
+                    - plain
+                    - csv
+                    - ltsv
+                    - template
+                  type: string
+                labelDelimiter:
+                  description: The character to separate each pair. Applicable only
+                    if format is ltsv.
+                  type: string
+                path:
+                  description: Absolute directory path to store files. If not set,
+                    Fluent Bit will write the files on it's own positioned directory.
+                  type: string
+                template:
+                  description: The format string. Applicable only if format is template.
+                  type: string
+              type: object
             forward:
               description: Forward defines Forward Output configuration.
               properties:
@@ -403,6 +436,200 @@ spec:
                       type: object
                   type: object
               type: object
+            http:
+              description: HTTP defines HTTP Output configuration.
+              properties:
+                allowDuplicatedHeaders:
+                  description: Specify if duplicated headers are allowed. If a duplicated
+                    header is found, the latest key/value set is preserved.
+                  type: boolean
+                compress:
+                  description: Set payload compression mechanism. Option available
+                    is 'gzip'
+                  type: string
+                format:
+                  description: Specify the data format to be used in the HTTP request
+                    body, by default it uses msgpack. Other supported formats are
+                    json, json_stream and json_lines and gelf.
+                  enum:
+                    - msgpack
+                    - json
+                    - json_stream
+                    - json_lines
+                    - gelf
+                  type: string
+                gelfFullMessageKey:
+                  description: Specify the key to use for the full message in gelf
+                    format
+                  type: string
+                gelfHostKey:
+                  description: Specify the key to use for the host in gelf format
+                  type: string
+                gelfLevelKey:
+                  description: Specify the key to use for the level in gelf format
+                  type: string
+                gelfShortMessgeKey:
+                  description: Specify the key to use as the short message in gelf
+                    format
+                  type: string
+                gelfTimestampKey:
+                  description: Specify the key to use for timestamp in gelf format
+                  type: string
+                headerTag:
+                  description: Specify an optional HTTP header field for the original
+                    message tag.
+                  type: string
+                headers:
+                  additionalProperties:
+                    type: string
+                  description: Add a HTTP header key/value pair. Multiple headers
+                    can be set.
+                  type: object
+                host:
+                  description: IP address or hostname of the target HTTP Server
+                  type: string
+                httpPassword:
+                  description: Basic Auth Password. Requires HTTP_User to be set
+                  properties:
+                    valueFrom:
+                      description: ValueSource represents a source for the value of
+                        a secret.
+                      properties:
+                        secretKeyRef:
+                          description: Selects a key of a secret in the pod's namespace
+                          properties:
+                            key:
+                              description: The key of the secret to select from.  Must
+                                be a valid secret key.
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Add other useful fields. apiVersion, kind, uid?'
+                              type: string
+                            optional:
+                              description: Specify whether the Secret or its key must
+                                be defined
+                              type: boolean
+                          required:
+                            - key
+                          type: object
+                      type: object
+                  type: object
+                httpUser:
+                  description: Basic Auth Username
+                  properties:
+                    valueFrom:
+                      description: ValueSource represents a source for the value of
+                        a secret.
+                      properties:
+                        secretKeyRef:
+                          description: Selects a key of a secret in the pod's namespace
+                          properties:
+                            key:
+                              description: The key of the secret to select from.  Must
+                                be a valid secret key.
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Add other useful fields. apiVersion, kind, uid?'
+                              type: string
+                            optional:
+                              description: Specify whether the Secret or its key must
+                                be defined
+                              type: boolean
+                          required:
+                            - key
+                          type: object
+                      type: object
+                  type: object
+                jsonDateFormat:
+                  description: 'Specify the format of the date. Supported formats
+                    are double, epoch and iso8601 (eg: 2018-05-30T09:39:52.000681Z)'
+                  type: string
+                jsonDateKey:
+                  description: Specify the name of the time key in the output record.
+                    To disable the time key just set the value to false.
+                  type: string
+                port:
+                  description: TCP port of the target HTTP Server
+                  format: int32
+                  maximum: 65535
+                  minimum: 1
+                  type: integer
+                proxy:
+                  description: Specify an HTTP Proxy. The expected format of this
+                    value is http://host:port. Note that https is not supported yet.
+                  type: string
+                tls:
+                  description: HTTP output plugin supports TTL/SSL, for more details
+                    about the properties available and general configuration, please
+                    refer to the TLS/SSL section.
+                  properties:
+                    caFile:
+                      description: Absolute path to CA certificate file
+                      type: string
+                    caPath:
+                      description: Absolute path to scan for certificate files
+                      type: string
+                    crtFile:
+                      description: Absolute path to Certificate file
+                      type: string
+                    debug:
+                      description: 'Set TLS debug verbosity level. It accept the following
+                        values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational)
+                        and 4 Verbose'
+                      enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                      format: int32
+                      type: integer
+                    keyFile:
+                      description: Absolute path to private Key file
+                      type: string
+                    keyPassword:
+                      description: Optional password for tls.key_file file
+                      properties:
+                        valueFrom:
+                          description: ValueSource represents a source for the value
+                            of a secret.
+                          properties:
+                            secretKeyRef:
+                              description: Selects a key of a secret in the pod's
+                                namespace
+                              properties:
+                                key:
+                                  description: The key of the secret to select from.  Must
+                                    be a valid secret key.
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Add other useful fields. apiVersion, kind,
+                                    uid?'
+                                  type: string
+                                optional:
+                                  description: Specify whether the Secret or its key
+                                    must be defined
+                                  type: boolean
+                              required:
+                                - key
+                              type: object
+                          type: object
+                      type: object
+                    verify:
+                      description: Force certificate validation
+                      type: boolean
+                    vhost:
+                      description: Hostname to be used for TLS SNI extension
+                      type: string
+                  type: object
+                uri:
+                  description: 'Specify an optional HTTP URI for the target web server,
+                    e.g: /something'
+                  type: string
+              type: object
             kafka:
               description: Kafka defines Kafka Output configuration.
               properties:
@@ -482,6 +709,106 @@ spec:
                 jsonDateKey:
                   description: Specify the name of the date field in output.
                   type: string
+              type: object
+            tcp:
+              description: TCP defines TCP Output configuration.
+              properties:
+                format:
+                  description: Specify the data format to be printed. Supported formats
+                    are msgpack json, json_lines and json_stream.
+                  enum:
+                    - msgpack
+                    - json
+                    - json_lines
+                    - json_stream
+                  type: string
+                host:
+                  description: Target host where Fluent-Bit or Fluentd are listening
+                    for Forward messages.
+                  type: string
+                jsonDateFormat:
+                  description: 'Specify the format of the date. Supported formats
+                    are double, epoch and iso8601 (eg: 2018-05-30T09:39:52.000681Z)'
+                  enum:
+                    - double
+                    - epoch
+                    - iso8601
+                  type: string
+                jsonDateKey:
+                  description: TSpecify the name of the time key in the output record.
+                    To disable the time key just set the value to false.
+                  type: string
+                port:
+                  description: TCP Port of the target service.
+                  format: int32
+                  maximum: 65535
+                  minimum: 1
+                  type: integer
+                tls:
+                  description: Fluent Bit provides integrated support for Transport
+                    Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL)
+                    respectively.
+                  properties:
+                    caFile:
+                      description: Absolute path to CA certificate file
+                      type: string
+                    caPath:
+                      description: Absolute path to scan for certificate files
+                      type: string
+                    crtFile:
+                      description: Absolute path to Certificate file
+                      type: string
+                    debug:
+                      description: 'Set TLS debug verbosity level. It accept the following
+                        values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational)
+                        and 4 Verbose'
+                      enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                      format: int32
+                      type: integer
+                    keyFile:
+                      description: Absolute path to private Key file
+                      type: string
+                    keyPassword:
+                      description: Optional password for tls.key_file file
+                      properties:
+                        valueFrom:
+                          description: ValueSource represents a source for the value
+                            of a secret.
+                          properties:
+                            secretKeyRef:
+                              description: Selects a key of a secret in the pod's
+                                namespace
+                              properties:
+                                key:
+                                  description: The key of the secret to select from.  Must
+                                    be a valid secret key.
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Add other useful fields. apiVersion, kind,
+                                    uid?'
+                                  type: string
+                                optional:
+                                  description: Specify whether the Secret or its key
+                                    must be defined
+                                  type: boolean
+                              required:
+                                - key
+                              type: object
+                          type: object
+                      type: object
+                    verify:
+                      description: Force certificate validation
+                      type: boolean
+                    vhost:
+                      description: Hostname to be used for TLS SNI extension
+                      type: string
+                  type: object
               type: object
           type: object
       type: object
