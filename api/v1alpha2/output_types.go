@@ -37,14 +37,20 @@ type OutputSpec struct {
 	MatchRegex string `json:"matchRegex,omitempty"`
 	// Elasticsearch defines Elasticsearch Output configuration.
 	Elasticsearch *output.Elasticsearch `json:"es,omitempty"`
+	// File defines File Output configuration.
+	File *output.File `json:"file,omitempty"`
 	// Forward defines Forward Output configuration.
 	Forward *output.Forward `json:"forward,omitempty"`
+	// HTTP defines HTTP Output configuration.
+	HTTP *output.HTTP `json:"http,omitempty"`
 	// Kafka defines Kafka Output configuration.
 	Kafka *output.Kafka `json:"kafka,omitempty"`
 	// Null defines Null Output configuration.
 	Null *output.Null `json:"null,omitempty"`
 	// Stdout defines Stdout Output configuration.
 	Stdout *output.Stdout `json:"stdout,omitempty"`
+	// TCP defines TCP Output configuration.
+	TCP *output.TCP `json:"tcp,omitempty"`
 }
 
 // +kubebuilder:object:root=true
