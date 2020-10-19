@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: log-generator
+spec:
+  containers:
+    - name: log-generator
+      image: busybox
+      command: ["/bin/sh"]
+      args:
+        - -c
+        - 'while true; do echo "16:47:09.634 [peer] GetLocalAddress -> ERRO 033 Auto detected peer address: 9.3.158.178:30303"; sleep 1;done'

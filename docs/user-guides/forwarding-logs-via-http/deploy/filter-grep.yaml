@@ -1,0 +1,12 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: grep
+  labels:
+    http-output-demo: "true"
+spec:
+  match: "*"
+  filters:
+  - grep:
+      # Note that the value format is `KEY REGEX`. Only one space in between.
+      regex: "log \\sERRO\\s"
