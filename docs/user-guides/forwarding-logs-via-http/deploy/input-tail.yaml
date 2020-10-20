@@ -6,7 +6,7 @@ metadata:
     http-output-demo: "true"
 spec:
   tail:
-    tag: "http-demo"
+    tag: kube.*
     path: /var/log/containers/log-generator_default_log-generator-*.log
     parser: docker
     refreshIntervalSeconds: 10

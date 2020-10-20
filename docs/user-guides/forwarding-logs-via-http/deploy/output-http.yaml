@@ -5,7 +5,7 @@ metadata:
   labels:
     http-output-demo: "true"
 spec:
-  match: "*"
+  match: kube.*
   http:
     host: "log-receiver"
     port: 8080
