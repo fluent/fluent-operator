@@ -35,56 +35,70 @@ spec:
           description: ParserSpec defines the desired state of Parser
           properties:
             decoders:
+              description: 'Decoders are a built-in feature available through the
+                Parsers file, each Parser definition can optionally set one or multiple
+                decoders. There are two type of decoders type: Decode_Field and Decode_Field_As.'
               items:
                 properties:
                   decodeField:
+                    description: If the content can be decoded in a structured message,
+                      append that structure message (keys and values) to the original
+                      log message.
                     type: string
                   decodeFieldAs:
+                    description: Any content decoded (unstructured or structured)
+                      will be replaced in the same key/value, no extra keys are added.
                     type: string
                 type: object
               type: array
             json:
-              description: The JSON parser plugin
+              description: JSON defines json parser configuration.
               properties:
                 timeFormat:
+                  description: Time_Format, eg. %Y-%m-%dT%H:%M:%S %z
                   type: string
                 timeKeep:
+                  description: Time_Keep
                   type: boolean
                 timeKey:
+                  description: Time_Key
                   type: string
               type: object
             logfmt:
-              description: The logfmt parser plugin
+              description: Logfmt defines logfmt parser configuration.
               type: object
             ltsv:
-              description: The LSTV parser plugin
+              description: LTSV defines ltsv parser configuration.
               properties:
                 timeFormat:
+                  description: Time_Format, eg. %Y-%m-%dT%H:%M:%S %z
                   type: string
                 timeKeep:
+                  description: Time_Keep
                   type: boolean
                 timeKey:
+                  description: Time_Key
                   type: string
                 types:
                   type: string
               type: object
             regex:
-              description: The regex parser plugin
+              description: Regex defines regex parser configuration.
               properties:
                 regex:
                   type: string
                 timeFormat:
+                  description: Time_Format, eg. %Y-%m-%dT%H:%M:%S %z
                   type: string
                 timeKeep:
+                  description: Time_Keep
                   type: boolean
                 timeKey:
+                  description: Time_Key
                   type: string
                 types:
                   type: string
               type: object
-          type: object
-        status:
-          description: ParserStatus defines the observed state of Parser
           type: object
       type: object
   version: v1alpha2

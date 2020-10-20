@@ -247,7 +247,8 @@ func fmtRawDoc(rawDoc string) string {
 func toLink(typeName string) string {
 	if strings.Contains(typeName, "input.") ||
 		strings.Contains(typeName, "output.") ||
-		strings.Contains(typeName, "filter.") {
+		strings.Contains(typeName, "filter.") ||
+		strings.Contains(typeName, "parser.") {
 		// Eg. *output.Elasticsearch => ../plugins/output/elasticsearch.md
 		link := fmt.Sprintf("plugins/%s.md", strings.ReplaceAll(strings.ToLower(typeName), ".", "/"))
 		return wrapInLink(typeName, link)

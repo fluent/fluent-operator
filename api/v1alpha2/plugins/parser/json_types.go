@@ -9,9 +9,12 @@ import (
 
 // The JSON parser plugin
 type JSON struct {
-	TimeKey    string `json:"timeKey,omitempty"`
+	// Time_Key
+	TimeKey string `json:"timeKey,omitempty"`
+	// Time_Format, eg. %Y-%m-%dT%H:%M:%S %z
 	TimeFormat string `json:"timeFormat,omitempty"`
-	TimeKeep   *bool  `json:"timeKeep,omitempty"`
+	// Time_Keep
+	TimeKeep *bool `json:"timeKeep,omitempty"`
 }
 
 func (_ *JSON) Name() string {
