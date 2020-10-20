@@ -9,10 +9,13 @@ import (
 
 // The LSTV parser plugin
 type LSTV struct {
-	TimeKey    string `json:"timeKey,omitempty"`
+	// Time_Key
+	TimeKey string `json:"timeKey,omitempty"`
+	// Time_Format, eg. %Y-%m-%dT%H:%M:%S %z
 	TimeFormat string `json:"timeFormat,omitempty"`
-	TimeKeep   *bool  `json:"timeKeep,omitempty"`
-	Types      string `json:"types,omitempty"`
+	// Time_Keep
+	TimeKeep *bool  `json:"timeKeep,omitempty"`
+	Types    string `json:"types,omitempty"`
 }
 
 func (_ *LSTV) Name() string {

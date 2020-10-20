@@ -109,6 +109,11 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
 - [Input](docs/crd.md#input)
     - [dummy](docs/plugins/input/dummy.md)
     - [tail](docs/plugins/input/tail.md)
+- [Parser](docs/crd.md#parser)
+    - [json](docs/plugins/parser/json.md)
+    - [logfmt](docs/plugins/parser/logfmt.md)
+    - [lstv](docs/plugins/parser/lstv.md)
+    - [regex](docs/plugins/parser/regex.md)
 - [Filter](docs/crd.md#filter)
     - [kubernetes](docs/plugins/filter/kubernetes.md)
     - [modify](docs/plugins/filter/modify.md)
@@ -118,10 +123,13 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
     - [record modifier](docs/plugins/filter/recordmodifier.md)
 - [Output](docs/crd.md#output)
     - [elasticsearch](docs/plugins/output/elasticsearch.md)
+    - [file](docs/plugins/output/file.md)
     - [forward](docs/plugins/output/forward.md)
+    - [http](docs/plugins/output/http.md)
     - [kafka](docs/plugins/output/kafka.md)
     - [null](docs/plugins/output/null.md)
     - [stdout](docs/plugins/output/stdout.md)
+    - [tcp](docs/plugins/output/tcp.md)
 
 ## Best Practice
 
@@ -139,13 +147,13 @@ Path to file in Fluent Bit config should be well regulated. Fluent Bit Operator 
 |---|---|
 |/fluent-bit/tail|Stores tail related files, eg. file tracking db. Using [fluentbit.spec.positionDB](docs/crd.md#fluentbitspec) will mount a file `pos.db` under this dir by default.|
 |/fluent-bit/secrets/{secret_name}|Stores secrets, eg. TLS files. Specify secrets to mount in [fluentbit.spec.secrets](docs/crd.md#fluentbitspec), then you have access.|
-|/fluent-bit/config|Stores the final config file.|
+|/fluent-bit/config|Stores the main config file and user-defined parser config file.|
 
 > Note that ServiceAccount files are mounted at `/var/run/secrets/kubernetes.io/serviceaccount`.
 
 ## Features In Plan
 
-- [ ] Support custom parser plugins
+- [x] Support custom parser plugins
 - [ ] Support custom Input/Filter/Output plugins
 - [ ] Deploy Fluent Bit as deployment
 - [ ] Integrate logging sidecar

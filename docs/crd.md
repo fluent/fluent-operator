@@ -2,6 +2,7 @@
 This Document documents the types introduced by the Fluent Bit Operator to be consumed by users.
 > Note this document is generated from code comments. When contributing a change to this document please do so by changing the code comments.
 ## Table of Contents
+* [Decorder](#decorder)
 * [Filter](#filter)
 * [FilterItem](#filteritem)
 * [FilterList](#filterlist)
@@ -18,7 +19,21 @@ This Document documents the types introduced by the Fluent Bit Operator to be co
 * [Output](#output)
 * [OutputList](#outputlist)
 * [OutputSpec](#outputspec)
+* [Parser](#parser)
+* [ParserList](#parserlist)
+* [ParserSpec](#parserspec)
 * [Service](#service)
+## Decorder
+
+
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| decodeField | If the content can be decoded in a structured message, append that structure message (keys and values) to the original log message. | string |
+| decodeFieldAs | Any content decoded (unstructured or structured) will be replaced in the same key/value, no extra keys are added. | string |
+
+[Back to TOC](#table-of-contents)
 ## Filter
 
 Filter defines a Filter configuration.
@@ -113,6 +128,7 @@ FluentBitConfigSpec defines the desired state of FluentBitConfig
 | inputSelector | Select input plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | filterSelector | Select filter plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | outputSelector | Select output plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| parserSelector | Select parser plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 
 [Back to TOC](#table-of-contents)
 ## FluentBitList
@@ -208,10 +224,49 @@ OutputSpec defines the desired state of Output
 | match | A pattern to match against the tags of incoming records. It's case sensitive and support the star (*) character as a wildcard. | string |
 | matchRegex | A regular expression to match against the tags of incoming records. Use this option if you want to use the full regex syntax. | string |
 | es | Elasticsearch defines Elasticsearch Output configuration. | *[output.Elasticsearch](plugins/output/elasticsearch.md) |
+| file | File defines File Output configuration. | *[output.File](plugins/output/file.md) |
 | forward | Forward defines Forward Output configuration. | *[output.Forward](plugins/output/forward.md) |
+| http | HTTP defines HTTP Output configuration. | *[output.HTTP](plugins/output/http.md) |
 | kafka | Kafka defines Kafka Output configuration. | *[output.Kafka](plugins/output/kafka.md) |
 | null | Null defines Null Output configuration. | *[output.Null](plugins/output/null.md) |
 | stdout | Stdout defines Stdout Output configuration. | *[output.Stdout](plugins/output/stdout.md) |
+| tcp | TCP defines TCP Output configuration. | *[output.TCP](plugins/output/tcp.md) |
+
+[Back to TOC](#table-of-contents)
+## Parser
+
+Parser is the Schema for the parsers API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | ParserSpec |
+
+[Back to TOC](#table-of-contents)
+## ParserList
+
+ParserList contains a list of Parser
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []Parser |
+
+[Back to TOC](#table-of-contents)
+## ParserSpec
+
+ParserSpec defines the desired state of Parser
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| json | JSON defines json parser configuration. | *[parser.JSON](plugins/parser/json.md) |
+| regex | Regex defines regex parser configuration. | *[parser.Regex](plugins/parser/regex.md) |
+| ltsv | LTSV defines ltsv parser configuration. | *[parser.LSTV](plugins/parser/lstv.md) |
+| logfmt | Logfmt defines logfmt parser configuration. | *[parser.Logfmt](plugins/parser/logfmt.md) |
+| decoders | Decoders are a built-in feature available through the Parsers file, each Parser definition can optionally set one or multiple decoders. There are two type of decoders type: Decode_Field and Decode_Field_As. | []Decorder |
 
 [Back to TOC](#table-of-contents)
 ## Service
