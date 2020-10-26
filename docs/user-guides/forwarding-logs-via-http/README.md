@@ -17,6 +17,8 @@ kubectl apply -f manifests/setup/
 kubectl apply -f docs/user-guides/forwarding-logs-via-http/deploy/
 ```
 
+Note: for KubeSphere users who have enabled logging, you can simply apply the YAML files in the folder `kubesphere`. Don't forget to adapt the http receiver endpoint to your setup.
+
 # Sample Output
 
 The logging agents (fluent bit) forward logs in the following format:
@@ -85,3 +87,7 @@ The logging agents (fluent bit) forward logs in the following format:
     }
 ]
 ```
+
+# TLS Support
+
+Please read comments on the file `deploy/output-http.yaml` for how to send logs to an HTTPS endpoint.

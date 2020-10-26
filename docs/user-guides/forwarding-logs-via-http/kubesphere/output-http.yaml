@@ -1,12 +1,15 @@
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
 metadata:
-  name: http
+  name: errohttp
+  namespace: kubesphere-logging-system
   labels:
-    http-output-demo: "true"
+    logging.kubesphere.io/enabled: "true"
+    app.kubernetes.io/version: v0.2.0
 spec:
-  match: kube.*
+  match: kube_erro
   http:
+    # Change the host and port to your receiver endpoint
     host: "log-receiver"
     port: 8080
     format: "json"
