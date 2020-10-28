@@ -4,9 +4,8 @@ metadata:
   name: fluent-bit
   labels:
     app.kubernetes.io/name: fluent-bit
-    app.kubernetes.io/version: v1.4.6
 spec:
-  image: vasth/fluent-bit
+  image: kubespheredev/fluent-bit:v1.6.2
   positionDB:
     emptyDir: {}
   fluentBitConfigName: fluent-bit-config

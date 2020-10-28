@@ -4,7 +4,6 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: fluentbit-operator
-    app.kubernetes.io/version: v0.2.0
   name: kubesphere:operator:fluentbit-operator
 rules:
   - apiGroups:
