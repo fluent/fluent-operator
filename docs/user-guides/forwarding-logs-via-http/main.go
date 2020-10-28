@@ -13,7 +13,7 @@ type Message struct {
 	Time   string `json:"time"`
 }
 
-// Sample HTTP server for this demo
+// Sample HTTP receiver for this demo
 func main() {
 	h := func(w http.ResponseWriter, req *http.Request) {
 		b, err := ioutil.ReadAll(req.Body)

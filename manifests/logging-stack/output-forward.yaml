@@ -6,7 +6,6 @@ metadata:
   labels:
     logging.kubesphere.io/enabled: "false"
     logging.kubesphere.io/component: logging
-    app.kubernetes.io/version: v0.2.0
 spec:
   match: kube.*
   forward:

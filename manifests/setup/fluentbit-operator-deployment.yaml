@@ -6,19 +6,16 @@ metadata:
   labels:
     app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluentbit-operator
-    app.kubernetes.io/version: v0.2.0
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: operator
       app.kubernetes.io/name: fluentbit-operator
-      app.kubernetes.io/version: v0.2.0
   template:
     metadata:
       labels:
         app.kubernetes.io/component: operator
         app.kubernetes.io/name: fluentbit-operator
-        app.kubernetes.io/version: v0.2.0
     spec:
       volumes:
       - name: env
@@ -42,7 +39,7 @@ spec:
           mountPath: /var/run/docker.sock
       containers:
       - name: fluentbit-operator
-        image: 'kubespheredev/fluentbit-operator:v0.2.0'
+        image: 'kubespheredev/fluentbit-operator:v0.3.0'
         resources:
           limits:
             cpu: 100m
