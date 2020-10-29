@@ -36,10 +36,11 @@ Fluent Bit Operator defines five custom resources using CustomResourceDefinition
 - **`FluentBit`**: Defines Fluent Bit instances and its associated config. (It requires to work with kubesphere/fluent-bit for dynamic configuration.)
 - **`FluentBitConfig`**: Select input/filter/output plugins and generates the final config into a Secret.
 - **`Input`**: Defines input config sections.
+- **`Parser`**: Defines parser config sections.
 - **`Filter`**: Defines filter config sections. 
 - **`Output`**: Defines output config sections.
 
-Each **`Input`**, **`Filter`**, **`Output`** represents a Fluent Bit config section, which are selected by **`FluentBitConfig`** via label selectors. The operator watches those objects, make the final config data and creates a Secret for store, which will be mounted onto Fluent Bit instances owned by **`FluentBit`**. The whole workflow can be illustrated as below:
+Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent Bit config section, which are selected by **`FluentBitConfig`** via label selectors. The operator watches those objects, make the final config data and creates a Secret for store, which will be mounted onto Fluent Bit instances owned by **`FluentBit`**. The whole workflow can be illustrated as below:
 
 ![Fluent Bit workflow](docs/images/fluent-bit-operator-workflow.svg)
 
@@ -150,6 +151,12 @@ Path to file in Fluent Bit config should be well regulated. Fluent Bit Operator 
 |/fluent-bit/config|Stores the main config file and user-defined parser config file.|
 
 > Note that ServiceAccount files are mounted at `/var/run/secrets/kubernetes.io/serviceaccount`.
+
+## Custom Parser
+
+To enable parsers, you must set the value of `FluentBitConfig.Spec.Service.ParsersFile` to `parsers.conf`. Your custom parsers will be included into the built-in parser config via `@INCLUDE /fluent-bit/config/parsers.conf`. Note that the parsers.conf contains a few built-in parsers, for example, docker. Read [parsers.conf](https://github.com/kubesphere/fluent-bit/blob/v1.6.2-reload/conf/parsers.conf) for more information.
+
+Check out the demo in the folder `/manifests/regex-parser` for how to use a custom regex parser.
 
 ## Features In Plan
 
