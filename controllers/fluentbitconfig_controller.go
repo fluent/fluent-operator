@@ -163,5 +163,6 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Watches(&source.Kind{Type: &logging.Input{}}, &handler.EnqueueRequestForObject{}).
 		Watches(&source.Kind{Type: &logging.Filter{}}, &handler.EnqueueRequestForObject{}).
 		Watches(&source.Kind{Type: &logging.Output{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &logging.Parser{}}, &handler.EnqueueRequestForObject{}).
 		Complete(r)
 }
