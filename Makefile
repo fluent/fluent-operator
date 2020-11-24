@@ -1,6 +1,8 @@
 
 # Image URL to use all building/pushing image targets
-IMG ?= controller:latest
+OP_IMG ?= leiwanjun/fluentbit-operator:latest
+MIGRATOR_IMG ?= leiwanjun/fluentbit-operator:migrator
+AMD64 ?= -amd64
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true"
 
@@ -54,13 +56,32 @@ vet:
 generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile=./hack/boilerplate.go.txt paths="./..."
 
-# Build the docker image
-docker-build: test
-	docker build . -t ${IMG}
+# Build all docker images for amd64 and arm64
+build: build-op
+
+# Build the docker image for amd64 and arm64
+build-op: test
+	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/manager/Dockerfile . -t ${OP_IMG}
+
+# Build the docker image for amd64 and arm64
+build-migtator: test
+	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/migrator/Dockerfile . -t ${MIGRATOR_IMG}
+
+# Build all docker images for amd64
+build-amd64: build-op-amd64 build-migtator-amd64
+
+# Build the docker image for amd64
+build-op-amd64: test
+	docker build -f cmd/manager/Dockerfile . -t ${OP_IMG}${AMD64}
+
+# Build the docker image for amd64
+build-migtator-amd64: test
+	docker build -f cmd/migrator/Dockerfile . -t ${MIGRATOR_IMG}${AMD64}
 
 # Push the docker image
-docker-push:
-	docker push ${IMG}
+push-amd64:
+	docker push ${OP_IMG}${AMD64}
+	docker push ${MIGRATOR_IMG}${AMD64}
 
 # find or download controller-gen
 # download controller-gen if necessary
