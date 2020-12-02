@@ -7,7 +7,7 @@ This tutorial guides you on how to filter error logs and send them out via HTTP.
 First, deploy HTTP sample server for receiving logs (see main.go).
 
 ```shell
-kubectl create deploy log-receiver --image=kubespheredev/example-log-receiver --port=8080
+kubectl create deploy log-receiver --image=kubespheredev/example-log-receiver
 kubectl expose deploy log-receiver --port=8080 --target-port=8080
 ```  
 Second, setup the logging pipeline. It deploys a log generator and logging agents (fluent bit). The logging agent will forward all error logs containing `ERRO` to the sample server above.
