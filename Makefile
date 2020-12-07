@@ -1,7 +1,7 @@
 
 # Image URL to use all building/pushing image targets
-OP_IMG ?= kubespheredev/fluentbit-operator:latest
-MIGRATOR_IMG ?= kubespheredev/fluentbit-operator:migrator
+OP_IMG ?= kubesphere/fluentbit-operator:v0.3.0
+MIGRATOR_IMG ?= kubesphere/fluentbit-operator:migrator
 AMD64 ?= -amd64
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true"
