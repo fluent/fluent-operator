@@ -167,3 +167,21 @@ func (cfg FluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers P
 
 	return buf.String(), nil
 }
+
+func (cfg FluentBitConfig) RenderLuaScript(cl plugins.ConfigMapLoader, filters FilterList) (map[string]string, error) {
+
+	scripts := make(map[string]string)
+	for _, f := range filters.Items {
+		for _, p := range f.Spec.FilterItems {
+			if p.Lua != nil {
+				script, err := cl.LoadConfigMap(p.Lua.Script)
+				if err != nil {
+					return nil, err
+				}
+				scripts[p.Lua.Script.Key] = script
+			}
+		}
+	}
+
+	return scripts, nil
+}

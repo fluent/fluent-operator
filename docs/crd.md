@@ -58,6 +58,7 @@ Filter defines a Filter configuration.
 | modify | Modify defines Modify Filter configuration. | *[filter.Modify](plugins/filter/modify.md) |
 | nest | Nest defines Nest Filter configuration. | *[filter.Nest](plugins/filter/nest.md) |
 | parser | Parser defines Parser Filter configuration. | *[filter.Parser](plugins/filter/parser.md) |
+| lua | Lua defines Lua Filter configuration. | *[filter.Lua](plugins/filter/lua.md) |
 
 [Back to TOC](#table-of-contents)
 ## FilterList
@@ -190,6 +191,7 @@ InputSpec defines the desired state of Input
 | ----- | ----------- | ------ |
 | dummy | Dummy defines Dummy Input configuration. | *[input.Dummy](plugins/input/dummy.md) |
 | tail | Tail defines Tail Input configuration. | *[input.Tail](plugins/input/tail.md) |
+| systemd | Systemd defines Systemd Input configuration. | *[input.Systemd](plugins/input/systemd.md) |
 
 [Back to TOC](#table-of-contents)
 ## Output

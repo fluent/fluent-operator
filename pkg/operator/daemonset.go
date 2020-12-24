@@ -95,6 +95,14 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 								},
 							},
 						},
+						{
+							Name: "systemd",
+							VolumeSource: corev1.VolumeSource{
+								HostPath: &corev1.HostPathVolumeSource{
+									Path: "/var/log/journal",
+								},
+							},
+						},
 					},
 					Containers: []corev1.Container{
 						{
@@ -123,6 +131,11 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 									Name:      "varlogs",
 									ReadOnly:  true,
 									MountPath: "/var/log/",
+								},
+								{
+									Name:      "systemd",
+									ReadOnly:  true,
+									MountPath: "/var/log/journal",
 								},
 							},
 						},

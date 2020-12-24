@@ -7,7 +7,7 @@ metadata:
     logging.kubesphere.io/enabled: "false"
     logging.kubesphere.io/component: logging
 spec:
-  match: kube.*
+  matchRegex: (?:kube|service)\.(.*)
   kafka:
     brokers: 192.168.1.3:9092,192.168.1.4:9092
     topics: ks-log

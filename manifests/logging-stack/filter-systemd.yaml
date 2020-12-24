@@ -1,0 +1,17 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: systemd
+  namespace: kubesphere-logging-system
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    logging.kubesphere.io/component: logging
+spec:
+  match: service.*
+  filters:
+  - lua:
+      script:
+        key: systemd.lua
+        name: fluent-bit-lua
+      call: add_time
+      timeAsTable: true

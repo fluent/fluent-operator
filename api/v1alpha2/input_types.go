@@ -33,6 +33,8 @@ type InputSpec struct {
 	Dummy *input.Dummy `json:"dummy,omitempty"`
 	// Tail defines Tail Input configuration.
 	Tail *input.Tail `json:"tail,omitempty"`
+	// Systemd defines Systemd Input configuration.
+	Systemd *input.Systemd `json:"systemd,omitempty"`
 }
 
 // +kubebuilder:object:root=true

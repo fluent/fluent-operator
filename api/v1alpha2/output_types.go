@@ -87,7 +87,7 @@ func (list OutputList) Load(sl plugins.SecretLoader) (string, error) {
 				buf.WriteString(fmt.Sprintf("    Match    %s\n", item.Spec.Match))
 			}
 			if item.Spec.MatchRegex != "" {
-				buf.WriteString(fmt.Sprintf("    Match_Regexp    %s\n", item.Spec.MatchRegex))
+				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", item.Spec.MatchRegex))
 			}
 			kvs, err := p.Params(sl)
 			if err != nil {
