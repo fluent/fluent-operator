@@ -107,6 +107,12 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 			return ctrl.Result{}, err
 		}
 
+		cl := plugins.NewConfigMapLoader(r.Client, cfg.Namespace)
+		scripts, err := cfg.RenderLuaScript(cl, filters)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+
 		// Create or update the corresponding Secret
 		sec := &corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{
@@ -118,6 +124,11 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 				"parsers.conf":    []byte(parserCfg),
 			},
 		}
+
+		for k, v := range scripts {
+			sec.Data[k] = []byte(v)
+		}
+
 		if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
 			return ctrl.Result{}, err
 		}
@@ -126,6 +137,9 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 			sec.Data = map[string][]byte{
 				"fluent-bit.conf": []byte(mainCfg),
 				"parsers.conf":    []byte(parserCfg),
+			}
+			for k, v := range scripts {
+				sec.Data[k] = []byte(v)
 			}
 			sec.SetOwnerReferences(nil)
 			if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {

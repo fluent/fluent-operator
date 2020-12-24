@@ -52,6 +52,8 @@ type FilterItem struct {
 	Nest *filter.Nest `json:"nest,omitempty"`
 	// Parser defines Parser Filter configuration.
 	Parser *filter.Parser `json:"parser,omitempty"`
+	// Lua defines Lua Filter configuration.
+	Lua *filter.Lua `json:"lua,omitempty"`
 }
 
 // +kubebuilder:object:root=true

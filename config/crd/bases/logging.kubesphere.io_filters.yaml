@@ -147,6 +147,56 @@ spec:
                           Journald format.
                         type: boolean
                     type: object
+                  lua:
+                    description: Lua defines Lua Filter configuration.
+                    properties:
+                      call:
+                        description: Lua function name that will be triggered to do
+                          filtering. It's assumed that the function is declared inside
+                          the Script defined above.
+                        type: string
+                      protectedMode:
+                        description: If enabled, Lua script will be executed in protected
+                          mode. It prevents to crash when invalid Lua script is executed.
+                          Default is true.
+                        type: boolean
+                      script:
+                        description: Path to the Lua script that will be used.
+                        properties:
+                          key:
+                            description: The key to select.
+                            type: string
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                              TODO: Add other useful fields. apiVersion, kind, uid?'
+                            type: string
+                          optional:
+                            description: Specify whether the ConfigMap or its key
+                              must be defined
+                            type: boolean
+                        required:
+                        - key
+                        type: object
+                      timeAsTable:
+                        description: By default when the Lua script is invoked, the
+                          record timestamp is passed as a Floating number which might
+                          lead to loss precision when the data is converted back.
+                          If you desire timestamp precision enabling this option will
+                          pass the timestamp as a Lua table with keys sec for seconds
+                          since epoch and nsec for nanoseconds.
+                        type: boolean
+                      typeIntKey:
+                        description: If these keys are matched, the fields are converted
+                          to integer. If more than one key, delimit by space. Note
+                          that starting from Fluent Bit v1.6 integer data types are
+                          preserved and not converted to double as in previous versions.
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - call
+                    - script
+                    type: object
                   modify:
                     description: Modify defines Modify Filter configuration.
                     properties:
