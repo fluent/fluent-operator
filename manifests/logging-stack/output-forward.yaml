@@ -7,7 +7,7 @@ metadata:
     logging.kubesphere.io/enabled: "false"
     logging.kubesphere.io/component: logging
 spec:
-  match: kube.*
+  matchRegex: (?:kube|service)\.(.*)
   forward:
     host: fluentd.kubesphere-logging-system.svc
     port: 24224

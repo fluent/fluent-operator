@@ -12,7 +12,8 @@ kubectl apply -f manifests/logging-stack/fluentbit-fluentBit.yaml
 kubectl apply -f manifests/logging-stack/fluentbitconfig-fluentBitConfig.yaml
 ```
 
-Secondly, change the service logs directory
+Secondly, change the service logs directory. 
+Please create directory `/var/log/journal` if it doesn't exist, and then restart the `systemd-journald` service.
 
 ```shell
 mkdir /var/log/journal/
