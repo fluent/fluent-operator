@@ -29,7 +29,7 @@ func ConcatString(slice []string, sep string) string {
 
 	ns := ""
 	for _, s := range slice {
-		ns = ns + sep + s
+		ns = ns + s + sep
 	}
 
 	return strings.TrimSuffix(ns, sep)
