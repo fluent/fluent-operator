@@ -51,6 +51,8 @@ type OutputSpec struct {
 	Stdout *output.Stdout `json:"stdout,omitempty"`
 	// TCP defines TCP Output configuration.
 	TCP *output.TCP `json:"tcp,omitempty"`
+	// Loki defines Loki Output configuration.
+	Loki *output.Loki `json:"loki,omitempty"`
 }
 
 // +kubebuilder:object:root=true
