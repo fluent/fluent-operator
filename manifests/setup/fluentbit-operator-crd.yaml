@@ -3065,6 +3065,8 @@ spec:
                       description: Hostname to be used for TLS SNI extension
                       type: string
                   type: object
+              required:
+              - host
               type: object
             match:
               description: A pattern to match against the tags of incoming records.

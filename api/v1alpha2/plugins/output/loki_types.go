@@ -11,7 +11,7 @@ import (
 // The loki output plugin, allows to ingest your records into a Loki service.
 type Loki struct {
 	// Loki hostname or IP address.
-	Host string `json:"host,omitempty"`
+	Host string `json:"host"`
 	// Loki TCP port
 	// +kubebuilder:validation:Minimum:=1
 	// +kubebuilder:validation:Maximum:=65535
