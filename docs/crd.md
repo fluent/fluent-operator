@@ -233,6 +233,7 @@ OutputSpec defines the desired state of Output
 | null | Null defines Null Output configuration. | *[output.Null](plugins/output/null.md) |
 | stdout | Stdout defines Stdout Output configuration. | *[output.Stdout](plugins/output/stdout.md) |
 | tcp | TCP defines TCP Output configuration. | *[output.TCP](plugins/output/tcp.md) |
+| loki | Loki defines Loki Output configuration. | *[output.Loki](plugins/output/loki.md) |
 
 [Back to TOC](#table-of-contents)
 ## Parser
