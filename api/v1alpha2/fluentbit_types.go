@@ -51,6 +51,7 @@ type FluentBitStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:resource:shortName=fb
 
 // FluentBit is the Schema for the fluentbits API
 type FluentBit struct {

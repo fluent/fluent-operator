@@ -65,6 +65,7 @@ type Service struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:resource:shortName=fbc
 
 // FluentBitConfig is the Schema for the fluentbitconfigs API
 type FluentBitConfig struct {
