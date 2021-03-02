@@ -26,7 +26,7 @@ Thirdly, set up the fluentbit pipeline.
 kubectl create cm fluent-bit-lua -n kubesphere-logging-system --from-file=config/scripts/systemd.lua
 kubectl apply -f manifests/logging-stack/input-systemd-kubelet.yaml
 kubectl apply -f manifests/logging-stack/filter-systemd.yaml
-kubectl apply -f manifests/logging-stack/output-elasticsearchyaml
+kubectl apply -f manifests/logging-stack/output-elasticsearch.yaml
 ```
 
 > This pipeline will send the logs to elasticsearch, it needed a elasticsearch cluster.

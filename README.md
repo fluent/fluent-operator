@@ -110,6 +110,7 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
 - [Input](docs/crd.md#input)
     - [dummy](docs/plugins/input/dummy.md)
     - [tail](docs/plugins/input/tail.md)
+    - [systemd](docs/plugins/input/systemd.md)
 - [Parser](docs/crd.md#parser)
     - [json](docs/plugins/parser/json.md)
     - [logfmt](docs/plugins/parser/logfmt.md)
@@ -122,6 +123,7 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
     - [parser](docs/plugins/filter/parser.md)
     - [grep](docs/plugins/filter/grep.md)
     - [record modifier](docs/plugins/filter/recordmodifier.md)
+    - [lua](docs/plugins/filter/lua.md)
 - [Output](docs/crd.md#output)
     - [elasticsearch](docs/plugins/output/elasticsearch.md)
     - [file](docs/plugins/output/file.md)
@@ -131,6 +133,7 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
     - [null](docs/plugins/output/null.md)
     - [stdout](docs/plugins/output/stdout.md)
     - [tcp](docs/plugins/output/tcp.md)
+    - [loki](docs/plugins/output/loki.md)
 
 ## Best Practice
 
