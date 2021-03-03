@@ -318,12 +318,18 @@ func (in *FluentBitList) DeepCopyObject() runtime.Object {
 func (in *FluentBitSpec) DeepCopyInto(out *FluentBitSpec) {
 	*out = *in
 	in.PositionDB.DeepCopyInto(&out.PositionDB)
+	in.Resources.DeepCopyInto(&out.Resources)
 	if in.NodeSelector != nil {
 		in, out := &in.NodeSelector, &out.NodeSelector
 		*out = make(map[string]string, len(*in))
 		for key, val := range *in {
 			(*out)[key] = val
 		}
+	}
+	if in.Affinity != nil {
+		in, out := &in.Affinity, &out.Affinity
+		*out = new(v1.Affinity)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Tolerations != nil {
 		in, out := &in.Tolerations, &out.Tolerations

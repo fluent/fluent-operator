@@ -6,9 +6,16 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
-  image: kubesphere/fluent-bit:v1.6.2
+  image: kubesphere/fluent-bit:v1.6.9
   positionDB:
     emptyDir: {}
   fluentBitConfigName: fluent-bit-config
   tolerations:
     - operator: Exists
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
