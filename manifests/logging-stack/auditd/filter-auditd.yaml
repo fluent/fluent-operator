@@ -1,0 +1,21 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: filter-audit-logs
+  namespace: kubesphere-logging-system
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    logging.kubesphere.io/component: logging
+spec:
+  match: auditd
+  filters:
+  - recordModifier:
+      records:
+      - node_name ${NODE_NAME}
+  - lua:
+      script:
+        key: auditd.lua
+        name: fluent-bit-auditd-config
+      call: cb_replace
+      timeAsTable: true
+  
