@@ -2,6 +2,7 @@ package operator
 
 import (
 	"fmt"
+
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
@@ -114,6 +115,16 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 									Name:          "metrics",
 									ContainerPort: 2020,
 									Protocol:      "TCP",
+								},
+							},
+							Env: []corev1.EnvVar{
+								corev1.EnvVar{
+									Name: "NODE_NAME",
+									ValueFrom: &corev1.EnvVarSource{
+										FieldRef: &corev1.ObjectFieldSelector{
+											FieldPath: "spec.nodeName",
+										},
+									},
 								},
 							},
 							VolumeMounts: []corev1.VolumeMount{
