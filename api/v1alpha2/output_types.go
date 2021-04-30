@@ -18,10 +18,11 @@ package v1alpha2
 import (
 	"bytes"
 	"fmt"
+	"reflect"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins"
 	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins/output"
-	"reflect"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -53,6 +54,8 @@ type OutputSpec struct {
 	TCP *output.TCP `json:"tcp,omitempty"`
 	// Loki defines Loki Output configuration.
 	Loki *output.Loki `json:"loki,omitempty"`
+	// Syslog defines Syslog Output configuration.
+	Syslog *output.Syslog `json:"syslog,omitempty"`
 }
 
 // +kubebuilder:object:root=true

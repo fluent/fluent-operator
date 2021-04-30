@@ -929,6 +929,128 @@ spec:
                     description: Specify the name of the date field in output.
                     type: string
                 type: object
+              syslog:
+                description: Syslog defines Syslog Output configuration.
+                properties:
+                  host:
+                    description: Host domain or IP address of the remote Syslog server.
+                    type: string
+                  mode:
+                    description: Mode of the desired transport type, the available
+                      options are tcp, tls and udp.
+                    type: string
+                  port:
+                    description: TCP or UDP port of the remote Syslog server.
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  syslogAppnameKey:
+                    description: Key name from the original record that contains the
+                      application name that generated the message.
+                    type: string
+                  syslogFacilityKey:
+                    description: Key from the original record that contains the Syslog
+                      facility number.
+                    type: string
+                  syslogFormat:
+                    description: Syslog protocol format to use, the available options
+                      are rfc3164 and rfc5424.
+                    type: string
+                  syslogHostnameKey:
+                    description: Key name from the original record that contains the
+                      hostname that generated the message.
+                    type: string
+                  syslogMaxSize:
+                    description: Maximum size allowed per message, in bytes.
+                    format: int32
+                    type: integer
+                  syslogMessageIDKey:
+                    description: Key name from the original record that contains the
+                      Message ID associated to the message.
+                    type: string
+                  syslogMessageKey:
+                    description: Key key name that contains the message to deliver.
+                    type: string
+                  syslogProcessIDKey:
+                    description: Key name from the original record that contains the
+                      Process ID that generated the message.
+                    type: string
+                  syslogSDKey:
+                    description: Key name from the original record that contains the
+                      Structured Data (SD) content.
+                    type: string
+                  syslogSeverityKey:
+                    description: Key from the original record that contains the Syslog
+                      severity number.
+                    type: string
+                  tls:
+                    description: Syslog output plugin supports TTL/SSL, for more details
+                      about the properties available and general configuration, please
+                      refer to the TLS/SSL section.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource represents a source for the value
+                              of a secret.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                type: object
               tcp:
                 description: TCP defines TCP Output configuration.
                 properties:
