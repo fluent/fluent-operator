@@ -4,7 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/json-iterator/go"
+	"strconv"
+
+	jsoniter "github.com/json-iterator/go"
 	corev1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -12,10 +14,9 @@ import (
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/klog"
-	logging "kubesphere.io/fluentbit-operator/api/v1alpha2"
-	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins/output"
+	logging "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/output"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"strconv"
 )
 
 const (

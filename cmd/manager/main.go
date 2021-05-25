@@ -22,10 +22,14 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
-	loggingv1alpha2 "kubesphere.io/fluentbit-operator/api/v1alpha2"
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
 	"kubesphere.io/fluentbit-operator/controllers"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+
+	// required for generating code from CRD
+	_ "k8s.io/code-generator/cmd/client-gen/generators"
+
 	// +kubebuilder:scaffold:imports
 	"github.com/joho/godotenv"
 )
