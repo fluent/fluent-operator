@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
-  image: kubespheredev/fluent-bit:v1.6.2
+  image: kubespheredev/fluent-bit:v1.7.3
   positionDB:
     emptyDir: {}
   fluentBitConfigName: fluent-bit-config
