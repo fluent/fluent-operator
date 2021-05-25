@@ -56,6 +56,7 @@ vet:
 # Generate code
 generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile=./hack/boilerplate.go.txt paths="./..."
+	./hack/update-codegen.sh
 
 # Build all docker images for amd64 and arm64
 build: build-op
