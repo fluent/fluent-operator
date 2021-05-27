@@ -17,19 +17,20 @@ package controllers
 
 import (
 	"context"
+
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"kubesphere.io/fluentbit-operator/api/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	logging "kubesphere.io/fluentbit-operator/api/v1alpha2"
+	logging "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
 )
 
 // FluentBitConfigReconciler reconciles a FluentBitConfig object
