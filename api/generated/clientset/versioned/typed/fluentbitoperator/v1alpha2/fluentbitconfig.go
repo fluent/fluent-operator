@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha2
 
 import (
+	"context"
 	"time"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -35,14 +36,14 @@ type FluentBitConfigsGetter interface {
 
 // FluentBitConfigInterface has methods to work with FluentBitConfig resources.
 type FluentBitConfigInterface interface {
-	Create(*v1alpha2.FluentBitConfig) (*v1alpha2.FluentBitConfig, error)
-	Update(*v1alpha2.FluentBitConfig) (*v1alpha2.FluentBitConfig, error)
-	Delete(name string, options *v1.DeleteOptions) error
-	DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error
-	Get(name string, options v1.GetOptions) (*v1alpha2.FluentBitConfig, error)
-	List(opts v1.ListOptions) (*v1alpha2.FluentBitConfigList, error)
-	Watch(opts v1.ListOptions) (watch.Interface, error)
-	Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.FluentBitConfig, err error)
+	Create(ctx context.Context, fluentBitConfig *v1alpha2.FluentBitConfig, opts v1.CreateOptions) (*v1alpha2.FluentBitConfig, error)
+	Update(ctx context.Context, fluentBitConfig *v1alpha2.FluentBitConfig, opts v1.UpdateOptions) (*v1alpha2.FluentBitConfig, error)
+	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
+	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha2.FluentBitConfig, error)
+	List(ctx context.Context, opts v1.ListOptions) (*v1alpha2.FluentBitConfigList, error)
+	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.FluentBitConfig, err error)
 	FluentBitConfigExpansion
 }
 
@@ -61,20 +62,20 @@ func newFluentBitConfigs(c *FluentbitoperatorV1alpha2Client, namespace string) *
 }
 
 // Get takes name of the fluentBitConfig, and returns the corresponding fluentBitConfig object, and an error if there is any.
-func (c *fluentBitConfigs) Get(name string, options v1.GetOptions) (result *v1alpha2.FluentBitConfig, err error) {
+func (c *fluentBitConfigs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.FluentBitConfig, err error) {
 	result = &v1alpha2.FluentBitConfig{}
 	err = c.client.Get().
 		Namespace(c.ns).
 		Resource("fluentbitconfigs").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }
 
 // List takes label and field selectors, and returns the list of FluentBitConfigs that match those selectors.
-func (c *fluentBitConfigs) List(opts v1.ListOptions) (result *v1alpha2.FluentBitConfigList, err error) {
+func (c *fluentBitConfigs) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.FluentBitConfigList, err error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -85,13 +86,13 @@ func (c *fluentBitConfigs) List(opts v1.ListOptions) (result *v1alpha2.FluentBit
 		Resource("fluentbitconfigs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }
 
 // Watch returns a watch.Interface that watches the requested fluentBitConfigs.
-func (c *fluentBitConfigs) Watch(opts v1.ListOptions) (watch.Interface, error) {
+func (c *fluentBitConfigs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -102,71 +103,74 @@ func (c *fluentBitConfigs) Watch(opts v1.ListOptions) (watch.Interface, error) {
 		Resource("fluentbitconfigs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Watch()
+		Watch(ctx)
 }
 
 // Create takes the representation of a fluentBitConfig and creates it.  Returns the server's representation of the fluentBitConfig, and an error, if there is any.
-func (c *fluentBitConfigs) Create(fluentBitConfig *v1alpha2.FluentBitConfig) (result *v1alpha2.FluentBitConfig, err error) {
+func (c *fluentBitConfigs) Create(ctx context.Context, fluentBitConfig *v1alpha2.FluentBitConfig, opts v1.CreateOptions) (result *v1alpha2.FluentBitConfig, err error) {
 	result = &v1alpha2.FluentBitConfig{}
 	err = c.client.Post().
 		Namespace(c.ns).
 		Resource("fluentbitconfigs").
+		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(fluentBitConfig).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }
 
 // Update takes the representation of a fluentBitConfig and updates it. Returns the server's representation of the fluentBitConfig, and an error, if there is any.
-func (c *fluentBitConfigs) Update(fluentBitConfig *v1alpha2.FluentBitConfig) (result *v1alpha2.FluentBitConfig, err error) {
+func (c *fluentBitConfigs) Update(ctx context.Context, fluentBitConfig *v1alpha2.FluentBitConfig, opts v1.UpdateOptions) (result *v1alpha2.FluentBitConfig, err error) {
 	result = &v1alpha2.FluentBitConfig{}
 	err = c.client.Put().
 		Namespace(c.ns).
 		Resource("fluentbitconfigs").
 		Name(fluentBitConfig.Name).
+		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(fluentBitConfig).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }
 
 // Delete takes name of the fluentBitConfig and deletes it. Returns an error if one occurs.
-func (c *fluentBitConfigs) Delete(name string, options *v1.DeleteOptions) error {
+func (c *fluentBitConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
 		Namespace(c.ns).
 		Resource("fluentbitconfigs").
 		Name(name).
-		Body(options).
-		Do().
+		Body(&opts).
+		Do(ctx).
 		Error()
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *fluentBitConfigs) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
+func (c *fluentBitConfigs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	var timeout time.Duration
-	if listOptions.TimeoutSeconds != nil {
-		timeout = time.Duration(*listOptions.TimeoutSeconds) * time.Second
+	if listOpts.TimeoutSeconds != nil {
+		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
 		Namespace(c.ns).
 		Resource("fluentbitconfigs").
-		VersionedParams(&listOptions, scheme.ParameterCodec).
+		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Body(options).
-		Do().
+		Body(&opts).
+		Do(ctx).
 		Error()
 }
 
 // Patch applies the patch and returns the patched fluentBitConfig.
-func (c *fluentBitConfigs) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.FluentBitConfig, err error) {
+func (c *fluentBitConfigs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.FluentBitConfig, err error) {
 	result = &v1alpha2.FluentBitConfig{}
 	err = c.client.Patch(pt).
 		Namespace(c.ns).
 		Resource("fluentbitconfigs").
-		SubResource(subresources...).
 		Name(name).
+		SubResource(subresources...).
+		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(data).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }

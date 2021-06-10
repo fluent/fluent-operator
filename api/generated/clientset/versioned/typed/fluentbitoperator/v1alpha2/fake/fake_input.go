@@ -17,6 +17,8 @@ limitations under the License.
 package fake
 
 import (
+	"context"
+
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -37,7 +39,7 @@ var inputsResource = schema.GroupVersionResource{Group: "fluentbitoperator", Ver
 var inputsKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "Input"}
 
 // Get takes name of the input, and returns the corresponding input object, and an error if there is any.
-func (c *FakeInputs) Get(name string, options v1.GetOptions) (result *v1alpha2.Input, err error) {
+func (c *FakeInputs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Input, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewGetAction(inputsResource, c.ns, name), &v1alpha2.Input{})
 
@@ -48,7 +50,7 @@ func (c *FakeInputs) Get(name string, options v1.GetOptions) (result *v1alpha2.I
 }
 
 // List takes label and field selectors, and returns the list of Inputs that match those selectors.
-func (c *FakeInputs) List(opts v1.ListOptions) (result *v1alpha2.InputList, err error) {
+func (c *FakeInputs) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.InputList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewListAction(inputsResource, inputsKind, c.ns, opts), &v1alpha2.InputList{})
 
@@ -70,14 +72,14 @@ func (c *FakeInputs) List(opts v1.ListOptions) (result *v1alpha2.InputList, err 
 }
 
 // Watch returns a watch.Interface that watches the requested inputs.
-func (c *FakeInputs) Watch(opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeInputs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(inputsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a input and creates it.  Returns the server's representation of the input, and an error, if there is any.
-func (c *FakeInputs) Create(input *v1alpha2.Input) (result *v1alpha2.Input, err error) {
+func (c *FakeInputs) Create(ctx context.Context, input *v1alpha2.Input, opts v1.CreateOptions) (result *v1alpha2.Input, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewCreateAction(inputsResource, c.ns, input), &v1alpha2.Input{})
 
@@ -88,7 +90,7 @@ func (c *FakeInputs) Create(input *v1alpha2.Input) (result *v1alpha2.Input, err 
 }
 
 // Update takes the representation of a input and updates it. Returns the server's representation of the input, and an error, if there is any.
-func (c *FakeInputs) Update(input *v1alpha2.Input) (result *v1alpha2.Input, err error) {
+func (c *FakeInputs) Update(ctx context.Context, input *v1alpha2.Input, opts v1.UpdateOptions) (result *v1alpha2.Input, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateAction(inputsResource, c.ns, input), &v1alpha2.Input{})
 
@@ -99,7 +101,7 @@ func (c *FakeInputs) Update(input *v1alpha2.Input) (result *v1alpha2.Input, err 
 }
 
 // Delete takes name of the input and deletes it. Returns an error if one occurs.
-func (c *FakeInputs) Delete(name string, options *v1.DeleteOptions) error {
+func (c *FakeInputs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewDeleteAction(inputsResource, c.ns, name), &v1alpha2.Input{})
 
@@ -107,15 +109,15 @@ func (c *FakeInputs) Delete(name string, options *v1.DeleteOptions) error {
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeInputs) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(inputsResource, c.ns, listOptions)
+func (c *FakeInputs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(inputsResource, c.ns, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.InputList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched input.
-func (c *FakeInputs) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.Input, err error) {
+func (c *FakeInputs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.Input, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewPatchSubresourceAction(inputsResource, c.ns, name, pt, data, subresources...), &v1alpha2.Input{})
 

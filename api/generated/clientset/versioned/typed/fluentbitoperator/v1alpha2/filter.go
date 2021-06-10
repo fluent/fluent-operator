@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha2
 
 import (
+	"context"
 	"time"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -35,14 +36,14 @@ type FiltersGetter interface {
 
 // FilterInterface has methods to work with Filter resources.
 type FilterInterface interface {
-	Create(*v1alpha2.Filter) (*v1alpha2.Filter, error)
-	Update(*v1alpha2.Filter) (*v1alpha2.Filter, error)
-	Delete(name string, options *v1.DeleteOptions) error
-	DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error
-	Get(name string, options v1.GetOptions) (*v1alpha2.Filter, error)
-	List(opts v1.ListOptions) (*v1alpha2.FilterList, error)
-	Watch(opts v1.ListOptions) (watch.Interface, error)
-	Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.Filter, err error)
+	Create(ctx context.Context, filter *v1alpha2.Filter, opts v1.CreateOptions) (*v1alpha2.Filter, error)
+	Update(ctx context.Context, filter *v1alpha2.Filter, opts v1.UpdateOptions) (*v1alpha2.Filter, error)
+	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
+	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
+	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha2.Filter, error)
+	List(ctx context.Context, opts v1.ListOptions) (*v1alpha2.FilterList, error)
+	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
+	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.Filter, err error)
 	FilterExpansion
 }
 
@@ -61,20 +62,20 @@ func newFilters(c *FluentbitoperatorV1alpha2Client, namespace string) *filters {
 }
 
 // Get takes name of the filter, and returns the corresponding filter object, and an error if there is any.
-func (c *filters) Get(name string, options v1.GetOptions) (result *v1alpha2.Filter, err error) {
+func (c *filters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Filter, err error) {
 	result = &v1alpha2.Filter{}
 	err = c.client.Get().
 		Namespace(c.ns).
 		Resource("filters").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }
 
 // List takes label and field selectors, and returns the list of Filters that match those selectors.
-func (c *filters) List(opts v1.ListOptions) (result *v1alpha2.FilterList, err error) {
+func (c *filters) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.FilterList, err error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -85,13 +86,13 @@ func (c *filters) List(opts v1.ListOptions) (result *v1alpha2.FilterList, err er
 		Resource("filters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }
 
 // Watch returns a watch.Interface that watches the requested filters.
-func (c *filters) Watch(opts v1.ListOptions) (watch.Interface, error) {
+func (c *filters) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -102,71 +103,74 @@ func (c *filters) Watch(opts v1.ListOptions) (watch.Interface, error) {
 		Resource("filters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Watch()
+		Watch(ctx)
 }
 
 // Create takes the representation of a filter and creates it.  Returns the server's representation of the filter, and an error, if there is any.
-func (c *filters) Create(filter *v1alpha2.Filter) (result *v1alpha2.Filter, err error) {
+func (c *filters) Create(ctx context.Context, filter *v1alpha2.Filter, opts v1.CreateOptions) (result *v1alpha2.Filter, err error) {
 	result = &v1alpha2.Filter{}
 	err = c.client.Post().
 		Namespace(c.ns).
 		Resource("filters").
+		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(filter).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }
 
 // Update takes the representation of a filter and updates it. Returns the server's representation of the filter, and an error, if there is any.
-func (c *filters) Update(filter *v1alpha2.Filter) (result *v1alpha2.Filter, err error) {
+func (c *filters) Update(ctx context.Context, filter *v1alpha2.Filter, opts v1.UpdateOptions) (result *v1alpha2.Filter, err error) {
 	result = &v1alpha2.Filter{}
 	err = c.client.Put().
 		Namespace(c.ns).
 		Resource("filters").
 		Name(filter.Name).
+		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(filter).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }
 
 // Delete takes name of the filter and deletes it. Returns an error if one occurs.
-func (c *filters) Delete(name string, options *v1.DeleteOptions) error {
+func (c *filters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
 		Namespace(c.ns).
 		Resource("filters").
 		Name(name).
-		Body(options).
-		Do().
+		Body(&opts).
+		Do(ctx).
 		Error()
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *filters) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
+func (c *filters) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	var timeout time.Duration
-	if listOptions.TimeoutSeconds != nil {
-		timeout = time.Duration(*listOptions.TimeoutSeconds) * time.Second
+	if listOpts.TimeoutSeconds != nil {
+		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
 		Namespace(c.ns).
 		Resource("filters").
-		VersionedParams(&listOptions, scheme.ParameterCodec).
+		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Body(options).
-		Do().
+		Body(&opts).
+		Do(ctx).
 		Error()
 }
 
 // Patch applies the patch and returns the patched filter.
-func (c *filters) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.Filter, err error) {
+func (c *filters) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.Filter, err error) {
 	result = &v1alpha2.Filter{}
 	err = c.client.Patch(pt).
 		Namespace(c.ns).
 		Resource("filters").
-		SubResource(subresources...).
 		Name(name).
+		SubResource(subresources...).
+		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(data).
-		Do().
+		Do(ctx).
 		Into(result)
 	return
 }

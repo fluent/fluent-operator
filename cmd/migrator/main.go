@@ -72,7 +72,7 @@ func main() {
 	}
 
 	// Read old config from the ConfigMap `fluent-bit-output-config`.
-	cm, err := kubeClient.CoreV1().ConfigMaps(Namespace).Get(Name, corev1.GetOptions{})
+	cm, err := kubeClient.CoreV1().ConfigMaps(Namespace).Get(context.Background(), Name, corev1.GetOptions{})
 	if err != nil {
 		klog.Errorf("Failed to find configmap: %s/%s", Namespace, Name)
 		return
