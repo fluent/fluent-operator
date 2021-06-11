@@ -1,3 +1,14 @@
+## 0.6.1 / 2021-06-12
+
+- [ENHANCEMENT] Update Kubernetes dependencies.
+- [ENHANCEMENT] Update fluentbit resources in manifest.
+
+## 0.6.0 / 2021-06-01
+
+- [ENHANCEMENT] Add Kubernetes Go client.
+- [ENHANCEMENT] Support syslog output.
+- [CHANGE] Update the default fluent-bit version to v1.7.3
+
 ## 0.5.0 / 2021-04-14
 
 - [ENHANCEMENT] Support for audit logs
