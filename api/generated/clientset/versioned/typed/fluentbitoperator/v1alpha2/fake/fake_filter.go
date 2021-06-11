@@ -17,6 +17,8 @@ limitations under the License.
 package fake
 
 import (
+	"context"
+
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -37,7 +39,7 @@ var filtersResource = schema.GroupVersionResource{Group: "fluentbitoperator", Ve
 var filtersKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "Filter"}
 
 // Get takes name of the filter, and returns the corresponding filter object, and an error if there is any.
-func (c *FakeFilters) Get(name string, options v1.GetOptions) (result *v1alpha2.Filter, err error) {
+func (c *FakeFilters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Filter, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewGetAction(filtersResource, c.ns, name), &v1alpha2.Filter{})
 
@@ -48,7 +50,7 @@ func (c *FakeFilters) Get(name string, options v1.GetOptions) (result *v1alpha2.
 }
 
 // List takes label and field selectors, and returns the list of Filters that match those selectors.
-func (c *FakeFilters) List(opts v1.ListOptions) (result *v1alpha2.FilterList, err error) {
+func (c *FakeFilters) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.FilterList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewListAction(filtersResource, filtersKind, c.ns, opts), &v1alpha2.FilterList{})
 
@@ -70,14 +72,14 @@ func (c *FakeFilters) List(opts v1.ListOptions) (result *v1alpha2.FilterList, er
 }
 
 // Watch returns a watch.Interface that watches the requested filters.
-func (c *FakeFilters) Watch(opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeFilters) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(filtersResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a filter and creates it.  Returns the server's representation of the filter, and an error, if there is any.
-func (c *FakeFilters) Create(filter *v1alpha2.Filter) (result *v1alpha2.Filter, err error) {
+func (c *FakeFilters) Create(ctx context.Context, filter *v1alpha2.Filter, opts v1.CreateOptions) (result *v1alpha2.Filter, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewCreateAction(filtersResource, c.ns, filter), &v1alpha2.Filter{})
 
@@ -88,7 +90,7 @@ func (c *FakeFilters) Create(filter *v1alpha2.Filter) (result *v1alpha2.Filter, 
 }
 
 // Update takes the representation of a filter and updates it. Returns the server's representation of the filter, and an error, if there is any.
-func (c *FakeFilters) Update(filter *v1alpha2.Filter) (result *v1alpha2.Filter, err error) {
+func (c *FakeFilters) Update(ctx context.Context, filter *v1alpha2.Filter, opts v1.UpdateOptions) (result *v1alpha2.Filter, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateAction(filtersResource, c.ns, filter), &v1alpha2.Filter{})
 
@@ -99,7 +101,7 @@ func (c *FakeFilters) Update(filter *v1alpha2.Filter) (result *v1alpha2.Filter, 
 }
 
 // Delete takes name of the filter and deletes it. Returns an error if one occurs.
-func (c *FakeFilters) Delete(name string, options *v1.DeleteOptions) error {
+func (c *FakeFilters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewDeleteAction(filtersResource, c.ns, name), &v1alpha2.Filter{})
 
@@ -107,15 +109,15 @@ func (c *FakeFilters) Delete(name string, options *v1.DeleteOptions) error {
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeFilters) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(filtersResource, c.ns, listOptions)
+func (c *FakeFilters) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(filtersResource, c.ns, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.FilterList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched filter.
-func (c *FakeFilters) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.Filter, err error) {
+func (c *FakeFilters) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.Filter, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewPatchSubresourceAction(filtersResource, c.ns, name, pt, data, subresources...), &v1alpha2.Filter{})
 

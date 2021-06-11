@@ -17,6 +17,8 @@ limitations under the License.
 package fake
 
 import (
+	"context"
+
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -37,7 +39,7 @@ var outputsResource = schema.GroupVersionResource{Group: "fluentbitoperator", Ve
 var outputsKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "Output"}
 
 // Get takes name of the output, and returns the corresponding output object, and an error if there is any.
-func (c *FakeOutputs) Get(name string, options v1.GetOptions) (result *v1alpha2.Output, err error) {
+func (c *FakeOutputs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Output, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewGetAction(outputsResource, c.ns, name), &v1alpha2.Output{})
 
@@ -48,7 +50,7 @@ func (c *FakeOutputs) Get(name string, options v1.GetOptions) (result *v1alpha2.
 }
 
 // List takes label and field selectors, and returns the list of Outputs that match those selectors.
-func (c *FakeOutputs) List(opts v1.ListOptions) (result *v1alpha2.OutputList, err error) {
+func (c *FakeOutputs) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.OutputList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewListAction(outputsResource, outputsKind, c.ns, opts), &v1alpha2.OutputList{})
 
@@ -70,14 +72,14 @@ func (c *FakeOutputs) List(opts v1.ListOptions) (result *v1alpha2.OutputList, er
 }
 
 // Watch returns a watch.Interface that watches the requested outputs.
-func (c *FakeOutputs) Watch(opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeOutputs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(outputsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a output and creates it.  Returns the server's representation of the output, and an error, if there is any.
-func (c *FakeOutputs) Create(output *v1alpha2.Output) (result *v1alpha2.Output, err error) {
+func (c *FakeOutputs) Create(ctx context.Context, output *v1alpha2.Output, opts v1.CreateOptions) (result *v1alpha2.Output, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewCreateAction(outputsResource, c.ns, output), &v1alpha2.Output{})
 
@@ -88,7 +90,7 @@ func (c *FakeOutputs) Create(output *v1alpha2.Output) (result *v1alpha2.Output, 
 }
 
 // Update takes the representation of a output and updates it. Returns the server's representation of the output, and an error, if there is any.
-func (c *FakeOutputs) Update(output *v1alpha2.Output) (result *v1alpha2.Output, err error) {
+func (c *FakeOutputs) Update(ctx context.Context, output *v1alpha2.Output, opts v1.UpdateOptions) (result *v1alpha2.Output, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateAction(outputsResource, c.ns, output), &v1alpha2.Output{})
 
@@ -99,7 +101,7 @@ func (c *FakeOutputs) Update(output *v1alpha2.Output) (result *v1alpha2.Output, 
 }
 
 // Delete takes name of the output and deletes it. Returns an error if one occurs.
-func (c *FakeOutputs) Delete(name string, options *v1.DeleteOptions) error {
+func (c *FakeOutputs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewDeleteAction(outputsResource, c.ns, name), &v1alpha2.Output{})
 
@@ -107,15 +109,15 @@ func (c *FakeOutputs) Delete(name string, options *v1.DeleteOptions) error {
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeOutputs) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(outputsResource, c.ns, listOptions)
+func (c *FakeOutputs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(outputsResource, c.ns, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.OutputList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched output.
-func (c *FakeOutputs) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.Output, err error) {
+func (c *FakeOutputs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.Output, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewPatchSubresourceAction(outputsResource, c.ns, name, pt, data, subresources...), &v1alpha2.Output{})
 
