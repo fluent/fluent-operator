@@ -5,7 +5,7 @@
 
 ## 0.6.1 / 2021-06-11
 
-- Errorous release.
+- Erroneous release with no changes from 0.6.0.
 
 ## 0.6.0 / 2021-06-01
 
