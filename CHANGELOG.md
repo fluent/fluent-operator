@@ -1,7 +1,11 @@
-## 0.6.1 / 2021-06-12
+## 0.6.2 / 2021-06-11
 
 - [ENHANCEMENT] Update Kubernetes dependencies.
 - [ENHANCEMENT] Update fluentbit resources in manifest.
+
+## 0.6.1 / 2021-06-11
+
+- Errorous release.
 
 ## 0.6.0 / 2021-06-01
 
