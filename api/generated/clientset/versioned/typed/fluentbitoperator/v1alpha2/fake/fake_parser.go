@@ -17,6 +17,8 @@ limitations under the License.
 package fake
 
 import (
+	"context"
+
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -37,7 +39,7 @@ var parsersResource = schema.GroupVersionResource{Group: "fluentbitoperator", Ve
 var parsersKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "Parser"}
 
 // Get takes name of the parser, and returns the corresponding parser object, and an error if there is any.
-func (c *FakeParsers) Get(name string, options v1.GetOptions) (result *v1alpha2.Parser, err error) {
+func (c *FakeParsers) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Parser, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewGetAction(parsersResource, c.ns, name), &v1alpha2.Parser{})
 
@@ -48,7 +50,7 @@ func (c *FakeParsers) Get(name string, options v1.GetOptions) (result *v1alpha2.
 }
 
 // List takes label and field selectors, and returns the list of Parsers that match those selectors.
-func (c *FakeParsers) List(opts v1.ListOptions) (result *v1alpha2.ParserList, err error) {
+func (c *FakeParsers) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.ParserList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewListAction(parsersResource, parsersKind, c.ns, opts), &v1alpha2.ParserList{})
 
@@ -70,14 +72,14 @@ func (c *FakeParsers) List(opts v1.ListOptions) (result *v1alpha2.ParserList, er
 }
 
 // Watch returns a watch.Interface that watches the requested parsers.
-func (c *FakeParsers) Watch(opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeParsers) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(parsersResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a parser and creates it.  Returns the server's representation of the parser, and an error, if there is any.
-func (c *FakeParsers) Create(parser *v1alpha2.Parser) (result *v1alpha2.Parser, err error) {
+func (c *FakeParsers) Create(ctx context.Context, parser *v1alpha2.Parser, opts v1.CreateOptions) (result *v1alpha2.Parser, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewCreateAction(parsersResource, c.ns, parser), &v1alpha2.Parser{})
 
@@ -88,7 +90,7 @@ func (c *FakeParsers) Create(parser *v1alpha2.Parser) (result *v1alpha2.Parser, 
 }
 
 // Update takes the representation of a parser and updates it. Returns the server's representation of the parser, and an error, if there is any.
-func (c *FakeParsers) Update(parser *v1alpha2.Parser) (result *v1alpha2.Parser, err error) {
+func (c *FakeParsers) Update(ctx context.Context, parser *v1alpha2.Parser, opts v1.UpdateOptions) (result *v1alpha2.Parser, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateAction(parsersResource, c.ns, parser), &v1alpha2.Parser{})
 
@@ -99,7 +101,7 @@ func (c *FakeParsers) Update(parser *v1alpha2.Parser) (result *v1alpha2.Parser, 
 }
 
 // Delete takes name of the parser and deletes it. Returns an error if one occurs.
-func (c *FakeParsers) Delete(name string, options *v1.DeleteOptions) error {
+func (c *FakeParsers) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewDeleteAction(parsersResource, c.ns, name), &v1alpha2.Parser{})
 
@@ -107,15 +109,15 @@ func (c *FakeParsers) Delete(name string, options *v1.DeleteOptions) error {
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeParsers) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(parsersResource, c.ns, listOptions)
+func (c *FakeParsers) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(parsersResource, c.ns, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.ParserList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched parser.
-func (c *FakeParsers) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.Parser, err error) {
+func (c *FakeParsers) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.Parser, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewPatchSubresourceAction(parsersResource, c.ns, name, pt, data, subresources...), &v1alpha2.Parser{})
 

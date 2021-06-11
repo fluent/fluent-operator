@@ -17,6 +17,8 @@ limitations under the License.
 package fake
 
 import (
+	"context"
+
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -37,7 +39,7 @@ var fluentbitsResource = schema.GroupVersionResource{Group: "fluentbitoperator",
 var fluentbitsKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "FluentBit"}
 
 // Get takes name of the fluentBit, and returns the corresponding fluentBit object, and an error if there is any.
-func (c *FakeFluentBits) Get(name string, options v1.GetOptions) (result *v1alpha2.FluentBit, err error) {
+func (c *FakeFluentBits) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.FluentBit, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewGetAction(fluentbitsResource, c.ns, name), &v1alpha2.FluentBit{})
 
@@ -48,7 +50,7 @@ func (c *FakeFluentBits) Get(name string, options v1.GetOptions) (result *v1alph
 }
 
 // List takes label and field selectors, and returns the list of FluentBits that match those selectors.
-func (c *FakeFluentBits) List(opts v1.ListOptions) (result *v1alpha2.FluentBitList, err error) {
+func (c *FakeFluentBits) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.FluentBitList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewListAction(fluentbitsResource, fluentbitsKind, c.ns, opts), &v1alpha2.FluentBitList{})
 
@@ -70,14 +72,14 @@ func (c *FakeFluentBits) List(opts v1.ListOptions) (result *v1alpha2.FluentBitLi
 }
 
 // Watch returns a watch.Interface that watches the requested fluentBits.
-func (c *FakeFluentBits) Watch(opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeFluentBits) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(fluentbitsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a fluentBit and creates it.  Returns the server's representation of the fluentBit, and an error, if there is any.
-func (c *FakeFluentBits) Create(fluentBit *v1alpha2.FluentBit) (result *v1alpha2.FluentBit, err error) {
+func (c *FakeFluentBits) Create(ctx context.Context, fluentBit *v1alpha2.FluentBit, opts v1.CreateOptions) (result *v1alpha2.FluentBit, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewCreateAction(fluentbitsResource, c.ns, fluentBit), &v1alpha2.FluentBit{})
 
@@ -88,7 +90,7 @@ func (c *FakeFluentBits) Create(fluentBit *v1alpha2.FluentBit) (result *v1alpha2
 }
 
 // Update takes the representation of a fluentBit and updates it. Returns the server's representation of the fluentBit, and an error, if there is any.
-func (c *FakeFluentBits) Update(fluentBit *v1alpha2.FluentBit) (result *v1alpha2.FluentBit, err error) {
+func (c *FakeFluentBits) Update(ctx context.Context, fluentBit *v1alpha2.FluentBit, opts v1.UpdateOptions) (result *v1alpha2.FluentBit, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateAction(fluentbitsResource, c.ns, fluentBit), &v1alpha2.FluentBit{})
 
@@ -100,7 +102,7 @@ func (c *FakeFluentBits) Update(fluentBit *v1alpha2.FluentBit) (result *v1alpha2
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeFluentBits) UpdateStatus(fluentBit *v1alpha2.FluentBit) (*v1alpha2.FluentBit, error) {
+func (c *FakeFluentBits) UpdateStatus(ctx context.Context, fluentBit *v1alpha2.FluentBit, opts v1.UpdateOptions) (*v1alpha2.FluentBit, error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateSubresourceAction(fluentbitsResource, "status", c.ns, fluentBit), &v1alpha2.FluentBit{})
 
@@ -111,7 +113,7 @@ func (c *FakeFluentBits) UpdateStatus(fluentBit *v1alpha2.FluentBit) (*v1alpha2.
 }
 
 // Delete takes name of the fluentBit and deletes it. Returns an error if one occurs.
-func (c *FakeFluentBits) Delete(name string, options *v1.DeleteOptions) error {
+func (c *FakeFluentBits) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewDeleteAction(fluentbitsResource, c.ns, name), &v1alpha2.FluentBit{})
 
@@ -119,15 +121,15 @@ func (c *FakeFluentBits) Delete(name string, options *v1.DeleteOptions) error {
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeFluentBits) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(fluentbitsResource, c.ns, listOptions)
+func (c *FakeFluentBits) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(fluentbitsResource, c.ns, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.FluentBitList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched fluentBit.
-func (c *FakeFluentBits) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.FluentBit, err error) {
+func (c *FakeFluentBits) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.FluentBit, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewPatchSubresourceAction(fluentbitsResource, c.ns, name, pt, data, subresources...), &v1alpha2.FluentBit{})
 

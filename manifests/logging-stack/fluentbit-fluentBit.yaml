@@ -9,6 +9,13 @@ spec:
   image: kubespheredev/fluent-bit:v1.7.3
   positionDB:
     emptyDir: {}
+  resources:
+    requests:
+      cpu: 10m
+      memory: 25Mi
+    limits:
+      cpu: 500m
+      memory: 200Mi
   fluentBitConfigName: fluent-bit-config
   tolerations:
     - operator: Exists

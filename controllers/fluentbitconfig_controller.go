@@ -156,7 +156,7 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 }
 
 func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(&corev1.Secret{}, ownerKey, func(rawObj runtime.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Secret{}, ownerKey, func(rawObj runtime.Object) []string {
 		// Grab the job object, extract the owner.
 		sec := rawObj.(*corev1.Secret)
 		owner := metav1.GetControllerOf(sec)

@@ -17,6 +17,8 @@ limitations under the License.
 package fake
 
 import (
+	"context"
+
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -37,7 +39,7 @@ var fluentbitconfigsResource = schema.GroupVersionResource{Group: "fluentbitoper
 var fluentbitconfigsKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "FluentBitConfig"}
 
 // Get takes name of the fluentBitConfig, and returns the corresponding fluentBitConfig object, and an error if there is any.
-func (c *FakeFluentBitConfigs) Get(name string, options v1.GetOptions) (result *v1alpha2.FluentBitConfig, err error) {
+func (c *FakeFluentBitConfigs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.FluentBitConfig, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewGetAction(fluentbitconfigsResource, c.ns, name), &v1alpha2.FluentBitConfig{})
 
@@ -48,7 +50,7 @@ func (c *FakeFluentBitConfigs) Get(name string, options v1.GetOptions) (result *
 }
 
 // List takes label and field selectors, and returns the list of FluentBitConfigs that match those selectors.
-func (c *FakeFluentBitConfigs) List(opts v1.ListOptions) (result *v1alpha2.FluentBitConfigList, err error) {
+func (c *FakeFluentBitConfigs) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.FluentBitConfigList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewListAction(fluentbitconfigsResource, fluentbitconfigsKind, c.ns, opts), &v1alpha2.FluentBitConfigList{})
 
@@ -70,14 +72,14 @@ func (c *FakeFluentBitConfigs) List(opts v1.ListOptions) (result *v1alpha2.Fluen
 }
 
 // Watch returns a watch.Interface that watches the requested fluentBitConfigs.
-func (c *FakeFluentBitConfigs) Watch(opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeFluentBitConfigs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(fluentbitconfigsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a fluentBitConfig and creates it.  Returns the server's representation of the fluentBitConfig, and an error, if there is any.
-func (c *FakeFluentBitConfigs) Create(fluentBitConfig *v1alpha2.FluentBitConfig) (result *v1alpha2.FluentBitConfig, err error) {
+func (c *FakeFluentBitConfigs) Create(ctx context.Context, fluentBitConfig *v1alpha2.FluentBitConfig, opts v1.CreateOptions) (result *v1alpha2.FluentBitConfig, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewCreateAction(fluentbitconfigsResource, c.ns, fluentBitConfig), &v1alpha2.FluentBitConfig{})
 
@@ -88,7 +90,7 @@ func (c *FakeFluentBitConfigs) Create(fluentBitConfig *v1alpha2.FluentBitConfig)
 }
 
 // Update takes the representation of a fluentBitConfig and updates it. Returns the server's representation of the fluentBitConfig, and an error, if there is any.
-func (c *FakeFluentBitConfigs) Update(fluentBitConfig *v1alpha2.FluentBitConfig) (result *v1alpha2.FluentBitConfig, err error) {
+func (c *FakeFluentBitConfigs) Update(ctx context.Context, fluentBitConfig *v1alpha2.FluentBitConfig, opts v1.UpdateOptions) (result *v1alpha2.FluentBitConfig, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateAction(fluentbitconfigsResource, c.ns, fluentBitConfig), &v1alpha2.FluentBitConfig{})
 
@@ -99,7 +101,7 @@ func (c *FakeFluentBitConfigs) Update(fluentBitConfig *v1alpha2.FluentBitConfig)
 }
 
 // Delete takes name of the fluentBitConfig and deletes it. Returns an error if one occurs.
-func (c *FakeFluentBitConfigs) Delete(name string, options *v1.DeleteOptions) error {
+func (c *FakeFluentBitConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewDeleteAction(fluentbitconfigsResource, c.ns, name), &v1alpha2.FluentBitConfig{})
 
@@ -107,15 +109,15 @@ func (c *FakeFluentBitConfigs) Delete(name string, options *v1.DeleteOptions) er
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeFluentBitConfigs) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(fluentbitconfigsResource, c.ns, listOptions)
+func (c *FakeFluentBitConfigs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(fluentbitconfigsResource, c.ns, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.FluentBitConfigList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched fluentBitConfig.
-func (c *FakeFluentBitConfigs) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha2.FluentBitConfig, err error) {
+func (c *FakeFluentBitConfigs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.FluentBitConfig, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewPatchSubresourceAction(fluentbitconfigsResource, c.ns, name, pt, data, subresources...), &v1alpha2.FluentBitConfig{})
 

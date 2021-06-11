@@ -163,7 +163,7 @@ func (r *FluentBitReconciler) delete(ctx context.Context, fb *logging.FluentBit)
 }
 
 func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(&corev1.ServiceAccount{}, ownerKey, func(rawObj runtime.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.ServiceAccount{}, ownerKey, func(rawObj runtime.Object) []string {
 		// grab the job object, extract the owner.
 		sa := rawObj.(*corev1.ServiceAccount)
 		owner := metav1.GetControllerOf(sa)
@@ -179,7 +179,7 @@ func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(&appsv1.DaemonSet{}, ownerKey, func(rawObj runtime.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.DaemonSet{}, ownerKey, func(rawObj runtime.Object) []string {
 		// grab the job object, extract the owner.
 		ds := rawObj.(*appsv1.DaemonSet)
 		owner := metav1.GetControllerOf(ds)
