@@ -1,5 +1,6 @@
 
 # Image URL to use all building/pushing image targets
+FB_IMG ?= leiwanjun/fluent-bit:v1.7.3
 OP_IMG ?= kubespheredev/fluentbit-operator:latest
 MIGRATOR_IMG ?= kubespheredev/fluentbit-operator:migrator
 AMD64 ?= -amd64
@@ -62,6 +63,10 @@ generate: controller-gen
 build: build-op
 
 # Build the docker image for amd64 and arm64
+build-fb:
+	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-bit/Dockerfile . -t ${FB_IMG}
+
+# Build the docker image for amd64 and arm64
 build-op: test
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/manager/Dockerfile . -t ${OP_IMG}
 
@@ -71,6 +76,10 @@ build-migtator: test
 
 # Build all docker images for amd64
 build-amd64: build-op-amd64 build-migtator-amd64
+
+# Build the docker image for amd64
+build-fb-amd64:
+	docker build -f cmd/fluent-bit/Dockerfile . -t ${FB_IMG}${AMD64}
 
 # Build the docker image for amd64
 build-op-amd64: test
