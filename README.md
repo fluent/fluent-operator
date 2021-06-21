@@ -1,12 +1,10 @@
 # Fluent Bit Operator
 
-The Fluent Bit Operator for Kubernetes facilitates the deployment of Fluent Bit and provides great flexibility in building logging layer based on Fluent Bit. 
-
-> Note that the operator works with [kubesphere/fluent-bit](https://github.com/kubesphere/fluent-bit), a fork of [fluent/fluent-bit](https://github.com/fluent/fluent-bit). Due to the known [issue](https://github.com/fluent/fluent-bit/issues/365), the original Fluent Bit doesn't support dynamic configuration. To address that, kubesphere/fluent-bit incorporates a configuration reloader into the original. See [kubesphere/fluent-bit](https://github.com/kubesphere/fluent-bit) documentation for more information.     
+Fluent Bit Operator facilitates the deployment of Fluent Bit and provides great flexibility in building a logging layer based on Fluent Bit.
 
 Once installed, the Fluent Bit Operator provides the following features:
 
-- **Fluent Bit Management**: Deploy and destroy Fluent Bit daemonset automatically.
+- **Fluent Bit Management**: Deploy and destroy Fluent Bit Daemonset automatically.
 - **Custom Configuration**: Select input/filter/output plugins via labels.
 - **Dynamic Reloading**: Update configuration without rebooting Fluent Bit pods.
 
@@ -41,11 +39,11 @@ Fluent Bit Operator defines five custom resources using CustomResourceDefinition
 - **`Filter`**: Defines filter config sections. 
 - **`Output`**: Defines output config sections.
 
-Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent Bit config section, which are selected by **`FluentBitConfig`** via label selectors. The operator watches those objects, make the final config data and creates a Secret for store, which will be mounted onto Fluent Bit instances owned by **`FluentBit`**. The whole workflow can be illustrated as below:
+Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent Bit config section, which are selected by **`FluentBitConfig`** via label selectors. The operator watches those objects, constructs the final config and creates a Secret to store the config, which will be mounted by Fluent Bit instances owned by **`FluentBit`**. The whole workflow can be illustrated as below:
 
 ![Fluent Bit workflow](docs/images/fluent-bit-operator-workflow.svg)
 
-To enable fluent-bit to pick up and use the latest config whenever the fluent-bit config changes, a wrapper called fluent-bit watcher is added to restart the fluent-bit process as soon as fluent-bit config changes are detected. This way the fluent-bit pod needn't be restarted to reload the new config. The fluent-bit config is reloaded in this way because there is no reload interface in fluent-bit itself.
+To enable fluent-bit to pick up and use the latest config whenever the fluent-bit config changes, a wrapper called fluent-bit watcher is added to restart the fluent-bit process as soon as fluent-bit config changes are detected. This way the fluent-bit pod needn't be restarted to reload the new config. The fluent-bit config is reloaded in this way because there is no reload interface in fluent-bit itself, please refer to this [known issue](https://github.com/fluent/fluent-bit/issues/365) for more details.
 
 ![Kubesphere-logging-fluentbit](docs/images/kubesphere-logging-fluentbit.svg)
 
@@ -67,7 +65,7 @@ kubectl delete crd fluentbits.logging.kubesphere.io
 
 ### Quick Start
 
-The quick start instructs you to deploy fluent bit with dummy as input and stdout as output, which is equivalent to execute the binary with `fluent-bit -i dummy -o stdout`. 
+The quick start instructs you to deploy fluent bit with `dummy` as input and `stdout` as output, which is equivalent to execute the binary with `fluent-bit -i dummy -o stdout`.
 
 ```shell
 kubectl apply -f manifests/setup
@@ -88,11 +86,11 @@ Success!
 
 ### Logging Stack
 
-This guide provisions logging pipeline for your work environment. It installs Fluent Bit as daemonset for collecting container logs, filtering unneeded fields and forwarding them to the target destinations (eg. es, kafka, fluentd).
+This guide provisions a logging pipeline for your work environment. It installs Fluent Bit as DaemonSet for collecting container logs, filtering unneeded fields and forwarding them to the target destinations (eg. Elasticsearch, Kafka and Fluentd).
 
 ![logging stack](docs/images/logging-stack.svg)
 
-Note that you need a running elasticsearch v5+ to receive data before start. **Remember to adjust [output-elasticsearch.yaml](manifests/logging-stack/output-elasticsearch.yaml) to your es setup**. Otherwise fluent bit will spam errors. Kafka and Fluentd are optional and switched off by default.
+Note that you need a running Elasticsearch v5+ to receive data before start. **Remember to adjust [output-elasticsearch.yaml](manifests/logging-stack/output-elasticsearch.yaml) to your es setup**. Otherwise fluent bit will spam errors. Kafka and Fluentd are optional and switched off by default.
 
 ```shell
 kubectl apply -f manifests/setup
@@ -109,6 +107,7 @@ green open ks-logstash-log-2020.04.26 uwQuoO90TwyigqYRW7MDYQ 1 1  99937 0  31.2m
 Success!
 
 #### Auditd
+
 The Linux audit framework provides a CAPP-compliant (Controlled Access Protection Profile) auditing system that reliably collects information about any security-relevant (or non-security-relevant) event on a system. Refer to `manifests/logging-stack/auditd`, it supports a method for collecting audit logs from the Linux audit framework.
 
 ```shell
@@ -121,7 +120,7 @@ Within a couple of minutes, you should observe an index available:
 ```shell
 $ curl localhost:9200/_cat/indices
 green open ks-logstash-log-2021.04.06 QeI-k_LoQZ2h1z23F3XiHg  5 1 404879 0 298.4mb 149.2mb
-``` 
+```
 
 ## API Doc
 
@@ -159,9 +158,9 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
 
 ### Plugin Grouping
 
-Input, filter and output plugins are connected by the mechanism of tagging and matching. For input and output plugins, always create `Input` or `Output` instances for every plugin. Don't aggregate multiple inputs or outputs into one `Input` or `Output` object, except you have a good reason to do so. Take the demo logging stack for example, we have independent yaml files for each kind of outputs.
+Input, filter and output plugins are connected by the mechanism of tagging and matching. For input and output plugins, always create `Input` or `Output` instances for every plugin. Don't aggregate multiple inputs or outputs into one `Input` or `Output` object, except you have a good reason to do so. Take the demo logging stack for example, we have independent yaml file for each output.
 
-However, for filter plugins, if you want a filter chain, order of filters matters. You need organize multiple filters into an array as the demo [logging stack](manifests/logging-stack/filter-kubernetes.yaml) suggests.
+However, for filter plugins, if you want a filter chain, the order of filters matters. You need organize multiple filters into an array as the demo [logging stack](manifests/logging-stack/filter-kubernetes.yaml) suggests.
 
 ### Path Convention
 
