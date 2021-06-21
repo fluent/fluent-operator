@@ -45,9 +45,7 @@ Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent B
 
 ![Fluent Bit workflow](docs/images/fluent-bit-operator-workflow.svg)
 
-A reload interface is added to fluent bit for support dynamic configuration so that any changes on the configuration will be detected and reloaded by the agent instead of a restart.
-
-As shown in the diagram below, the config file watcher implements the reloading functionality and is responsible for the life cycle of fluent-bit process.
+To enable fluent-bit to pick up and use the latest config whenever the fluent-bit config changes, a wrapper called fluent-bit watcher is added to restart the fluent-bit process as soon as fluent-bit config changes are detected. This way the fluent-bit pod needn't be restarted to reload the new config. The fluent-bit config is reloaded in this way because there is no reload interface in fluent-bit itself.
 
 ![Kubesphere-logging-fluentbit](docs/images/kubesphere-logging-fluentbit.svg)
 

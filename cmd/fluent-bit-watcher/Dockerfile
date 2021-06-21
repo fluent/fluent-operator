@@ -1,6 +1,6 @@
 FROM golang:1.13.6-alpine3.11 as buildergo
 RUN mkdir -p /fluent-bit
-COPY cmd/fluent-bit/main.go go.mod /fluent-bit/
+COPY cmd/fluent-bit-watcher/main.go go.mod /fluent-bit/
 WORKDIR /fluent-bit
 RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o fluent-bit main.go
 

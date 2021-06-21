@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing image targets
-FB_IMG ?= leiwanjun/fluent-bit:v1.7.3
+FB_IMG ?= kubespheredev/fluent-bit:v1.7.3
 OP_IMG ?= kubespheredev/fluentbit-operator:latest
 MIGRATOR_IMG ?= kubespheredev/fluentbit-operator:migrator
 AMD64 ?= -amd64
@@ -59,37 +59,37 @@ generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile=./hack/boilerplate.go.txt paths="./..."
 	./hack/update-codegen.sh
 
-# Build all docker images for amd64 and arm64
+# Build all amd64/arm64 docker images
 build: build-op
 
-# Build the docker image for amd64 and arm64
+# Build amd64/arm64 Fluent Bit container image
 build-fb:
-	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-bit/Dockerfile . -t ${FB_IMG}
+	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-bit-watcher/Dockerfile . -t ${FB_IMG}
 
-# Build the docker image for amd64 and arm64
+# Build amd64/arm64 Fluent Bit Operator container image
 build-op: test
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/manager/Dockerfile . -t ${OP_IMG}
 
-# Build the docker image for amd64 and arm64
+# Build amd64/arm64 Fluent Bit migtator container image
 build-migtator: test
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/migrator/Dockerfile . -t ${MIGRATOR_IMG}
 
-# Build all docker images for amd64
+# Build all amd64 docker images
 build-amd64: build-op-amd64 build-migtator-amd64
 
-# Build the docker image for amd64
+# Build amd64 Fluent Bit container image
 build-fb-amd64:
-	docker build -f cmd/fluent-bit/Dockerfile . -t ${FB_IMG}${AMD64}
+	docker build -f cmd/fluent-bit-watcher/Dockerfile . -t ${FB_IMG}${AMD64}
 
-# Build the docker image for amd64
+# Build amd64 Fluent Bit Operator container image
 build-op-amd64: test
 	docker build -f cmd/manager/Dockerfile . -t ${OP_IMG}${AMD64}
 
-# Build the docker image for amd64
+# Build amd64 Fluent Bit migtator container image
 build-migtator-amd64: test
 	docker build -f cmd/migrator/Dockerfile . -t ${MIGRATOR_IMG}${AMD64}
 
-# Push the docker image
+# Push the amd64 docker image
 push-amd64:
 	docker push ${OP_IMG}${AMD64}
 	docker push ${MIGRATOR_IMG}${AMD64}
