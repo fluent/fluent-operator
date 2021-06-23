@@ -30,6 +30,9 @@ import (
 
 // InputSpec defines the desired state of Input
 type InputSpec struct {
+	// A user friendly alias name for this input plugin.
+	// Used in metrics for distinction of each configured input.
+	Alias string `json:"alias,omitempty"`
 	// Dummy defines Dummy Input configuration.
 	Dummy *input.Dummy `json:"dummy,omitempty"`
 	// Tail defines Tail Input configuration.
@@ -69,6 +72,9 @@ func (list InputList) Load(sl plugins.SecretLoader) (string, error) {
 
 			buf.WriteString("[Input]\n")
 			buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+			if item.Spec.Alias != "" {
+				buf.WriteString(fmt.Sprintf("    Alias    %s\n", item.Spec.Alias))
+			}
 			kvs, err := p.Params(sl)
 			if err != nil {
 				return err
