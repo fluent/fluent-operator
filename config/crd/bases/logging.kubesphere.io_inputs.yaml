@@ -36,6 +36,10 @@ spec:
           spec:
             description: InputSpec defines the desired state of Input
             properties:
+              alias:
+                description: A user friendly alias name for this input plugin. Used
+                  in metrics for distinction of each configured input.
+                type: string
               dummy:
                 description: Dummy defines Dummy Input configuration.
                 properties:

@@ -36,6 +36,9 @@ type OutputSpec struct {
 	// A regular expression to match against the tags of incoming records.
 	// Use this option if you want to use the full regex syntax.
 	MatchRegex string `json:"matchRegex,omitempty"`
+	// A user friendly alias name for this output plugin.
+	// Used in metrics for distinction of each configured output.
+	Alias string `json:"alias,omitempty"`
 	// Elasticsearch defines Elasticsearch Output configuration.
 	Elasticsearch *output.Elasticsearch `json:"es,omitempty"`
 	// File defines File Output configuration.
@@ -94,6 +97,9 @@ func (list OutputList) Load(sl plugins.SecretLoader) (string, error) {
 			}
 			if item.Spec.MatchRegex != "" {
 				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", item.Spec.MatchRegex))
+			}
+			if item.Spec.Alias != "" {
+				buf.WriteString(fmt.Sprintf("    Alias    %s\n", item.Spec.Alias))
 			}
 			kvs, err := p.Params(sl)
 			if err != nil {
