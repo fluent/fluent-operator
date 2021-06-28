@@ -189,6 +189,7 @@ InputSpec defines the desired state of Input
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
+| alias | A user friendly alias name for this input plugin. | string |
 | dummy | Dummy defines Dummy Input configuration. | *[input.Dummy](plugins/input/dummy.md) |
 | tail | Tail defines Tail Input configuration. | *[input.Tail](plugins/input/tail.md) |
 | systemd | Systemd defines Systemd Input configuration. | *[input.Systemd](plugins/input/systemd.md) |
@@ -234,6 +235,7 @@ OutputSpec defines the desired state of Output
 | stdout | Stdout defines Stdout Output configuration. | *[output.Stdout](plugins/output/stdout.md) |
 | tcp | TCP defines TCP Output configuration. | *[output.TCP](plugins/output/tcp.md) |
 | loki | Loki defines Loki Output configuration. | *[output.Loki](plugins/output/loki.md) |
+| syslog | Syslog defines Syslog Output configuration. | *[output.Syslog](plugins/output/syslog.md) |
 
 [Back to TOC](#table-of-contents)
 ## Parser

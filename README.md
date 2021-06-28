@@ -143,6 +143,7 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
     - [stdout](docs/plugins/output/stdout.md)
     - [tcp](docs/plugins/output/tcp.md)
     - [loki](docs/plugins/output/loki.md)
+    - [syslog](docs/plugins/output/syslog.md)
 
 ## Best Practice
 
