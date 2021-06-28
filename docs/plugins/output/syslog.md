@@ -1,4 +1,4 @@
-# HTTP
+# Syslog
 
 The Syslog output plugin allows you to deliver messages to Syslog servers, it supports RFC3164 and RFC5424 formats through different transports such as UDP, TCP or TLS.
 
