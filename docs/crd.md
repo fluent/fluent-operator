@@ -189,6 +189,7 @@ InputSpec defines the desired state of Input
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
+| alias | A user friendly alias name for this input plugin. | string |
 | dummy | Dummy defines Dummy Input configuration. | *[input.Dummy](plugins/input/dummy.md) |
 | tail | Tail defines Tail Input configuration. | *[input.Tail](plugins/input/tail.md) |
 | systemd | Systemd defines Systemd Input configuration. | *[input.Systemd](plugins/input/systemd.md) |
