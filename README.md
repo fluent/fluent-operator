@@ -4,7 +4,7 @@ Fluent Bit Operator facilitates the deployment of Fluent Bit and provides great 
 
 Once installed, the Fluent Bit Operator provides the following features:
 
-- **Fluent Bit Management**: Deploy and destroy Fluent Bit Daemonset automatically.
+- **Fluent Bit Management**: Deploy and destroy Fluent Bit DaemonSet automatically.
 - **Custom Configuration**: Select input/filter/output plugins via labels.
 - **Dynamic Reloading**: Update configuration without rebooting Fluent Bit pods.
 
@@ -51,17 +51,7 @@ To enable fluent-bit to pick up and use the latest config whenever the fluent-bi
 
 ### Prerequisites
 
-Kubernetes v1.11.3+ is necessary for running Fluent Bit Operator, while it is always recommended to operate with the latest version. 
-
-If you are using Fluent Bit Operator v0.1.0, remove them alongside CRDs before start. **This is true for KubeSphere v2.x users**. Since the whole project has been completely refactored, old CRDs may cause conflicts. Backup your old CRDs if necessary. **KubeSphere v2.x users can run the following commands to clean legacy**:
-
-```shell
-kubectl get fluentbits.logging.kubesphere.io -n kubesphere-logging-system fluent-bit -oyaml > fluent-bit-crd-backup.yaml
-kubectl delete deploy -n kubesphere-logging-system logging-fluentbit-operator
-kubectl delete fluentbits.logging.kubesphere.io -n kubesphere-logging-system fluent-bit
-kubectl delete ds -n kubesphere-logging-system fluent-bit
-kubectl delete crd fluentbits.logging.kubesphere.io
-```
+Kubernetes v1.16.13+ is necessary for running Fluent Bit Operator, while it is always recommended to operate with the latest version.
 
 ### Quick Start
 
@@ -86,7 +76,7 @@ Success!
 
 ### Logging Stack
 
-This guide provisions a logging pipeline for your work environment. It installs Fluent Bit as DaemonSet for collecting container logs, filtering unneeded fields and forwarding them to the target destinations (eg. Elasticsearch, Kafka and Fluentd).
+This guide provisions a logging pipeline for your work environment. It installs Fluent Bit as DaemonSet for collecting container logs, filtering unneeded fields, and forwarding them to the target destinations (eg. Elasticsearch, Kafka, and Fluentd).
 
 ![logging stack](docs/images/logging-stack.svg)
 
@@ -124,7 +114,7 @@ green open ks-logstash-log-2021.04.06 QeI-k_LoQZ2h1z23F3XiHg  5 1 404879 0 298.4
 
 ## API Doc
 
-The listing below shows supported plugins currently. It is based on Fluent Bit v1.4.6. For more information, see API docs of each plugin.
+The listing below shows supported plugins currently. It is based on Fluent Bit v1.7.3. For more information, please refer to the API docs of each plugin.
 
 - [Input](docs/crd.md#input)
     - [dummy](docs/plugins/input/dummy.md)
@@ -158,7 +148,7 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
 
 ### Plugin Grouping
 
-Input, filter and output plugins are connected by the mechanism of tagging and matching. For input and output plugins, always create `Input` or `Output` instances for every plugin. Don't aggregate multiple inputs or outputs into one `Input` or `Output` object, except you have a good reason to do so. Take the demo logging stack for example, we have independent yaml file for each output.
+Input, filter, and output plugins are connected by the mechanism of tagging and matching. For input and output plugins, always create `Input` or `Output` instances for every plugin. Don't aggregate multiple inputs or outputs into one `Input` or `Output` object, except you have a good reason to do so. Take the demo `logging stack` for example, we have one yaml file for each output.
 
 However, for filter plugins, if you want a filter chain, the order of filters matters. You need organize multiple filters into an array as the demo [logging stack](manifests/logging-stack/filter-kubernetes.yaml) suggests.
 
@@ -183,23 +173,22 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 ## Features In Plan
 
 - [x] Support custom parser plugins
+- [ ] Support Fluentd as the log aggregation layer
 - [ ] Support custom Input/Filter/Output plugins
-- [ ] Deploy Fluent Bit as deployment
 - [ ] Integrate logging sidecar
 
 ## Development
 
 ### Prerequisites
 - golang v1.13+.
-- kubectl v1.11.3+.
-- kubebuilder v2.3+ (the project is build with v2.3.0)
-- Access to a kubernetes cluster v1.11.3+
+- kubectl v1.16.13+.
+- kubebuilder v2.3+ (the project is build with v2.3.2)
+- Access to a Kubernetes cluster v1.16.13+
 
 ### Running
 
-1. Remove legacy from v0.1.0 (optional)
-2. Install CRDs: `make install`
-3. Run: `make run`
+1. Install CRDs: `make install`
+2. Run: `make run`
 
 ## Contributing
 
@@ -209,4 +198,4 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 
 ### Manifests
 
-Most yaml files under the folder [manifests/setup](manifests/setup) are derived from [config](config) which is automatically generated. Don't edit them directly, run `make manifests` instead, then replace them properly.
+Most files under the folder [manifests/setup](manifests/setup) are automatically generated from [config](config). Don't edit them directly, run `make manifests` instead, then replace them properly.
