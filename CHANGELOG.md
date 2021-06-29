@@ -1,3 +1,8 @@
+## 0.7.0 / 2021-06-29
+
+- [ENHANCEMENT] Add support for plugin alias property in input and output specs. #64.
+- [CHANGE] Add fluent-bit-watcher. #62.
+
 ## 0.6.2 / 2021-06-11
 
 - [ENHANCEMENT] Update Kubernetes dependencies.
