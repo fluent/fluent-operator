@@ -12,5 +12,5 @@ spec:
     path: /var/log/audit/audit.log
     refreshIntervalSeconds: 10
     memBufLimit: 5MB
-    db: /fluent-bit/tail/auditd.db
+    db: /tail/auditd.db
     dbSync: Normal

@@ -12,5 +12,5 @@ spec:
     refreshIntervalSeconds: 10
     memBufLimit: 5MB
     skipLongLines: true
-    db: /fluent-bit/tail/pos.db
+    db: /tail/pos.db
     dbSync: Normal
