@@ -7,7 +7,8 @@ metadata:
 spec:
   image: kubespheredev/fluent-bit:v1.7.3
   positionDB:
-    emptyDir: {}
+    hostPath:
+      path: /var/lib/fluent-bit/
   fluentBitConfigName: fluent-bit-config
   tolerations:
     - operator: Exists
