@@ -1,0 +1,70 @@
+# Default values for fluentbit-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+fluentbitOperatorImage:
+  repository: "kubesphere/fluentbit-operator"
+  tag: "v0.7.0"
+
+fluentbit:
+  image: "kubespheredev/fluent-bit"
+  tag: "v1.7.3"
+
+
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+
+deployment:
+  volunmes:
+    image:
+      repository: "docker"
+      tag: "19.03"
+
+
+#podAnnotations: {}
+
+## if want to deploy CRDs used by fluentbit Operator.
+##createCustomResource: false
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+
+resources:
+  # fluentbit resources. If you do want to specify resources, adjust them as necessary
+   limits:
+     cpu: 500m
+     memory: 200Mi
+   requests:
+     cpu: 10m
+     memory: 25Mi
+
+output:
+  es:
+    enabled: true
+    host: "elasticsearch-logging-data.kubesphere-logging-system.svc"
+    port: 9200
+  forword:
+    enabled: false
+    host: "fluentd.kubesphere-logging-system.svc"
+    port: 24224
+  kafka:
+    enabled: false
+    brokers: "192.168.1.3:9092,192.168.1.4:9092"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

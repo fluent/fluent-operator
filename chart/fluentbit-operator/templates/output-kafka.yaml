@@ -1,0 +1,14 @@
+{{- if .Values.output.kafka.enabled -}}
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: kafka
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    logging.kubesphere.io/component: logging
+spec:
+  matchRegex: (?:kube|service)\.(.*)
+  kafka:
+    brokers: {{  .Values.output.kafka.brokers  }}
+    topics: ks-log
+  {{- end }}

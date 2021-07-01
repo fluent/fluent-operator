@@ -1,0 +1,14 @@
+{{- if .Values.output.forword.enabled -}}
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Output
+metadata:
+  name: fluentd
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    logging.kubesphere.io/component: logging
+spec:
+  matchRegex: (?:kube|service)\.(.*)
+  forward:
+    host: {{  .Values.output.forword.host  }}
+    port: {{  .Values.output.forword.port  }}
+  {{- end }}

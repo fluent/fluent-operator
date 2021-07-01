@@ -1,0 +1,15 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Input
+metadata:
+  name: kubelet
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    logging.kubesphere.io/component: logging
+spec:
+  systemd:
+    tag: service.kubelet
+    path: /var/log/journal
+    db: /systemd/kubelet.db
+    dbSync: Normal
+    systemdFilter:
+      - _SYSTEMD_UNIT=kubelet.service

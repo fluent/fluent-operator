@@ -1,0 +1,23 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: FluentBit
+metadata:
+  name: fluent-bit
+  labels:
+    app.kubernetes.io/name: fluent-bit
+spec:
+  image: {{  .Values.fluentbit.image  }}:{{  .Values.fluentbit.tag  }}
+  positionDB:
+    hostPath:
+      path: /var/lib/fluent-bit/
+  resources:
+    {{- toYaml .Values.resources | nindent 4  }}
+  fluentBitConfigName: fluent-bit-config
+  tolerations:
+    - operator: Exists
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/edge
+                operator: DoesNotExist
