@@ -80,7 +80,7 @@ func (list ParserList) Load(sl plugins.SecretLoader) (string, error) {
 
 	for _, item := range list.Items {
 		merge := func(p plugins.Plugin) error {
-			if reflect.ValueOf(p).IsNil() {
+			if p == nil || reflect.ValueOf(p).IsNil() {
 				return nil
 			}
 
