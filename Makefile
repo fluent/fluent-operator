@@ -1,6 +1,6 @@
 VERSION?=$(shell cat VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
-FB_IMG ?= kubespheredev/fluent-bit:v1.7.3
+FB_IMG ?= kubespheredev/fluent-bit:v1.7.8
 OP_IMG ?= kubespheredev/fluentbit-operator:$(VERSION)
 MIGRATOR_IMG ?= kubespheredev/fluentbit-operator:migrator
 AMD64 ?= -amd64
