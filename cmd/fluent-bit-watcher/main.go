@@ -2,16 +2,18 @@ package main
 
 import (
 	"context"
-	"github.com/fsnotify/fsnotify"
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
-	"github.com/oklog/run"
 	"math"
 	"os"
 	"os/exec"
 	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
+
+	"github.com/fsnotify/fsnotify"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
+	"github.com/oklog/run"
 )
 
 const (
@@ -26,14 +28,15 @@ var (
 	logger       log.Logger
 	cmd          *exec.Cmd
 	mutex        sync.Mutex
-	restartTimes int
-	timer        *time.Timer
+	restartTimes int32
+	timerCtx     context.Context
+	timerCancel  context.CancelFunc
 )
 
 func main() {
 	logger = log.NewLogfmtLogger(os.Stdout)
 
-	timer = time.NewTimer(0)
+	timerCtx, timerCancel = context.WithCancel(context.Background())
 
 	var g run.Group
 	{
@@ -57,6 +60,9 @@ func main() {
 					start()
 					// Wait for the fluent bit exit.
 					wait()
+
+					timerCtx, timerCancel = context.WithCancel(context.Background())
+
 					// After the fluent bit exit, fluent bit watcher restarts it with an exponential
 					// back-off delay (1s, 2s, 4s, ...), that is capped at five minutes.
 					backoff()
@@ -97,11 +103,13 @@ func main() {
 							continue
 						}
 
+						_ = level.Info(logger).Log("msg", "Config file changed, stopping Fluent Bit")
+
 						// After the config file changed, it should stop the fluent bit,
 						// and resets the restart backoff timer.
 						stop()
 						resetTimer()
-						_ = level.Info(logger).Log("msg", "Config file changed, stop Fluent Bit")
+						_ = level.Info(logger).Log("msg", "Config file changed, stopped Fluent Bit")
 					case <-watcher.Errors:
 						_ = level.Error(logger).Log("msg", "Watcher stopped")
 						return nil
@@ -124,13 +132,7 @@ func main() {
 
 // Inspired by https://github.com/jimmidyson/configmap-reload
 func isValidEvent(event fsnotify.Event) bool {
-	if event.Op&fsnotify.Create != fsnotify.Create {
-		return false
-	}
-	//if filepath.Base(event.Name) != "..data" {
-	//	return false
-	//}
-	return true
+	return event.Op&fsnotify.Create == fsnotify.Create
 }
 
 func start() {
@@ -155,17 +157,19 @@ func start() {
 }
 
 func wait() {
-
+	mutex.Lock()
 	if cmd == nil {
+		mutex.Unlock()
 		return
 	}
+	mutex.Unlock()
 
 	startTime := time.Now()
 	_ = level.Error(logger).Log("msg", "Fluent bit exited", "error", cmd.Wait())
 	// Once the fluent bit has executed for 10 minutes without any problems,
 	// it should resets the restart backoff timer.
-	if time.Now().Sub(startTime) >= ResetTime {
-		restartTimes = 0
+	if time.Since(startTime) >= ResetTime {
+		atomic.StoreInt32(&restartTimes, 0)
 	}
 
 	mutex.Lock()
@@ -175,16 +179,32 @@ func wait() {
 
 func backoff() {
 
-	delayTime := time.Duration(math.Pow(2, float64(restartTimes))) * time.Second
+	delayTime := time.Duration(math.Pow(2, float64(atomic.LoadInt32(&restartTimes)))) * time.Second
 	if delayTime >= MaxDelayTime {
 		delayTime = MaxDelayTime
 	}
-	timer.Reset(delayTime)
+
+	_ = level.Info(logger).Log("msg", "backoff", "delay", delayTime)
 
 	startTime := time.Now()
-	<-timer.C
-	_ = level.Info(logger).Log("msg", "delay", "actual", time.Now().Sub(startTime), "expected", delayTime)
-	restartTimes = restartTimes + 1
+
+	timer := time.NewTimer(delayTime)
+	defer timer.Stop()
+
+	select {
+	case <-timerCtx.Done():
+		_ = level.Info(logger).Log("msg", "context cancel", "actual", time.Since(startTime), "expected", delayTime)
+
+		atomic.StoreInt32(&restartTimes, 0)
+
+		return
+	case <-timer.C:
+		_ = level.Info(logger).Log("msg", "backoff timer done", "actual", time.Since(startTime), "expected", delayTime)
+
+		atomic.AddInt32(&restartTimes, 1)
+
+		return
+	}
 }
 
 func stop() {
@@ -193,6 +213,7 @@ func stop() {
 	defer mutex.Unlock()
 
 	if cmd == nil || cmd.Process == nil {
+		_ = level.Info(logger).Log("msg", "Fluent Bit not running. No process to stop.")
 		return
 	}
 
@@ -204,12 +225,6 @@ func stop() {
 }
 
 func resetTimer() {
-
-	if timer != nil {
-		if !timer.Stop() {
-			<-timer.C
-		}
-		timer.Reset(0)
-	}
-	restartTimes = 0
+	timerCancel()
+	atomic.StoreInt32(&restartTimes, 0)
 }
