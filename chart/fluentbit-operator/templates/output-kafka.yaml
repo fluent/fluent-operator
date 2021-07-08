@@ -1,4 +1,4 @@
-{{- if .Values.output.kafka.enabled -}}
+{{- if .Values.output.kafka.enable -}}
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
 metadata:
