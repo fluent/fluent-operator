@@ -40,12 +40,7 @@ spec:
       - name: fluentbit-operator
         image: {{  .Values.fluentbitOperatorImage.repository   }}:{{  .Values.fluentbitOperatorImage.tag }}
         resources:
-          limits:
-            cpu: 100m
-            memory: 30Mi
-          requests:
-            cpu: 100m
-            memory: 20Mi
+{{ toYaml .Values.resources | indent 12 }}
         volumeMounts:
         - name: env
           mountPath: /fluentbit-operator
