@@ -1,3 +1,8 @@
+## 0.7.1 / 2021-07-08
+
+- [ENHANCEMENT] fluent-bit-watcher: goroutine synchronization improvements. #74
+- [CHANGE] add hostpath to sample configurations and manifests. #72
+
 ## 0.7.0 / 2021-06-29
 
 - [ENHANCEMENT] Add support for plugin alias property in input and output specs. #64.
