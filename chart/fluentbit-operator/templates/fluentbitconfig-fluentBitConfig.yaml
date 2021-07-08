@@ -1,0 +1,18 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: FluentBitConfig
+metadata:
+  name: fluent-bit-config
+  labels:
+    app.kubernetes.io/name: fluent-bit
+spec:
+  service:
+    parsersFile: parsers.conf
+  inputSelector:
+    matchLabels:
+      logging.kubesphere.io/enabled: "true"
+  filterSelector:
+    matchLabels:
+      logging.kubesphere.io/enabled: "true"
+  outputSelector:
+    matchLabels:
+      logging.kubesphere.io/enabled: "true"
