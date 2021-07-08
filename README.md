@@ -57,9 +57,18 @@ Kubernetes v1.16.13+ is necessary for running Fluent Bit Operator, while it is a
 
 The quick start instructs you to deploy fluent bit with `dummy` as input and `stdout` as output, which is equivalent to execute the binary with `fluent-bit -i dummy -o stdout`.
 
+Install the latest stable version
+
 ```shell
-kubectl apply -f manifests/setup
-kubectl apply -f manifests/quick-start
+kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.7/manifests/setup/setup.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.7/manifests/quick-start/quick-start.yaml
+```
+
+Install the development version
+
+```shell
+kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/setup/setup.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/quick-start/quick-start.yaml
 ```
 
 Once everything is up, you'll observe messages in fluent bit pod logs like below:
