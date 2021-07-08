@@ -2,6 +2,7 @@
 
 - [ENHANCEMENT] fluent-bit-watcher: goroutine synchronization improvements. #74
 - [CHANGE] add hostpath to sample configurations and manifests. #72
+- [BUGFIX] Fix bug operator may crash when load plugin. #77
 
 ## 0.7.0 / 2021-06-29
 
