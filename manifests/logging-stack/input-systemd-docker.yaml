@@ -10,7 +10,7 @@ spec:
   systemd:
     tag: service.docker
     path: /var/log/journal
-    db: /fluent-bit/tail/docker.db
+    db: /systemd/docker.db
     dbSync: Normal
     systemdFilter:
       - _SYSTEMD_UNIT=docker.service
