@@ -17,6 +17,8 @@ type Dummy struct {
 	Dummy string `json:"dummy,omitempty"`
 	// Events number generated per second.
 	Rate *int32 `json:"rate,omitempty"`
+	// Sample events to generate.
+	Samples *int32 `json:"samples,omitempty"`
 }
 
 func (_ *Dummy) Name() string {
@@ -34,6 +36,9 @@ func (d *Dummy) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
 	}
 	if d.Rate != nil {
 		kvs.Insert("Rate", fmt.Sprint(*d.Rate))
+	}
+	if d.Samples != nil {
+		kvs.Insert("Samples", fmt.Sprint(*d.Samples))
 	}
 	return kvs, nil
 }
