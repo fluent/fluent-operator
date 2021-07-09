@@ -50,6 +50,10 @@ spec:
                     description: Events number generated per second.
                     format: int32
                     type: integer
+                  samples:
+                    description: Sample events to generate.
+                    format: int32
+                    type: integer
                   tag:
                     description: Tag name associated to all records comming from this
                       plugin.
