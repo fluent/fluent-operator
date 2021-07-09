@@ -1,7 +1,7 @@
-
+VERSION?=$(shell cat VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
 FB_IMG ?= kubespheredev/fluent-bit:v1.7.3
-OP_IMG ?= kubespheredev/fluentbit-operator:latest
+OP_IMG ?= kubespheredev/fluentbit-operator:$(VERSION)
 MIGRATOR_IMG ?= kubespheredev/fluentbit-operator:migrator
 AMD64 ?= -amd64
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
@@ -45,6 +45,7 @@ deploy: manifests
 manifests: controller-gen
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 	kustomize build config/crd | sed -e '/creationTimestamp/d' > manifests/setup/fluentbit-operator-crd.yaml
+	kustomize build manifests/setup | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
 
 # Run go fmt against code
 fmt:

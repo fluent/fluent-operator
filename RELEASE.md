@@ -11,6 +11,10 @@ This page describes the release process and the currently planned schedule for u
 | v0.3.0           | 2020-11-10                                 | Guangzhe Huang (GitHub: @huanggze)     |
 | v0.4.0           | 2021-04-01                                 | Wanjun Lei (GitHub: @wanjunlei) |
 | v0.5.0           | 2021-04-14                                 | Wanjun Lei (GitHub: @wanjunlei)         |
+| v0.6.0           | 2021-06-03                                 | Wanjun Lei (GitHub: @wanjunlei)         |
+| v0.6.1           | 2021-06-11                                 | Benjamin Huo (GitHub: @benjaminhuo)         |
+| v0.6.2           | 2021-06-11                                 | Benjamin Huo (GitHub: @benjaminhuo)     |
+| v0.7.0           | 2021-06-29                                 | Wanjun Lei (GitHub: @wanjunlei)         |
 
 ## How to cut an individual release
 
