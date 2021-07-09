@@ -1,3 +1,14 @@
+## 0.7.1 / 2021-07-08
+
+- [ENHANCEMENT] fluent-bit-watcher: goroutine synchronization improvements. #74
+- [CHANGE] add hostpath to sample configurations and manifests. #72
+- [BUGFIX] Fix bug operator may crash when load plugin. #77
+
+## 0.7.0 / 2021-06-29
+
+- [ENHANCEMENT] Add support for plugin alias property in input and output specs. #64.
+- [CHANGE] Add fluent-bit-watcher. #62.
+
 ## 0.6.2 / 2021-06-11
 
 - [ENHANCEMENT] Update Kubernetes dependencies.
