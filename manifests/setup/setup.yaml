@@ -3187,7 +3187,7 @@ spec:
         app.kubernetes.io/name: fluentbit-operator
     spec:
       containers:
-      - image: kubesphere/fluentbit-operator:v0.7.0
+      - image: kubesphere/fluentbit-operator:v0.7.1
         name: fluentbit-operator
         resources:
           limits:
