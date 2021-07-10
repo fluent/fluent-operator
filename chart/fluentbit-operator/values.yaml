@@ -43,12 +43,25 @@ securityContext: {}
 
 resources:
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
-   limits:
-     cpu: 500m
-     memory: 200Mi
-   requests:
-     cpu: 10m
-     memory: 25Mi
+  fluentbit:
+  # Fluent Bit resources. User can adjust it based on the log volume.
+    resources:
+       limits:
+         cpu: 500m
+         memory: 200Mi
+       requests:
+         cpu: 10m
+         memory: 25Mi
+
+  operator:
+  # FluentBit operator resources. Usually user needn't to adjust these.
+    resources:
+      limits:
+        cpu: 200m
+        memory: 50Mi
+    requests:
+      cpu: 100m
+      memory: 20Mi
 
 output:
   es:
