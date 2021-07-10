@@ -40,7 +40,7 @@ spec:
       - name: fluentbit-operator
         image: {{  .Values.fluentbitOperatorImage.repository   }}:{{  .Values.fluentbitOperatorImage.tag }}
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resources.operator | indent 12 }}
         volumeMounts:
         - name: env
           mountPath: /fluentbit-operator
