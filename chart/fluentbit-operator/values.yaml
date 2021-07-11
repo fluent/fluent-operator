@@ -46,12 +46,12 @@ resources:
   fluentbit:
   # Fluent Bit resources. User can adjust it based on the log volume.
     resources:
-       limits:
-         cpu: 500m
-         memory: 200Mi
-       requests:
-         cpu: 10m
-         memory: 25Mi
+      limits:
+        cpu: 500m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 25Mi
 
   operator:
   # FluentBit operator resources. Usually user needn't to adjust these.
