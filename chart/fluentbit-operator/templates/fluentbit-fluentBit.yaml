@@ -10,7 +10,7 @@ spec:
     hostPath:
       path: /var/lib/fluent-bit/
   resources:
-    {{- toYaml .Values.resources.fluentbit | nindent 4  }}
+    {{- toYaml .Values.resources.fluentbit.resources | nindent 4  }}
   fluentBitConfigName: fluent-bit-config
   tolerations:
     - operator: Exists

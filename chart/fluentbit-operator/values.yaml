@@ -59,9 +59,9 @@ resources:
       limits:
         cpu: 200m
         memory: 50Mi
-    requests:
-      cpu: 100m
-      memory: 20Mi
+      requests:
+        cpu: 100m
+        memory: 20Mi
 
 output:
   es:
