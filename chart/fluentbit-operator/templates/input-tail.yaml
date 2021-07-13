@@ -11,7 +11,7 @@ spec:
     path: /var/log/containers/*.log
     parser: docker
     refreshIntervalSeconds: 10
-    memBufLimit: 5MB
+    memBufLimit: {{  .Values.input.tail.memBufLimit  }}
     skipLongLines: true
     db: /tail/pos.db
     dbSync: Normal

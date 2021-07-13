@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 fluentbitOperatorImage:
   repository: "kubesphere/fluentbit-operator"
-  tag: "v0.7.0"
+  tag: "v0.7.1"
 
 fluentbit:
   image: "kubespheredev/fluent-bit"
@@ -62,6 +62,16 @@ resources:
       requests:
         cpu: 100m
         memory: 20Mi
+
+#Set a limit of memory that Tail plugin can use when appending data to the Engine.
+#If the limit is reach, it will be paused; when the data is flushed it resumes.
+#if the inboud traffic is less than 2.4Mbps, setting memBufLimit to 5MB is enough
+#if the inboud traffic is less than 4.0Mbps, setting memBufLimit to 10MB is enough
+#if the inboud traffic is less than 13.64Mbps, setting memBufLimit to 50MB is enough
+input:
+  tail:
+    memBufLimit: 5MB
+
 
 output:
   #Configure the output plugin parameter in FluentBit.
