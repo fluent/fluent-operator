@@ -48,6 +48,9 @@ func (f *Forward) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
 	if f.Host != "" {
 		kvs.Insert("Host", f.Host)
 	}
+	if f.Port != nil {
+		kvs.Insert("Port", fmt.Sprint(*f.Port))
+	}
 	if f.TimeAsInteger != nil {
 		kvs.Insert("Time_as_Integer", fmt.Sprint(*f.TimeAsInteger))
 	}
