@@ -217,7 +217,7 @@ func stop() {
 		return
 	}
 
-	if err := cmd.Process.Kill(); err != nil {
+	if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
 		_ = level.Info(logger).Log("msg", "Kill Fluent Bit error", "error", err)
 	} else {
 		_ = level.Info(logger).Log("msg", "Killed Fluent Bit")
