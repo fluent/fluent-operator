@@ -30,6 +30,8 @@ type FluentBitSpec struct {
 	Image string `json:"image,omitempty"`
 	// Fluent Bit image pull policy.
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy,omitempty"`
+	// Fluent Bit image pull secret
+	ImagePullSecrets []corev1.LocalObjectReference `json:"imagePullSecrets,omitempty"`
 	// Storage for position db. You will use it if tail input is enabled.
 	PositionDB corev1.VolumeSource `json:"positionDB,omitempty"`
 	// Container log path
