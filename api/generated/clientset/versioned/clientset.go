@@ -22,24 +22,24 @@ import (
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
-	fluentbitoperatorv1alpha2 "kubesphere.io/fluentbit-operator/api/generated/clientset/versioned/typed/fluentbitoperator/v1alpha2"
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/api/generated/clientset/versioned/typed/fluentbitoperator/v1alpha2"
 )
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	FluentbitoperatorV1alpha2() fluentbitoperatorv1alpha2.FluentbitoperatorV1alpha2Interface
+	LoggingV1alpha2() loggingv1alpha2.LoggingV1alpha2Interface
 }
 
 // Clientset contains the clients for groups. Each group has exactly one
 // version included in a Clientset.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	fluentbitoperatorV1alpha2 *fluentbitoperatorv1alpha2.FluentbitoperatorV1alpha2Client
+	loggingV1alpha2 *loggingv1alpha2.LoggingV1alpha2Client
 }
 
-// FluentbitoperatorV1alpha2 retrieves the FluentbitoperatorV1alpha2Client
-func (c *Clientset) FluentbitoperatorV1alpha2() fluentbitoperatorv1alpha2.FluentbitoperatorV1alpha2Interface {
-	return c.fluentbitoperatorV1alpha2
+// LoggingV1alpha2 retrieves the LoggingV1alpha2Client
+func (c *Clientset) LoggingV1alpha2() loggingv1alpha2.LoggingV1alpha2Interface {
+	return c.loggingV1alpha2
 }
 
 // Discovery retrieves the DiscoveryClient
@@ -63,7 +63,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	}
 	var cs Clientset
 	var err error
-	cs.fluentbitoperatorV1alpha2, err = fluentbitoperatorv1alpha2.NewForConfig(&configShallowCopy)
+	cs.loggingV1alpha2, err = loggingv1alpha2.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 // panics if there is an error in the config.
 func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
-	cs.fluentbitoperatorV1alpha2 = fluentbitoperatorv1alpha2.NewForConfigOrDie(c)
+	cs.loggingV1alpha2 = loggingv1alpha2.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
 	return &cs
@@ -88,7 +88,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.fluentbitoperatorV1alpha2 = fluentbitoperatorv1alpha2.New(c)
+	cs.loggingV1alpha2 = loggingv1alpha2.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)
 	return &cs

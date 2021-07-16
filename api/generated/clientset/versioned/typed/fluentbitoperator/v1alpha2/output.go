@@ -54,7 +54,7 @@ type outputs struct {
 }
 
 // newOutputs returns a Outputs
-func newOutputs(c *FluentbitoperatorV1alpha2Client, namespace string) *outputs {
+func newOutputs(c *LoggingV1alpha2Client, namespace string) *outputs {
 	return &outputs{
 		client: c.RESTClient(),
 		ns:     namespace,

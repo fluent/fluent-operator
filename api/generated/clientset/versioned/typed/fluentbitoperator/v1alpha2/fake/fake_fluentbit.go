@@ -30,13 +30,13 @@ import (
 
 // FakeFluentBits implements FluentBitInterface
 type FakeFluentBits struct {
-	Fake *FakeFluentbitoperatorV1alpha2
+	Fake *FakeLoggingV1alpha2
 	ns   string
 }
 
-var fluentbitsResource = schema.GroupVersionResource{Group: "fluentbitoperator", Version: "v1alpha2", Resource: "fluentbits"}
+var fluentbitsResource = schema.GroupVersionResource{Group: "logging.kubesphere.io", Version: "v1alpha2", Resource: "fluentbits"}
 
-var fluentbitsKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "FluentBit"}
+var fluentbitsKind = schema.GroupVersionKind{Group: "logging.kubesphere.io", Version: "v1alpha2", Kind: "FluentBit"}
 
 // Get takes name of the fluentBit, and returns the corresponding fluentBit object, and an error if there is any.
 func (c *FakeFluentBits) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.FluentBit, err error) {

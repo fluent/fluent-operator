@@ -22,7 +22,7 @@ import (
 	"kubesphere.io/fluentbit-operator/api/generated/clientset/versioned/scheme"
 )
 
-type FluentbitoperatorV1alpha2Interface interface {
+type LoggingV1alpha2Interface interface {
 	RESTClient() rest.Interface
 	FiltersGetter
 	FluentBitsGetter
@@ -32,37 +32,37 @@ type FluentbitoperatorV1alpha2Interface interface {
 	ParsersGetter
 }
 
-// FluentbitoperatorV1alpha2Client is used to interact with features provided by the fluentbitoperator group.
-type FluentbitoperatorV1alpha2Client struct {
+// LoggingV1alpha2Client is used to interact with features provided by the logging.kubesphere.io group.
+type LoggingV1alpha2Client struct {
 	restClient rest.Interface
 }
 
-func (c *FluentbitoperatorV1alpha2Client) Filters(namespace string) FilterInterface {
+func (c *LoggingV1alpha2Client) Filters(namespace string) FilterInterface {
 	return newFilters(c, namespace)
 }
 
-func (c *FluentbitoperatorV1alpha2Client) FluentBits(namespace string) FluentBitInterface {
+func (c *LoggingV1alpha2Client) FluentBits(namespace string) FluentBitInterface {
 	return newFluentBits(c, namespace)
 }
 
-func (c *FluentbitoperatorV1alpha2Client) FluentBitConfigs(namespace string) FluentBitConfigInterface {
+func (c *LoggingV1alpha2Client) FluentBitConfigs(namespace string) FluentBitConfigInterface {
 	return newFluentBitConfigs(c, namespace)
 }
 
-func (c *FluentbitoperatorV1alpha2Client) Inputs(namespace string) InputInterface {
+func (c *LoggingV1alpha2Client) Inputs(namespace string) InputInterface {
 	return newInputs(c, namespace)
 }
 
-func (c *FluentbitoperatorV1alpha2Client) Outputs(namespace string) OutputInterface {
+func (c *LoggingV1alpha2Client) Outputs(namespace string) OutputInterface {
 	return newOutputs(c, namespace)
 }
 
-func (c *FluentbitoperatorV1alpha2Client) Parsers(namespace string) ParserInterface {
+func (c *LoggingV1alpha2Client) Parsers(namespace string) ParserInterface {
 	return newParsers(c, namespace)
 }
 
-// NewForConfig creates a new FluentbitoperatorV1alpha2Client for the given config.
-func NewForConfig(c *rest.Config) (*FluentbitoperatorV1alpha2Client, error) {
+// NewForConfig creates a new LoggingV1alpha2Client for the given config.
+func NewForConfig(c *rest.Config) (*LoggingV1alpha2Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -71,12 +71,12 @@ func NewForConfig(c *rest.Config) (*FluentbitoperatorV1alpha2Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &FluentbitoperatorV1alpha2Client{client}, nil
+	return &LoggingV1alpha2Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new FluentbitoperatorV1alpha2Client for the given config and
+// NewForConfigOrDie creates a new LoggingV1alpha2Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *FluentbitoperatorV1alpha2Client {
+func NewForConfigOrDie(c *rest.Config) *LoggingV1alpha2Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -84,9 +84,9 @@ func NewForConfigOrDie(c *rest.Config) *FluentbitoperatorV1alpha2Client {
 	return client
 }
 
-// New creates a new FluentbitoperatorV1alpha2Client for the given RESTClient.
-func New(c rest.Interface) *FluentbitoperatorV1alpha2Client {
-	return &FluentbitoperatorV1alpha2Client{c}
+// New creates a new LoggingV1alpha2Client for the given RESTClient.
+func New(c rest.Interface) *LoggingV1alpha2Client {
+	return &LoggingV1alpha2Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -104,7 +104,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FluentbitoperatorV1alpha2Client) RESTClient() rest.Interface {
+func (c *LoggingV1alpha2Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}

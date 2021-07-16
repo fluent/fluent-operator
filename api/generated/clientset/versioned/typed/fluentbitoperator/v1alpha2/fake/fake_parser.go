@@ -30,13 +30,13 @@ import (
 
 // FakeParsers implements ParserInterface
 type FakeParsers struct {
-	Fake *FakeFluentbitoperatorV1alpha2
+	Fake *FakeLoggingV1alpha2
 	ns   string
 }
 
-var parsersResource = schema.GroupVersionResource{Group: "fluentbitoperator", Version: "v1alpha2", Resource: "parsers"}
+var parsersResource = schema.GroupVersionResource{Group: "logging.kubesphere.io", Version: "v1alpha2", Resource: "parsers"}
 
-var parsersKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "Parser"}
+var parsersKind = schema.GroupVersionKind{Group: "logging.kubesphere.io", Version: "v1alpha2", Kind: "Parser"}
 
 // Get takes name of the parser, and returns the corresponding parser object, and an error if there is any.
 func (c *FakeParsers) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Parser, err error) {

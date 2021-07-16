@@ -30,13 +30,13 @@ import (
 
 // FakeFilters implements FilterInterface
 type FakeFilters struct {
-	Fake *FakeFluentbitoperatorV1alpha2
+	Fake *FakeLoggingV1alpha2
 	ns   string
 }
 
-var filtersResource = schema.GroupVersionResource{Group: "fluentbitoperator", Version: "v1alpha2", Resource: "filters"}
+var filtersResource = schema.GroupVersionResource{Group: "logging.kubesphere.io", Version: "v1alpha2", Resource: "filters"}
 
-var filtersKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "Filter"}
+var filtersKind = schema.GroupVersionKind{Group: "logging.kubesphere.io", Version: "v1alpha2", Kind: "Filter"}
 
 // Get takes name of the filter, and returns the corresponding filter object, and an error if there is any.
 func (c *FakeFilters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Filter, err error) {

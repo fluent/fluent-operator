@@ -30,13 +30,13 @@ import (
 
 // FakeInputs implements InputInterface
 type FakeInputs struct {
-	Fake *FakeFluentbitoperatorV1alpha2
+	Fake *FakeLoggingV1alpha2
 	ns   string
 }
 
-var inputsResource = schema.GroupVersionResource{Group: "fluentbitoperator", Version: "v1alpha2", Resource: "inputs"}
+var inputsResource = schema.GroupVersionResource{Group: "logging.kubesphere.io", Version: "v1alpha2", Resource: "inputs"}
 
-var inputsKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "Input"}
+var inputsKind = schema.GroupVersionKind{Group: "logging.kubesphere.io", Version: "v1alpha2", Kind: "Input"}
 
 // Get takes name of the input, and returns the corresponding input object, and an error if there is any.
 func (c *FakeInputs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Input, err error) {

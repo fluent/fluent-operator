@@ -54,7 +54,7 @@ type parsers struct {
 }
 
 // newParsers returns a Parsers
-func newParsers(c *FluentbitoperatorV1alpha2Client, namespace string) *parsers {
+func newParsers(c *LoggingV1alpha2Client, namespace string) *parsers {
 	return &parsers{
 		client: c.RESTClient(),
 		ns:     namespace,
