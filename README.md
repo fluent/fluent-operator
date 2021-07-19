@@ -32,18 +32,18 @@ Once installed, the Fluent Bit Operator provides the following features:
 
 Fluent Bit Operator defines five custom resources using CustomResourceDefinition (CRD):
 
-- **`FluentBit`**: Defines Fluent Bit instances and its associated config. (It requires to work with kubesphere/fluent-bit for dynamic configuration.)
+- **`FluentBit`**: Defines the Fluent Bit DaemonSet and its configs. A custom Fluent Bit image `kubesphere/fluent-bit` is requried to work with FluentBit Operator for dynamic configuration reloading.
 - **`FluentBitConfig`**: Select input/filter/output plugins and generates the final config into a Secret.
 - **`Input`**: Defines input config sections.
 - **`Parser`**: Defines parser config sections.
-- **`Filter`**: Defines filter config sections. 
+- **`Filter`**: Defines filter config sections.
 - **`Output`**: Defines output config sections.
 
-Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent Bit config section, which are selected by **`FluentBitConfig`** via label selectors. The operator watches those objects, constructs the final config and creates a Secret to store the config, which will be mounted by Fluent Bit instances owned by **`FluentBit`**. The whole workflow can be illustrated as below:
+Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent Bit config section, which are selected by **`FluentBitConfig`** via label selectors. The operator watches those objects, constructs the final config, and finally creates a Secret to store the config. This secret will be mounted into the Fluent Bit DaemonSet. The entire workflow looks like below:
 
 ![Fluent Bit workflow](docs/images/fluent-bit-operator-workflow.svg)
 
-To enable fluent-bit to pick up and use the latest config whenever the fluent-bit config changes, a wrapper called fluent-bit watcher is added to restart the fluent-bit process as soon as fluent-bit config changes are detected. This way the fluent-bit pod needn't be restarted to reload the new config. The fluent-bit config is reloaded in this way because there is no reload interface in fluent-bit itself, please refer to this [known issue](https://github.com/fluent/fluent-bit/issues/365) for more details.
+To enable fluent-bit to pick up and use the latest config whenever the fluent-bit config changes, a wrapper called fluent-bit watcher is added to restart the fluent-bit process as soon as fluent-bit config changes are detected. This way the fluent-bit pod needn't be restarted to reload the new config. The fluent-bit config is reloaded in this way because there is no reload interface in fluent-bit itself. Please refer to this [known issue](https://github.com/fluent/fluent-bit/issues/365) for more details.
 
 ![Kubesphere-logging-fluentbit](docs/images/kubesphere-logging-fluentbit.svg)
 
@@ -51,7 +51,7 @@ To enable fluent-bit to pick up and use the latest config whenever the fluent-bi
 
 ### Prerequisites
 
-Kubernetes v1.16.13+ is necessary for running Fluent Bit Operator, while it is always recommended to operate with the latest version.
+Kubernetes v1.16.13+ is necessary for running Fluent Bit Operator.
 
 ### Quick Start
 
@@ -85,11 +85,11 @@ Success!
 
 ### Logging Stack
 
-This guide provisions a logging pipeline for your work environment. It installs Fluent Bit as DaemonSet for collecting container logs, filtering unneeded fields, and forwarding them to the target destinations (eg. Elasticsearch, Kafka, and Fluentd).
+This guide provisions a logging pipeline including the Fluent Bit DaemonSet and its log input/filter/output configurations.
 
 ![logging stack](docs/images/logging-stack.svg)
 
-Note that you need a running Elasticsearch v5+ to receive data before start. **Remember to adjust [output-elasticsearch.yaml](manifests/logging-stack/output-elasticsearch.yaml) to your es setup**. Otherwise fluent bit will spam errors. Kafka and Fluentd are optional and switched off by default.
+> Note that you need a running Elasticsearch v5+ cluster to receive log data before start. **Remember to adjust [output-elasticsearch.yaml](manifests/logging-stack/output-elasticsearch.yaml) to your own es setup**. Kafka and Fluentd outputs are optional and are turned off by default.
 
 ```shell
 kubectl apply -f manifests/setup
@@ -123,7 +123,7 @@ green open ks-logstash-log-2021.04.06 QeI-k_LoQZ2h1z23F3XiHg  5 1 404879 0 298.4
 
 ## API Doc
 
-The listing below shows supported plugins currently. It is based on Fluent Bit v1.7.3. For more information, please refer to the API docs of each plugin.
+The list below shows supported plugins which are based on Fluent Bit v1.7.x+. For more information, please refer to the API docs of each plugin.
 
 - [Input](docs/crd.md#input)
     - [dummy](docs/plugins/input/dummy.md)
@@ -158,9 +158,9 @@ The listing below shows supported plugins currently. It is based on Fluent Bit v
 
 ### Plugin Grouping
 
-Input, filter, and output plugins are connected by the mechanism of tagging and matching. For input and output plugins, always create `Input` or `Output` instances for every plugin. Don't aggregate multiple inputs or outputs into one `Input` or `Output` object, except you have a good reason to do so. Take the demo `logging stack` for example, we have one yaml file for each output.
+Input, filter, and output plugins are connected by label selectors. For input and output plugins, always create `Input` or `Output` CRs for every plugin. Don't aggregate multiple inputs or outputs into one `Input` or `Output` object, except you have a good reason to do so. Take the demo `logging stack` for example, we have one yaml file for each output.
 
-However, for filter plugins, if you want a filter chain, the order of filters matters. You need organize multiple filters into an array as the demo [logging stack](manifests/logging-stack/filter-kubernetes.yaml) suggests.
+However, for filter plugins, if you want a filter chain, the order of filters matters. You need to organize multiple filters into an array as the demo [logging stack](manifests/logging-stack/filter-kubernetes.yaml) suggests.
 
 ### Path Convention
 
@@ -208,4 +208,4 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 
 ### Manifests
 
-Most files under the folder [manifests/setup](manifests/setup) are automatically generated from [config](config). Don't edit them directly, run `make manifests` instead, then replace them properly.
+Most files under the folder [manifests/setup](manifests/setup) are automatically generated from [config](config). Don't edit them directly, run `make manifests` instead, then replace these files accordingly.
