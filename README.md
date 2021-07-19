@@ -115,6 +115,12 @@ kubectl apply -f manifests/logging-stack
 # kubectl kustomize manifests/logging-stack/ | kubectl apply -f -
 ```
 
+> You also can deploy Fluent Bit Operator with Helm chart.
+Note: For the Helm-based installation you need Helm v3.2.1 or later.
+ 
+```
+helm install  --create-namespace -n kubesphere-logging-system chart/fluentbit-operator/ --generate-name
+```
 Within a couple of minutes, you should observe an index available:
 
 ```shell
