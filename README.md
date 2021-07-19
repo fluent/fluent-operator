@@ -53,21 +53,25 @@ To enable fluent-bit to pick up and use the latest config whenever the fluent-bi
 
 Kubernetes v1.16.13+ is necessary for running Fluent Bit Operator.
 
-### Quick Start
-
-The quick start instructs you to deploy fluent bit with `dummy` as input and `stdout` as output, which is equivalent to execute the binary with `fluent-bit -i dummy -o stdout`.
+### Install
 
 Install the latest stable version
 
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.7/manifests/setup/setup.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.7/manifests/quick-start/quick-start.yaml
 ```
 
 Install the development version
 
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/setup/setup.yaml
+```
+
+### Quick Start
+
+The quick start instructs you to deploy fluent bit with `dummy` as input and `stdout` as output, which is equivalent to execute the binary with `fluent-bit -i dummy -o stdout`.
+
+```shell
 kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/quick-start/quick-start.yaml
 ```
 
@@ -81,18 +85,21 @@ Once everything is up, you'll observe messages in fluent bit pod logs like below
 [0] my_dummy: [1587991570.000172328, {"message"=>"dummy"}]
 ```
 
-Success!
+It means the FluentBit Operator works properly if you see the above messages, you can delete the quick start test by
 
-### Logging Stack
+```shell
+kubectl delete -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/quick-start/quick-start.yaml
+```
 
-This guide provisions a logging pipeline including the Fluent Bit DaemonSet and its log input/filter/output configurations.
+### Collect Kubernetes logs
+
+This guide provisions a logging pipeline including the Fluent Bit DaemonSet and its log input/filter/output configurations to collect Kubernetes logs including container logs and kubelet logs.
 
 ![logging stack](docs/images/logging-stack.svg)
 
 > Note that you need a running Elasticsearch v5+ cluster to receive log data before start. **Remember to adjust [output-elasticsearch.yaml](manifests/logging-stack/output-elasticsearch.yaml) to your own es setup**. Kafka and Fluentd outputs are optional and are turned off by default.
 
 ```shell
-kubectl apply -f manifests/setup
 kubectl apply -f manifests/logging-stack
 ```
 
@@ -105,12 +112,11 @@ green open ks-logstash-log-2020.04.26 uwQuoO90TwyigqYRW7MDYQ 1 1  99937 0  31.2m
 
 Success!
 
-#### Auditd
+#### Collect auditd logs
 
 The Linux audit framework provides a CAPP-compliant (Controlled Access Protection Profile) auditing system that reliably collects information about any security-relevant (or non-security-relevant) event on a system. Refer to `manifests/logging-stack/auditd`, it supports a method for collecting audit logs from the Linux audit framework.
 
 ```shell
-kubectl apply -f manifests/setup
 kubectl apply -f manifests/logging-stack/auditd
 ```
 
