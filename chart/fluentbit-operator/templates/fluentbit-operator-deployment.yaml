@@ -45,3 +45,7 @@ spec:
         - name: env
           mountPath: /fluentbit-operator
       serviceAccountName: fluentbit-operator
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
