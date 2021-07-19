@@ -1,8 +1,7 @@
 VERSION?=$(shell cat VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
-FB_IMG ?= kubespheredev/fluent-bit:v1.7.3
-OP_IMG ?= kubespheredev/fluentbit-operator:$(VERSION)
-MIGRATOR_IMG ?= kubespheredev/fluentbit-operator:migrator
+FB_IMG ?= kubesphere/fluent-bit:v1.7.3
+OP_IMG ?= kubesphere/fluentbit-operator:$(VERSION)
 AMD64 ?= -amd64
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true"
@@ -71,12 +70,8 @@ build-fb:
 build-op: test
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/manager/Dockerfile . -t ${OP_IMG}
 
-# Build amd64/arm64 Fluent Bit migtator container image
-build-migtator: test
-	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/migrator/Dockerfile . -t ${MIGRATOR_IMG}
-
 # Build all amd64 docker images
-build-amd64: build-op-amd64 build-migtator-amd64
+build-amd64: build-op-amd64
 
 # Build amd64 Fluent Bit container image
 build-fb-amd64:
@@ -86,14 +81,9 @@ build-fb-amd64:
 build-op-amd64: test
 	docker build -f cmd/manager/Dockerfile . -t ${OP_IMG}${AMD64}
 
-# Build amd64 Fluent Bit migtator container image
-build-migtator-amd64: test
-	docker build -f cmd/migrator/Dockerfile . -t ${MIGRATOR_IMG}${AMD64}
-
 # Push the amd64 docker image
 push-amd64:
 	docker push ${OP_IMG}${AMD64}
-	docker push ${MIGRATOR_IMG}${AMD64}
 
 # find or download controller-gen
 # download controller-gen if necessary
