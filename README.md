@@ -202,12 +202,13 @@ To enable parsers, you must set the value of `FluentBitConfig.Spec.Service.Parse
 
 Check out the demo in the folder `/manifests/regex-parser` for how to use a custom regex parser.
 
-## Features In Plan
+## Roadmap 
 
-- [x] Support custom parser plugins
-- [ ] Support Fluentd as the log aggregation layer
-- [ ] Support custom Input/Filter/Output plugins
-- [ ] Integrate logging sidecar
+- [ ] Support containerd log format
+- [ ] Add Fluentd CRDs as the log aggregation layer with group name `fluentd.fluent.io`
+- [ ] Add FluentBit Cluster CRDs with new group name `fluentbit.fluent.io`
+- [ ] Rename the entire project to Fluent Operator
+- [ ] Support more Fluentd & FluentBit plugins
 
 ## Development
 
