@@ -54,7 +54,7 @@ type inputs struct {
 }
 
 // newInputs returns a Inputs
-func newInputs(c *FluentbitoperatorV1alpha2Client, namespace string) *inputs {
+func newInputs(c *LoggingV1alpha2Client, namespace string) *inputs {
 	return &inputs{
 		client: c.RESTClient(),
 		ns:     namespace,

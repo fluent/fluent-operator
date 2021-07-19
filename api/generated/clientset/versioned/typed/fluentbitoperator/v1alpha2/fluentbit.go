@@ -55,7 +55,7 @@ type fluentBits struct {
 }
 
 // newFluentBits returns a FluentBits
-func newFluentBits(c *FluentbitoperatorV1alpha2Client, namespace string) *fluentBits {
+func newFluentBits(c *LoggingV1alpha2Client, namespace string) *fluentBits {
 	return &fluentBits{
 		client: c.RESTClient(),
 		ns:     namespace,

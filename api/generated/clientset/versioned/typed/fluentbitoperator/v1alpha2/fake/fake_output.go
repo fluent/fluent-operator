@@ -30,13 +30,13 @@ import (
 
 // FakeOutputs implements OutputInterface
 type FakeOutputs struct {
-	Fake *FakeFluentbitoperatorV1alpha2
+	Fake *FakeLoggingV1alpha2
 	ns   string
 }
 
-var outputsResource = schema.GroupVersionResource{Group: "fluentbitoperator", Version: "v1alpha2", Resource: "outputs"}
+var outputsResource = schema.GroupVersionResource{Group: "logging.kubesphere.io", Version: "v1alpha2", Resource: "outputs"}
 
-var outputsKind = schema.GroupVersionKind{Group: "fluentbitoperator", Version: "v1alpha2", Kind: "Output"}
+var outputsKind = schema.GroupVersionKind{Group: "logging.kubesphere.io", Version: "v1alpha2", Kind: "Output"}
 
 // Get takes name of the output, and returns the corresponding output object, and an error if there is any.
 func (c *FakeOutputs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Output, err error) {

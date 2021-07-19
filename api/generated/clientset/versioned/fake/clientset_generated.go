@@ -23,8 +23,8 @@ import (
 	fakediscovery "k8s.io/client-go/discovery/fake"
 	"k8s.io/client-go/testing"
 	clientset "kubesphere.io/fluentbit-operator/api/generated/clientset/versioned"
-	fluentbitoperatorv1alpha2 "kubesphere.io/fluentbit-operator/api/generated/clientset/versioned/typed/fluentbitoperator/v1alpha2"
-	fakefluentbitoperatorv1alpha2 "kubesphere.io/fluentbit-operator/api/generated/clientset/versioned/typed/fluentbitoperator/v1alpha2/fake"
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/api/generated/clientset/versioned/typed/fluentbitoperator/v1alpha2"
+	fakeloggingv1alpha2 "kubesphere.io/fluentbit-operator/api/generated/clientset/versioned/typed/fluentbitoperator/v1alpha2/fake"
 )
 
 // NewSimpleClientset returns a clientset that will respond with the provided objects.
@@ -74,7 +74,7 @@ func (c *Clientset) Tracker() testing.ObjectTracker {
 
 var _ clientset.Interface = &Clientset{}
 
-// FluentbitoperatorV1alpha2 retrieves the FluentbitoperatorV1alpha2Client
-func (c *Clientset) FluentbitoperatorV1alpha2() fluentbitoperatorv1alpha2.FluentbitoperatorV1alpha2Interface {
-	return &fakefluentbitoperatorv1alpha2.FakeFluentbitoperatorV1alpha2{Fake: &c.Fake}
+// LoggingV1alpha2 retrieves the LoggingV1alpha2Client
+func (c *Clientset) LoggingV1alpha2() loggingv1alpha2.LoggingV1alpha2Interface {
+	return &fakeloggingv1alpha2.FakeLoggingV1alpha2{Fake: &c.Fake}
 }

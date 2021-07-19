@@ -54,7 +54,7 @@ type filters struct {
 }
 
 // newFilters returns a Filters
-func newFilters(c *FluentbitoperatorV1alpha2Client, namespace string) *filters {
+func newFilters(c *LoggingV1alpha2Client, namespace string) *filters {
 	return &filters{
 		client: c.RESTClient(),
 		ns:     namespace,

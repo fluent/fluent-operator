@@ -22,37 +22,37 @@ import (
 	v1alpha2 "kubesphere.io/fluentbit-operator/api/generated/clientset/versioned/typed/fluentbitoperator/v1alpha2"
 )
 
-type FakeFluentbitoperatorV1alpha2 struct {
+type FakeLoggingV1alpha2 struct {
 	*testing.Fake
 }
 
-func (c *FakeFluentbitoperatorV1alpha2) Filters(namespace string) v1alpha2.FilterInterface {
+func (c *FakeLoggingV1alpha2) Filters(namespace string) v1alpha2.FilterInterface {
 	return &FakeFilters{c, namespace}
 }
 
-func (c *FakeFluentbitoperatorV1alpha2) FluentBits(namespace string) v1alpha2.FluentBitInterface {
+func (c *FakeLoggingV1alpha2) FluentBits(namespace string) v1alpha2.FluentBitInterface {
 	return &FakeFluentBits{c, namespace}
 }
 
-func (c *FakeFluentbitoperatorV1alpha2) FluentBitConfigs(namespace string) v1alpha2.FluentBitConfigInterface {
+func (c *FakeLoggingV1alpha2) FluentBitConfigs(namespace string) v1alpha2.FluentBitConfigInterface {
 	return &FakeFluentBitConfigs{c, namespace}
 }
 
-func (c *FakeFluentbitoperatorV1alpha2) Inputs(namespace string) v1alpha2.InputInterface {
+func (c *FakeLoggingV1alpha2) Inputs(namespace string) v1alpha2.InputInterface {
 	return &FakeInputs{c, namespace}
 }
 
-func (c *FakeFluentbitoperatorV1alpha2) Outputs(namespace string) v1alpha2.OutputInterface {
+func (c *FakeLoggingV1alpha2) Outputs(namespace string) v1alpha2.OutputInterface {
 	return &FakeOutputs{c, namespace}
 }
 
-func (c *FakeFluentbitoperatorV1alpha2) Parsers(namespace string) v1alpha2.ParserInterface {
+func (c *FakeLoggingV1alpha2) Parsers(namespace string) v1alpha2.ParserInterface {
 	return &FakeParsers{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakeFluentbitoperatorV1alpha2) RESTClient() rest.Interface {
+func (c *FakeLoggingV1alpha2) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }
