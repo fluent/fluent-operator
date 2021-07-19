@@ -59,12 +59,20 @@ Install the latest stable version
 
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.7/manifests/setup/setup.yaml
+
+# You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch 
+# and then use command below to install to another namespace
+# kubectl kustomize manifests/setup/ | kubectl apply -f -
 ```
 
 Install the development version
 
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/setup/setup.yaml
+
+# You can change the namespace in manifests/setup/kustomization.yaml 
+# and then use command below to install to another namespace
+# kubectl kustomize manifests/setup/ | kubectl apply -f -
 ```
 
 ### Quick Start
@@ -101,6 +109,10 @@ This guide provisions a logging pipeline including the Fluent Bit DaemonSet and 
 
 ```shell
 kubectl apply -f manifests/logging-stack
+
+# You can change the namespace in manifests/logging-stack/kustomization.yaml 
+# and then use command below to install to another namespace
+# kubectl kustomize manifests/logging-stack/ | kubectl apply -f -
 ```
 
 Within a couple of minutes, you should observe an index available:
@@ -118,6 +130,10 @@ The Linux audit framework provides a CAPP-compliant (Controlled Access Protectio
 
 ```shell
 kubectl apply -f manifests/logging-stack/auditd
+
+# You can change the namespace in manifests/logging-stack/auditd/kustomization.yaml 
+# and then use command below to install to another namespace
+# kubectl kustomize manifests/logging-stack/auditd/ | kubectl apply -f -
 ```
 
 Within a couple of minutes, you should observe an index available:

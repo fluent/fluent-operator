@@ -8,3 +8,6 @@ resources:
 - fluentbit-operator-crd.yaml
 - fluentbit-operator-clusterRole.yaml
 - fluentbit-operator-serviceAccount.yaml
+
+# Change to the namespace you want such as: 
+# namespace: fluent
