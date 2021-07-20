@@ -119,7 +119,7 @@ kubectl apply -f manifests/logging-stack
 Note: For the Helm-based installation you need Helm v3.2.1 or later.
  
 ```
-helm install  --create-namespace -n kubesphere-logging-system chart/fluentbit-operator/ --generate-name
+helm install fluentbit-operator  --create-namespace -n kubesphere-logging-system chart/fluentbit-operator/
 ```
 Within a couple of minutes, you should observe an index available:
 
