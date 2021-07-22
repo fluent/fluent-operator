@@ -16,6 +16,7 @@ Once installed, the Fluent Bit Operator provides the following features:
   - [Quick Start](#quick-start)
   - [Logging Stack](#logging-stack)
     - [Auditd](#auditd)
+- [Monitoring](#monitoring)
 - [API Doc](#api-doc)
 - [Best Practice](#best-practice)
   - [Plugin Grouping](#plugin-grouping)
@@ -149,6 +150,83 @@ $ curl localhost:9200/_cat/indices
 green open ks-logstash-log-2021.04.06 QeI-k_LoQZ2h1z23F3XiHg  5 1 404879 0 298.4mb 149.2mb
 ```
 
+## Monitoring
+
+Fluent Bit comes with a built-in HTTP Server. According to the official [documentation](https://docs.fluentbit.io/manual/administration/monitoring) of fluentbit You can enable this by enabling the HTTP server from the fluent bit configuration file:
+
+```conf
+[SERVICE]
+    HTTP_Server  On
+    HTTP_Listen  0.0.0.0
+    HTTP_PORT    2020
+```
+
+When you use the kubesphere/fluentbit-operator, You can enable this from `FluentBitConfig` manifest. Example is below:
+
+```yaml
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: FluentBitConfig
+metadata:
+  name: fluent-bit-config
+  namespace: logging-system
+spec:
+  filterSelector:
+    matchLabels:
+      logging.kubesphere.io/enabled: 'true'
+  inputSelector:
+    matchLabels:
+      logging.kubesphere.io/enabled: 'true'
+  outputSelector:
+    matchLabels:
+      logging.kubesphere.io/enabled: 'true'
+  service:
+    httpListen: 0.0.0.0
+    httpPort: 2020
+    httpServer: true
+    parsersFile: parsers.conf
+
+```
+
+Once HTTP server is enabled, you should be able to get the information:
+
+```bash
+curl <podIP>:2020 | jq .
+
+{
+  "fluent-bit": {
+    "version": "1.7.3",
+    "edition": "Community",
+    "flags": [
+      "FLB_HAVE_PARSER",
+      "FLB_HAVE_RECORD_ACCESSOR",
+      "FLB_HAVE_STREAM_PROCESSOR",
+      "FLB_HAVE_TLS",
+      "FLB_HAVE_OPENSSL",
+      "FLB_HAVE_AWS",
+      "FLB_HAVE_SIGNV4",
+      "FLB_HAVE_SQLDB",
+      "FLB_HAVE_METRICS",
+      "FLB_HAVE_HTTP_SERVER",
+      "FLB_HAVE_SYSTEMD",
+      "FLB_HAVE_FORK",
+      "FLB_HAVE_TIMESPEC_GET",
+      "FLB_HAVE_GMTOFF",
+      "FLB_HAVE_UNIX_SOCKET",
+      "FLB_HAVE_PROXY_GO",
+      "FLB_HAVE_JEMALLOC",
+      "FLB_HAVE_LIBBACKTRACE",
+      "FLB_HAVE_REGEX",
+      "FLB_HAVE_UTF8_ENCODER",
+      "FLB_HAVE_LUAJIT",
+      "FLB_HAVE_C_TLS",
+      "FLB_HAVE_ACCEPT4",
+      "FLB_HAVE_INOTIFY"
+    ]
+  }
+}
+```
+
+
 ## API Doc
 
 The list below shows supported plugins which are based on Fluent Bit v1.7.x+. For more information, please refer to the API docs of each plugin.
@@ -204,7 +282,7 @@ Path to file in Fluent Bit config should be well regulated. Fluent Bit Operator 
 
 ## Custom Parser
 
-To enable parsers, you must set the value of `FluentBitConfig.Spec.Service.ParsersFile` to `parsers.conf`. Your custom parsers will be included into the built-in parser config via `@INCLUDE /fluent-bit/config/parsers.conf`. Note that the parsers.conf contains a few built-in parsers, for example, docker. Read [parsers.conf](https://github.com/kubesphere/fluent-bit/blob/v1.6.2-reload/conf/parsers.conf) for more information.
+To enable parsers, you must set the value of `FluentBitConfig.Spec.Service.ParsersFile` to `parsers.conf`. Your custom parsers will be included into the built-in parser config via `@INCLUDE /fluent-bit/config/parsers.conf`. Note that the parsers.conf contains a few built-in parsers, for example, docker. Read [parsers.conf](https://github.com/kubesphere/fluentbit-operator/blob/master/conf/parsers.conf) for more information.
 
 Check out the demo in the folder `/manifests/regex-parser` for how to use a custom regex parser.
 
