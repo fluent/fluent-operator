@@ -1,3 +1,10 @@
+## 0.8.0 / 2021-07-23
+
+- [ENHANCEMENT] Support to set imagePullSecrets for operator when install with helm. #93
+- [ENHANCEMENT] Support to set imagePullSecrets for Fluent bit when install with helm. #94
+- [BUGFIX] Fix bug the forward output can not set port. #89
+- [BUGFIX] Fix bug it will loss log when damemonset restart. #90
+
 ## 0.7.1 / 2021-07-08
 
 - [ENHANCEMENT] fluent-bit-watcher: goroutine synchronization improvements. #74
