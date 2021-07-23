@@ -1,9 +1,15 @@
 ## 0.8.0 / 2021-07-23
 
-- [ENHANCEMENT] Support to set imagePullSecrets for operator when install with helm. #93
-- [ENHANCEMENT] Support to set imagePullSecrets for Fluent bit when install with helm. #94
-- [BUGFIX] Fix bug the forward output can not set port. #89
+- [FEATURE] Support setting imagePullSecrets for both operator and fluentbit #93 #94
+- [FEATURE] Add switch to input.tail.memBufLimit in helm chart #87
+- [ENHANCEMENT] Use hostpath instead of emptydir to store position db #72
+- [ENHANCEMENT] Improve fluent-bit-watcher synchronization mechanism #74
+- [ENHANCEMENT] Terminate fluent-bit process in a more elegant way in fluent-bit-watcher #90
+- [ENHANCEMENT] Update README and roadmap #97 #100
+- [ENHANCEMENT] Add kustomize file to manifests #99
+- [BUGFIX] Fix the forward output can only use the default port problem. #89
 - [BUGFIX] Fix bug it will loss log when damemonset restart. #90
+- [BUGFIX] Update groupname for client-gen to logging.kubesphere.io #95
 
 ## 0.7.1 / 2021-07-08
 
