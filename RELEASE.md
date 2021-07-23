@@ -15,6 +15,8 @@ This page describes the release process and the currently planned schedule for u
 | v0.6.1           | 2021-06-11                                 | Benjamin Huo (GitHub: @benjaminhuo)         |
 | v0.6.2           | 2021-06-11                                 | Benjamin Huo (GitHub: @benjaminhuo)     |
 | v0.7.0           | 2021-06-29                                 | Wanjun Lei (GitHub: @wanjunlei)         |
+| v0.7.1           | 2021-07-09                                 | Wanjun Lei (GitHub: @wanjunlei)         |
+| v0.8.0           | 2021-07-23                                 | Wanjun Lei (GitHub: @wanjunlei)         |
 
 ## How to cut an individual release
 
