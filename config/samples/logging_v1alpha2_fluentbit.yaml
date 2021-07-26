@@ -5,7 +5,7 @@ metadata:
   labels:
     app: fluent-bit
 spec:
-  image: kubespheredev/fluent-bit:v1.5.0
+  image: kubesphere/fluent-bit:v1.7.3
   imagePullPolicy: IfNotPresent
   positionDB:
     hostPath:
