@@ -28,7 +28,6 @@ Once installed, the Fluent Bit Operator provides the following features:
 - [Contributing](#contributing)
   - [Documentation](#documentation)
   - [Manifests](#manifests)  
-  
 ## Overview
 
 Fluent Bit Operator defines five custom resources using CustomResourceDefinition (CRD):
@@ -117,19 +116,37 @@ kubectl apply -f manifests/logging-stack
 ```
 
 > You also can deploy Fluent Bit Operator with Helm chart.
-Note: For the Helm-based installation you need Helm v3.2.1 or later.
- 
+> Note: For the Helm-based installation you need Helm v3.2.1 or later.
+
+Install the version without the plug-in
+
+```
+helm install fluentbit-operator  --create-namespace -n kubesphere-logging-system chart/fluentbit-operator/charts/k8s/
+```
+Install the version with the plug-in
+
 ```
 helm install  --create-namespace -n kubesphere-logging-system chart/fluentbit-operator/ --generate-name
 ```
+
 Within a couple of minutes, you should observe an index available:
 
 ```shell
 $ curl localhost:9200/_cat/indices
 green open ks-logstash-log-2020.04.26 uwQuoO90TwyigqYRW7MDYQ 1 1  99937 0  31.2mb  31.2mb
-``` 
+```
 
 Success!
+
+### Collect containerd logs
+
+With `dockerd` deprecated as a Kubernetes container runtime, we moved to `containerd`. After the change, our `fluentbit` logging didn't parse our JSON logs correctly. `containerd` and `CRI-O` use the `CRI Log` format which is slightly different and requires additional parsing to parse JSON application logs.
+
+You should change the `Parser` on the input from  `docker` to `cri` . If you're running on Kubesphere,you can 
+
+```
+kubectl apply -f manifests/logging-stack/containerd
+```
 
 ### Collect auditd logs
 

@@ -2,6 +2,7 @@ apiVersion: logging.kubesphere.io/v1alpha2
 kind: Input
 metadata:
   name: tail
+  namespace: kubesphere-logging-system
   labels:
     logging.kubesphere.io/enabled: "true"
     logging.kubesphere.io/component: logging
@@ -9,9 +10,9 @@ spec:
   tail:
     tag: kube.*
     path: /var/log/containers/*.log
-    parser: {{  .Values.input.tail.parser  }}
+    parser: cri
     refreshIntervalSeconds: 10
-    memBufLimit: {{  .Values.input.tail.memBufLimit  }}
+    memBufLimit: 5MB
     skipLongLines: true
     db: /tail/pos.db
     dbSync: Normal

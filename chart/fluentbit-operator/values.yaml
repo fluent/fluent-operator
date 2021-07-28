@@ -1,13 +1,6 @@
 # Default values for fluentbit-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-fluentbitOperatorImage:
-  repository: "kubesphere/fluentbit-operator"
-  tag: "v0.8.0"
-
-fluentbit:
-  image: "kubesphere/fluent-bit"
-  tag: "v1.7.3"
 
 
 
@@ -20,11 +13,6 @@ nameOverride: ""
 fullnameOverride: ""
 namespaceOverride: ""
 
-deployment:
-  volunmes:
-    image:
-      repository: "docker"
-      tag: "19.03"
 
 
 #podAnnotations: {}
@@ -45,27 +33,7 @@ securityContext: {}
 
 
 
-resources:
-  # fluentbit resources. If you do want to specify resources, adjust them as necessary
-  fluentbit:
-  # Fluent Bit resources. User can adjust it based on the log volume.
-    resources:
-      limits:
-        cpu: 500m
-        memory: 200Mi
-      requests:
-        cpu: 10m
-        memory: 25Mi
 
-  operator:
-  # FluentBit operator resources. Usually user needn't to adjust these.
-    resources:
-      limits:
-        cpu: 200m
-        memory: 50Mi
-      requests:
-        cpu: 100m
-        memory: 20Mi
 
 #Set a limit of memory that Tail plugin can use when appending data to the Engine.
 #If the limit is reach, it will be paused; when the data is flushed it resumes.
@@ -75,7 +43,9 @@ resources:
 input:
   tail:
     memBufLimit: 5MB
-
+    parser: docker
+#Set this to true if you want to collect containerd information in KubSphere environment
+  Kubespherecri: false
 
 output:
   #Configure the output plugin parameter in FluentBit.

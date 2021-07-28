@@ -1,0 +1,76 @@
+# Default values for fluentbit-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+fluentbitOperatorImage:
+  repository: "kubesphere/fluentbit-operator"
+  tag: "v0.7.1"
+
+fluentbit:
+  image: "kubespheredev/fluent-bit"
+  tag: "v1.7.3"
+
+
+
+## Reference to one or more secrets to be used when pulling images
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+imagePullSecrets: []
+# - name: "image-pull-secret"
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+
+deployment:
+  volunmes:
+    image:
+      repository: "docker"
+      tag: "19.03"
+
+
+#podAnnotations: {}
+
+## if want to deploy CRDs used by fluentbit Operator.
+##createCustomResource: false
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+
+resources:
+  # fluentbit resources. If you do want to specify resources, adjust them as necessary
+  fluentbit:
+  # Fluent Bit resources. User can adjust it based on the log volume.
+    resources:
+      limits:
+        cpu: 500m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 25Mi
+
+  operator:
+  # FluentBit operator resources. Usually user needn't to adjust these.
+    resources:
+      limits:
+        cpu: 200m
+        memory: 50Mi
+      requests:
+        cpu: 100m
+        memory: 20Mi
+
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
