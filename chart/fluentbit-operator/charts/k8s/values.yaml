@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 fluentbitOperatorImage:
   repository: "kubesphere/fluentbit-operator"
-  tag: "v0.7.1"
+  tag: "v0.8.0"
 
 fluentbit:
   image: "kubespheredev/fluent-bit"

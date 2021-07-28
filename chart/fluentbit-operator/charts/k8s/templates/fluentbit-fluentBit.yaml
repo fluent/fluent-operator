@@ -6,6 +6,10 @@ metadata:
     app.kubernetes.io/name: fluent-bit
 spec:
   image: {{  .Values.fluentbit.image  }}:{{  .Values.fluentbit.tag  }}
+  {{- if .Values.imagePullSecrets }}
+  imagePullSecrets:
+  {{ toYaml .Values.imagePullSecrets | indent 4 }}
+  {{- end }}
   positionDB:
     hostPath:
       path: /var/lib/fluent-bit/
