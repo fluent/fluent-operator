@@ -60,7 +60,7 @@ func main() {
 	flag.Parse()
 
 	if envs, err := godotenv.Read("/fluentbit-operator/fluent-bit.env"); err == nil {
-		logPath = envs["DOCKER_ROOT_DIR"] + "/containers"
+		logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
 	}
 
 	ctrl.SetLogger(zap.New(func(o *zap.Options) {

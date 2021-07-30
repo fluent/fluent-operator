@@ -1,0 +1,17 @@
+apiVersion: logging.kubesphere.io/v1alpha2
+kind: Filter
+metadata:
+  name: containerd
+  namespace: kubesphere-logging-system
+  labels:
+    logging.kubesphere.io/enabled: "true"
+    logging.kubesphere.io/component: logging
+spec:
+  match: kube.*
+  filters:
+  - lua:
+      script:
+        key: containerd.lua
+        name: fluent-bit-containerd-config
+      call: containerd
+      timeAsTable: true

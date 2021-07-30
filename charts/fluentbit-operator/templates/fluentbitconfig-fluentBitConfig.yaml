@@ -1,3 +1,4 @@
+{{- if .Values.Kubernetes -}}
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: FluentBitConfig
 metadata:
@@ -16,3 +17,4 @@ spec:
   outputSelector:
     matchLabels:
       logging.kubesphere.io/enabled: "true"
+  {{- end }}

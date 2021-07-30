@@ -12,6 +12,9 @@ resources:
 - output-elasticsearch.yaml
 - output-forward.yaml
 - output-kafka.yaml
+- filter-containerd.yaml
+- fluentbit-containerd-config.yaml
+- systemd-lua-config.yaml
 
 # Change to the namespace you want such as: 
 # namespace: fluent

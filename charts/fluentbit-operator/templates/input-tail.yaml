@@ -1,8 +1,8 @@
+{{- if .Values.Kubernetes -}}
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Input
 metadata:
   name: tail
-  namespace: kubesphere-logging-system
   labels:
     logging.kubesphere.io/enabled: "true"
     logging.kubesphere.io/component: logging
@@ -10,9 +10,16 @@ spec:
   tail:
     tag: kube.*
     path: /var/log/containers/*.log
+    {{- if eq .Values.containerRuntime "docker" }}
     parser: docker
+    {{- else if eq .Values.containerRuntime "containerd" }}
+    parser: cri
+    {{- else if eq .Values.containerRuntime "cri-o" }}
+    parser: cri
+    {{- end }}
     refreshIntervalSeconds: 10
-    memBufLimit: 5MB
+    memBufLimit: {{ .Values.input.tail.memBufLimit }}
     skipLongLines: true
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
+  {{- end }}
