@@ -44,8 +44,8 @@ input:
   tail:
     memBufLimit: 5MB
     parser: docker
-#Set this to true if you want to collect containerd information in KubSphere environment
-  Kubespherecri: false
+#Set this to true if you want to collect containerd information
+  cri: false
 
 output:
   #Configure the output plugin parameter in FluentBit.

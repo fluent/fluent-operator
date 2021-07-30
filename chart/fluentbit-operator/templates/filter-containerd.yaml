@@ -1,4 +1,4 @@
-{{- if .Values.input.Kubespherecri -}}
+{{- if .Values.input.cri -}}
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Filter
 metadata:

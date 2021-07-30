@@ -142,10 +142,21 @@ Success!
 
 With `dockerd` deprecated as a Kubernetes container runtime, we moved to `containerd`. After the change, our `fluentbit` logging didn't parse our JSON logs correctly. `containerd` and `CRI-O` use the `CRI Log` format which is slightly different and requires additional parsing to parse JSON application logs.
 
-You should change the `Parser` on the input from  `docker` to `cri` . If you're running on Kubesphere,you can 
+You should change the `Parser` on the input from  `docker` to `cri` . And you can  set  `cri`  to `true` :
 
 ```
-kubectl apply -f manifests/logging-stack/containerd
+helm install fluentbit-operator  --create-namespace -n kubesphere-logging-system chart/fluentbit-operator/
+```
+
+Within a couple of minutes, you should be able to observe that:
+
+```
+LAST DEPLOYED: Fri Jul 30 14:20:04 2021
+NAMESPACE: kubesphere-logging-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
 ```
 
 ### Collect auditd logs

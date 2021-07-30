@@ -1,4 +1,4 @@
-{{- if .Values.input.Kubespherecri -}}
+{{- if .Values.input.cri -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
