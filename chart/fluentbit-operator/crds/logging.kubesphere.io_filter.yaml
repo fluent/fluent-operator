@@ -395,6 +395,55 @@ spec:
                             type: string
                           type: array
                       type: object
+                    rewriteTag:
+                      description: The rewrite_tag filter, allows to re-emit a record
+                        under a new Tag. Once a record has been re-emitted, the original
+                        record can be preserved or discarded.
+                      properties:
+                        emitterName:
+                          description: When the filter emits a record under the new
+                            Tag, there is an internal emitter plugin that takes care
+                            of the job.
+                          type: string
+                        emitterStorageType:
+                          description: Define a buffering mechanism for the new records
+                            created. Note these records are part of the emitter plugin.
+                            This option support the values memory (default) or filesystem.
+                          enum:
+                          - memory
+                          - filesystem
+                          type: string
+                        rules:
+                          description: Defines the matching criteria and the format
+                            of the Tag for the matching record.
+                          items:
+                            description: The plugin supports the following rules
+                            properties:
+                              keep:
+                                description: If a rule matches the criteria the filter
+                                  will emit a copy of the record with the new defined
+                                  Tag.
+                                type: boolean
+                              key:
+                                description: The key represents the name of the record
+                                  key that holds the value that we want to use to
+                                  match our regular expression.
+                                type: string
+                              newTag:
+                                description: If a regular expression has matched the
+                                  value of the defined key in the rule, we are ready
+                                  to compose a new Tag for that specific record.
+                                type: string
+                              regex:
+                                description: Using a simple regular expression we
+                                  can specify a matching pattern to use against the
+                                  value of the key specified above, also we can take
+                                  advantage of group capturing to create custom placeholder
+                                  values.
+                                type: string
+                            type: object
+                          type: array
+                      type: object
                   type: object
                 type: array
               match:
