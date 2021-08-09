@@ -158,6 +158,7 @@ FluentBitSpec defines the desired state of FluentBit
 | tolerations | Tolerations | [][corev1.Toleration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#toleration-v1-core) |
 | fluentBitConfigName | Fluentbitconfig object associated with this Fluentbit | string |
 | secrets | The Secrets are mounted into /fluent-bit/secrets/<secret-name>. | []string |
+| runtimeClassName | The runtimeClassName represents the container runtime configuration. | string |
 
 [Back to TOC](#table-of-contents)
 ## Input
