@@ -44,8 +44,8 @@ type FluentBitReconciler struct {
 // +kubebuilder:rbac:groups=logging.kubesphere.io,resources=fluentbits;fluentbitconfigs;inputs;filters;outputs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=apps,resources=daemonsets,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=core,resources=serviceaccounts,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles,verbs=create
-// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterrolebindings,verbs=create
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles,verbs=create
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=rolebindings,verbs=create
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get
 
 func (r *FluentBitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {

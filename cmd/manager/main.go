@@ -18,6 +18,7 @@ package main
 import (
 	"flag"
 	"os"
+	"strings"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
@@ -25,6 +26,7 @@ import (
 	loggingv1alpha2 "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
 	"kubesphere.io/fluentbit-operator/controllers"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	// required for generating code from CRD
@@ -48,8 +50,10 @@ func init() {
 
 func main() {
 	var metricsAddr string
+	var watchNamespaces string
 	var enableLeaderElection bool
 	var logPath string
+	flag.StringVar(&watchNamespaces, "watch-namespaces", "", "Optional comma separated list of namespaces to watch for resources in. Defaults to cluster scope.")
 	flag.StringVar(&metricsAddr, "metrics-addr", ":8080", "The address the metric endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "enable-leader-election", false,
 		"Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager.")
@@ -63,12 +67,23 @@ func main() {
 		o.Development = true
 	}))
 
-	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
+	opts := ctrl.Options{
 		Scheme:             scheme,
 		MetricsBindAddress: metricsAddr,
 		LeaderElection:     enableLeaderElection,
 		Port:               9443,
-	})
+	}
+
+	if watchNamespaces != "" {
+		namespaces := strings.Split(watchNamespaces, ",")
+		if len(namespaces) > 1 {
+			opts.NewCache = cache.MultiNamespacedCacheBuilder(namespaces)
+		} else {
+			opts.Namespace = namespaces[0]
+		}
+	}
+
+	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), opts)
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)

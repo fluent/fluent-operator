@@ -88,12 +88,12 @@ rules:
 - apiGroups:
   - rbac.authorization.k8s.io
   resources:
-  - clusterrolebindings
+  - rolebindings
   verbs:
   - create
 - apiGroups:
   - rbac.authorization.k8s.io
   resources:
-  - clusterroles
+  - roles
   verbs:
   - create
