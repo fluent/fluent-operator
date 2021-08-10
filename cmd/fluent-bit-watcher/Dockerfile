@@ -5,7 +5,7 @@ WORKDIR /fluent-bit
 RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o fluent-bit main.go
 
 # FROM gcr.io/distroless/cc-debian10
-FROM fluent/fluent-bit:1.7.3
+FROM fluent/fluent-bit:1.8.3
 MAINTAINER KubeSphere <kubesphere@yunify.com>
 LABEL Description="Fluent Bit docker image" Vendor="KubeSphere" Version="1.0"
 
