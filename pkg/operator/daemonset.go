@@ -70,7 +70,6 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 					Labels:    fb.Labels,
 				},
 				Spec: corev1.PodSpec{
-					RuntimeClassName:   &fb.Spec.RuntimeClassName,
 					ServiceAccountName: fb.Name,
 					ImagePullSecrets:   fb.Spec.ImagePullSecrets,
 					Volumes: []corev1.Volume{
@@ -160,6 +159,10 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 				},
 			},
 		},
+	}
+
+	if fb.Spec.RuntimeClassName != "" {
+		ds.Spec.Template.Spec.RuntimeClassName = &fb.Spec.RuntimeClassName
 	}
 
 	// Mount Position DB
