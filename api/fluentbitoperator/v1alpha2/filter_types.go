@@ -55,6 +55,8 @@ type FilterItem struct {
 	Parser *filter.Parser `json:"parser,omitempty"`
 	// Lua defines Lua Filter configuration.
 	Lua *filter.Lua `json:"lua,omitempty"`
+	// Throttle defines a Throttle configuration.
+	Throttle *filter.Throttle `json:"throttle,omitempty"`
 }
 
 // +kubebuilder:object:root=true
