@@ -161,6 +161,10 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 		},
 	}
 
+	if fb.Spec.RuntimeClassName != "" {
+		ds.Spec.Template.Spec.RuntimeClassName = &fb.Spec.RuntimeClassName
+	}
+
 	// Mount Position DB
 	if fb.Spec.PositionDB != (corev1.VolumeSource{}) {
 		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, corev1.Volume{

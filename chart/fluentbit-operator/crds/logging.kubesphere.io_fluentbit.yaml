@@ -641,12 +641,14 @@ spec:
                 description: Fluent Bit image pull policy.
                 type: string
               imagePullSecrets:
-                description: An optional list of references to secrets in the same namespace to use for pulling fluentbit images from registries see http://kubernetes.io/docs/user-guide/images#specifying-imagepullsecrets-on-a-pod
+                description: Fluent Bit image pull secret
                 items:
-                  description: LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+                  description: LocalObjectReference contains enough information to
+                    let you locate the referenced object inside the same namespace.
                   properties:
                     name:
-                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        TODO: Add other useful fields. apiVersion, kind, uid?'
                       type: string
                   type: object
                 type: array
@@ -1862,6 +1864,9 @@ spec:
                       to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                     type: object
                 type: object
+              runtimeClassName:
+                description: RuntimeClassName represents the container runtime configuration.
+                type: string
               secrets:
                 description: The Secrets are mounted into /fluent-bit/secrets/<secret-name>.
                 items:

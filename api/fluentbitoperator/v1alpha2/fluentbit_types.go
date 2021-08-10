@@ -48,6 +48,8 @@ type FluentBitSpec struct {
 	FluentBitConfigName string `json:"fluentBitConfigName,omitempty"`
 	// The Secrets are mounted into /fluent-bit/secrets/<secret-name>.
 	Secrets []string `json:"secrets,omitempty"`
+	// RuntimeClassName represents the container runtime configuration.
+	RuntimeClassName string `json:"runtimeClassName,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit
