@@ -8,7 +8,7 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The tail input plugin allows to monitor one or several text files.
+// The Tail input plugin allows to monitor one or several text files.
 // It has a similar behavior like tail -f shell command.
 type Tail struct {
 	// Set the initial buffer size to read files data.
@@ -81,6 +81,8 @@ type Tail struct {
 	DockerMode *bool `json:"dockerMode,omitempty"`
 	// Wait period time in seconds to flush queued unfinished split lines.
 	DockerModeFlushSeconds *int64 `json:"dockerModeFlushSeconds,omitempty"`
+	// DisableInotifyWatcher will disable inotify and use the file stat watcher instead.
+	DisableInotifyWatcher *bool `json:"disableInotifyWatcher,omitempty"`
 }
 
 func (_ *Tail) Name() string {
@@ -154,6 +156,9 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
 	}
 	if t.DockerModeFlushSeconds != nil {
 		kvs.Insert("Docker_Mode_Flush", fmt.Sprint(*t.DockerModeFlushSeconds))
+	}
+	if t.DisableInotifyWatcher != nil {
+		kvs.Insert("Inotify_Watcher", fmt.Sprint(!*t.DisableInotifyWatcher))
 	}
 	return kvs, nil
 }

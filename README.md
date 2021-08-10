@@ -188,7 +188,7 @@ curl <podIP>:2020 | jq .
 
 {
   "fluent-bit": {
-    "version": "1.7.3",
+    "version": "1.8.3",
     "edition": "Community",
     "flags": [
       "FLB_HAVE_PARSER",

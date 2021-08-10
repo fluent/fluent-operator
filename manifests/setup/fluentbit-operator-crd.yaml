@@ -2771,6 +2771,10 @@ spec:
                     - Normal
                     - "Off"
                     type: string
+                  disableInotifyWatcher:
+                    description: DisableInotifyWatcher will disable inotify and use
+                      the file stat watcher instead.
+                    type: boolean
                   dockerMode:
                     description: If enabled, the plugin will recombine split Docker
                       log lines before passing them to any parser as configured above.

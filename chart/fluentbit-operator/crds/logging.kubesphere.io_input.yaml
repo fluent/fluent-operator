@@ -49,6 +49,10 @@ spec:
                     description: Events number generated per second.
                     format: int32
                     type: integer
+                  samples:
+                    description: Sample events to generate.
+                    format: int32
+                    type: integer
                   tag:
                     description: Tag name associated to all records comming from this
                       plugin.
@@ -160,6 +164,10 @@ spec:
                     - Normal
                     - "Off"
                     type: string
+                  disableInotifyWatcher:
+                    description: DisableInotifyWatcher will disable inotify and use
+                      the file stat watcher instead.
+                    type: boolean
                   dockerMode:
                     description: If enabled, the plugin will recombine split Docker
                       log lines before passing them to any parser as configured above.
