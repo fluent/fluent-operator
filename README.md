@@ -100,6 +100,19 @@ It means the FluentBit Operator works properly if you see the above messages, yo
 kubectl delete -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/quick-start/quick-start.yaml
 ```
 
+### Configure Custom Watch Namespaces
+
+When starting the operator, you can pass an optional set of namespaces to watch for resources in with the `--watch-namespaces` flag. It takes a comma-separated list of namespaces to watch:
+
+```
+...
+      spec:
+        containers:
+          image: kubesphere/fluentbit-operator
+        - args:
+          - --watch-namespaces=namespace1,namespace2
+```
+
 ### Collect Kubernetes logs
 
 This guide provisions a logging pipeline including the Fluent Bit DaemonSet and its log input/filter/output configurations to collect Kubernetes logs including container logs and kubelet logs.

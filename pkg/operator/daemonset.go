@@ -10,10 +10,11 @@ import (
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
 )
 
-func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.ClusterRole, corev1.ServiceAccount, rbacv1.ClusterRoleBinding) {
-	cr := rbacv1.ClusterRole{
+func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.Role, corev1.ServiceAccount, rbacv1.RoleBinding) {
+	r := rbacv1.Role{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "kubesphere:fluent-bit",
+			Name:      "kubesphere:fluent-bit",
+			Namespace: fbNamespace,
 		},
 		Rules: []rbacv1.PolicyRule{
 			{
@@ -31,9 +32,10 @@ func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.ClusterRole, corev1.Ser
 		},
 	}
 
-	crb := rbacv1.ClusterRoleBinding{
+	rb := rbacv1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "kubesphere:fluent-bit",
+			Name:      "kubesphere:fluent-bit",
+			Namespace: fbNamespace,
 		},
 		Subjects: []rbacv1.Subject{
 			{
@@ -44,12 +46,12 @@ func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.ClusterRole, corev1.Ser
 		},
 		RoleRef: rbacv1.RoleRef{
 			APIGroup: rbacv1.GroupName,
-			Kind:     "ClusterRole",
+			Kind:     "Role",
 			Name:     "kubesphere:fluent-bit",
 		},
 	}
 
-	return cr, sa, crb
+	return r, sa, rb
 }
 
 func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
