@@ -10,7 +10,7 @@ spec:
   systemd:
     tag: service.kubelet
     path: /var/log/journal
-    db: /systemd/kubelet.db
+    db: /fluent-bit/tail/kubelet.db
     dbSync: Normal
     systemdFilter:
       - _SYSTEMD_UNIT=kubelet.service

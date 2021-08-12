@@ -13,8 +13,13 @@ Once installed, the Fluent Bit Operator provides the following features:
 - [Overview](#overview)
 - [Get Started](#get-started)
   - [Prerequisites](#prerequisites)
+  - [Install](#Install)
+    - [Deploy Fluent Bit Operator with YAML](#deploy-fluent-bit-operator-with-yaml)
+    - [Deploy Fluent Bit Operator with Helm](#deploy-fluent-bit-operator-with-helm)
   - [Quick Start](#quick-start)
   - [Logging Stack](#logging-stack)
+    - [Deploy logging-stack with YAML](#deploy-logging-stack-with-yaml)
+    - [Deploy logging-stack with Helm chart](#deploy-logging-stack-with-helm-chart)
     - [Auditd](#auditd)
 - [Monitoring](#monitoring)
 - [API Doc](#api-doc)
@@ -28,7 +33,6 @@ Once installed, the Fluent Bit Operator provides the following features:
 - [Contributing](#contributing)
   - [Documentation](#documentation)
   - [Manifests](#manifests)  
-  
 ## Overview
 
 Fluent Bit Operator defines five custom resources using CustomResourceDefinition (CRD):
@@ -56,6 +60,8 @@ Kubernetes v1.16.13+ is necessary for running Fluent Bit Operator.
 
 ### Install
 
+##### Deploy Fluent Bit Operator with YAML
+
 Install the latest stable version
 
 ```shell
@@ -74,6 +80,30 @@ kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator
 # You can change the namespace in manifests/setup/kustomization.yaml 
 # and then use command below to install to another namespace
 # kubectl kustomize manifests/setup/ | kubectl apply -f -
+```
+
+##### Deploy Fluent Bit Operator with Helm 
+
+> Note: For the Helm-based installation you need Helm v3.2.1 or later.
+
+Fluent Bit Operator supports `docker` as well as `containerd` and `CRI-O`. `containerd` and `CRI-O` use the `CRI Log` format which is slightly different and requires additional parsing to parse JSON application logs. You should set different `containerRuntime` depending on  your container runtime.
+
+If your container runtime is `docker`
+
+```shell
+helm install fluentbit-operator  --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/ --set containerRuntime=docker
+```
+
+If your container runtime is `containerd`
+
+```shell
+helm install fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/  --set containerRuntime=containerd
+```
+
+If your container runtime is `cri-o`
+
+```shell
+helm install fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/  --set containerRuntime=cri-o
 ```
 
 ### Quick Start
@@ -121,6 +151,8 @@ This guide provisions a logging pipeline including the Fluent Bit DaemonSet and 
 
 > Note that you need a running Elasticsearch v5+ cluster to receive log data before start. **Remember to adjust [output-elasticsearch.yaml](manifests/logging-stack/output-elasticsearch.yaml) to your own es setup**. Kafka and Fluentd outputs are optional and are turned off by default.
 
+##### Deploy the Kubernetes logging stack with YAML
+
 ```shell
 kubectl apply -f manifests/logging-stack
 
@@ -129,12 +161,32 @@ kubectl apply -f manifests/logging-stack
 # kubectl kustomize manifests/logging-stack/ | kubectl apply -f -
 ```
 
+##### Deploy the Kubernetes logging stack with Helm
+
+If your container runtime is `docker`
+
+```shell
+helm upgrade fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/  --set Kubernetes=true,containerRuntime=docker
+```
+
+If your container runtime is `containerd`
+
+```shell
+helm upgrade fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/  --set Kubernetes=true,containerRuntime=containerd
+```
+
+If your container runtime is `cri-o`
+
+```shell
+helm upgrade fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/  --set Kubernetes=true,containerRuntime=cri-o
+```
+
 Within a couple of minutes, you should observe an index available:
 
 ```shell
 $ curl localhost:9200/_cat/indices
 green open ks-logstash-log-2020.04.26 uwQuoO90TwyigqYRW7MDYQ 1 1  99937 0  31.2mb  31.2mb
-``` 
+```
 
 Success!
 

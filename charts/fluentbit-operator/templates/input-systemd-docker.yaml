@@ -1,3 +1,4 @@
+{{- if .Values.Kubernetes -}}
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Input
 metadata:
@@ -9,7 +10,8 @@ spec:
   systemd:
     tag: service.docker
     path: /var/log/journal
-    db: /systemd/docker.db
+    db: /fluent-bit/tail/docker.db
     dbSync: Normal
     systemdFilter:
       - _SYSTEMD_UNIT=docker.service
+  {{- end }}

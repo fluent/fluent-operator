@@ -2,12 +2,16 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluent-bit-lua
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-bit-lua
+  namespace: kubesphere-logging-system
 data:
   systemd.lua: |
     function add_time(tag, timestamp, record)
       new_record = {}
 
-      imeStr = os.date("!*t", timestamp["sec"])
+      timeStr = os.date("!*t", timestamp["sec"])
       t = string.format("%4d-%02d-%02dT%02d:%02d:%02d.%sZ",
       timeStr["year"], timeStr["month"], timeStr["day"],
       timeStr["hour"], timeStr["min"], timeStr["sec"],

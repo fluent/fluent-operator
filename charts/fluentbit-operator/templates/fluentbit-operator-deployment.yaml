@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentbit-operator
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluentbit-operator
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: operator
+      app.kubernetes.io/name: fluentbit-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: operator
+        app.kubernetes.io/name: fluentbit-operator
+    spec:
+      {{- if eq .Values.containerRuntime "docker" }}
+      volumes:
+      - name: env
+        emptyDir: {}
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+      initContainers:
+      - name: setenv
+        image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
+        command:
+        - /bin/sh
+        - '-c'
+        - set -ex;
+          echo CONTAINER_ROOT_DIR=$(docker info -f '{{`{{ .DockerRootDir }}`}}') > /fluentbit-operator/fluent-bit.env
+        volumeMounts:
+        - name: env
+          mountPath: /fluentbit-operator
+        - name: dockersock
+          readOnly: true
+          mountPath: /var/run/docker.sock
+      {{- else if eq .Values.containerRuntime "containerd" }}
+      volumes:
+      - name: env
+        emptyDir: {}
+      - name: containerdsock
+        hostPath:
+          path: /var/run/containerd/containerd.sock
+      - name: crictl
+        hostPath:
+          path: /usr/local/bin/crictl
+      initContainers:
+      - name: setenv
+        image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
+        command:
+        - /bin/sh
+        - '-c'
+        - set -ex;
+          echo CONTAINER_ROOT_DIR=$(crictl info --output go-template --template '{{`{{ .config.containerdRootDir }}`}}') > /fluentbit-operator/fluent-bit.env
+        volumeMounts:
+        - name: env
+          mountPath: /fluentbit-operator
+        - name: containerdsock
+          readOnly: true
+          mountPath: /var/run/containerd/containerd.sock
+        - name: crictl
+          readOnly: true
+          mountPath: /usr/local/bin/crictl
+      {{- else if eq .Values.containerRuntime "cri-o" }}
+      volumes:
+        - name: env
+          emptyDir: {}
+        - name: crisock
+          hostPath:
+            path: /var/run/crio/crio.sock
+      initContainers:
+      - name: setenv
+        image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
+        command:
+        - /bin/sh
+        - '-c'
+        - set -ex;
+          echo CONTAINER_ROOT_DIR={{ .Values.logPath.crio }} > /fluentbit-operator/fluent-bit.env
+        volumeMounts:
+        - name: env
+          mountPath: /fluentbit-operator
+        - name: crisock
+          readOnly: true
+          mountPath: /var/run/crio/crio.sock
+      {{- end }}
+      containers:
+      - name: fluentbit-operator
+        image: {{ .Values.operator.image }}:{{ .Values.operator.tag }}
+        resources:
+          {{- toYaml .Values.resources.operator.resources | nindent 10 }}
+        volumeMounts:
+        - name: env
+          mountPath: /fluentbit-operator
+      serviceAccountName: fluentbit-operator
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}

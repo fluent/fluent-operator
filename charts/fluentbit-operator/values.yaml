@@ -1,15 +1,16 @@
 # Default values for fluentbit-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-fluentbitOperatorImage:
-  repository: "kubesphere/fluentbit-operator"
+operator:
+  image: "kubesphere/fluentbit-operator"
   tag: "v0.8.0"
+  initcontainer:
+    image: "docker"
+    tag: "19.03"
 
 fluentbit:
   image: "kubesphere/fluent-bit"
   tag: "v1.8.3"
-
-
 
 ## Reference to one or more secrets to be used when pulling images
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -20,35 +21,10 @@ nameOverride: ""
 fullnameOverride: ""
 namespaceOverride: ""
 
-deployment:
-  volunmes:
-    image:
-      repository: "docker"
-      tag: "19.03"
-
-
-#podAnnotations: {}
-
-## if want to deploy CRDs used by fluentbit Operator.
-##createCustomResource: false
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-
-
 resources:
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   fluentbit:
-  # Fluent Bit resources. User can adjust it based on the log volume.
+    # Fluent Bit resources. User can adjust it based on the log volume.
     resources:
       limits:
         cpu: 500m
@@ -61,11 +37,14 @@ resources:
   # FluentBit operator resources. Usually user needn't to adjust these.
     resources:
       limits:
-        cpu: 200m
-        memory: 50Mi
+        cpu: 100m
+        memory: 30Mi
       requests:
         cpu: 100m
         memory: 20Mi
+
+
+Kubernetes: false
 
 #Set a limit of memory that Tail plugin can use when appending data to the Engine.
 #If the limit is reach, it will be paused; when the data is flushed it resumes.
@@ -75,7 +54,10 @@ resources:
 input:
   tail:
     memBufLimit: 5MB
-
+#Set this to containerd or cri-o if you want to collect CRI format logs
+containerRuntime: docker
+logPath:
+  crio: /var/log
 
 output:
   #Configure the output plugin parameter in FluentBit.
@@ -92,8 +74,4 @@ output:
     enable: false
     brokers: "<kafka broker list like xxx.xxx.xxx.xxx:9092,yyy.yyy.yyy.yyy:9092>"
 
-nodeSelector: {}
 
-tolerations: []
-
-affinity: {}

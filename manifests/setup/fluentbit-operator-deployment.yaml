@@ -30,7 +30,7 @@ spec:
         - /bin/sh
         - '-c'
         - set -ex;
-          echo DOCKER_ROOT_DIR=$(docker info -f '{{.DockerRootDir}}') > /fluentbit-operator/fluent-bit.env
+          echo CONTAINER_ROOT_DIR=$(docker info -f '{{.DockerRootDir}}') > /fluentbit-operator/fluent-bit.env
         volumeMounts:
         - name: env
           mountPath: /fluentbit-operator

@@ -1,3 +1,4 @@
+{{- if .Values.Kubernetes -}}
 {{- if .Values.output.kafka.enable -}}
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Output
@@ -9,6 +10,7 @@ metadata:
 spec:
   matchRegex: (?:kube|service)\.(.*)
   kafka:
-    brokers: {{  .Values.output.kafka.brokers  }}
+    brokers: {{ .Values.output.kafka.brokers }}
     topics: ks-log
+  {{- end }}
   {{- end }}

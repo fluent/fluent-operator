@@ -1,16 +1,18 @@
+{{- if .Values.Kubernetes -}}
 apiVersion: logging.kubesphere.io/v1alpha2
 kind: Filter
 metadata:
-  name: systemd
+  name: containerd
   labels:
     logging.kubesphere.io/enabled: "true"
     logging.kubesphere.io/component: logging
 spec:
-  match: service.*
+  match: kube.*
   filters:
   - lua:
       script:
-        key: systemd.lua
-        name: fluent-bit-lua
-      call: add_time
+        key: containerd.lua
+        name: fluent-bit-containerd-config
+      call: containerd
       timeAsTable: true
+  {{- end }}
