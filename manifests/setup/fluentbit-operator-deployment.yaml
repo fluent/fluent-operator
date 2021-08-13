@@ -39,7 +39,7 @@ spec:
           mountPath: /var/run/docker.sock
       containers:
       - name: fluentbit-operator
-        image: 'kubesphere/fluentbit-operator:v0.8.0'
+        image: 'kubesphere/fluentbit-operator:latest'
         resources:
           limits:
             cpu: 100m
