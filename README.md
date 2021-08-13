@@ -17,27 +17,30 @@ Once installed, the Fluent Bit Operator provides the following features:
     - [Deploy Fluent Bit Operator with YAML](#deploy-fluent-bit-operator-with-yaml)
     - [Deploy Fluent Bit Operator with Helm](#deploy-fluent-bit-operator-with-helm)
   - [Quick Start](#quick-start)
-  - [Logging Stack](#logging-stack)
-    - [Deploy logging-stack with YAML](#deploy-logging-stack-with-yaml)
-    - [Deploy logging-stack with Helm chart](#deploy-logging-stack-with-helm-chart)
-    - [Auditd](#auditd)
+  - [Configure Custom Watch Namespaces](#configure-custom-watch-namespaces)
+  - [Collect Kubernetes logs](#collect-kubernetes-logs)
+    - [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
+    - [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
+    - [Collect Auditd logs](#collect-auditd-logs)
 - [Monitoring](#monitoring)
 - [API Doc](#api-doc)
 - [Best Practice](#best-practice)
   - [Plugin Grouping](#plugin-grouping)
   - [Path Convention](#path-convention)
-- [Features In Plan](#features-in-plan)
+- [Custom Parser](#custom-parser)
+- [Roadmap](#roadmap)
 - [Development](#development)
-  - [Prerequisites](#prerequisites-1)
+  - [Requirements](#requirements)
   - [Running](#running)
 - [Contributing](#contributing)
   - [Documentation](#documentation)
   - [Manifests](#manifests)  
+  
 ## Overview
 
 Fluent Bit Operator defines five custom resources using CustomResourceDefinition (CRD):
 
-- **`FluentBit`**: Defines the Fluent Bit DaemonSet and its configs. A custom Fluent Bit image `kubesphere/fluent-bit` is requried to work with FluentBit Operator for dynamic configuration reloading.
+- **`FluentBit`**: Defines the Fluent Bit DaemonSet and its configs. A custom Fluent Bit image `kubesphere/fluent-bit` is required to work with FluentBit Operator for dynamic configuration reloading.
 - **`FluentBitConfig`**: Select input/filter/output plugins and generates the final config into a Secret.
 - **`Input`**: Defines input config sections.
 - **`Parser`**: Defines parser config sections.
@@ -65,7 +68,7 @@ Kubernetes v1.16.13+ is necessary for running Fluent Bit Operator.
 Install the latest stable version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.8/manifests/setup/setup.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.9/manifests/setup/setup.yaml
 
 # You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch 
 # and then use command below to install to another namespace
@@ -356,8 +359,8 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 
 ## Development
 
-### Prerequisites
-- golang v1.13+.
+### Requirements
+- golang v1.13+.requirement
 - kubectl v1.16.13+.
 - kubebuilder v2.3+ (the project is build with v2.3.2)
 - Access to a Kubernetes cluster v1.16.13+
