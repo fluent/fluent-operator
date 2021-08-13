@@ -1,3 +1,12 @@
+## 0.9.0 / 2021-08-13
+
+- [FEATURE] Add support for `Containerd` and `CRI-O`. #112
+- [FEATURE] Add support for `inotify_watcher` configuration of tail input plugin. #114
+- [FEATURE] Add support for throttle filter plugin. #115
+- [FEATURE] Add `runtimeClassName` support to fluentBit CRD. #116
+- [FEATURE] Optional `watch-namespaces` for controller manager. #117
+- [BUGFIX] Fix some bugs.
+
 ## 0.8.0 / 2021-07-23
 
 - [FEATURE] Support setting imagePullSecrets for both operator and fluentbit #93 #94
