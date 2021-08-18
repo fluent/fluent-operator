@@ -13,4 +13,4 @@ COPY conf/fluent-bit.conf conf/parsers.conf /fluent-bit/etc/
 COPY --from=buildergo /fluent-bit/fluent-bit /fluent-bit/bin/fluent-bit-watcher
 
 # Entry point
-CMD ["/fluent-bit/bin/fluent-bit-watcher"]
+ENTRYPOINT ["/fluent-bit/bin/fluent-bit-watcher"]

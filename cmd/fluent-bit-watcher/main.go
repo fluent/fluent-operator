@@ -48,7 +48,7 @@ func main() {
 	flag.StringVar(&binPath, "b", defaultBinPath, "The fluent bit binary path.")
 	flag.StringVar(&configPath, "c", defaultCfgPath, "The config file path.")
 	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
-	flag.BoolVar(&poll, "poll", true, "Use poll watcher instead of ionotify.")
+	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
 	flag.DurationVar(&pollInterval, "poll-interval", defaultPollInterval, "Poll interval if using poll watcher.")
 
 	flag.Parse()
