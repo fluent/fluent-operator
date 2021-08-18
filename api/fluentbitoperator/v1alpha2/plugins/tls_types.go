@@ -30,7 +30,7 @@ type TLS struct {
 
 func (t *TLS) Params(sl SecretLoader) (*KVs, error) {
 	kvs := NewKVs()
-	kvs.Insert("tls", "true")
+	kvs.Insert("tls", "On")
 	if t.Verify != nil {
 		kvs.Insert("tls.verify", fmt.Sprint(*t.Verify))
 	}

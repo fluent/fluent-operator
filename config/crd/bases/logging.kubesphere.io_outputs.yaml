@@ -43,6 +43,24 @@ spec:
               es:
                 description: Elasticsearch defines Elasticsearch Output configuration.
                 properties:
+                  awsAuth:
+                    description: Enable AWS Sigv4 Authentication for Amazon ElasticSearch
+                      Service.
+                    type: string
+                  awsExternalID:
+                    description: External ID for the AWS IAM Role specified with aws_role_arn.
+                    type: string
+                  awsRegion:
+                    description: Specify the AWS region for Amazon ElasticSearch Service.
+                    type: string
+                  awsRoleARN:
+                    description: AWS IAM Role to assume to put records to your Amazon
+                      ES cluster.
+                    type: string
+                  awsSTSEndpoint:
+                    description: Specify the custom sts endpoint to be used with STS
+                      API for Amazon ElasticSearch Service.
+                    type: string
                   bufferSize:
                     description: Specify the buffer size used to read the response
                       from the Elasticsearch HTTP service. This option is useful for
@@ -52,6 +70,14 @@ spec:
                       to False, otherwise the value must be according to the Unit
                       Size specification.
                     pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  cloudAuth:
+                    description: Specify the credentials to use to connect to Elastic's
+                      Elasticsearch Service running on Elastic Cloud.
+                    type: string
+                  cloudID:
+                    description: If you are using Elastic's Elasticsearch Service
+                      you can specify the cloud_id of the cluster running.
                     type: string
                   currentTimeIndex:
                     description: Use current time for index generation instead of
@@ -121,6 +147,10 @@ spec:
                             type: object
                         type: object
                     type: object
+                  idKey:
+                    description: If set, _id will be the value of the key from incoming
+                      record and Generate_ID option is ignored.
+                    type: string
                   includeTagKey:
                     description: When enabled, it append the Tag name to the record.
                     type: boolean
@@ -153,11 +183,11 @@ spec:
                       indexing HTTP POST URI.
                     type: string
                   pipeline:
-                    description: Newer versions of Elasticsearch allows to setup filters
-                      called pipelines. This option allows to define which pipeline
-                      the database should use. For performance reasons is strongly
-                      suggested to do parsing and filtering on Fluent Bit side, avoid
-                      pipelines.
+                    description: Newer versions of Elasticsearch allows setting up
+                      filters called pipelines. This option allows defining which
+                      pipeline the database should use. For performance reasons is
+                      strongly suggested parsing and filtering on Fluent Bit side,
+                      avoid pipelines.
                     type: string
                   port:
                     description: TCP port of the target Elasticsearch instance
@@ -169,6 +199,11 @@ spec:
                     description: When enabled, replace field name dots with underscore,
                       required by Elasticsearch 2.0-2.3.
                     type: boolean
+                  suppressTypeName:
+                    description: When enabled, mapping types is removed and Type option
+                      is ignored. Types are deprecated in APIs in v7.0. This options
+                      is for v7.0 or later.
+                    type: string
                   tagKey:
                     description: When Include_Tag_Key is enabled, this property defines
                       the key name for the tag.
