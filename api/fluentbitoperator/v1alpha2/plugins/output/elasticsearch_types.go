@@ -8,7 +8,7 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The es output plugin, allows to ingest your records into a Elasticsearch database.
+// Elasticsearch is the es output plugin, allows to ingest your records into an Elasticsearch database.
 type Elasticsearch struct {
 	// IP address or hostname of the target Elasticsearch instance
 	Host string `json:"host,omitempty"`
@@ -28,11 +28,25 @@ type Elasticsearch struct {
 	// otherwise the value must be according to the Unit Size specification.
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferSize string `json:"bufferSize,omitempty"`
-	// Newer versions of Elasticsearch allows to setup filters called pipelines.
-	// This option allows to define which pipeline the database should use.
-	// For performance reasons is strongly suggested to do parsing
+	// Newer versions of Elasticsearch allows setting up filters called pipelines.
+	// This option allows defining which pipeline the database should use.
+	// For performance reasons is strongly suggested parsing
 	// and filtering on Fluent Bit side, avoid pipelines.
 	Pipeline string `json:"pipeline,omitempty"`
+	// Enable AWS Sigv4 Authentication for Amazon ElasticSearch Service.
+	AWSAuth string `json:"awsAuth,omitempty"`
+	// Specify the AWS region for Amazon ElasticSearch Service.
+	AWSRegion string `json:"awsRegion,omitempty"`
+	// Specify the custom sts endpoint to be used with STS API for Amazon ElasticSearch Service.
+	AWSSTSEndpoint string `json:"awsSTSEndpoint,omitempty"`
+	// AWS IAM Role to assume to put records to your Amazon ES cluster.
+	AWSRoleARN string `json:"awsRoleARN,omitempty"`
+	// External ID for the AWS IAM Role specified with aws_role_arn.
+	AWSExternalID string `json:"awsExternalID,omitempty"`
+	// If you are using Elastic's Elasticsearch Service you can specify the cloud_id of the cluster running.
+	CloudID string `json:"cloudID,omitempty"`
+	// Specify the credentials to use to connect to Elastic's Elasticsearch Service running on Elastic Cloud.
+	CloudAuth string `json:"cloudAuth,omitempty"`
 	// Optional username credential for Elastic X-Pack access
 	HTTPUser *plugins.Secret `json:"httpUser,omitempty"`
 	// Password for user defined in HTTP_User
@@ -62,6 +76,8 @@ type Elasticsearch struct {
 	// When enabled, generate _id for outgoing records.
 	// This prevents duplicate records when retrying ES.
 	GenerateID *bool `json:"generateID,omitempty"`
+	// If set, _id will be the value of the key from incoming record and Generate_ID option is ignored.
+	IdKey string `json:"idKey,omitempty"`
 	// When enabled, replace field name dots with underscore, required by Elasticsearch 2.0-2.3.
 	ReplaceDots *bool `json:"replaceDots,omitempty"`
 	// When enabled print the elasticsearch API calls to stdout (for diag only)
@@ -72,15 +88,17 @@ type Elasticsearch struct {
 	CurrentTimeIndex *bool `json:"currentTimeIndex,omitempty"`
 	// Prefix keys with this string
 	LogstashPrefixKey string `json:"logstashPrefixKey,omitempty"`
-	*plugins.TLS      `json:"tls,omitempty"`
+	// When enabled, mapping types is removed and Type option is ignored. Types are deprecated in APIs in v7.0. This options is for v7.0 or later.
+	SuppressTypeName string `json:"suppressTypeName,omitempty"`
+	*plugins.TLS     `json:"tls,omitempty"`
 }
 
-// implement Section() method
+// Name implement Section() method
 func (_ *Elasticsearch) Name() string {
 	return "es"
 }
 
-// implement Section() method
+// Params implement Section() method
 func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
 	kvs := plugins.NewKVs()
 	if es.Host != "" {
@@ -97,6 +115,27 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
 	}
 	if es.Pipeline != "" {
 		kvs.Insert("Pipeline", es.Pipeline)
+	}
+	if es.AWSAuth != "" {
+		kvs.Insert("AWS_Auth", es.AWSAuth)
+	}
+	if es.AWSRegion != "" {
+		kvs.Insert("AWS_Region", es.AWSRegion)
+	}
+	if es.AWSSTSEndpoint != "" {
+		kvs.Insert("AWS_STS_Endpoint", es.AWSSTSEndpoint)
+	}
+	if es.AWSRoleARN != "" {
+		kvs.Insert("AWS_Role_ARN", es.AWSRoleARN)
+	}
+	if es.CloudID != "" {
+		kvs.Insert("Cloud_ID", es.CloudID)
+	}
+	if es.CloudAuth != "" {
+		kvs.Insert("Cloud_Auth", es.CloudAuth)
+	}
+	if es.AWSExternalID != "" {
+		kvs.Insert("AWS_External_ID", es.AWSExternalID)
 	}
 	if es.HTTPUser != nil {
 		u, err := sl.LoadSecret(*es.HTTPUser)
@@ -142,6 +181,9 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
 	if es.GenerateID != nil {
 		kvs.Insert("Generate_ID", fmt.Sprint(*es.GenerateID))
 	}
+	if es.IdKey != "" {
+		kvs.Insert("ID_KEY", es.IdKey)
+	}
 	if es.ReplaceDots != nil {
 		kvs.Insert("Replace_Dots", fmt.Sprint(*es.ReplaceDots))
 	}
@@ -156,6 +198,9 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
 	}
 	if es.LogstashPrefixKey != "" {
 		kvs.Insert("Logstash_Prefix_Key", es.LogstashPrefixKey)
+	}
+	if es.SuppressTypeName != "" {
+		kvs.Insert("Suppress_Type_Name", es.SuppressTypeName)
 	}
 	if es.TLS != nil {
 		tls, err := es.TLS.Params(sl)
