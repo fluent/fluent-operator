@@ -28,6 +28,8 @@ import (
 type FluentBitSpec struct {
 	// Fluent Bit image.
 	Image string `json:"image,omitempty"`
+	// Fluent Bit Watcher command line arguments.
+	Args []string `json:"args,omitempty"`
 	// Fluent Bit image pull policy.
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy,omitempty"`
 	// Fluent Bit image pull secret
