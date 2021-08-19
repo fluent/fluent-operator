@@ -112,6 +112,7 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 						{
 							Name:            "fluent-bit",
 							Image:           fb.Spec.Image,
+							Args:            fb.Spec.Args,
 							ImagePullPolicy: fb.Spec.ImagePullPolicy,
 							Ports: []corev1.ContainerPort{
 								{

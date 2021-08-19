@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"math"
 	"os"
 	"os/exec"
@@ -14,14 +15,17 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/oklog/run"
+	"kubesphere.io/fluentbit-operator/pkg/filenotify"
 )
 
 const (
-	binPath      = "/fluent-bit/bin/fluent-bit"
-	cfgPath      = "/fluent-bit/etc/fluent-bit.conf"
-	watchDir     = "/fluent-bit/config"
-	MaxDelayTime = time.Minute * 5
-	ResetTime    = time.Minute * 10
+	defaultBinPath      = "/fluent-bit/bin/fluent-bit"
+	defaultCfgPath      = "/fluent-bit/etc/fluent-bit.conf"
+	defaultWatchDir     = "/fluent-bit/config"
+	defaultPollInterval = 1 * time.Second
+
+	MaxDelayTime = 5 * time.Minute
+	ResetTime    = 10 * time.Minute
 )
 
 var (
@@ -33,7 +37,22 @@ var (
 	timerCancel  context.CancelFunc
 )
 
+var configPath string
+var binPath string
+var watchPath string
+var poll bool
+var pollInterval time.Duration
+
 func main() {
+
+	flag.StringVar(&binPath, "b", defaultBinPath, "The fluent bit binary path.")
+	flag.StringVar(&configPath, "c", defaultCfgPath, "The config file path.")
+	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
+	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
+	flag.DurationVar(&pollInterval, "poll-interval", defaultPollInterval, "Poll interval if using poll watcher.")
+
+	flag.Parse()
+
 	logger = log.NewLogfmtLogger(os.Stdout)
 
 	timerCtx, timerCancel = context.WithCancel(context.Background())
@@ -77,14 +96,14 @@ func main() {
 	}
 	{
 		// Watch the config file, if the config file changed, stop Fluent bit.
-		watcher, err := fsnotify.NewWatcher()
+		watcher, err := newWatcher(poll, pollInterval)
 		if err != nil {
 			_ = level.Error(logger).Log("err", err)
 			return
 		}
 
 		// Start watcher.
-		err = watcher.Add(watchDir)
+		err = watcher.Add(watchPath)
 		if err != nil {
 			_ = level.Error(logger).Log("err", err)
 			return
@@ -98,7 +117,7 @@ func main() {
 					select {
 					case <-cancel:
 						return nil
-					case event := <-watcher.Events:
+					case event := <-watcher.Events():
 						if !isValidEvent(event) {
 							continue
 						}
@@ -110,7 +129,7 @@ func main() {
 						stop()
 						resetTimer()
 						_ = level.Info(logger).Log("msg", "Config file changed, stopped Fluent Bit")
-					case <-watcher.Errors:
+					case <-watcher.Errors():
 						_ = level.Error(logger).Log("msg", "Watcher stopped")
 						return nil
 					}
@@ -130,9 +149,26 @@ func main() {
 	_ = level.Info(logger).Log("msg", "See you next time!")
 }
 
+func newWatcher(poll bool, interval time.Duration) (filenotify.FileWatcher, error) {
+	var err error
+	var watcher filenotify.FileWatcher
+
+	if poll {
+		watcher = filenotify.NewPollingWatcher(interval)
+	} else {
+		watcher, err = filenotify.New(interval)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return watcher, nil
+}
+
 // Inspired by https://github.com/jimmidyson/configmap-reload
 func isValidEvent(event fsnotify.Event) bool {
-	return event.Op&fsnotify.Create == fsnotify.Create
+	return event.Op == fsnotify.Create || event.Op == fsnotify.Write
 }
 
 func start() {
@@ -144,7 +180,7 @@ func start() {
 		return
 	}
 
-	cmd = exec.Command(binPath, "-c", cfgPath)
+	cmd = exec.Command(binPath, "-c", configPath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Start(); err != nil {

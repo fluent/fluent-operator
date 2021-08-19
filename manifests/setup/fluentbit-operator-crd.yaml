@@ -933,6 +933,11 @@ spec:
                         type: array
                     type: object
                 type: object
+              args:
+                description: Fluent Bit Watcher command line arguments.
+                items:
+                  type: string
+                type: array
               containerLogRealPath:
                 description: Container log path
                 type: string
