@@ -1,3 +1,8 @@
+## 0.10.0 / 2021-08-20
+
+- [FEATURE] Add support for polling in fluent-bit-watcher. #126
+- [FEATURE] Add support for Amazon ElasticSearch Service and Elastic's Elasticsearch Service. #125
+
 ## 0.9.0 / 2021-08-13
 
 - [FEATURE] Add support for `Containerd` and `CRI-O`. #112
