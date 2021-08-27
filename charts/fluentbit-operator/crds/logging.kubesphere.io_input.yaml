@@ -236,6 +236,11 @@ spec:
                       file as part of the record. The value assigned becomes the key
                       in the map.
                     type: string
+                  readFromHead:
+                    description: For new discovered files on start (without a database
+                      offset/position), read the content from the head of the file,
+                      not tail.
+                    type: boolean
                   refreshIntervalSeconds:
                     description: The interval of refreshing the list of watched files
                       in seconds.

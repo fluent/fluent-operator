@@ -31,6 +31,9 @@ type Tail struct {
 	// Set one or multiple shell patterns separated by commas to exclude files matching a certain criteria,
 	// e.g: exclude_path=*.gz,*.zip
 	ExcludePath string `json:"excludePath,omitempty"`
+	// For new discovered files on start (without a database offset/position),
+	// read the content from the head of the file, not tail.
+	ReadFromHead *bool `json:"readFromHead,omitempty"`
 	// The interval of refreshing the list of watched files in seconds.
 	RefreshIntervalSeconds *int64 `json:"refreshIntervalSeconds,omitempty"`
 	// Specify the number of extra time in seconds to monitor a file once is rotated in case some pending data is flushed.
@@ -105,6 +108,9 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
 	}
 	if t.ExcludePath != "" {
 		kvs.Insert("Exclude_Path", t.ExcludePath)
+	}
+	if t.ReadFromHead != nil {
+		kvs.Insert("Read_from_Head", fmt.Sprint(*t.ReadFromHead))
 	}
 	if t.RefreshIntervalSeconds != nil {
 		kvs.Insert("Refresh_Interval", fmt.Sprint(*t.RefreshIntervalSeconds))
