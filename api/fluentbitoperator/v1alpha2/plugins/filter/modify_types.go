@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -69,51 +70,51 @@ type Rule struct {
 	HardCopy map[string]string `json:"hardCopy,omitempty"`
 }
 
-func (_ *Modify) Name() string {
+func (*Modify) Name() string {
 	return "modify"
 }
 
-func (mo *Modify) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (mo *Modify) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	for _, c := range mo.Conditions {
 		if c.KeyExists != "" {
 			kvs.Insert("Condition", fmt.Sprintf("Key_exists    %s", c.KeyExists))
 		}
-		for k, v := range c.KeyDoesNotExist {
-			kvs.Insert("Condition", fmt.Sprintf("Key_does_not_exist    %s    %s", k, v))
-		}
+		kvs.InsertStringMap(c.KeyDoesNotExist, func(k, v string) (string, string) {
+			return "Condition", fmt.Sprintf("Key_does_not_exist    %s    %s", k, v)
+		})
 		if c.AKeyMatches != "" {
 			kvs.Insert("Condition", fmt.Sprintf("A_key_matches    %s", c.AKeyMatches))
 		}
 		if c.NoKeyMatches != "" {
 			kvs.Insert("Condition", fmt.Sprintf("No_key_matches    %s", c.NoKeyMatches))
 		}
-		for k, v := range c.KeyValueEquals {
-			kvs.Insert("Condition", fmt.Sprintf("Key_value_equals    %s    %s", k, v))
-		}
-		for k, v := range c.KeyValueDoesNotEqual {
-			kvs.Insert("Condition", fmt.Sprintf("Key_value_does_not_equal    %s    %s", k, v))
-		}
-		for k, v := range c.KeyValueMatches {
-			kvs.Insert("Condition", fmt.Sprintf("Key_value_matches    %s    %s", k, v))
-		}
-		for k, v := range c.KeyValueDoesNotMatch {
-			kvs.Insert("Condition", fmt.Sprintf("Key_value_does_not_match    %s    %s", k, v))
-		}
-		for k, v := range c.MatchingKeysHaveMatchingValues {
-			kvs.Insert("Condition", fmt.Sprintf("Matching_keys_have_matching_values    %s    %s", k, v))
-		}
-		for k, v := range c.MatchingKeysDoNotHaveMatchingValues {
-			kvs.Insert("Condition", fmt.Sprintf("Matching_keys_do_not_have_matching_values    %s    %s", k, v))
-		}
+		kvs.InsertStringMap(c.KeyValueEquals, func(k, v string) (string, string) {
+			return "Condition", fmt.Sprintf("Key_value_equals    %s    %s", k, v)
+		})
+		kvs.InsertStringMap(c.KeyValueDoesNotEqual, func(k, v string) (string, string) {
+			return "Condition", fmt.Sprintf("Key_value_does_not_equal    %s    %s", k, v)
+		})
+		kvs.InsertStringMap(c.KeyValueMatches, func(k, v string) (string, string) {
+			return "Condition", fmt.Sprintf("Key_value_matches    %s    %s", k, v)
+		})
+		kvs.InsertStringMap(c.KeyValueDoesNotMatch, func(k, v string) (string, string) {
+			return "Condition", fmt.Sprintf("Key_value_does_not_match    %s    %s", k, v)
+		})
+		kvs.InsertStringMap(c.MatchingKeysHaveMatchingValues, func(k, v string) (string, string) {
+			return "Condition", fmt.Sprintf("Matching_keys_have_matching_values    %s    %s", k, v)
+		})
+		kvs.InsertStringMap(c.MatchingKeysDoNotHaveMatchingValues, func(k, v string) (string, string) {
+			return "Condition", fmt.Sprintf("Matching_keys_do_not_have_matching_values    %s    %s", k, v)
+		})
 	}
 	for _, r := range mo.Rules {
-		for k, v := range r.Set {
-			kvs.Insert("Set", fmt.Sprintf("%s    %s", k, v))
-		}
-		for k, v := range r.Add {
-			kvs.Insert("Add", fmt.Sprintf("%s    %s", k, v))
-		}
+		kvs.InsertStringMap(r.Set, func(k, v string) (string, string) {
+			return "Set", fmt.Sprintf("%s    %s", k, v)
+		})
+		kvs.InsertStringMap(r.Add, func(k, v string) (string, string) {
+			return "Add", fmt.Sprintf("%s    %s", k, v)
+		})
 		if r.Remove != "" {
 			kvs.Insert("Remove", r.Remove)
 		}
@@ -123,18 +124,18 @@ func (mo *Modify) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
 		if r.RemoveRegex != "" {
 			kvs.Insert("Remove_regex", r.RemoveRegex)
 		}
-		for k, v := range r.Rename {
-			kvs.Insert("Rename", fmt.Sprintf("%s    %s", k, v))
-		}
-		for k, v := range r.HardRename {
-			kvs.Insert("Hard_rename", fmt.Sprintf("%s    %s", k, v))
-		}
-		for k, v := range r.Copy {
-			kvs.Insert("Copy", fmt.Sprintf("%s    %s", k, v))
-		}
-		for k, v := range r.HardCopy {
-			kvs.Insert("Hard_copy", fmt.Sprintf("%s    %s", k, v))
-		}
+		kvs.InsertStringMap(r.Rename, func(k, v string) (string, string) {
+			return "Rename", fmt.Sprintf("%s    %s", k, v)
+		})
+		kvs.InsertStringMap(r.HardRename, func(k, v string) (string, string) {
+			return "Hard_rename", fmt.Sprintf("%s    %s", k, v)
+		})
+		kvs.InsertStringMap(r.Copy, func(k, v string) (string, string) {
+			return "Copy", fmt.Sprintf("%s    %s", k, v)
+		})
+		kvs.InsertStringMap(r.HardCopy, func(k, v string) (string, string) {
+			return "Hard_copy", fmt.Sprintf("%s    %s", k, v)
+		})
 	}
 	return kvs, nil
 }

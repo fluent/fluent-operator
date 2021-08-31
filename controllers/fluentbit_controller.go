@@ -48,8 +48,7 @@ type FluentBitReconciler struct {
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=rolebindings,verbs=create
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get
 
-func (r *FluentBitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	ctx := context.Background()
+func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("fluent-bit", req.NamespacedName)
 
 	var fb logging.FluentBit
@@ -106,7 +105,7 @@ func (r *FluentBitReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return ctrl.Result{}, err
 	}
 
-	if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, &ds, r.mutate(&ds, fb)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, &ds, r.mutate(&ds, fb)); err != nil {
 		return ctrl.Result{}, err
 	}
 
@@ -163,7 +162,7 @@ func (r *FluentBitReconciler) delete(ctx context.Context, fb *logging.FluentBit)
 }
 
 func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.ServiceAccount{}, ownerKey, func(rawObj runtime.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.ServiceAccount{}, ownerKey, func(rawObj client.Object) []string {
 		// grab the job object, extract the owner.
 		sa := rawObj.(*corev1.ServiceAccount)
 		owner := metav1.GetControllerOf(sa)
@@ -179,7 +178,7 @@ func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.DaemonSet{}, ownerKey, func(rawObj runtime.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.DaemonSet{}, ownerKey, func(rawObj client.Object) []string {
 		// grab the job object, extract the owner.
 		ds := rawObj.(*appsv1.DaemonSet)
 		owner := metav1.GetControllerOf(ds)

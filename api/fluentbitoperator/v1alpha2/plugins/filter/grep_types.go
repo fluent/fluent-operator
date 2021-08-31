@@ -1,6 +1,9 @@
 package filter
 
-import "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+import (
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
+)
 
 // +kubebuilder:object:generate:=true
 
@@ -18,8 +21,8 @@ func (_ *Grep) Name() string {
 	return "grep"
 }
 
-func (g *Grep) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (g *Grep) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if g.Regex != "" {
 		kvs.Insert("Regex", g.Regex)
 	}

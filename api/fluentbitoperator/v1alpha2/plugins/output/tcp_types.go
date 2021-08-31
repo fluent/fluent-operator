@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -34,8 +35,8 @@ func (_ *TCP) Name() string {
 	return "tcp"
 }
 
-func (t *TCP) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (t *TCP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if t.Host != "" {
 		kvs.Insert("Host", t.Host)
 	}
