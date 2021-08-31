@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -24,8 +25,8 @@ func (_ *Regex) Name() string {
 	return "regex"
 }
 
-func (re *Regex) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (re *Regex) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if re.Regex != "" {
 		kvs.Insert("Regex", re.Regex)
 	}

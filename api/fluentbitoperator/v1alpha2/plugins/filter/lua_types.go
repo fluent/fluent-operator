@@ -5,6 +5,7 @@ import (
 
 	v1 "k8s.io/api/core/v1"
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 	"kubesphere.io/fluentbit-operator/pkg/utils"
 )
 
@@ -37,8 +38,8 @@ func (l *Lua) Name() string {
 	return "lua"
 }
 
-func (l *Lua) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 
 	kvs.Insert("script", "/fluent-bit/config/"+l.Script.Key)
 	kvs.Insert("call", l.Call)

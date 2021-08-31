@@ -19,6 +19,7 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+	"sort"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
@@ -75,8 +76,18 @@ type ParserList struct {
 	Items           []Parser `json:"items"`
 }
 
+// +kubebuilder:object:generate:=false
+// ParserByName implements sort.Interface for []Parser based on the Name field.
+type ParserByName []Parser
+
+func (a ParserByName) Len() int           { return len(a) }
+func (a ParserByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ParserByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
+
 func (list ParserList) Load(sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
+
+	sort.Sort(ParserByName(list.Items))
 
 	for _, item := range list.Items {
 		merge := func(p plugins.Plugin) error {

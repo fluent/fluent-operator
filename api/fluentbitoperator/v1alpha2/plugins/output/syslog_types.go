@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -48,8 +49,8 @@ func (_ *Syslog) Name() string {
 }
 
 // implement Section() method
-func (s *Syslog) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (s *Syslog) Params(sl plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if s.Host != "" {
 		kvs.Insert("Host", s.Host)
 	}

@@ -360,7 +360,7 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 ## Development
 
 ### Requirements
-- golang v1.13+.requirement
+- golang v1.16+.requirement
 - kubectl v1.16.13+.
 - kubebuilder v2.3+ (the project is build with v2.3.2)
 - Access to a Kubernetes cluster v1.16.13+

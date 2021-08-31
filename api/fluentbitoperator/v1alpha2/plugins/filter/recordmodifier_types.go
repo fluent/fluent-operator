@@ -1,6 +1,9 @@
 package filter
 
-import "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+import (
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
+)
 
 // +kubebuilder:object:generate:=true
 
@@ -19,8 +22,8 @@ func (_ *RecordModifier) Name() string {
 	return "record_modifier"
 }
 
-func (rm *RecordModifier) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (rm *RecordModifier) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	for _, record := range rm.Records {
 		kvs.Insert("Record", record)
 	}

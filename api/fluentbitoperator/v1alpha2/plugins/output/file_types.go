@@ -2,6 +2,7 @@ package output
 
 import (
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -27,8 +28,8 @@ func (_ *File) Name() string {
 	return "file"
 }
 
-func (f *File) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (f *File) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if f.Path != "" {
 		kvs.Insert("Path", f.Path)
 	}

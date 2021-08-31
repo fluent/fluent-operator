@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -99,8 +100,8 @@ func (_ *Elasticsearch) Name() string {
 }
 
 // Params implement Section() method
-func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if es.Host != "" {
 		kvs.Insert("Host", es.Host)
 	}
