@@ -18,9 +18,11 @@ package v1alpha2
 import (
 	"bytes"
 	"fmt"
+	"sort"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -90,8 +92,8 @@ func init() {
 	SchemeBuilder.Register(&FluentBitConfig{}, &FluentBitConfigList{})
 }
 
-func (s *Service) Params() *plugins.KVs {
-	m := plugins.NewKVs()
+func (s *Service) Params() *params.KVs {
+	m := params.NewKVs()
 	if s.Daemon != nil {
 		m.Insert("Daemon", fmt.Sprint(*s.Daemon))
 	}
@@ -171,9 +173,23 @@ func (cfg FluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers P
 	return buf.String(), nil
 }
 
-func (cfg FluentBitConfig) RenderLuaScript(cl plugins.ConfigMapLoader, filters FilterList) (map[string]string, error) {
+// +kubebuilder:object:generate:=false
+type Script struct {
+	Name    string
+	Content string
+}
 
-	scripts := make(map[string]string)
+// +kubebuilder:object:generate:=false
+// ByName implements sort.Interface for []Script based on the Name field.
+type ByName []Script
+
+func (a ByName) Len() int           { return len(a) }
+func (a ByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
+
+func (cfg FluentBitConfig) RenderLuaScript(cl plugins.ConfigMapLoader, filters FilterList) ([]Script, error) {
+
+	scripts := make([]Script, 0)
 	for _, f := range filters.Items {
 		for _, p := range f.Spec.FilterItems {
 			if p.Lua != nil {
@@ -181,10 +197,12 @@ func (cfg FluentBitConfig) RenderLuaScript(cl plugins.ConfigMapLoader, filters F
 				if err != nil {
 					return nil, err
 				}
-				scripts[p.Lua.Script.Key] = script
+				scripts = append(scripts, Script{Name: p.Lua.Script.Key, Content: script})
 			}
 		}
 	}
+
+	sort.Sort(ByName(scripts))
 
 	return scripts, nil
 }

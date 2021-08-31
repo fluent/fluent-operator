@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -62,13 +63,13 @@ type HTTP struct {
 }
 
 // implement Name method
-func (_ *HTTP) Name() string {
+func (*HTTP) Name() string {
 	return "http"
 }
 
 // implement Params method
-func (h *HTTP) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if h.Host != "" {
 		kvs.Insert("host", h.Host)
 	}
@@ -107,9 +108,9 @@ func (h *HTTP) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
 	if h.HeaderTag != "" {
 		kvs.Insert("header_tag", h.HeaderTag)
 	}
-	for k, v := range h.Headers {
-		kvs.Insert("header", fmt.Sprintf(" %s    %s", k, v))
-	}
+	kvs.InsertStringMap(h.Headers, func(k, v string) (string, string) {
+		return "header", fmt.Sprintf(" %s    %s", k, v)
+	})
 	if h.JsonDateKey != "" {
 		kvs.Insert("json_date_key", h.JsonDateKey)
 	}

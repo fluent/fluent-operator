@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 	"kubesphere.io/fluentbit-operator/pkg/utils"
 )
 
@@ -48,8 +49,8 @@ func (_ *Loki) Name() string {
 }
 
 // implement Section() method
-func (l *Loki) Params(sl plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if l.Host != "" {
 		kvs.Insert("host", l.Host)
 	}

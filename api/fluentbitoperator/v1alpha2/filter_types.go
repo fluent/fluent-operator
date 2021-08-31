@@ -19,6 +19,7 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+	"sort"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
@@ -79,8 +80,18 @@ type FilterList struct {
 	Items           []Filter `json:"items"`
 }
 
+// +kubebuilder:object:generate:=false
+// FilterByName implements sort.Interface for []Filter based on the Name field.
+type FilterByName []Filter
+
+func (a FilterByName) Len() int           { return len(a) }
+func (a FilterByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a FilterByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
+
 func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
+
+	sort.Sort(FilterByName(list.Items))
 
 	for _, item := range list.Items {
 		merge := func(p plugins.Plugin) error {

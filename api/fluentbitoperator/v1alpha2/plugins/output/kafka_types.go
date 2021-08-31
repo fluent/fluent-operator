@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -35,13 +36,13 @@ type Kafka struct {
 	Rdkafka map[string]string `json:"rdkafka,omitempty"`
 }
 
-func (_ *Kafka) Name() string {
+func (*Kafka) Name() string {
 	return "kafka"
 }
 
 // implement Section() method
-func (k *Kafka) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (k *Kafka) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if k.Format != "" {
 		kvs.Insert("Format", k.Format)
 	}
@@ -66,10 +67,10 @@ func (k *Kafka) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
 	if k.TopicKey != "" {
 		kvs.Insert("Topic_Key", k.TopicKey)
 	}
-	if k.Rdkafka != nil {
-		for k, v := range k.Rdkafka {
-			kvs.Insert(fmt.Sprintf("rdkafka.%s", k), v)
-		}
-	}
+
+	kvs.InsertStringMap(k.Rdkafka, func(k, v string) (string, string) {
+		return fmt.Sprintf("rdkafka.%s", k), v
+	})
+
 	return kvs, nil
 }

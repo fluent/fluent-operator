@@ -19,6 +19,7 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+	"sort"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
@@ -52,6 +53,14 @@ type Input struct {
 	Spec InputSpec `json:"spec,omitempty"`
 }
 
+// +kubebuilder:object:generate:=false
+// InputByName implements sort.Interface for []Input based on the Name field.
+type InputByName []Input
+
+func (a InputByName) Len() int           { return len(a) }
+func (a InputByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a InputByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
+
 // +kubebuilder:object:root=true
 
 // InputList contains a list of Input
@@ -63,6 +72,8 @@ type InputList struct {
 
 func (list InputList) Load(sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
+
+	sort.Sort(InputByName(list.Items))
 
 	for _, item := range list.Items {
 		merge := func(p plugins.Plugin) error {

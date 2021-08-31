@@ -2,6 +2,8 @@ package plugins
 
 import (
 	"fmt"
+
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -28,8 +30,8 @@ type TLS struct {
 	Vhost string `json:"vhost,omitempty"`
 }
 
-func (t *TLS) Params(sl SecretLoader) (*KVs, error) {
-	kvs := NewKVs()
+func (t *TLS) Params(sl SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	kvs.Insert("tls", "On")
 	if t.Verify != nil {
 		kvs.Insert("tls.verify", fmt.Sprint(*t.Verify))
