@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -92,8 +93,8 @@ func (_ *Tail) Name() string {
 	return "tail"
 }
 
-func (t *Tail) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if t.BufferChunkSize != "" {
 		kvs.Insert("Buffer_Chunk_Size", t.BufferChunkSize)
 	}

@@ -44,8 +44,7 @@ type FluentBitConfigReconciler struct {
 // +kubebuilder:rbac:groups=logging.kubesphere.io,resources=inputs;filters;outputs;parsers,verbs=list
 // +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
 
-func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	ctx := context.Background()
+func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("fluentbitconfig", req.NamespacedName)
 
 	var cfgs logging.FluentBitConfigList
@@ -120,27 +119,19 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 				Name:      cfg.Name,
 				Namespace: cfg.Namespace,
 			},
-			Data: map[string][]byte{
-				"fluent-bit.conf": []byte(mainCfg),
-				"parsers.conf":    []byte(parserCfg),
-			},
-		}
-
-		for k, v := range scripts {
-			sec.Data[k] = []byte(v)
 		}
 
 		if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
 			return ctrl.Result{}, err
 		}
 
-		if _, err := controllerutil.CreateOrUpdate(ctx, r.Client, sec, func() error {
+		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sec, func() error {
 			sec.Data = map[string][]byte{
 				"fluent-bit.conf": []byte(mainCfg),
 				"parsers.conf":    []byte(parserCfg),
 			}
-			for k, v := range scripts {
-				sec.Data[k] = []byte(v)
+			for _, s := range scripts {
+				sec.Data[s.Name] = []byte(s.Content)
 			}
 			sec.SetOwnerReferences(nil)
 			if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
@@ -156,7 +147,7 @@ func (r *FluentBitConfigReconciler) Reconcile(req ctrl.Request) (ctrl.Result, er
 }
 
 func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Secret{}, ownerKey, func(rawObj runtime.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Secret{}, ownerKey, func(rawObj client.Object) []string {
 		// Grab the job object, extract the owner.
 		sec := rawObj.(*corev1.Secret)
 		owner := metav1.GetControllerOf(sec)

@@ -2,6 +2,7 @@ package filter
 
 import (
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -27,8 +28,8 @@ func (_ *Nest) Name() string {
 	return "nest"
 }
 
-func (n *Nest) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (n *Nest) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if n.Operation != "" {
 		kvs.Insert("Operation", n.Operation)
 	}

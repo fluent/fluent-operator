@@ -2,6 +2,7 @@ package input
 
 import (
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -48,8 +49,8 @@ func (_ *Systemd) Name() string {
 	return "systemd"
 }
 
-func (s *Systemd) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (s *Systemd) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 
 	if s.Path != "" {
 		kvs.Insert("Path", s.Path)
