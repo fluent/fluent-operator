@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true
@@ -69,8 +70,8 @@ func (_ *Kubernetes) Name() string {
 	return "kubernetes"
 }
 
-func (k *Kubernetes) Params(_ plugins.SecretLoader) (*plugins.KVs, error) {
-	kvs := plugins.NewKVs()
+func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
 	if k.BufferSize != "" {
 		kvs.Insert("Buffer_Size", k.BufferSize)
 	}
