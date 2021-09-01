@@ -1,3 +1,9 @@
+## 0.11.0 / 2021-09-01
+
+- [FEATURE] Add support for Read_From_Head to the tail input plugin #129
+- [ENHANCEMENT] Canonical Config #131
+- [BUGFIX] Expand fluetnbit permissions #133
+
 ## 0.10.0 / 2021-08-20
 
 - [FEATURE] Add support for polling in fluent-bit-watcher. #126
