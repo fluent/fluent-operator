@@ -2,7 +2,7 @@
 
 - [FEATURE] Add support for Read_From_Head to the tail input plugin #129
 - [ENHANCEMENT] Canonical Config #131
-- [BUGFIX] Expand fluetnbit permissions #133
+- [BUGFIX] Adjust FluentBit permissions #133
 
 ## 0.10.0 / 2021-08-20
 
