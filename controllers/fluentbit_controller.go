@@ -39,6 +39,7 @@ type FluentBitReconciler struct {
 	Scheme *runtime.Scheme
 
 	ContainerLogRealPath string
+	Namespaced           bool
 }
 
 // +kubebuilder:rbac:groups=logging.kubesphere.io,resources=fluentbits;fluentbitconfigs;inputs;filters;outputs,verbs=get;list;watch;create;update;patch;delete
@@ -83,18 +84,23 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	// Install RBAC resources for the filter plugin kubernetes
-	cr, sa, crb := operator.MakeRBACObjects(fb.Name, fb.Namespace)
+	var rbacObj, saObj, bindingObj client.Object
+	if r.Namespaced {
+		rbacObj, saObj, bindingObj = operator.MakeScopedRBACObjects(fb.Name, fb.Namespace)
+	} else {
+		rbacObj, saObj, bindingObj = operator.MakeRBACObjects(fb.Name, fb.Namespace)
+	}
 	// Set ServiceAccount's owner to this fluentbit
-	if err := ctrl.SetControllerReference(&fb, &sa, r.Scheme); err != nil {
+	if err := ctrl.SetControllerReference(&fb, saObj, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, &cr); err != nil && !errors.IsAlreadyExists(err) {
+	if err := r.Create(ctx, rbacObj); err != nil && !errors.IsAlreadyExists(err) {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, &sa); err != nil && !errors.IsAlreadyExists(err) {
+	if err := r.Create(ctx, saObj); err != nil && !errors.IsAlreadyExists(err) {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, &crb); err != nil && !errors.IsAlreadyExists(err) {
+	if err := r.Create(ctx, bindingObj); err != nil && !errors.IsAlreadyExists(err) {
 		return ctrl.Result{}, err
 	}
 

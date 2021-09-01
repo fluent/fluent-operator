@@ -74,7 +74,9 @@ func main() {
 		Port:               9443,
 	}
 
+	namespacedController := false
 	if watchNamespaces != "" {
+		namespacedController = true
 		namespaces := strings.Split(watchNamespaces, ",")
 		if len(namespaces) > 1 {
 			opts.NewCache = cache.MultiNamespacedCacheBuilder(namespaces)
@@ -103,6 +105,7 @@ func main() {
 		Log:                  ctrl.Log.WithName("controllers").WithName("FluentBit"),
 		Scheme:               mgr.GetScheme(),
 		ContainerLogRealPath: logPath,
+		Namespaced:           namespacedController,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "FluentBit")
 		os.Exit(1)

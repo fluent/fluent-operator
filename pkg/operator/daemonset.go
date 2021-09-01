@@ -10,10 +10,10 @@ import (
 	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
 )
 
-func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.ClusterRole, corev1.ServiceAccount, rbacv1.ClusterRoleBinding) {
+func MakeRBACObjects(fbName, fbNamespace string) (*rbacv1.ClusterRole, *corev1.ServiceAccount, *rbacv1.ClusterRoleBinding) {
 	cr := rbacv1.ClusterRole{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "kubesphere:fluent-bit",
+			Name: "kubesphere:fluent-bit",
 		},
 		Rules: []rbacv1.PolicyRule{
 			{
@@ -33,7 +33,7 @@ func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.ClusterRole, corev1.Ser
 
 	crb := rbacv1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "kubesphere:fluent-bit",
+			Name: "kubesphere:fluent-bit",
 		},
 		Subjects: []rbacv1.Subject{
 			{
@@ -49,7 +49,51 @@ func MakeRBACObjects(fbName, fbNamespace string) (rbacv1.ClusterRole, corev1.Ser
 		},
 	}
 
-	return cr, sa, crb
+	return &cr, &sa, &crb
+}
+
+func MakeScopedRBACObjects(fbName, fbNamespace string) (*rbacv1.Role, *corev1.ServiceAccount, *rbacv1.RoleBinding) {
+	r := rbacv1.Role{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "kubesphere:fluent-bit",
+			Namespace: fbNamespace,
+		},
+		Rules: []rbacv1.PolicyRule{
+			{
+				Verbs:     []string{"get"},
+				APIGroups: []string{""},
+				Resources: []string{"pods"},
+			},
+		},
+	}
+
+	sa := corev1.ServiceAccount{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fbName,
+			Namespace: fbNamespace,
+		},
+	}
+
+	rb := rbacv1.RoleBinding{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "kubesphere:fluent-bit",
+			Namespace: fbNamespace,
+		},
+		Subjects: []rbacv1.Subject{
+			{
+				Kind:      rbacv1.ServiceAccountKind,
+				Name:      fbName,
+				Namespace: fbNamespace,
+			},
+		},
+		RoleRef: rbacv1.RoleRef{
+			APIGroup: rbacv1.GroupName,
+			Kind:     "Role",
+			Name:     "kubesphere:fluent-bit",
+		},
+	}
+
+	return &r, &sa, &rb
 }
 
 func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {

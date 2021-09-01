@@ -11,3 +11,7 @@ resources:
 
 # Change to the namespace you want such as: 
 # namespace: fluent
+
+patchesStrategicMerge:
+# To do namespaced RBAC uncomment below
+# - scoped/fluentbit-operator-clusterRole.yaml
