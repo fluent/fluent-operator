@@ -19,6 +19,7 @@ This page describes the release process and the currently planned schedule for u
 | v0.8.0           | 2021-07-23                                 | Wanjun Lei (GitHub: @wanjunlei)         |
 | v0.9.0           | 2021-08-13                                 | Wanjun Lei (GitHub: @wanjunlei)         |
 | v0.10.0          | 2021-08-20                                 | Wanjun Lei (GitHub: @wanjunlei)         |
+| v0.11.0          | 2021-09-01                                 | Wanjun Lei (GitHub: @wanjunlei)         |
 
 ## How to cut an individual release
 
