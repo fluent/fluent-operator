@@ -36,8 +36,6 @@ Currently, we have not  integrated log processing tool like `fluentd` which has 
 Now all FluentBit CRDs are namespace level. We should use cluster level CRDs for FluentBit because it acts as an cluster-wide log agent that collects both system/node logs like kubelet and application logs like container. The idea is to add the following cluster CRDs for FluentBit under group `fluentbit.fluent.io`:
 - FluentBit
 - FluentBitClusterConfig
-- ClusterInput
-- ClusterFilter
 - ClusterParser
 - ClusterOutput
 
@@ -68,7 +66,6 @@ In order to make the integration work easier, we consider these parts to finish 
 A pipeline below describes the working principle of FluentBit Operator and Fluentd Operator:
 
 <div align=center><img src=../images/fluent-operator.svg></div>
-
 
 The pipeline describes that the Log Producers or the Log Collection Phase are responsible for the collection of logs. The Fluentd instances controlled by the Fluentd Operator use the http/forward connection to collect logs from the former, while the fluentbit instances in the latter deployed on each node use the forward definition to send logs, or use the http connection defined in fluentd instance to collect logs.
 
