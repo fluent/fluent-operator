@@ -65,7 +65,7 @@ In order to make the integration work easier, we consider these parts to finish 
 
 A pipeline below describes the working principle of FluentBit Operator and Fluentd Operator:
 
-![img](https://raw.githubusercontent.com/zhu733756/bedpic/main/architecture/Log%20Collection%20%26%20Aggregation%20%26%20Forwarding%20Pipeline.svg)
+<div align=center><img src=../images/fluent-operator.svg></div>
 
 The pipeline describes that the Log Producers or the Log Collection Phase are responsible for the collection of logs. The Fluentd instances controlled by the Fluentd Operator use the http/forward connection to collect logs from the former, while the fluentbit instances in the latter deployed on each node use the forward definition to send logs, or use the http connection defined in fluentd instance to collect logs.
 
