@@ -1,3 +1,8 @@
+## 0.12.0 / 2021-09-07
+
+- [ENHANCEMENT] Optionally enable namespace scoped RBAC. #137
+- [BUGFIX] Update CRD YAML. #136
+
 ## 0.11.0 / 2021-09-01
 
 - [FEATURE] Add support for Read_From_Head to the tail input plugin #129
