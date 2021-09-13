@@ -1,5 +1,6 @@
 ## 0.12.0 / 2021-09-07
 
+- [FEATURE] Add support for collecting contained and cri-o service log. #142
 - [ENHANCEMENT] Optionally enable namespace scoped RBAC. #137
 - [BUGFIX] Update CRD YAML. #136
 
