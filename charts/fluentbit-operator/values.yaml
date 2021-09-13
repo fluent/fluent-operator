@@ -54,7 +54,7 @@ Kubernetes: false
 input:
   tail:
     memBufLimit: 5MB
-#Set this to containerd or cri-o if you want to collect CRI format logs
+#Set this to containerd or crio if you want to collect CRI format logs
 containerRuntime: docker
 logPath:
   crio: /var/log

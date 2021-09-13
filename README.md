@@ -106,7 +106,7 @@ helm install fluentbit-operator --create-namespace -n kubesphere-logging-system 
 If your container runtime is `cri-o`
 
 ```shell
-helm install fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/  --set containerRuntime=cri-o
+helm install fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/  --set containerRuntime=crio
 ```
 
 ### Quick Start
@@ -181,7 +181,7 @@ helm upgrade fluentbit-operator --create-namespace -n kubesphere-logging-system 
 If your container runtime is `cri-o`
 
 ```shell
-helm upgrade fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/  --set Kubernetes=true,containerRuntime=cri-o
+helm upgrade fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluentbit-operator/  --set Kubernetes=true,containerRuntime=crio
 ```
 
 Within a couple of minutes, you should observe an index available:
