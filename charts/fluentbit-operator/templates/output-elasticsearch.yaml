@@ -12,6 +12,7 @@ spec:
   es:
     host: {{ .Values.output.es.host }}
     port: {{ .Values.output.es.port }}
+    generateID: true
     logstashPrefix: ks-logstash-log
     logstashFormat: true
     timeKey: "@timestamp"

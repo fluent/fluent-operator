@@ -14,7 +14,7 @@ spec:
     parser: docker
     {{- else if eq .Values.containerRuntime "containerd" }}
     parser: cri
-    {{- else if eq .Values.containerRuntime "cri-o" }}
+    {{- else if eq .Values.containerRuntime "crio" }}
     parser: cri
     {{- end }}
     refreshIntervalSeconds: 10
