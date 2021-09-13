@@ -11,6 +11,7 @@ spec:
   es:
     host: elasticsearch-logging-data.kubesphere-logging-system.svc
     port: 9200
+    generateID: true
     logstashPrefix: ks-logstash-log
     logstashFormat: true
     timeKey: "@timestamp"

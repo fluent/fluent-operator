@@ -30,7 +30,7 @@ spec:
         - /bin/sh
         - '-c'
         - set -ex;
-          echo CONTAINER_ROOT_DIR=$(docker info -f '{{`{{ .DockerRootDir }}`}}') > /fluentbit-operator/fluent-bit.env
+          echo CONTAINER_ROOT_DIR=$(docker info -f '{{`{{.DockerRootDir}}`}}') > /fluentbit-operator/fluent-bit.env
         volumeMounts:
         - name: env
           mountPath: /fluentbit-operator
@@ -54,7 +54,7 @@ spec:
         - /bin/sh
         - '-c'
         - set -ex;
-          echo CONTAINER_ROOT_DIR=$(crictl info --output go-template --template '{{`{{ .config.containerdRootDir }}`}}') > /fluentbit-operator/fluent-bit.env
+          echo CONTAINER_ROOT_DIR=$(crictl info --output go-template --template '{{`{{.config.containerdRootDir}}`}}') > /fluentbit-operator/fluent-bit.env
         volumeMounts:
         - name: env
           mountPath: /fluentbit-operator
@@ -64,7 +64,7 @@ spec:
         - name: crictl
           readOnly: true
           mountPath: /usr/local/bin/crictl
-      {{- else if eq .Values.containerRuntime "cri-o" }}
+      {{- else if eq .Values.containerRuntime "crio" }}
       volumes:
         - name: env
           emptyDir: {}
