@@ -1868,7 +1868,7 @@ spec:
                 description: RuntimeClassName represents the container runtime configuration.
                 type: string
               priorityClassName:
-                description: RuntimeClassName represents the pod priority class.
+                description: PriorityClassName represents the pod priority class.
                 type: string
               secrets:
                 description: The Secrets are mounted into /fluent-bit/secrets/<secret-name>.
