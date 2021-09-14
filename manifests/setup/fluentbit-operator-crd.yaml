@@ -2995,6 +2995,9 @@ spec:
                     - volumePath
                     type: object
                 type: object
+              priorityClassName:
+                description: RuntimeClassName represents the pod priority class.
+                type: string
               resources:
                 description: Compute Resources required by container.
                 properties:

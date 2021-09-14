@@ -52,6 +52,8 @@ type FluentBitSpec struct {
 	Secrets []string `json:"secrets,omitempty"`
 	// RuntimeClassName represents the container runtime configuration.
 	RuntimeClassName string `json:"runtimeClassName,omitempty"`
+	// RuntimeClassName represents the pod priority class.
+	PriorityClassName string `json:"priorityClassName,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit
