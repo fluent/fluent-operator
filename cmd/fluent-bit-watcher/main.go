@@ -41,12 +41,14 @@ var configPath string
 var binPath string
 var watchPath string
 var poll bool
+var exitOnFailure bool
 var pollInterval time.Duration
 
 func main() {
 
 	flag.StringVar(&binPath, "b", defaultBinPath, "The fluent bit binary path.")
 	flag.StringVar(&configPath, "c", defaultCfgPath, "The config file path.")
+	flag.BoolVar(&exitOnFailure, "exit-on-failure", false, "If fluentbit exits with failure, also exit the watcher.")
 	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
 	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
 	flag.DurationVar(&pollInterval, "poll-interval", defaultPollInterval, "Poll interval if using poll watcher.")
@@ -78,7 +80,11 @@ func main() {
 					// Start fluent bit if it does not existed.
 					start()
 					// Wait for the fluent bit exit.
-					wait()
+					err := wait()
+					if exitOnFailure && err != nil {
+						_ = level.Error(logger).Log("msg", "Fluent bit exited with error; exiting watcher")
+						return err
+					}
 
 					timerCtx, timerCancel = context.WithCancel(context.Background())
 
@@ -192,16 +198,17 @@ func start() {
 	_ = level.Info(logger).Log("msg", "Fluent bit started")
 }
 
-func wait() {
+func wait() error {
 	mutex.Lock()
 	if cmd == nil {
 		mutex.Unlock()
-		return
+		return nil
 	}
 	mutex.Unlock()
 
 	startTime := time.Now()
-	_ = level.Error(logger).Log("msg", "Fluent bit exited", "error", cmd.Wait())
+	err := cmd.Wait()
+	_ = level.Error(logger).Log("msg", "Fluent bit exited", "error", err)
 	// Once the fluent bit has executed for 10 minutes without any problems,
 	// it should resets the restart backoff timer.
 	if time.Since(startTime) >= ResetTime {
@@ -211,6 +218,7 @@ func wait() {
 	mutex.Lock()
 	cmd = nil
 	mutex.Unlock()
+	return err
 }
 
 func backoff() {
