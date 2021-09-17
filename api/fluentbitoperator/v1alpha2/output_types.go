@@ -40,6 +40,9 @@ type OutputSpec struct {
 	// A user friendly alias name for this output plugin.
 	// Used in metrics for distinction of each configured output.
 	Alias string `json:"alias,omitempty"`
+	// RetryLimit represents configuration for the scheduler which can be set independently on each output section.
+	// This option allows to disable retries or impose a limit to try N times and then discard the data after reaching that limit.
+	RetryLimit string `json:"retry_limit,omitempty"`
 	// Elasticsearch defines Elasticsearch Output configuration.
 	Elasticsearch *output.Elasticsearch `json:"es,omitempty"`
 	// File defines File Output configuration.
@@ -111,6 +114,9 @@ func (list OutputList) Load(sl plugins.SecretLoader) (string, error) {
 			}
 			if item.Spec.Alias != "" {
 				buf.WriteString(fmt.Sprintf("    Alias    %s\n", item.Spec.Alias))
+			}
+			if item.Spec.RetryLimit != "" {
+				buf.WriteString(fmt.Sprintf("    Retry_Limit    %s\n", item.Spec.RetryLimit))
 			}
 			kvs, err := p.Params(sl)
 			if err != nil {
