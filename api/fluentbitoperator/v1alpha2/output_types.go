@@ -60,6 +60,8 @@ type OutputSpec struct {
 	Loki *output.Loki `json:"loki,omitempty"`
 	// Syslog defines Syslog Output configuration.
 	Syslog *output.Syslog `json:"syslog,omitempty"`
+	// DataDog defines DataDog Output configuration.
+	DataDog *output.DataDog `json:"datadog,omitempty"`
 }
 
 // +kubebuilder:object:root=true

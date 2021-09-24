@@ -40,6 +40,59 @@ spec:
                 description: A user friendly alias name for this output plugin. Used
                   in metrics for distinction of each configured output.
                 type: string
+              datadog:
+                description: DataDog defines DataDog Output configuration.
+                properties:
+                  apikey:
+                    description: Your Datadog API key.
+                    type: string
+                  compress:
+                    description: Compress  the payload in GZIP format. Datadog supports
+                      and recommends setting this to gzip.
+                    type: string
+                  dd_message_key:
+                    description: By default, the plugin searches for the key 'log'
+                      and remap the value to the key 'message'. If the property is
+                      set, the plugin will search the property name key.
+                    type: string
+                  dd_service:
+                    description: The human readable name for your service generating
+                      the logs.
+                    type: string
+                  dd_source:
+                    description: A human readable name for the underlying technology
+                      of your service.
+                    type: string
+                  dd_tags:
+                    description: The tags you want to assign to your logs in Datadog.
+                    type: string
+                  host:
+                    description: Host is the Datadog server where you are sending
+                      your logs.
+                    type: string
+                  include_tag_key:
+                    description: If enabled, a tag is appended to output. The key
+                      name is used tag_key property.
+                    type: boolean
+                  json_date_key:
+                    description: Date key name for output.
+                    type: string
+                  provider:
+                    description: To activate the remapping, specify configuration
+                      flag provider.
+                    type: string
+                  proxy:
+                    description: Specify an HTTP Proxy.
+                    type: string
+                  tag_key:
+                    description: The key name of tag. If include_tag_key is false,
+                      This property is ignored.
+                    type: string
+                  tls:
+                    description: TLS controls whether to use end-to-end security communications
+                      security protocol. Datadog recommends setting this to on.
+                    type: boolean
+                type: object
               es:
                 description: Elasticsearch defines Elasticsearch Output configuration.
                 properties:
