@@ -1,22 +1,56 @@
 domain: kubesphere.io
+layout:
+- go.kubebuilder.io/v3
+projectName: fluentbit-operator
 repo: kubesphere.io/fluentbit-operator
 resources:
-- group: logging
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: kubesphere.io
+  group: logging
   kind: FluentBitConfig
+  path: kubesphere.io/fluentbit-operator/api/v1alpha2
   version: v1alpha2
-- group: logging
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: kubesphere.io
+  group: logging
   kind: FluentBit
+  path: kubesphere.io/fluentbit-operator/api/v1alpha2
   version: v1alpha2
-- group: logging
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: kubesphere.io
+  group: logging
   kind: Input
+  path: kubesphere.io/fluentbit-operator/api/v1alpha2
   version: v1alpha2
-- group: logging
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: kubesphere.io
+  group: logging
   kind: Filter
+  path: kubesphere.io/fluentbit-operator/api/v1alpha2
   version: v1alpha2
-- group: logging
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: kubesphere.io
+  group: logging
   kind: Output
+  path: kubesphere.io/fluentbit-operator/api/v1alpha2
   version: v1alpha2
-- group: logging
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: kubesphere.io
+  group: logging
   kind: Parser
+  path: kubesphere.io/fluentbit-operator/api/v1alpha2
   version: v1alpha2
-version: "2"
+version: "3"

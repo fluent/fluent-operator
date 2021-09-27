@@ -1,4 +1,4 @@
-# permissions to do edit filters.
+# permissions for end users to edit filters.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -22,5 +22,3 @@ rules:
   - filters/status
   verbs:
   - get
-  - patch
-  - update

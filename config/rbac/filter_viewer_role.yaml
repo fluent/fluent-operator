@@ -1,4 +1,4 @@
-# permissions to do viewer filters.
+# permissions for end users to view filters.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
