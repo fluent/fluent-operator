@@ -159,7 +159,7 @@ FluentBitSpec defines the desired state of FluentBit
 | fluentBitConfigName | Fluentbitconfig object associated with this Fluentbit | string |
 | secrets | The Secrets are mounted into /fluent-bit/secrets/<secret-name>. | []string |
 | runtimeClassName | The runtimeClassName represents the container runtime configuration. | string |
-| runtimeClassName | The priorityClassName represents the pod's priority. | string |
+| priorityClassName | The priorityClassName represents the pod's priority. | string |
 
 [Back to TOC](#table-of-contents)
 ## Input
