@@ -322,6 +322,7 @@ The list below shows supported plugins which are based on Fluent Bit v1.7.x+. Fo
   - [tcp](docs/plugins/output/tcp.md)
   - [loki](docs/plugins/output/loki.md)
   - [syslog](docs/plugins/output/syslog.md)
+  - [datadog](docs/plugins/output/datadog.md)
 
 ## Best Practice
 
