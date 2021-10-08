@@ -240,6 +240,7 @@ OutputSpec defines the desired state of Output
 | tcp | TCP defines TCP Output configuration. | *[output.TCP](plugins/output/tcp.md) |
 | loki | Loki defines Loki Output configuration. | *[output.Loki](plugins/output/loki.md) |
 | syslog | Syslog defines Syslog Output configuration. | *[output.Syslog](plugins/output/syslog.md) |
+| datadog | DataDog defines DataDog Output configuration. | *[output.DataDog](plugins/output/datadog.md) |
 
 [Back to TOC](#table-of-contents)
 ## Parser
