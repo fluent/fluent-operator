@@ -1,0 +1,92 @@
+name: Main CI WorkFlow
+
+on:
+  push:
+    branches:
+      - 'master'
+      - 'release-*'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'master'
+      - 'release-*'
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 30
+    name: Basic test and verify
+    env:
+      GO111MODULE: "on"
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.x
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Install kubebuilder-2.3.2
+        run: |
+          curl -L "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v2.3.2/kubebuilder_2.3.2_linux_amd64.tar.gz" | tar -xz -C /tmp/
+          sudo mv /tmp/kubebuilder_2.3.2_linux_amd64 /usr/local/kubebuilder
+
+      - name: Run basic test
+        run: make test
+
+      - name: Run verify crds test
+        run:  make verify
+
+  build:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 30
+    name: Binary build
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.x
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - run: make binary
+        name: Run build all binaries
+       
+  docker_build:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 30
+    name: Docker image build
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.x
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - run: make build-amd64
