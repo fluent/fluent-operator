@@ -62,6 +62,15 @@ test: manifests generate fmt vet ## Run tests.
 
 ##@ Build
 
+binary:
+	go build -o bin/manager cmd/manager/main.go
+	go build -o bin/watcher cmd/fluent-bit-watcher/main.go
+
+verify: verify-crds
+
+verify-crds:
+	sudo chmod a+x ./hack/verify-crds.sh && ./hack/verify-crds.sh
+
 build: generate fmt vet ## Build manager binary.
 	go build -o bin/manager cmd/manager/main.go
 
@@ -73,18 +82,18 @@ build-fb:
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-bit-watcher/Dockerfile . -t ${FB_IMG}
 
 # Build amd64/arm64 Fluent Bit Operator container image
-build-op: test
+build-op:
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/manager/Dockerfile . -t ${OP_IMG}
 
 # Build all amd64 docker images
-build-amd64: build-op-amd64
+build-amd64: build-op-amd64 build-fb-amd64
 
 # Build amd64 Fluent Bit container image
 build-fb-amd64:
 	docker build -f cmd/fluent-bit-watcher/Dockerfile . -t ${FB_IMG}${AMD64}
 
 # Build amd64 Fluent Bit Operator container image
-build-op-amd64: test
+build-op-amd64:
 	docker build -f cmd/manager/Dockerfile . -t ${OP_IMG}${AMD64}
 
 # Push the amd64 docker image

@@ -21,7 +21,7 @@ cleanup
 mkdir -p "${TMP_DIFFROOT}"
 cp -a "${DIFFROOT}"/* "${TMP_DIFFROOT}"
 
-$(which controller-gen) ${CRD_OPTIONS} rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+./bin/controller-gen ${CRD_OPTIONS} rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 echo "diffing ${DIFFROOT} against freshly generated crds"
 ret=0
 diff -Naupr "${DIFFROOT}" "${TMP_DIFFROOT}" || ret=$?
