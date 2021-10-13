@@ -23,6 +23,15 @@ test: generate fmt vet manifests
 manager: generate fmt vet
 	go build -o bin/manager cmd/manager/main.go
 
+binary: 
+	go build -o bin/manager cmd/manager/main.go
+	go build -o bin/watcher cmd/fluent-bit-watcher/main.go
+
+verify: verify-crds
+
+verify-crds:
+	sudo chmod a+x ./hack/verify-crds.sh && ./hack/verify-crds.sh
+
 # Run against the configured Kubernetes cluster in ~/.kube/config
 run: generate fmt vet manifests
 	go run cmd/manager/main.go
@@ -71,14 +80,14 @@ build-op: test
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/manager/Dockerfile . -t ${OP_IMG}
 
 # Build all amd64 docker images
-build-amd64: build-op-amd64
+build-amd64: build-op-amd64 build-fb-amd64
 
 # Build amd64 Fluent Bit container image
 build-fb-amd64:
 	docker build -f cmd/fluent-bit-watcher/Dockerfile . -t ${FB_IMG}${AMD64}
 
 # Build amd64 Fluent Bit Operator container image
-build-op-amd64: test
+build-op-amd64: 
 	docker build -f cmd/manager/Dockerfile . -t ${OP_IMG}${AMD64}
 
 # Push the amd64 docker image
@@ -94,7 +103,7 @@ ifeq (, $(shell which controller-gen))
 	CONTROLLER_GEN_TMP_DIR=$$(mktemp -d) ;\
 	cd $$CONTROLLER_GEN_TMP_DIR ;\
 	go mod init tmp ;\
-	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1 ;\
+	go install -v sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1 ;\
 	rm -rf $$CONTROLLER_GEN_TMP_DIR ;\
 	}
 CONTROLLER_GEN=$(GOBIN)/controller-gen
