@@ -1,4 +1,4 @@
-# permissions to do viewer outputs.
+# permissions for end users to view outputs.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:

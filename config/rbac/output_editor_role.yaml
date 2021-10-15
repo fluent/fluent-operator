@@ -1,4 +1,4 @@
-# permissions to do edit outputs.
+# permissions for end users to edit outputs.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -22,5 +22,3 @@ rules:
   - outputs/status
   verbs:
   - get
-  - patch
-  - update

@@ -25,20 +25,20 @@ jobs:
         with:
           go-version: 1.16.x
 
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
       - uses: actions/cache@v2
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-      - name: Install kubebuilder-2.3.2
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install kubebuilder-3.1.0
         run: |
-          curl -L "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v2.3.2/kubebuilder_2.3.2_linux_amd64.tar.gz" | tar -xz -C /tmp/
-          sudo mv /tmp/kubebuilder_2.3.2_linux_amd64 /usr/local/kubebuilder
+          curl -L -o kubebuilder "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v3.1.0/kubebuilder_linux_amd64"
+          chmod +x kubebuilder && mv kubebuilder /usr/local/bin/
 
       - name: Run basic test
         run: make test

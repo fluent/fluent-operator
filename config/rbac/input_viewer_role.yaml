@@ -1,4 +1,4 @@
-# permissions to do viewer inputs.
+# permissions for end users to view inputs.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:

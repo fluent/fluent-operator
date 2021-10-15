@@ -1,4 +1,4 @@
-# permissions to do edit inputs.
+# permissions for end users to edit inputs.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -22,5 +22,3 @@ rules:
   - inputs/status
   verbs:
   - get
-  - patch
-  - update
