@@ -69,14 +69,14 @@ generate: controller-gen
 	./hack/update-codegen.sh
 
 # Build all amd64/arm64 docker images
-build: build-op
+build: test build-op
 
 # Build amd64/arm64 Fluent Bit container image
 build-fb:
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-bit-watcher/Dockerfile . -t ${FB_IMG}
 
 # Build amd64/arm64 Fluent Bit Operator container image
-build-op: test
+build-op: 
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/manager/Dockerfile . -t ${OP_IMG}
 
 # Build all amd64 docker images
