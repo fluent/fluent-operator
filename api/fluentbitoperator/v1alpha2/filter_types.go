@@ -33,7 +33,7 @@ import (
 // FilterSpec defines the desired state of Filter
 type FilterSpec struct {
 	// A pattern to match against the tags of incoming records.
-	// It's case sensitive and support the star (*) character as a wildcard.
+	// It's case-sensitive and support the star (*) character as a wildcard.
 	Match string `json:"match,omitempty"`
 	// A regular expression to match against the tags of incoming records.
 	// Use this option if you want to use the full regex syntax.
@@ -59,6 +59,8 @@ type FilterItem struct {
 	Lua *filter.Lua `json:"lua,omitempty"`
 	// Throttle defines a Throttle configuration.
 	Throttle *filter.Throttle `json:"throttle,omitempty"`
+	// RewriteTag defines a RewriteTag configuration.
+	RewriteTag *filter.RewriteTag `json:"rewriteTag,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -82,6 +84,7 @@ type FilterList struct {
 }
 
 // +kubebuilder:object:generate:=false
+
 // FilterByName implements sort.Interface for []Filter based on the Name field.
 type FilterByName []Filter
 
