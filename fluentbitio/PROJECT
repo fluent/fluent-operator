@@ -1,0 +1,6 @@
+domain: fluent.io
+layout:
+- go.kubebuilder.io/v3
+projectName: fluentbitio
+repo: fluent.io/fluentbit-operator
+version: "3"
