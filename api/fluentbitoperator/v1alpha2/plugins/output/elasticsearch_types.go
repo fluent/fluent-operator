@@ -153,10 +153,10 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("HTTP_Passwd", pwd)
 	}
 	if es.Index != "" {
-		kvs.Insert("Host", es.Index)
+		kvs.Insert("Index", es.Index)
 	}
 	if es.Type != "" {
-		kvs.Insert("Host", es.Type)
+		kvs.Insert("Type", es.Type)
 	}
 	if es.LogstashFormat != nil {
 		kvs.Insert("Logstash_Format", fmt.Sprint(*es.LogstashFormat))
