@@ -1,0 +1,24 @@
+# permissions for end users to edit clusterfluentbitconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusterfluentbitconfig-editor-role
+rules:
+- apiGroups:
+  - fluentbit.fluent.io
+  resources:
+  - clusterfluentbitconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fluentbit.fluent.io
+  resources:
+  - clusterfluentbitconfigs/status
+  verbs:
+  - get

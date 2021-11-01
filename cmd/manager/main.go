@@ -118,6 +118,26 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "FluentBit")
 		os.Exit(1)
 	}
+
+	if err = (&controllers.ClusterFluentBitConfigReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("ClusterFluentBitConfig"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "ClusterFluentBitConfig")
+		os.Exit(1)
+	}
+
+	if err = (&controllers.ClusterFluentBitReconciler{
+		Client:               mgr.GetClient(),
+		Log:                  ctrl.Log.WithName("controllers").WithName("ClusterFluentBit"),
+		Scheme:               mgr.GetScheme(),
+		ContainerLogRealPath: logPath,
+		Namespaced:           namespacedController,
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "ClusterFluentBit")
+		os.Exit(1)
+	}
 	//+kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
