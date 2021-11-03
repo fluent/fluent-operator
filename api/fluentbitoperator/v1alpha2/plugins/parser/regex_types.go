@@ -37,7 +37,7 @@ func (re *Regex) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("Time_Format", re.TimeFormat)
 	}
 	if re.TimeKeep != nil {
-		kvs.Insert("Time_Format", fmt.Sprint(*re.TimeKeep))
+		kvs.Insert("Time_Keep", fmt.Sprint(*re.TimeKeep))
 	}
 	if re.Types != "" {
 		kvs.Insert("Types", re.Types)
