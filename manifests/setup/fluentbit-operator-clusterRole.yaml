@@ -40,7 +40,51 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
       - serviceaccounts
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - fluentbit.fluent.io
+    resources:
+      - clusterfilters
+      - clusterinputs
+      - clusteroutputs
+      - clusterparsers
+      - clusterfluentbitconfigs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - logging.kubesphere.io
+    resources:
+      - clusterfilters
+      - clusterinputs
+      - clusteroutputs
+    verbs:
+      - list
+  - apiGroups:
+      - fluentbit.fluent.io
+    resources:
+      - clusterfluentbitconfigs
     verbs:
       - create
       - delete

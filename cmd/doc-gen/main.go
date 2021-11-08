@@ -22,12 +22,12 @@ This Document documents the types introduced by the Fluent Bit Operator to be co
 
 var (
 	links = map[string]string{
-		"metav1.ObjectMeta":        "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta",
-		"metav1.ListMeta":          "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta",
-		"metav1.LabelSelector":     "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta",
-		"corev1.SecretKeySelector": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#secretkeyselector-v1-core",
-		"corev1.Toleration":        "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#toleration-v1-core",
-		"corev1.VolumeSource":      "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#volume-v1-core",
+		"metav1.ObjectMeta":        "https://kubernetes.io/docs/reference/generated/kubernetes-apis/v1.17/#objectmeta-v1-meta",
+		"metav1.ListMeta":          "https://kubernetes.io/docs/reference/generated/kubernetes-apis/v1.17/#listmeta-v1-meta",
+		"metav1.LabelSelector":     "https://kubernetes.io/docs/reference/generated/kubernetes-apis/v1.17/#labelselector-v1-meta",
+		"corev1.SecretKeySelector": "https://kubernetes.io/docs/reference/generated/kubernetes-apis/v1.17/#secretkeyselector-v1-core",
+		"corev1.Toleration":        "https://kubernetes.io/docs/reference/generated/kubernetes-apis/v1.17/#toleration-v1-core",
+		"corev1.VolumeSource":      "https://kubernetes.io/docs/reference/generated/kubernetes-apis/v1.17/#volume-v1-core",
 		"plugins.Secret":           "../secret.md",
 		"Secret":                   "secret.md",
 		"plugins.TLS":              "../tls.md",
@@ -44,7 +44,7 @@ func main() {
 
 func plugins() {
 	var srcs []string
-	err := filepath.Walk("api/v1alpha2/plugins", func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk("apis/v1alpha2/plugins", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ func plugins() {
 			}
 		}
 
-		src := strings.TrimPrefix(src, "api/v1alpha2/plugins/")
+		src := strings.TrimPrefix(src, "apis/v1alpha2/plugins/")
 		src = strings.TrimSuffix(src, "_types.go")
 		dst := fmt.Sprintf("docs/plugins/" + src + ".md")
 		f, _ := os.Create(dst)
@@ -105,7 +105,7 @@ func printTOC(types []KubeTypes) bytes.Buffer {
 
 func crds() {
 	var srcs []string
-	err := filepath.Walk("api/v1alpha2", func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk("apis/v1alpha2", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

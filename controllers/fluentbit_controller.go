@@ -20,13 +20,14 @@ import (
 	"context"
 	"fmt"
 
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/apis/kubesphere.io/v1alpha2"
+
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	logging "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
 	"kubesphere.io/fluentbit-operator/pkg/operator"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -62,7 +63,7 @@ type FluentBitReconciler struct {
 func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("fluent-bit", req.NamespacedName)
 
-	var fb logging.FluentBit
+	var fb loggingv1alpha2.FluentBit
 	if err := r.Get(ctx, req.NamespacedName, &fb); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
@@ -77,7 +78,7 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, nil
 	}
 
-	if !fb.HasFinalizer(logging.FluentBitFinalizerName) {
+	if !fb.HasFinalizer(loggingv1alpha2.FluentBitFinalizerName) {
 		if err := r.addFinalizer(ctx, &fb); err != nil {
 			return ctrl.Result{}, fmt.Errorf("error when adding finalizer: %v", err)
 		}
@@ -128,7 +129,7 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	return ctrl.Result{}, nil
 }
 
-func (r *FluentBitReconciler) getContainerLogPath(fb logging.FluentBit) string {
+func (r *FluentBitReconciler) getContainerLogPath(fb loggingv1alpha2.FluentBit) string {
 	if fb.Spec.ContainerLogRealPath != "" {
 		return fb.Spec.ContainerLogRealPath
 	} else if r.ContainerLogRealPath != "" {
@@ -138,7 +139,7 @@ func (r *FluentBitReconciler) getContainerLogPath(fb logging.FluentBit) string {
 	}
 }
 
-func (r *FluentBitReconciler) mutate(ds *appsv1.DaemonSet, fb logging.FluentBit) controllerutil.MutateFn {
+func (r *FluentBitReconciler) mutate(ds *appsv1.DaemonSet, fb loggingv1alpha2.FluentBit) controllerutil.MutateFn {
 	logPath := r.getContainerLogPath(fb)
 	expected := operator.MakeDaemonSet(fb, logPath)
 
@@ -153,7 +154,7 @@ func (r *FluentBitReconciler) mutate(ds *appsv1.DaemonSet, fb logging.FluentBit)
 	}
 }
 
-func (r *FluentBitReconciler) delete(ctx context.Context, fb *logging.FluentBit) error {
+func (r *FluentBitReconciler) delete(ctx context.Context, fb *loggingv1alpha2.FluentBit) error {
 	var sa corev1.ServiceAccount
 	err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Name}, &sa)
 	if err == nil {
@@ -211,7 +212,7 @@ func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&logging.FluentBit{}).
+		For(&loggingv1alpha2.FluentBit{}).
 		Owns(&corev1.ServiceAccount{}).
 		Owns(&appsv1.DaemonSet{}).
 		Complete(r)
