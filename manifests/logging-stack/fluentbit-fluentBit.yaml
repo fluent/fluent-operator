@@ -18,6 +18,7 @@ spec:
       cpu: 500m
       memory: 200Mi
   fluentBitConfigName: fluent-bit-config
+  clusterFluentBitConfigName: cluster-fluent-bit-config
   tolerations:
     - operator: Exists
   affinity:

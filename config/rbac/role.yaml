@@ -49,6 +49,27 @@ rules:
   - update
   - watch
 - apiGroups:
+  - fluentbit.fluent.io
+  resources:
+  - clusterfilters
+  - clusterinputs
+  - clusteroutputs
+  - clusterparsers
+  verbs:
+  - list
+- apiGroups:
+  - fluentbit.fluent.io
+  resources:
+  - clusterfluentbitconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
   - logging.kubesphere.io
   resources:
   - filters

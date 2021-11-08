@@ -18,10 +18,13 @@ package main
 
 import (
 	"flag"
-	"github.com/joho/godotenv"
 	"os"
-	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"strings"
+
+	"github.com/joho/godotenv"
+	fluentbitv1alpha2 "kubesphere.io/fluentbit-operator/apis/fluentbit.io/v1alpha2"
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/apis/kubesphere.io/v1alpha2"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -34,7 +37,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	loggingv1alpha2 "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
 	"kubesphere.io/fluentbit-operator/controllers"
 	//+kubebuilder:scaffold:imports
 )
@@ -48,6 +50,7 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
 	utilruntime.Must(loggingv1alpha2.AddToScheme(scheme))
+	utilruntime.Must(fluentbitv1alpha2.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -108,6 +111,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err = (&controllers.ClusterFluentBitConfigReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("ClusterFluentBitConfig"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "ClusterFluentBitConfig")
+		os.Exit(1)
+	}
+
 	if err = (&controllers.FluentBitReconciler{
 		Client:               mgr.GetClient(),
 		Log:                  ctrl.Log.WithName("controllers").WithName("FluentBit"),
@@ -118,6 +130,7 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "FluentBit")
 		os.Exit(1)
 	}
+
 	//+kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {

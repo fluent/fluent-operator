@@ -29,8 +29,14 @@ echo ">> Temporary output directory ${TEMP_DIR}"
 chmod +x ${CODEGEN_PKG}/generate-groups.sh
 
 ${CODEGEN_PKG}/generate-groups.sh "client" \
-    kubesphere.io/fluentbit-operator/api/generated kubesphere.io/fluentbit-operator/api \
-    fluentbitoperator:v1alpha2 \
+    kubesphere.io/fluentbit-operator/apis/generated/kubesphere kubesphere.io/fluentbit-operator/apis \
+    kubesphere.io:v1alpha2 \
+    --output-base "${TEMP_DIR}" \
+    --go-header-file ${SCRIPT_ROOT}/hack/boilerplate.go.txt
+
+${CODEGEN_PKG}/generate-groups.sh "client" \
+    kubesphere.io/fluentbit-operator/apis/generated/fluentbit kubesphere.io/fluentbit-operator/apis \
+    fluentbit.io:v1alpha2 \
     --output-base "${TEMP_DIR}" \
     --go-header-file ${SCRIPT_ROOT}/hack/boilerplate.go.txt
 

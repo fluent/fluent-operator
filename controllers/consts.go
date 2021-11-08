@@ -1,8 +1,10 @@
 package controllers
 
-import logging "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
+import (
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/apis/kubesphere.io/v1alpha2"
+)
 
 var (
 	ownerKey = ".metadata.controller"
-	apiGVStr = logging.SchemeGroupVersion.String()
+	apiGVStr = loggingv1alpha2.SchemeGroupVersion.String()
 )

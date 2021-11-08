@@ -1,0 +1,19 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFluentBitConfig
+metadata:
+  name: cluster-fluent-bit-config
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluent-bit
+spec:
+  service:
+    parsersFile: parsers.conf
+  clusterinputSelector:
+    matchLabels:
+      fluentbit.fluent.io/enabled: "true"
+  clusterfilterSelector:
+    matchLabels:
+      fluentbit.fluent.io/enabled: "true"
+  clusteroutputSelector:
+    matchLabels:
+      fluentbit.fluent.io/enabled: "true"

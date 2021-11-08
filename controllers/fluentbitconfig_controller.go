@@ -24,14 +24,14 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/apis/kubesphere.io/v1alpha2"
+	"kubesphere.io/fluentbit-operator/apis/plugins"
+
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/source"
-
-	logging "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
 )
 
 // FluentBitConfigReconciler reconciles a FluentBitConfig object
@@ -57,7 +57,7 @@ type FluentBitConfigReconciler struct {
 func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("fluentbitconfig", req.NamespacedName)
 
-	var cfgs logging.FluentBitConfigList
+	var cfgs loggingv1alpha2.FluentBitConfigList
 	if err := r.List(ctx, &cfgs, client.InNamespace(req.Namespace)); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
@@ -67,7 +67,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 	for _, cfg := range cfgs.Items {
 		// List all inputs matching the label selector.
-		var inputs logging.InputList
+		var inputs loggingv1alpha2.InputList
 		selector, err := metav1.LabelSelectorAsSelector(&cfg.Spec.InputSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -77,7 +77,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 
 		// List all filters matching the label selector.
-		var filters logging.FilterList
+		var filters loggingv1alpha2.FilterList
 		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.FilterSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -87,7 +87,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 
 		// List all outputs matching the label selector.
-		var outputs logging.OutputList
+		var outputs loggingv1alpha2.OutputList
 		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.OutputSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -97,7 +97,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 
 		// List all parsers matching the label selector.
-		var parsers logging.ParserList
+		var parsers loggingv1alpha2.ParserList
 		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.ParserSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -174,11 +174,11 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&logging.FluentBitConfig{}).
+		For(&loggingv1alpha2.FluentBitConfig{}).
 		Owns(&corev1.Secret{}).
-		Watches(&source.Kind{Type: &logging.Input{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &logging.Filter{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &logging.Output{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &logging.Parser{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &loggingv1alpha2.Input{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &loggingv1alpha2.Filter{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &loggingv1alpha2.Output{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &loggingv1alpha2.Parser{}}, &handler.EnqueueRequestForObject{}).
 		Complete(r)
 }

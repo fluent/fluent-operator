@@ -7,7 +7,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
+	loggingv1alpha2 "kubesphere.io/fluentbit-operator/apis/kubesphere.io/v1alpha2"
 )
 
 func MakeRBACObjects(fbName, fbNamespace string) (*rbacv1.ClusterRole, *corev1.ServiceAccount, *rbacv1.ClusterRoleBinding) {
@@ -96,7 +96,7 @@ func MakeScopedRBACObjects(fbName, fbNamespace string) (*rbacv1.Role, *corev1.Se
 	return &r, &sa, &rb
 }
 
-func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
+func MakeDaemonSet(fb loggingv1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fb.Name,
@@ -130,6 +130,14 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 							VolumeSource: corev1.VolumeSource{
 								Secret: &corev1.SecretVolumeSource{
 									SecretName: fb.Spec.FluentBitConfigName,
+								},
+							},
+						},
+						{
+							Name: "clusterconfig",
+							VolumeSource: corev1.VolumeSource{
+								Secret: &corev1.SecretVolumeSource{
+									SecretName: fb.Spec.ClusterFluentBitConfigName,
 								},
 							},
 						},
@@ -183,6 +191,11 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 									Name:      "config",
 									ReadOnly:  true,
 									MountPath: "/fluent-bit/config",
+								},
+								{
+									Name:      "clusterconfig",
+									ReadOnly:  true,
+									MountPath: "/fluent-bit/clusterconfig",
 								},
 								{
 									Name:      "varlogs",

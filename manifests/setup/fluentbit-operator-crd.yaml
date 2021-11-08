@@ -1592,6 +1592,10 @@ spec:
                 items:
                   type: string
                 type: array
+              clusterFluentBitConfigName:
+                description: ClusterFluentBitConfigName object associated with this
+                  ClusterFluentBitConfig
+                type: string
               containerLogRealPath:
                 description: Container log path
                 type: string
