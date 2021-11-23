@@ -3315,6 +3315,11 @@ spec:
                       messages
                     format: int64
                     type: integer
+                  multilineParser:
+                    description: This will help to reassembly multiline messages originally
+                      split by Docker or CRI Specify one or Multiline Parser definition
+                      to apply to the content.
+                    type: string
                   parser:
                     description: Specify the name of a parser to interpret the entry
                       as a structured message.
