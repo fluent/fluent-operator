@@ -87,6 +87,9 @@ type Tail struct {
 	DockerModeFlushSeconds *int64 `json:"dockerModeFlushSeconds,omitempty"`
 	// DisableInotifyWatcher will disable inotify and use the file stat watcher instead.
 	DisableInotifyWatcher *bool `json:"disableInotifyWatcher,omitempty"`
+	// This will help to reassembly multiline messages originally split by Docker or CRI
+	//Specify one or Multiline Parser definition to apply to the content.
+	MultilineParser string `json:"multilineParser,omitempty"`
 }
 
 func (_ *Tail) Name() string {
@@ -166,6 +169,9 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if t.DisableInotifyWatcher != nil {
 		kvs.Insert("Inotify_Watcher", fmt.Sprint(!*t.DisableInotifyWatcher))
+	}
+	if t.MultilineParser != "" {
+		kvs.Insert("multiline.parser", t.MultilineParser)
 	}
 	return kvs, nil
 }
