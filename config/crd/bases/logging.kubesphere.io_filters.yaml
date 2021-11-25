@@ -40,6 +40,45 @@ spec:
                 description: A set of filter plugins in order.
                 items:
                   properties:
+                    aws:
+                      description: Aws defines a Aws configuration.
+                      properties:
+                        accountID:
+                          description: The account ID for current EC2 instance.Default
+                            is false.
+                          type: boolean
+                        amiID:
+                          description: The EC2 instance image id.Default is false.
+                          type: boolean
+                        az:
+                          description: The availability zone; for example, "us-east-1a".
+                            Default is true.
+                          type: boolean
+                        ec2InstanceID:
+                          description: The EC2 instance ID.Default is true.
+                          type: boolean
+                        ec2InstanceType:
+                          description: The EC2 instance type.Default is false.
+                          type: boolean
+                        hostName:
+                          description: The hostname for current EC2 instance.Default
+                            is false.
+                          type: boolean
+                        imdsVersion:
+                          description: Specify which version of the instance metadata
+                            service to use. Valid values are 'v1' or 'v2'.
+                          enum:
+                          - v1
+                          - v2
+                          type: string
+                        privateIP:
+                          description: The EC2 instance private ip.Default is false.
+                          type: boolean
+                        vpcID:
+                          description: The VPC ID for current EC2 instance.Default
+                            is false.
+                          type: boolean
+                      type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
                       properties:
