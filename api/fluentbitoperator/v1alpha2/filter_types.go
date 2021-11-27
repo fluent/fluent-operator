@@ -61,6 +61,8 @@ type FilterItem struct {
 	Throttle *filter.Throttle `json:"throttle,omitempty"`
 	// RewriteTag defines a RewriteTag configuration.
 	RewriteTag *filter.RewriteTag `json:"rewriteTag,omitempty"`
+	//Aws defines a Aws configuration.
+	AWS *filter.AWS `json:"aws,omitempty"`
 }
 
 // +kubebuilder:object:root=true
