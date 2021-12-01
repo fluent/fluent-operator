@@ -63,6 +63,8 @@ type FilterItem struct {
 	RewriteTag *filter.RewriteTag `json:"rewriteTag,omitempty"`
 	//Aws defines a Aws configuration.
 	AWS *filter.AWS `json:"aws,omitempty"`
+	//Multiline defines a Multiline configuration.
+	Multiline *filter.Multiline `json:"multiline,omitempty"`
 }
 
 // +kubebuilder:object:root=true

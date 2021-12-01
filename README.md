@@ -312,6 +312,7 @@ The list below shows supported plugins which are based on Fluent Bit v1.7.x+. Fo
   - [lua](docs/plugins/filter/lua.md)
   - [throttle](docs/plugins/filter/throttle.md)
   - [aws](docs/plugins/filter/aws.md)
+  - [multiline](docs/plugins/filter/multiline.md)
 - [Output](docs/crd.md#output)
   - [elasticsearch](docs/plugins/output/elasticsearch.md)
   - [file](docs/plugins/output/file.md)
