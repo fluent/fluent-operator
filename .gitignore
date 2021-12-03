@@ -17,5 +17,4 @@ vendor/
 # IDE
 .idea
 
-!/bin
-/bin/manager
+/bin
