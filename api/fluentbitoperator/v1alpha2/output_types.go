@@ -66,6 +66,8 @@ type OutputSpec struct {
 	Syslog *output.Syslog `json:"syslog,omitempty"`
 	// DataDog defines DataDog Output configuration.
 	DataDog *output.DataDog `json:"datadog,omitempty"`
+	// Firehose defines Firehose Output configuration.
+	Fireose *output.Firehose `json:"firehose,omitempty"`
 }
 
 // +kubebuilder:object:root=true
