@@ -58,6 +58,7 @@ input:
 containerRuntime: docker
 logPath:
   crio: /var/log
+  crictlPath: /usr/local/bin/crictl
 
 output:
   #Configure the output plugin parameter in FluentBit.
