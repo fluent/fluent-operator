@@ -46,7 +46,7 @@ spec:
           path: /var/run/containerd/containerd.sock
       - name: crictl
         hostPath:
-          path: /usr/local/bin/crictl
+          path: {{ .Values.logPath.crictlPath }}
       initContainers:
       - name: setenv
         image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
@@ -63,7 +63,7 @@ spec:
           mountPath: /var/run/containerd/containerd.sock
         - name: crictl
           readOnly: true
-          mountPath: /usr/local/bin/crictl
+          mountPath: {{ .Values.logPath.crictlPath }}
       {{- else if eq .Values.containerRuntime "crio" }}
       volumes:
         - name: env
