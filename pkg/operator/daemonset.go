@@ -97,6 +97,7 @@ func MakeScopedRBACObjects(fbName, fbNamespace string) (*rbacv1.Role, *corev1.Se
 }
 
 func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
+	hostPathType :=corev1.HostPathFile
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fb.Name,
@@ -149,6 +150,15 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 								},
 							},
 						},
+						{
+							Name: "hosts",
+							VolumeSource: corev1.VolumeSource{
+								HostPath: &corev1.HostPathVolumeSource{
+									Path: "/etc/hosts",
+									Type: &hostPathType,
+								},
+							},
+						},
 					},
 					Containers: []corev1.Container{
 						{
@@ -193,6 +203,11 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 									Name:      "systemd",
 									ReadOnly:  true,
 									MountPath: "/var/log/journal",
+								},
+								{
+									Name:      "hosts",
+									ReadOnly:  true,
+									MountPath: "/etc/hosts",
 								},
 							},
 							Resources: fb.Spec.Resources,
