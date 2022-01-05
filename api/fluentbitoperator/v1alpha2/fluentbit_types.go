@@ -55,6 +55,10 @@ type FluentBitSpec struct {
 	RuntimeClassName string `json:"runtimeClassName,omitempty"`
 	// PriorityClassName represents the pod's priority class.
 	PriorityClassName string `json:"priorityClassName,omitempty"`
+	// List of volumes that can be mounted by containers belonging to the pod.
+	Volumes []corev1.Volume `json:"volumes,omitempty"`
+	// Pod volumes to mount into the container's filesystem.
+	VolumesMounts []corev1.VolumeMount `json:"volumesMounts,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit

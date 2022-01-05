@@ -164,7 +164,7 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 								},
 							},
 							Env: []corev1.EnvVar{
-								corev1.EnvVar{
+								{
 									Name: "NODE_NAME",
 									ValueFrom: &corev1.EnvVarSource{
 										FieldRef: &corev1.ObjectFieldSelector{
@@ -212,6 +212,13 @@ func MakeDaemonSet(fb v1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 
 	if fb.Spec.PriorityClassName != "" {
 		ds.Spec.Template.Spec.PriorityClassName = fb.Spec.PriorityClassName
+	}
+
+	if fb.Spec.Volumes != nil {
+		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, fb.Spec.Volumes...)
+	}
+	if fb.Spec.VolumesMounts != nil {
+		ds.Spec.Template.Spec.Containers[0].VolumeMounts = append(ds.Spec.Template.Spec.Containers[0].VolumeMounts, fb.Spec.VolumesMounts...)
 	}
 
 	// Mount Position DB
