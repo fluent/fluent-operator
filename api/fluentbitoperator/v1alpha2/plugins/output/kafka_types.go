@@ -35,13 +35,13 @@ type Kafka struct {
 	// {property} can be any librdkafka properties
 	Rdkafka map[string]string `json:"rdkafka,omitempty"`
 	//adds unknown topics (found in Topic_Key) to Topics. So in Topics only a default topic needs to be configured
-	DynamicTopic   *bool `json:"dynamicTopic,omitempty"`
+	DynamicTopic *bool `json:"dynamicTopic,omitempty"`
 	//Fluent Bit queues data into rdkafka library,
 	//if for some reason the underlying library cannot flush the records the queue might fills up blocking new addition of records.
 	//The queue_full_retries option set the number of local retries to enqueue the data.
 	//The default value is 10 times, the interval between each retry is 1 second.
 	//Setting the queue_full_retries value to 0 set's an unlimited number of retries.
-	QueueFullRetries *int64  `json:"queueFullRetries,omitempty"`
+	QueueFullRetries *int64 `json:"queueFullRetries,omitempty"`
 }
 
 func (*Kafka) Name() string {
