@@ -1,11 +1,11 @@
-apiVersion: logging.kubesphere.io/v1alpha2
+apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Output
 metadata:
   name: fluentd
   namespace: kubesphere-logging-system
   labels:
-    logging.kubesphere.io/enabled: "false"
-    logging.kubesphere.io/component: logging
+    fluentbit.fluent.io/enabled: "false"
+    fluentbit.fluent.io/component: logging
 spec:
   matchRegex: (?:kube|service)\.(.*)
   forward:

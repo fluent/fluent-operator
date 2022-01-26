@@ -1,0 +1,7 @@
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: clusteroutput-sample
+spec:
+  # Add fields here
+  foo: bar

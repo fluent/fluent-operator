@@ -5,9 +5,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
-  name: fluentbits.logging.kubesphere.io
+  name: fluentbits.fluentbit.fluent.io
 spec:
-  group: logging.kubesphere.io
+  group: fluentbit.fluent.io
   names:
     kind: FluentBit
     listKind: FluentBitList

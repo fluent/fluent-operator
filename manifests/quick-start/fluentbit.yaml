@@ -1,0 +1,50 @@
+apiVersion: fluentbit.fluent.io
+kind: FluentBit
+metadata:
+  name: fluent-bit
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluent-bit
+spec:
+  image: kubesphere/fluent-bit:v1.8.3
+  fluentBitConfigName: fluent-bit-config
+
+---
+apiVersion: fluentbit.fluent.io
+kind: FluentBitConfig
+metadata:
+  name: fluent-bit-config
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluent-bit
+spec:
+  inputSelector:
+    matchLabels:
+      fluentbit.fluent.io/enabled: "true"
+  outputSelector:
+    matchLabels:
+      fluentbit.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentbit.fluent.io
+kind: Input
+metadata:
+  name: dummy
+  namespace: kubesphere-logging-system
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+spec:
+  dummy:
+    tag: my_dummy
+
+---
+apiVersion: fluentbit.fluent.io
+kind: Output
+metadata:
+  name: stdout
+  namespace: kubesphere-logging-system
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+spec:
+  match: "*"
+  stdout: {}

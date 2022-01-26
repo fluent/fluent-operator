@@ -226,7 +226,7 @@ Fluent Bit comes with a built-in HTTP Server. According to the official [documen
 When you use the kubesphere/fluentbit-operator, You can enable this from `FluentBitConfig` manifest. Example is below:
 
 ```yaml
-apiVersion: logging.kubesphere.io/v1alpha2
+apiVersion: fluentbit.fluent.io/v1alpha2
 kind: FluentBitConfig
 metadata:
   name: fluent-bit-config
@@ -234,13 +234,13 @@ metadata:
 spec:
   filterSelector:
     matchLabels:
-      logging.kubesphere.io/enabled: 'true'
+      fluentbit.fluent.io/enabled: 'true'
   inputSelector:
     matchLabels:
-      logging.kubesphere.io/enabled: 'true'
+      fluentbit.fluent.io/enabled: 'true'
   outputSelector:
     matchLabels:
-      logging.kubesphere.io/enabled: 'true'
+      fluentbit.fluent.io/enabled: 'true'
   service:
     httpListen: 0.0.0.0
     httpPort: 2020

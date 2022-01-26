@@ -1,0 +1,7 @@
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: clusterfluentdconfig-sample
+spec:
+  # Add fields here
+  foo: bar

@@ -2,7 +2,7 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: fluentbitconfigs.logging.kubesphere.io
+  name: fluentbitconfigs.fluentbit.fluent.io
 spec:
   conversion:
     strategy: Webhook

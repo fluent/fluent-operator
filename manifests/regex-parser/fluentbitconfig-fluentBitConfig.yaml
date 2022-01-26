@@ -1,4 +1,4 @@
-apiVersion: logging.kubesphere.io/v1alpha2
+apiVersion: fluentbit.fluent.io/v1alpha2
 kind: FluentBitConfig
 metadata:
   name: fluent-bit-config
@@ -11,13 +11,13 @@ spec:
     parsersFile: parsers.conf
   inputSelector:
     matchLabels:
-      logging.kubesphere.io/enabled: "true"
+      fluentbit.fluent.io/enabled: "true"
   filterSelector:
     matchLabels:
-      logging.kubesphere.io/enabled: "true"
+      fluentbit.fluent.io/enabled: "true"
   outputSelector:
     matchLabels:
-      logging.kubesphere.io/enabled: "true"
+      fluentbit.fluent.io/enabled: "true"
   parserSelector:
     matchLabels:
-      logging.kubesphere.io/enabled: "true"
+      fluentbit.fluent.io/enabled: "true"

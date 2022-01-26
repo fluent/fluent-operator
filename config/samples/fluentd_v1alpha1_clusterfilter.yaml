@@ -1,0 +1,7 @@
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFilter
+metadata:
+  name: clusterfilter-sample
+spec:
+  # Add fields here
+  foo: bar

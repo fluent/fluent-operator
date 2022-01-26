@@ -1,0 +1,20 @@
+# permissions for end users to view clusterfluentdconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusterfluentdconfig-viewer-role
+rules:
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - clusterfluentdconfigs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - clusterfluentdconfigs/status
+  verbs:
+  - get

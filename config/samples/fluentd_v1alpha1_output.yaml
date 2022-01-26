@@ -1,0 +1,7 @@
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: output-sample
+spec:
+  # Add fields here
+  foo: bar

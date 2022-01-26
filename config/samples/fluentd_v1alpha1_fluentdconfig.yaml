@@ -1,0 +1,7 @@
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentdconfig-sample
+spec:
+  # Add fields here
+  foo: bar
