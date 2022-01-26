@@ -18,3 +18,5 @@ vendor/
 .idea
 
 /bin
+
+.vscode/
