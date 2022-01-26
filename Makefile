@@ -1,7 +1,9 @@
 VERSION?=$(shell cat VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
 FB_IMG ?= kubesphere/fluent-bit:v1.8.3
-OP_IMG ?= kubesphere/fluentbit-operator:$(VERSION)
+FD_IMG ?= kubesphere/fluentd:v1.14.4
+FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
+
 AMD64 ?= -amd64
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
@@ -40,9 +42,10 @@ help: ## Display this help.
 ##@ Development
 
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
-	kubectl kustomize config/crd | sed -e '/creationTimestamp/d' > manifests/setup/fluentbit-operator-crd.yaml
-	kubectl kustomize manifests/setup | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=config/crd/bases
+	kubectl kustomize config/crd/bases/ | sed -e '/creationTimestamp/d' > manifests/setup/fluent-operator-crd.yaml
+	kubectl kustomize manifests/setup/ | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
 
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
@@ -63,8 +66,9 @@ test: manifests generate fmt vet ## Run tests.
 ##@ Build
 
 binary:
-	go build -o bin/manager cmd/manager/main.go
-	go build -o bin/watcher cmd/fluent-bit-watcher/main.go
+	go build -o bin/fb-manager cmd/fluent-manager/main.go
+	go build -o bin/fb-watcher cmd/fluent-watcher/fluentbit/main.go
+	go build -o bin/fd-watcher cmd/fluent-watcher/fluentd/main.go
 
 verify: verify-crds
 
@@ -72,49 +76,57 @@ verify-crds:
 	sudo chmod a+x ./hack/verify-crds.sh && ./hack/verify-crds.sh
 
 build: generate fmt vet ## Build manager binary.
-	go build -o bin/manager cmd/manager/main.go
+	go build -o bin/fluent-manager cmd/fluent-manager/main.go
+	go build -o bin/fb-watcher cmd/fluent-watcher/fluentbit/main.go
+	go build -o bin/fd-watcher cmd/fluent-watcher/fluentd/main.go
 
 run: manifests generate fmt vet ## Run a controller from your host.
-	go run cmd/manager/main.go
+	go run cmd/fluent-manager/main.go
+
+# Build amd64/arm64 Fluent Operator container image
+build-op:
+	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
 
 # Build amd64/arm64 Fluent Bit container image
 build-fb:
-	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-bit-watcher/Dockerfile . -t ${FB_IMG}
+	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
 
-# Build amd64/arm64 Fluent Bit Operator container image
-build-op:
-	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/manager/Dockerfile . -t ${OP_IMG}
+# Build amd64/arm64 Fluentd container image
+build-fd:
+	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.complete . -t ${FD_IMG}
 
 # Build all amd64 docker images
-build-amd64: build-op-amd64 build-fb-amd64
+build-amd64: build-op-amd64 build-fb-amd64 build-fd-amd64
+
+# Build amd64 Fluent Operator container image
+build-op-amd64:
+	docker build -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}${AMD64}
 
 # Build amd64 Fluent Bit container image
 build-fb-amd64:
-	docker build -f cmd/fluent-bit-watcher/Dockerfile . -t ${FB_IMG}${AMD64}
+	docker build -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}${AMD64}
 
-# Build amd64 Fluent Bit Operator container image
-build-op-amd64:
-	docker build -f cmd/manager/Dockerfile . -t ${OP_IMG}${AMD64}
+# Build amd64 Fluent Bit container image
+build-fd-amd64:
+	docker build -f cmd/fluent-watcher/fluentd/Dockerfile.complete . -t ${FD_IMG}${AMD64}
 
 # Push the amd64 docker image
 push-amd64:
-	docker push ${OP_IMG}${AMD64}
+	docker push ${FO_IMG}${AMD64}
 
 ##@ Deployment
 
 install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd | kubectl apply -f -
+	$(KUSTOMIZE) build config/crd/bases/ | kubectl apply -f -
 
 uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd | kubectl delete -f -
+	$(KUSTOMIZE) build config/crd/bases/ | kubectl delete -f -
 
 deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default | kubectl apply -f -
+	kubectl apply -k manifests/setup/setup.yaml
 
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/default | kubectl delete -f -
-
+	kubectl delete -k manifests/setup/setup.yaml
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: go-deps ## Download controller-gen locally if necessary.

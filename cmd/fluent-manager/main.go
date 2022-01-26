@@ -18,10 +18,11 @@ package main
 
 import (
 	"flag"
-	"github.com/joho/godotenv"
 	"os"
-	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"strings"
+
+	"github.com/joho/godotenv"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -34,8 +35,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	loggingv1alpha2 "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
-	"kubesphere.io/fluentbit-operator/controllers"
+	fluentbitv1alpha2 "fluent.io/fluent-operator/apis/fluentbit/v1alpha2"
+	fluentdv1alpha1 "fluent.io/fluent-operator/apis/fluentd/v1alpha1"
+
+	"fluent.io/fluent-operator/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -47,7 +50,8 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(loggingv1alpha2.AddToScheme(scheme))
+	utilruntime.Must(fluentbitv1alpha2.AddToScheme(scheme))
+	utilruntime.Must(fluentdv1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -80,7 +84,7 @@ func main() {
 		Port:                   9443,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "45c4fdd2.kubesphere.io",
+		LeaderElectionID:       "45c4fdd2.fluent.io",
 	}
 	namespacedController := false
 	if watchNamespaces != "" {
@@ -116,6 +120,25 @@ func main() {
 		Namespaced:           namespacedController,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "FluentBit")
+		os.Exit(1)
+	}
+	//+kubebuilder:scaffold:builder
+
+	if err = (&controllers.FluentdConfigReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("FluentdConfig"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "FluentdConfig")
+		os.Exit(1)
+	}
+
+	if err = (&controllers.FluentdReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("Fluentd"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Fluentd")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

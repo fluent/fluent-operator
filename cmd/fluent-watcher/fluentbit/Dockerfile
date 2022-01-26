@@ -1,10 +1,10 @@
-FROM golang:1.13.6-alpine3.11 as buildergo
+FROM golang:1.16.6-alpine3.13 as buildergo
 RUN mkdir -p /fluent-bit
 RUN mkdir -p /code
 COPY . /code/
 WORKDIR /code
 RUN echo $(ls -al /code)
-RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o /fluent-bit/fluent-bit /code/cmd/fluent-bit-watcher/main.go
+RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o /fluent-bit/fluent-bit /code/cmd/fluent-watcher/fluentbit/main.go
 
 FROM fluent/fluent-bit:1.8.3
 LABEL Description="Fluent Bit docker image" Vendor="KubeSphere" Version="1.0"

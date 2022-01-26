@@ -11,17 +11,18 @@ import (
 	"syscall"
 	"time"
 
+	"fluent.io/fluent-operator/pkg/filenotify"
 	"github.com/fsnotify/fsnotify"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/oklog/run"
-	"kubesphere.io/fluentbit-operator/pkg/filenotify"
 )
 
 const (
-	defaultBinPath      = "/fluent-bit/bin/fluent-bit"
-	defaultCfgPath      = "/fluent-bit/etc/fluent-bit.conf"
-	defaultWatchDir     = "/fluent-bit/config"
+	defaultBinPath      = "/usr/bin/fluentd"
+	defaultCfgPath      = "/fluentd/etc/fluent.conf"
+	defaultWatchDir     = "/fluentd/etc/app.conf"
+	defaultPluginPath   = "/fluentd/plugins"
 	defaultPollInterval = 1 * time.Second
 
 	MaxDelayTime = 5 * time.Minute
@@ -39,6 +40,7 @@ var (
 
 var configPath string
 var binPath string
+var pluginPath string
 var watchPath string
 var poll bool
 var exitOnFailure bool
@@ -46,9 +48,10 @@ var pollInterval time.Duration
 
 func main() {
 
-	flag.StringVar(&binPath, "b", defaultBinPath, "The fluent bit binary path.")
+	flag.StringVar(&binPath, "b", defaultBinPath, "The fluentd binary path.")
 	flag.StringVar(&configPath, "c", defaultCfgPath, "The config file path.")
-	flag.BoolVar(&exitOnFailure, "exit-on-failure", false, "If fluentbit exits with failure, also exit the watcher.")
+	flag.StringVar(&pluginPath, "p", defaultPluginPath, "The config file path.")
+	flag.BoolVar(&exitOnFailure, "exit-on-failure", false, "If fluentd exits with failure, also exit the watcher.")
 	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
 	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
 	flag.DurationVar(&pollInterval, "poll-interval", defaultPollInterval, "Poll interval if using poll watcher.")
@@ -65,7 +68,7 @@ func main() {
 		g.Add(run.SignalHandler(context.Background(), os.Interrupt, syscall.SIGTERM))
 	}
 	{
-		// Watch the Fluent bit, if the Fluent bit not exists or stopped, restart it.
+		// Watch the Fluentd, if the Fluentd not exists or stopped, restart it.
 		cancel := make(chan struct{})
 		g.Add(
 			func() error {
@@ -77,31 +80,31 @@ func main() {
 					default:
 					}
 
-					// Start fluent bit if it does not existed.
+					// Start fluentd if it does not existed.
 					start()
-					// Wait for the fluent bit exit.
+					// Wait for the fluentd exit.
 					err := wait()
 					if exitOnFailure && err != nil {
-						_ = level.Error(logger).Log("msg", "Fluent bit exited with error; exiting watcher")
+						_ = level.Error(logger).Log("msg", "Fluentd exited with error; exiting watcher")
 						return err
 					}
 
 					timerCtx, timerCancel = context.WithCancel(context.Background())
 
-					// After the fluent bit exit, fluent bit watcher restarts it with an exponential
+					// After the fluentd exit, fluentd watcher restarts it with an exponential
 					// back-off delay (1s, 2s, 4s, ...), that is capped at five minutes.
 					backoff()
 				}
 			},
 			func(err error) {
 				close(cancel)
-				stop()
+				reloadOrStop()
 				resetTimer()
 			},
 		)
 	}
 	{
-		// Watch the config file, if the config file changed, stop Fluent bit.
+		// Watch the config file, if the config file changed, stop Fluentd.
 		watcher, err := newWatcher(poll, pollInterval)
 		if err != nil {
 			_ = level.Error(logger).Log("err", err)
@@ -128,13 +131,13 @@ func main() {
 							continue
 						}
 
-						_ = level.Info(logger).Log("msg", "Config file changed, stopping Fluent Bit")
+						_ = level.Info(logger).Log("msg", "Config file changed, gracefully reloading configuration")
 
-						// After the config file changed, it should stop the fluent bit,
+						// After the config file changed, it should gracefully reload the fluentd,
 						// and resets the restart backoff timer.
-						stop()
+						reloadOrStop()
 						resetTimer()
-						_ = level.Info(logger).Log("msg", "Config file changed, stopped Fluent Bit")
+						_ = level.Info(logger).Log("msg", "Config file changed, gracefully reloaded configuration")
 					case <-watcher.Errors():
 						_ = level.Error(logger).Log("msg", "Watcher stopped")
 						return nil
@@ -186,16 +189,16 @@ func start() {
 		return
 	}
 
-	cmd = exec.Command(binPath, "-c", configPath)
+	cmd = exec.Command(binPath, "-c", configPath, "-p", pluginPath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Start(); err != nil {
-		_ = level.Error(logger).Log("msg", "start Fluent bit error", "error", err)
+		_ = level.Error(logger).Log("msg", "start Fluentd error", "error", err)
 		cmd = nil
 		return
 	}
 
-	_ = level.Info(logger).Log("msg", "Fluent bit started")
+	_ = level.Info(logger).Log("msg", "Fluentd started")
 }
 
 func wait() error {
@@ -208,8 +211,8 @@ func wait() error {
 
 	startTime := time.Now()
 	err := cmd.Wait()
-	_ = level.Error(logger).Log("msg", "Fluent bit exited", "error", err)
-	// Once the fluent bit has executed for 10 minutes without any problems,
+	_ = level.Error(logger).Log("msg", "Fluentd exited", "error", err)
+	// Once the fluentd has executed for 10 minutes without any problems,
 	// it should resets the restart backoff timer.
 	if time.Since(startTime) >= ResetTime {
 		atomic.StoreInt32(&restartTimes, 0)
@@ -251,21 +254,32 @@ func backoff() {
 	}
 }
 
-func stop() {
-
+func reloadOrStop() {
 	mutex.Lock()
 	defer mutex.Unlock()
 
 	if cmd == nil || cmd.Process == nil {
-		_ = level.Info(logger).Log("msg", "Fluent Bit not running. No process to stop.")
+		_ = level.Info(logger).Log("msg", "Fluentd not running. No process to reload or stop.")
 		return
 	}
 
-	if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
-		_ = level.Info(logger).Log("msg", "Kill Fluent Bit error", "error", err)
-	} else {
-		_ = level.Info(logger).Log("msg", "Killed Fluent Bit")
+	// Reloads the configuration file by gracefully re-constructing the data pipeline.
+	// https://docs.fluentd.org/deployment/signals#sigusr2
+	err := cmd.Process.Signal(syscall.SIGUSR2)
+	if err == nil {
+		_ = level.Info(logger).Log("msg", "Gracefully reloaded Fluentd config")
+		return
 	}
+
+	_ = level.Info(logger).Log("msg", "Gracefully reload Fluentd config error", "error", err)
+
+	err = cmd.Process.Signal(syscall.SIGTERM)
+	if err == nil {
+		_ = level.Info(logger).Log("msg", "Killed Fluentd")
+		return
+	}
+
+	_ = level.Info(logger).Log("msg", "Kill Fluentd error", "error", err)
 }
 
 func resetTimer() {
