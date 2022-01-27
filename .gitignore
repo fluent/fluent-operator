@@ -20,3 +20,5 @@ vendor/
 /bin
 
 .vscode/
+
+testbin/
