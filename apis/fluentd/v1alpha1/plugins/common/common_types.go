@@ -38,7 +38,7 @@ type Time struct {
 // The inject section can be under <match> or <filter> section.
 type Inject struct {
 	// Time section
-	*Time `json:"inline,omitempty"`
+	Time `json:"inline,omitempty"`
 
 	// The field name to inject hostname
 	HostnameKey *string `json:"hostnameKey,omitempty"`
@@ -117,7 +117,7 @@ type Auth struct {
 
 // The server plug-in
 type Server struct {
-	*CommonFields `json:",inline"`
+	CommonFields `json:",inline"`
 
 	// Host defines the IP address or host name of the server.
 	Host *string `json:"host,omitempty"`
@@ -137,13 +137,7 @@ type Server struct {
 	Weight *string `json:"weight,omitempty"`
 }
 
-// Fluentd has a pluggable system called Service Discovery that lets the user extend and reuse custom output service discovery.
-type ServiceDiscovery struct {
-	// The server section of this plugin
-	Server                *Server `json:"server,omitempty"`
-	*FileServiceDiscovery `json:",inline,omitempty"`
-	*SrvServiceDiscovery  `json:",inline,omitempty"`
-
+type SDCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
 	// The @type parameter specifies the type of the plugin.
@@ -151,6 +145,15 @@ type ServiceDiscovery struct {
 	Type *string `json:"type"`
 	// The @log_level parameter specifies the plugin-specific logging level
 	LogLevel *string `json:"logLevel,omitempty"`
+}
+
+// Fluentd has a pluggable system called Service Discovery that lets the user extend and reuse custom output service discovery.
+type ServiceDiscovery struct {
+	SDCommon `json:",inline,omitempty"`
+	// The server section of this plugin
+	Server                *Server `json:"server,omitempty"`
+	*FileServiceDiscovery `json:",inline,omitempty"`
+	*SrvServiceDiscovery  `json:",inline,omitempty"`
 }
 
 type FileServiceDiscovery struct {
@@ -181,26 +184,26 @@ func (j *Inject) Name() string {
 
 func (j *Inject) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore(j.Name())
-	if j.Time != nil {
-		if j.Time.TimeType != nil {
-			ps.InsertPairs("time_type", fmt.Sprint(*j.Time.TimeType))
-		}
-		if j.Time.TimeFormat != nil {
-			ps.InsertPairs("time_type", fmt.Sprint(*j.Time.TimeFormat))
-		}
-		if j.Time.Localtime != nil {
-			ps.InsertPairs("localtime", fmt.Sprint(*j.Time.Localtime))
-		}
-		if j.Time.UTC != nil {
-			ps.InsertPairs("utc", fmt.Sprint(*j.Time.UTC))
-		}
-		if j.Time.Timezone != nil {
-			ps.InsertPairs("timezone", fmt.Sprint(*j.Time.Timezone))
-		}
-		if j.Time.TimeFormatFallbacks != nil {
-			ps.InsertPairs("time_format_fallbacks", fmt.Sprint(*j.Time.TimeFormatFallbacks))
-		}
+
+	if j.TimeType != nil {
+		ps.InsertPairs("time_type", fmt.Sprint(*j.TimeType))
 	}
+	if j.TimeFormat != nil {
+		ps.InsertPairs("time_type", fmt.Sprint(*j.TimeFormat))
+	}
+	if j.Localtime != nil {
+		ps.InsertPairs("localtime", fmt.Sprint(*j.Localtime))
+	}
+	if j.UTC != nil {
+		ps.InsertPairs("utc", fmt.Sprint(*j.UTC))
+	}
+	if j.Timezone != nil {
+		ps.InsertPairs("timezone", fmt.Sprint(*j.Timezone))
+	}
+	if j.TimeFormatFallbacks != nil {
+		ps.InsertPairs("time_format_fallbacks", fmt.Sprint(*j.TimeFormatFallbacks))
+	}
+
 	if j.HostnameKey != nil {
 		ps.InsertPairs("hostname_key", fmt.Sprint(*j.HostnameKey))
 	}
@@ -348,16 +351,14 @@ func (s *Server) Name() string {
 func (s *Server) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore(s.Name())
 
-	if s.CommonFields != nil {
-		if s.CommonFields.Id != nil {
-			ps.InsertPairs("@id", fmt.Sprint(*s.CommonFields.Id))
-		}
-		if s.CommonFields.Type != nil {
-			ps.InsertPairs("@type", fmt.Sprint(*s.CommonFields.Type))
-		}
-		if s.CommonFields.LogLevel != nil {
-			ps.InsertPairs("@log_level", fmt.Sprint(*s.CommonFields.LogLevel))
-		}
+	if s.Id != nil {
+		ps.InsertPairs("@id", fmt.Sprint(*s.Id))
+	}
+	if s.Type != nil {
+		ps.InsertType(fmt.Sprint(*s.Type))
+	}
+	if s.LogLevel != nil {
+		ps.InsertPairs("@log_level", fmt.Sprint(*s.LogLevel))
 	}
 
 	if s.Host != nil {
@@ -399,7 +400,7 @@ func (sd *ServiceDiscovery) Params(loader plugins.SecretLoader) (*params.PluginS
 		ps.InsertPairs("@id", fmt.Sprint(*sd.Id))
 	}
 
-	ps.InsertPairs("@type", fmt.Sprint(*sd.Type))
+	ps.InsertType(fmt.Sprint(*sd.Type))
 
 	if sd.LogLevel != nil {
 		ps.InsertPairs("@log_level", fmt.Sprint(*sd.LogLevel))

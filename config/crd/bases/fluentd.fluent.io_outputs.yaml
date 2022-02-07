@@ -883,18 +883,6 @@ spec:
                     stdout:
                       description: out_stdout plugin
                       type: object
-                    type:
-                      description: The @type parameter specifies the type of the plugin.
-                      enum:
-                      - forward
-                      - http
-                      - stdout
-                      - kafka2
-                      - elasticsearch
-                      - s3
-                      type: string
-                  required:
-                  - type
                   type: object
                 type: array
             type: object

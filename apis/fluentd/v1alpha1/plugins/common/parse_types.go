@@ -18,15 +18,15 @@ type ParseCommon struct {
 }
 
 type Parse struct {
-	*ParseCommon `json:",inline"`
-	*Time        `json:",inline,omitempty"`
+	ParseCommon `json:",inline"`
+	Time        `json:",inline,omitempty"`
 	// Specifies the regular expression for matching logs. Regular expression also supports i and m suffix.
 	Expression *string `json:"expression,omitempty"`
 	// Specify types for converting field into another, i.e: types user_id:integer,paid:bool,paid_usd_amount:float
 	Types *string `json:"types,omitempty"`
 	// Specify time field for event time. If the event doesn't have this field, current time is used.
 	TimeKey *string `json:"timeKey,omitempty"`
-	// If true, use Fluent::EventTime.now(current time) as a timestamp when time_key is specified.
+	// If true, use Fluent::Eventnow(current time) as a timestamp when time_key is specified.
 	EstimateCurentEvent *bool `json:"estimateCurrentEvent,omitempty"`
 	// If true, keep time field in th record.
 	KeepTimeKey *bool `json:"keepTimeKey,omitempty"`
@@ -41,14 +41,14 @@ func (p *Parse) Name() string {
 
 func (p *Parse) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore("parse")
-	if p.ParseCommon.Id != nil {
-		ps.InsertPairs("@id", fmt.Sprint(*p.ParseCommon.Id))
+	if p.Id != nil {
+		ps.InsertPairs("@id", fmt.Sprint(*p.Id))
 	}
-	if p.ParseCommon.Type != nil {
-		ps.InsertPairs("@type", fmt.Sprint(*p.ParseCommon.Type))
+	if p.Type != nil {
+		ps.InsertType(fmt.Sprint(*p.Type))
 	}
-	if p.ParseCommon.LogLevel != nil {
-		ps.InsertPairs("@log_level", fmt.Sprint(*p.ParseCommon.LogLevel))
+	if p.LogLevel != nil {
+		ps.InsertPairs("@log_level", fmt.Sprint(*p.LogLevel))
 	}
 	if p.Expression != nil {
 		ps.InsertPairs("expression", fmt.Sprint(*p.Expression))
@@ -68,25 +68,25 @@ func (p *Parse) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 	if p.Timeout != nil {
 		ps.InsertPairs("timeout", fmt.Sprint(*p.Timeout))
 	}
-	if p.Time != nil {
-		if p.Time.TimeType != nil {
-			ps.InsertPairs("time_type", fmt.Sprint(*p.Time.TimeType))
-		}
-		if p.Time.TimeFormat != nil {
-			ps.InsertPairs("time_type", fmt.Sprint(*p.Time.TimeFormat))
-		}
-		if p.Time.Localtime != nil {
-			ps.InsertPairs("localtime", fmt.Sprint(*p.Time.Localtime))
-		}
-		if p.Time.UTC != nil {
-			ps.InsertPairs("utc", fmt.Sprint(*p.Time.UTC))
-		}
-		if p.Time.Timezone != nil {
-			ps.InsertPairs("timezone", fmt.Sprint(*p.Time.Timezone))
-		}
-		if p.Time.TimeFormatFallbacks != nil {
-			ps.InsertPairs("time_format_fallbacks", fmt.Sprint(*p.Time.TimeFormatFallbacks))
-		}
+
+	if p.TimeType != nil {
+		ps.InsertPairs("time_type", fmt.Sprint(*p.TimeType))
 	}
+	if p.TimeFormat != nil {
+		ps.InsertPairs("time_type", fmt.Sprint(*p.TimeFormat))
+	}
+	if p.Localtime != nil {
+		ps.InsertPairs("localtime", fmt.Sprint(*p.Localtime))
+	}
+	if p.UTC != nil {
+		ps.InsertPairs("utc", fmt.Sprint(*p.UTC))
+	}
+	if p.Timezone != nil {
+		ps.InsertPairs("timezone", fmt.Sprint(*p.Timezone))
+	}
+	if p.TimeFormatFallbacks != nil {
+		ps.InsertPairs("time_format_fallbacks", fmt.Sprint(*p.TimeFormatFallbacks))
+	}
+
 	return ps, nil
 }

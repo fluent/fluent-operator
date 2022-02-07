@@ -7,8 +7,7 @@ metadata:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-    - type: forward
-      forward: 
+    - forward: 
         bind: 0.0.0.0
         port: 24224
   replicas: 1
@@ -42,8 +41,7 @@ metadata:
     output.fluentd.fluent.io/enabled: "true"
 spec: 
   outputs: 
-    - type: elasticsearch
-      elasticsearch:
+    - elasticsearch:
         host: elasticsearch-logging-data.kubesphere-logging-system.svc
         port: 9200
         logstashFormat: true

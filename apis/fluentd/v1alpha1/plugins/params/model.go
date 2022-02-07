@@ -31,6 +31,11 @@ func (ps *PluginStore) InsertPairs(key, value string) {
 	ps.Store[key] = value
 }
 
+// The @type parameter specifies the type of the plugin.
+func (ps *PluginStore) InsertType(value string) {
+	ps.InsertPairs("@type", value)
+}
+
 // If one label section contains a match section,
 // we consider that the match section is the child of label section
 func (ps *PluginStore) InsertChilds(childs ...*PluginStore) {
@@ -42,6 +47,34 @@ func (ps *PluginStore) InsertChilds(childs ...*PluginStore) {
 		if child != nil {
 			ps.Childs = append(ps.Childs, child)
 		}
+	}
+}
+
+// The total hash string for this plugin store.
+func (ps *PluginStore) Hash() string {
+	c := NewPluginStore(ps.Name)
+
+	for k, v := range ps.Store {
+		if k == "@id" || k == "tag" {
+			continue
+		}
+		c.Store[k] = v
+	}
+
+	c.InsertChilds(ps.Childs...)
+	return utils.HashCode(c.String())
+}
+
+// Returns the @label value string of this plugin store.
+func (ps *PluginStore) RouteLabel() string {
+	if ps.Name != "route" {
+		return ""
+	}
+
+	if value, ok := ps.Store["@label"]; !ok {
+		return ""
+	} else {
+		return value
 	}
 }
 
@@ -72,33 +105,6 @@ func (ps *PluginStore) String() string {
 	ps.processTail(&buf)
 
 	return buf.String()
-}
-
-func (ps *PluginStore) Hash() string {
-	c := NewPluginStore(ps.Name)
-
-	for k, v := range ps.Store {
-		if k == "@id" || k == "tag" {
-			continue
-		}
-		c.Store[k] = v
-	}
-
-	c.InsertChilds(ps.Childs...)
-	return utils.HashCode(c.String())
-}
-
-func (ps *PluginStore) RouteLabel() string {
-	if ps.Name != "route" {
-		return ""
-	}
-
-	if value, ok := ps.Store["@label"]; !ok {
-		return ""
-	} else {
-		return value
-	}
-
 }
 
 func (ps *PluginStore) setWhitespaces(curentWhitespaces string) {

@@ -15,7 +15,6 @@ import (
 
 var (
 	forwardId       = "forward-001"
-	forwardType     = "forward"
 	forwardLogLevel = "info"
 	forwardLabel    = "forward-test"
 
@@ -27,9 +26,8 @@ var (
 
 	inputs = []input.Input{
 		{
-			InputCommon: &input.InputCommon{
+			InputCommon: input.InputCommon{
 				Id:       &forwardId,
-				Type:     &forwardType,
 				LogLevel: &forwardLogLevel,
 				Label:    &forwardLabel,
 			},
@@ -43,11 +41,6 @@ var (
 			},
 		},
 	}
-
-	recordTransformerFilterType = "record_transformer"
-	grepFilterType              = "grep"
-	parserFilterType            = "parser"
-	stdoutFilterType            = "stdout"
 
 	recordKey1   = "avg"
 	recordValue1 = `${record["total"] / record["count"]}`
@@ -80,12 +73,6 @@ var (
 		},
 	}
 
-	forwardOutputType = "forward"
-
-	httpOutputType = "http"
-
-	kafkaOutputType = "kafka2"
-
 	bufferId             = "common_buffer"
 	bufferType           = "file"
 	bufferPath           = "/fluentd/buffer/"
@@ -93,7 +80,7 @@ var (
 	bufferTotalLimitSize = "5GB"
 
 	buffer = common.Buffer{
-		BufferCommon: &common.BufferCommon{
+		BufferCommon: common.BufferCommon{
 			Id:   &bufferId,
 			Type: &bufferType,
 		},
@@ -115,7 +102,7 @@ var (
 	}
 
 	serversDiscovery = common.ServiceDiscovery{
-		Type: &sdType,
+		SDCommon: common.SDCommon{Type: &sdType},
 		FileServiceDiscovery: &common.FileServiceDiscovery{
 			Path: &sdPath,
 		},
@@ -352,17 +339,11 @@ func createFilterSpecs() (FilterSpec, FilterSpec, FilterSpec) {
 	filterSpec1 := FilterSpec{
 		Filters: []filter.Filter{
 			{
-				FilterCommon: &filter.FilterCommon{
-					Type: &recordTransformerFilterType,
-				},
 				RecordTransformer: &filter.RecordTransformer{
 					Records: records,
 				},
 			},
 			{
-				FilterCommon: &filter.FilterCommon{
-					Type: &grepFilterType,
-				},
 				Grep: &filter.Grep{
 					Regexps: []*filter.Regexp{
 						{
@@ -392,20 +373,16 @@ func createFilterSpecs() (FilterSpec, FilterSpec, FilterSpec) {
 	filterSpec2 := FilterSpec{
 		Filters: []filter.Filter{
 			{
-				FilterCommon: &filter.FilterCommon{
-					Type: &recordTransformerFilterType,
-				},
 				RecordTransformer: &filter.RecordTransformer{
 					Records: records,
 				},
 			},
 			{
-				FilterCommon: &filter.FilterCommon{
-					Type: &stdoutFilterType,
-				},
 				Stdout: &filter.Stdout{
 					Format: &common.Format{
-						Type: &formatType,
+						FormatCommon: common.FormatCommon{
+							Type: &formatType,
+						},
 					},
 				},
 			},
@@ -415,15 +392,12 @@ func createFilterSpecs() (FilterSpec, FilterSpec, FilterSpec) {
 	filterSpec3 := FilterSpec{
 		Filters: []filter.Filter{
 			{
-				FilterCommon: &filter.FilterCommon{
-					Type: &parserFilterType,
-				},
 				Parser: &filter.Parser{
 					Parse: &common.Parse{
-						ParseCommon: &common.ParseCommon{
+						ParseCommon: common.ParseCommon{
 							Type: &regexpParser,
 						},
-						Time: &common.Time{
+						Time: common.Time{
 							TimeFormat: &timeFormat,
 						},
 						Expression: &regexpExpression,
@@ -431,12 +405,11 @@ func createFilterSpecs() (FilterSpec, FilterSpec, FilterSpec) {
 				},
 			},
 			{
-				FilterCommon: &filter.FilterCommon{
-					Type: &stdoutFilterType,
-				},
 				Stdout: &filter.Stdout{
 					Format: &common.Format{
-						Type: &formatType,
+						FormatCommon: common.FormatCommon{
+							Type: &formatType,
+						},
 					},
 				},
 			},
@@ -450,10 +423,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 	outputSpec1 := OutputSpec{
 		Outputs: []output.Output{
 			{
-				OutputCommon: &output.OutputCommon{
-					Type: &forwardOutputType,
-				},
-				Match: &common.Match{
+				Match: common.Match{
 					Buffer: &buffer,
 				},
 				Forward: &output.Forward{
@@ -462,10 +432,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 				},
 			},
 			{
-				OutputCommon: &output.OutputCommon{
-					Type: &kafkaOutputType,
-				},
-				Match: &common.Match{
+				Match: common.Match{
 					Buffer: &buffer,
 				},
 				Kafka: &output.Kafka2{
@@ -478,10 +445,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 	outputSpec2 := OutputSpec{
 		Outputs: []output.Output{
 			{
-				OutputCommon: &output.OutputCommon{
-					Type: &forwardOutputType,
-				},
-				Match: &common.Match{
+				Match: common.Match{
 					Buffer: &buffer,
 				},
 				Forward: &output.Forward{
@@ -490,10 +454,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 				},
 			},
 			{
-				OutputCommon: &output.OutputCommon{
-					Type: &httpOutputType,
-				},
-				Match: &common.Match{
+				Match: common.Match{
 					Buffer: &buffer,
 				},
 				Http: &output.Http{
@@ -508,10 +469,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 	outputSpec3 := OutputSpec{
 		Outputs: []output.Output{
 			{
-				OutputCommon: &output.OutputCommon{
-					Type: &httpOutputType,
-				},
-				Match: &common.Match{
+				Match: common.Match{
 					Buffer: &buffer,
 				},
 				Http: &output.Http{
@@ -521,10 +479,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 				},
 			},
 			{
-				OutputCommon: &output.OutputCommon{
-					Type: &kafkaOutputType,
-				},
-				Match: &common.Match{
+				Match: common.Match{
 					Buffer: &buffer,
 				},
 				Kafka: &output.Kafka2{

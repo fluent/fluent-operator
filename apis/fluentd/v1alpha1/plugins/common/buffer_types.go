@@ -21,7 +21,7 @@ type BufferCommon struct {
 }
 
 type Buffer struct {
-	*BufferCommon `json:",inline,omitempty"`
+	BufferCommon `json:",inline,omitempty"`
 	// The file buffer plugin
 	*FileBuffer `json:",inline,omitempty"`
 	// The file_single buffer plugin
@@ -139,16 +139,14 @@ func (b *Buffer) Name() string {
 
 func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore(b.Name())
-	if b.BufferCommon != nil {
-		if b.BufferCommon.Id != nil {
-			ps.InsertPairs("@id", *b.Id)
-		}
-		if b.BufferCommon.Type != nil {
-			ps.InsertPairs("@type", *b.Type)
-		}
-		if b.BufferCommon.LogLevel != nil {
-			ps.InsertPairs("@log_level", *b.LogLevel)
-		}
+	if b.Id != nil {
+		ps.InsertPairs("@id", fmt.Sprint(*b.Id))
+	}
+	if b.Type != nil {
+		ps.InsertType(fmt.Sprint(*b.Type))
+	}
+	if b.LogLevel != nil {
+		ps.InsertPairs("@log_level", fmt.Sprint(*b.LogLevel))
 	}
 
 	if b.FileBuffer != nil && b.FileBuffer.PathSuffix != nil {

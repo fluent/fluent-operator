@@ -36,7 +36,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) corev1.Service {
 	globalInputs := fd.Spec.GlobalInputs
 	for _, input := range globalInputs {
 
-		if *input.InputCommon.Type == InputForwardType && input.Forward != nil {
+		if input.Forward != nil {
 			forwardPort := *input.Forward.Port
 			if forwardPort == 0 {
 				forwardPort = DefaultForwardPort
@@ -52,7 +52,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) corev1.Service {
 			continue
 		}
 
-		if *input.InputCommon.Type == InputHttpType && input.Http != nil {
+		if input.Http != nil {
 			httpPort := *input.Forward.Port
 			if httpPort == 0 {
 				httpPort = DefaultHttpPort

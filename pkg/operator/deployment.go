@@ -192,7 +192,7 @@ func makeDeploymentPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 	// read inputs definition from globalInputs
 	globalInputs := fd.Spec.GlobalInputs
 	for _, input := range globalInputs {
-		if *input.InputCommon.Type == InputForwardType && input.Forward != nil {
+		if input.Forward != nil {
 			forwardPort := *input.Forward.Port
 			if forwardPort == 0 {
 				forwardPort = DefaultForwardPort
@@ -204,7 +204,7 @@ func makeDeploymentPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 			})
 			continue
 		}
-		if *input.InputCommon.Type == InputHttpType && input.Http != nil {
+		if input.Http != nil {
 			httpPort := *input.Forward.Port
 			if httpPort == 0 {
 				httpPort = DefaultHttpPort

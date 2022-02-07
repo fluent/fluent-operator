@@ -126,8 +126,8 @@ spec:
                         parse:
                           properties:
                             estimateCurrentEvent:
-                              description: If true, use Fluent::EventTime.now(current
-                                time) as a timestamp when time_key is specified.
+                              description: If true, use Fluent::Eventnow(current time)
+                                as a timestamp when time_key is specified.
                               type: boolean
                             expression:
                               description: Specifies the regular expression for matching
@@ -396,16 +396,6 @@ spec:
                               type: string
                           type: object
                       type: object
-                    type:
-                      description: The @type parameter specifies the type of the plugin.
-                      enum:
-                      - record_transformer
-                      - grep
-                      - parser
-                      - stdout
-                      type: string
-                  required:
-                  - type
                   type: object
                 type: array
             type: object
@@ -1489,18 +1479,6 @@ spec:
                     stdout:
                       description: out_stdout plugin
                       type: object
-                    type:
-                      description: The @type parameter specifies the type of the plugin.
-                      enum:
-                      - forward
-                      - http
-                      - stdout
-                      - kafka2
-                      - elasticsearch
-                      - s3
-                      type: string
-                  required:
-                  - type
                   type: object
                 type: array
             type: object
@@ -2163,8 +2141,8 @@ spec:
                         parse:
                           properties:
                             estimateCurrentEvent:
-                              description: If true, use Fluent::EventTime.now(current
-                                time) as a timestamp when time_key is specified.
+                              description: If true, use Fluent::Eventnow(current time)
+                                as a timestamp when time_key is specified.
                               type: boolean
                             expression:
                               description: Specifies the regular expression for matching
@@ -2433,16 +2411,6 @@ spec:
                               type: string
                           type: object
                       type: object
-                    type:
-                      description: The @type parameter specifies the type of the plugin.
-                      enum:
-                      - record_transformer
-                      - grep
-                      - parser
-                      - stdout
-                      type: string
-                  required:
-                  - type
                   type: object
                 type: array
             type: object
@@ -8104,8 +8072,8 @@ spec:
                           description: The parse section of http plugin
                           properties:
                             estimateCurrentEvent:
-                              description: If true, use Fluent::EventTime.now(current
-                                time) as a timestamp when time_key is specified.
+                              description: If true, use Fluent::Eventnow(current time)
+                                as a timestamp when time_key is specified.
                               type: boolean
                             expression:
                               description: Specifies the regular expression for matching
@@ -8239,14 +8207,6 @@ spec:
                       description: The @log_level parameter specifies the plugin-specific
                         logging level
                       type: string
-                    type:
-                      description: The @type parameter specifies the type of the plugin.
-                      enum:
-                      - forward
-                      - http
-                      type: string
-                  required:
-                  - type
                   type: object
                 type: array
               image:
@@ -10865,18 +10825,6 @@ spec:
                     stdout:
                       description: out_stdout plugin
                       type: object
-                    type:
-                      description: The @type parameter specifies the type of the plugin.
-                      enum:
-                      - forward
-                      - http
-                      - stdout
-                      - kafka2
-                      - elasticsearch
-                      - s3
-                      type: string
-                  required:
-                  - type
                   type: object
                 type: array
             type: object

@@ -2,7 +2,6 @@ package output
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
@@ -12,10 +11,6 @@ import (
 
 type OutputCommon struct {
 	Id *string `json:"-"`
-	// The @type parameter specifies the type of the plugin.
-	// +kubebuilder:validation:Enum:=forward;http;stdout;kafka2;elasticsearch;s3;
-	// +kubebuilder:validation:Required
-	Type *string `json:"type"`
 	// The @log_level parameter specifies the plugin-specific logging level
 	LogLevel *string `json:"logLevel,omitempty"`
 	// The @label parameter is to route the events to <label> sections
@@ -25,9 +20,9 @@ type OutputCommon struct {
 }
 
 type Output struct {
-	*OutputCommon `json:",inline,omitempty"`
+	OutputCommon `json:",inline,omitempty"`
 	// match setions
-	Match *common.Match `json:",inline,omitempty"`
+	Match common.Match `json:",inline,omitempty"`
 	// out_forward plugin
 	Forward *Forward `json:"forward,omitempty"`
 	// out_http plugin
@@ -63,73 +58,66 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 	ps := params.NewPluginStore(o.Name())
 	childs := make([]*params.PluginStore, 0)
 
-	ps.InsertPairs("@id", fmt.Sprint(*o.OutputCommon.Id))
-	ps.InsertPairs("@type", fmt.Sprint(*o.OutputCommon.Type))
+	ps.InsertPairs("@id", fmt.Sprint(*o.Id))
 
-	if o.OutputCommon.LogLevel != nil {
-		ps.InsertPairs("@log_level", fmt.Sprint(*o.OutputCommon.LogLevel))
+	if o.LogLevel != nil {
+		ps.InsertPairs("@log_level", fmt.Sprint(*o.LogLevel))
 	}
 
-	if o.OutputCommon.Label != nil {
-		ps.InsertPairs("@label", fmt.Sprint(*o.OutputCommon.Label))
+	if o.Label != nil {
+		ps.InsertPairs("@label", fmt.Sprint(*o.Label))
 	}
 
-	if o.OutputCommon.Tag != nil {
-		ps.InsertPairs("tag", fmt.Sprint(*o.OutputCommon.Tag))
+	if o.Tag != nil {
+		ps.InsertPairs("tag", fmt.Sprint(*o.Tag))
 	}
 
-	if o.Match != nil {
-		if o.Match.Buffer != nil {
-			child, _ := o.Match.Buffer.Params(loader)
-			childs = append(childs, child)
-		}
-		if o.Match.Inject != nil {
-			child, _ := o.Match.Inject.Params(loader)
-			childs = append(childs, child)
-		}
-		if o.Match.Format != nil {
-			child, _ := o.Match.Format.Params(loader)
-			childs = append(childs, child)
-		}
+	if o.Match.Buffer != nil {
+		child, _ := o.Match.Buffer.Params(loader)
+		childs = append(childs, child)
+	}
+	if o.Match.Inject != nil {
+		child, _ := o.Match.Inject.Params(loader)
+		childs = append(childs, child)
+	}
+	if o.Match.Format != nil {
+		child, _ := o.Match.Format.Params(loader)
+		childs = append(childs, child)
 	}
 
 	ps.InsertChilds(childs...)
 
-	switch params.PluginName(*o.OutputCommon.Type) {
-	case params.ForwardPlugin:
-		if o.Forward == nil {
-			return nil, errors.New("the @type field defined cannot find its body")
-		}
-		return o.forwardPlugin(ps, loader)
-	case params.HttpPlugin:
-		if o.Http == nil {
-			return nil, errors.New("the @type field defined cannot find its body")
-		}
-		return o.httpPlugin(ps, loader)
-	case params.KafkaPlugin:
-		if o.Kafka == nil {
-			return nil, errors.New("the @type field defined cannot find its body")
-		}
-		return o.kafka2Plugin(ps, loader)
-	case params.ElasticsearchPlugin:
-		if o.Elasticsearch == nil {
-			return nil, errors.New("the @type field defined cannot find its body")
-		}
-		return o.elasticsearchPlugin(ps, loader)
-	case params.S3Plugin:
-		if o.S3 == nil {
-			return nil, errors.New("the @type field defined cannot find its body")
-		}
-		return o.s3Plugin(ps, loader)
-	case params.StdoutPlugin:
-		return o.stdoutPlugin(ps, loader)
-	default:
+	if o.Forward != nil {
+		ps.InsertType(string(params.ForwardOutputType))
+		return o.forwardPlugin(ps, loader), nil
 	}
 
-	return ps, nil
+	if o.Http != nil {
+		ps.InsertType(string(params.HttpOutputType))
+		return o.httpPlugin(ps, loader), nil
+	}
+
+	if o.Kafka != nil {
+		ps.InsertType(string(params.KafkaOutputType))
+		return o.kafka2Plugin(ps, loader), nil
+	}
+
+	if o.Elasticsearch != nil {
+		ps.InsertType(string(params.ElasticsearchOutputType))
+		return o.elasticsearchPlugin(ps, loader), nil
+	}
+
+	if o.S3 != nil {
+		ps.InsertType(string(params.S3OutputType))
+		return o.s3Plugin(ps, loader), nil
+	}
+
+	// if nothing defined, supposed it is a out_stdout plugin
+	ps.InsertType(string(params.StdOutputType))
+	return o.stdoutPlugin(ps, loader), nil
 }
 
-func (o *Output) forwardPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+func (o *Output) forwardPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
 	childs := make([]*params.PluginStore, 0)
 
 	if len(o.Forward.Servers) > 0 {
@@ -250,10 +238,10 @@ func (o *Output) forwardPlugin(parent *params.PluginStore, loader plugins.Secret
 		parent.InsertPairs("verify_connection_at_startup", fmt.Sprint(*o.Forward.VerifyConnectionAtStartup))
 	}
 
-	return parent, nil
+	return parent
 }
 
-func (o *Output) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+func (o *Output) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
 	if o.Http.Auth != nil {
 		child, _ := o.Http.Params(loader)
 		parent.InsertChilds(child)
@@ -335,10 +323,10 @@ func (o *Output) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 		parent.InsertPairs("retryable_response_codes", fmt.Sprint(*o.Http.RetryableResponseCodes))
 	}
 
-	return parent, nil
+	return parent
 }
 
-func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
 	if o.Elasticsearch.Host != nil {
 		parent.InsertPairs("host", fmt.Sprint(*o.Elasticsearch.Host))
 	}
@@ -379,10 +367,10 @@ func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.
 		parent.InsertPairs("logstash_prefix", fmt.Sprint(*o.Elasticsearch.LogstashPrefix))
 	}
 
-	return parent, nil
+	return parent
 }
 
-func (o *Output) kafka2Plugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+func (o *Output) kafka2Plugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
 	if o.Kafka.Brokers != nil {
 		parent.InsertPairs("brokers", fmt.Sprint(*o.Kafka.Brokers))
 	}
@@ -401,10 +389,10 @@ func (o *Output) kafka2Plugin(parent *params.PluginStore, loader plugins.SecretL
 	if o.Kafka.CompressionCodec != nil {
 		parent.InsertPairs("compression_codec", fmt.Sprint(*o.Kafka.CompressionCodec))
 	}
-	return parent, nil
+	return parent
 }
 
-func (o *Output) s3Plugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+func (o *Output) s3Plugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
 	if o.S3.AwsKeyId != nil {
 		parent.InsertPairs("aws_key_id", fmt.Sprint(*o.S3.AwsKeyId))
 	}
@@ -429,11 +417,11 @@ func (o *Output) s3Plugin(parent *params.PluginStore, loader plugins.SecretLoade
 	if o.S3.SslVerifyPeer != nil {
 		parent.InsertPairs("ssl_verify_peer", fmt.Sprint(*o.S3.SslVerifyPeer))
 	}
-	return parent, nil
+	return parent
 }
 
-func (o *Output) stdoutPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
-	return parent, nil
+func (o *Output) stdoutPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+	return parent
 }
 
 var _ plugins.Plugin = &Output{}

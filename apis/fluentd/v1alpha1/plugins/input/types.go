@@ -12,9 +12,6 @@ import (
 type InputCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
-	// The @type parameter specifies the type of the plugin.
-	// +kubebuilder:validation:Enum:=forward;http
-	Type *string `json:"type"`
 	// The @log_level parameter specifies the plugin-specific logging level
 	LogLevel *string `json:"logLevel,omitempty"`
 	// The @label parameter is to route the input events to <label> sections.
@@ -22,7 +19,7 @@ type InputCommon struct {
 }
 
 type Input struct {
-	*InputCommon `json:",inline"`
+	InputCommon `json:",inline"`
 	// in_forward plugin
 	Forward *Forward `json:"forward,omitempty"`
 	// in_http plugin
@@ -49,34 +46,29 @@ func (i *Input) Name() string {
 func (i *Input) Params(loader plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore(i.Name())
 
-	if i.InputCommon.Id != nil {
-		ps.InsertPairs("@id", fmt.Sprint(*i.InputCommon.Id))
+	if i.Id != nil {
+		ps.InsertPairs("@id", fmt.Sprint(*i.Id))
 	}
 
-	ps.InsertPairs("@type", fmt.Sprint(*i.InputCommon.Type))
-
-	if i.InputCommon.LogLevel != nil {
-		ps.InsertPairs("@log_level", fmt.Sprint(*i.InputCommon.LogLevel))
+	if i.LogLevel != nil {
+		ps.InsertPairs("@log_level", fmt.Sprint(*i.LogLevel))
 	}
 
-	if i.InputCommon.Label != nil {
-		ps.InsertPairs("@label", fmt.Sprint(*i.InputCommon.Label))
+	if i.Label != nil {
+		ps.InsertPairs("@label", fmt.Sprint(*i.Label))
 	}
 
-	switch params.PluginName(*i.InputCommon.Type) {
-	case params.ForwardPlugin:
-		if i.Forward == nil {
-			return nil, errors.New("the @type field defined cannot find its body")
-		}
+	if i.Forward != nil {
+		ps.InsertType(string(params.ForwardInputType))
 		return i.forwardPlugin(ps, loader), nil
-	case params.HttpPlugin:
-		if i.Http == nil {
-			return nil, errors.New("the @type field defined cannot find its body")
-		}
-		return i.httpPlugin(ps, loader), nil
-	default:
 	}
-	return ps, nil
+
+	if i.Http != nil {
+		ps.InsertType(string(params.HttpInputType))
+		return i.httpPlugin(ps, loader), nil
+	}
+
+	return nil, errors.New("you must define an input plugin")
 }
 
 func (i *Input) forwardPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {

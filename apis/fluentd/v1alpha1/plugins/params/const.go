@@ -1,6 +1,9 @@
 package params
 
 type PluginName string
+type InputType string
+type FilterType string
+type OutputType string
 
 const (
 	InputPlugin     PluginName = "input"
@@ -39,6 +42,24 @@ const (
 	// Default interval whitespaces between parent and child
 	IntervalWhitespaces string = "  "
 	DefaultFmtExpr      string = "  %s"
+
+	// Enums the supported input types
+	HttpInputType    InputType = "http"
+	ForwardInputType InputType = "forward"
+
+	// Enums the supported filter types
+	RecordTransformerFilterType FilterType = "record_transformer"
+	GrepFilterType              FilterType = "grep"
+	ParserFilterType            FilterType = "parser"
+	StdoutFilterType            FilterType = "stdout"
+
+	// Enums the supported output types
+	ForwardOutputType       OutputType = "forward"
+	HttpOutputType          OutputType = "http"
+	StdOutputType           OutputType = "stdout"
+	KafkaOutputType         OutputType = "kafka2"
+	ElasticsearchOutputType OutputType = "elasticsearch"
+	S3OutputType            OutputType = "s3"
 )
 
 var (

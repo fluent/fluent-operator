@@ -7,11 +7,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
-// Format defines all types of Format Plugins
-type Format struct {
-	// Time defines time parameters for Format Plugins
-	*Time `json:",inline,omitempty"`
-
+type FormatCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
 	// The @type parameter specifies the type of the plugin.
@@ -19,6 +15,13 @@ type Format struct {
 	Type *string `json:"type,omitempty"`
 	// The @log_level parameter specifies the plugin-specific logging level
 	LogLevel *string `json:"logLevel,omitempty"`
+}
+
+// Format defines all types of Format Plugins
+type Format struct {
+	FormatCommon `json:",inline,omitempty"`
+	// Time defines time parameters for Format Plugins
+	Time `json:",inline,omitempty"`
 	// Delimiter for each field.
 	Delimiter *string `json:"delimiter,omitempty"`
 	// Output tag field if true.

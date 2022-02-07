@@ -2,7 +2,6 @@ package filter
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
@@ -13,10 +12,6 @@ import (
 type FilterCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"-"`
-	// The @type parameter specifies the type of the plugin.
-	// +kubebuilder:validation:Enum:=record_transformer;grep;parser;stdout
-	// +kubebuilder:validation:Required
-	Type *string `json:"type"`
 	// The @log_level parameter specifies the plugin-specific logging level
 	LogLevel *string `json:"logLevel,omitempty"`
 	// Which tag to be matched.
@@ -25,7 +20,7 @@ type FilterCommon struct {
 
 type Filter struct {
 	// The common fields
-	*FilterCommon `json:",inline,omitempty"`
+	FilterCommon `json:",inline,omitempty"`
 
 	// The filter_grep filter plugin
 	Grep *Grep `json:"grep,omitempty"`
@@ -57,42 +52,36 @@ func (f *Filter) Name() string {
 func (f *Filter) Params(loader plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore(f.Name())
 
-	if f.FilterCommon.Id != nil {
-		ps.InsertPairs("@id", *f.FilterCommon.Id)
-	}
-	if f.FilterCommon.Type != nil {
-		ps.InsertPairs("@type", *f.FilterCommon.Type)
-	}
-	if f.FilterCommon.LogLevel != nil {
-		ps.InsertPairs("@log_level", *f.FilterCommon.LogLevel)
+	if f.Id != nil {
+		ps.InsertPairs("@id", fmt.Sprint(*f.Id))
 	}
 
-	if f.FilterCommon.Tag != nil {
-		ps.InsertPairs("tag", fmt.Sprint(*f.FilterCommon.Tag))
+	if f.LogLevel != nil {
+		ps.InsertPairs("@log_level", fmt.Sprint(*f.LogLevel))
 	}
 
-	switch params.PluginName(*f.FilterCommon.Type) {
-	case params.GrepPlugin:
-		if f.Grep == nil {
-			return nil, errors.New("the defined @type field cannot find its body")
-		}
+	if f.Tag != nil {
+		ps.InsertPairs("tag", fmt.Sprint(*f.Tag))
+	}
+
+	if f.Grep != nil {
+		ps.InsertType(string(params.GrepFilterType))
 		return f.grepPlugin(ps, loader), nil
-	case params.RecordTransformerPlugin:
-		if f.RecordTransformer == nil {
-			return nil, errors.New("the @type field defined cannot find its body")
-		}
-		return f.recordTransformerPlugin(ps, loader), nil
-	case params.ParserPlugin:
-		if f.Parser == nil {
-			return nil, errors.New("the @type field defined cannot find its body")
-		}
-		return f.parserPlugin(ps, loader), nil
-	case params.StdoutPlugin:
-		return f.stdoutPlugin(ps, loader), nil
-	default:
 	}
 
-	return ps, nil
+	if f.RecordTransformer != nil {
+		ps.InsertType(string(params.RecordTransformerFilterType))
+		return f.recordTransformerPlugin(ps, loader), nil
+	}
+
+	if f.Parser != nil {
+		ps.InsertType(string(params.ParserFilterType))
+		return f.parserPlugin(ps, loader), nil
+	}
+
+	// 	// if nothing defined, supposed it is a filter_stdout plugin
+	ps.InsertType(string(params.StdoutFilterType))
+	return f.stdoutPlugin(ps, loader), nil
 }
 
 func (f *Filter) grepPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
