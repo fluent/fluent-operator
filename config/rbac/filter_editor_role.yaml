@@ -5,7 +5,8 @@ metadata:
   name: filter-editor-role
 rules:
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentbit.fluent.io
+  - fluentd.fluent.io
   resources:
   - filters
   verbs:
@@ -17,7 +18,8 @@ rules:
   - update
   - watch
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentbit.fluent.io
+  - fluentd.fluent.io
   resources:
   - filters/status
   verbs:

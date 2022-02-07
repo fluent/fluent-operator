@@ -7,7 +7,7 @@ RUN CGO_ENABLED=0 go build /go/src/main.go
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/distroless/static:nonroot
+FROM kubesphere/distroless-static:nonroot
 WORKDIR /
 COPY --from=builder /main .
 USER nonroot:nonroot

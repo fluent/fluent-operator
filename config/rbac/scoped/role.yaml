@@ -49,7 +49,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentbit.fluent.io
   resources:
   - filters
   - fluentbitconfigs
@@ -65,7 +65,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentbit.fluent.io
   resources:
   - filters
   - inputs
@@ -74,7 +74,7 @@ rules:
   verbs:
   - list
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentbit.fluent.io
   resources:
   - fluentbitconfigs
   verbs:

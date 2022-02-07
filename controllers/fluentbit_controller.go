@@ -26,11 +26,12 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	logging "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
-	"kubesphere.io/fluentbit-operator/pkg/operator"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+
+	fluentbitv1alpha2 "fluent.io/fluent-operator/apis/fluentbit/v1alpha2"
+	"fluent.io/fluent-operator/pkg/operator"
 )
 
 // FluentBitReconciler reconciles a FluentBit object
@@ -43,7 +44,7 @@ type FluentBitReconciler struct {
 	Namespaced           bool
 }
 
-//+kubebuilder:rbac:groups=logging.kubesphere.io,resources=fluentbits;fluentbitconfigs;inputs;filters;outputs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=fluentbits;fluentbitconfigs;inputs;filters;outputs,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=apps,resources=daemonsets,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=serviceaccounts,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles,verbs=create
@@ -62,7 +63,7 @@ type FluentBitReconciler struct {
 func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("fluent-bit", req.NamespacedName)
 
-	var fb logging.FluentBit
+	var fb fluentbitv1alpha2.FluentBit
 	if err := r.Get(ctx, req.NamespacedName, &fb); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
@@ -77,7 +78,7 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, nil
 	}
 
-	if !fb.HasFinalizer(logging.FluentBitFinalizerName) {
+	if !fb.HasFinalizer(fluentbitv1alpha2.FluentBitFinalizerName) {
 		if err := r.addFinalizer(ctx, &fb); err != nil {
 			return ctrl.Result{}, fmt.Errorf("error when adding finalizer: %v", err)
 		}
@@ -98,7 +99,7 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	if r.Namespaced {
 		rbacObj, saObj, bindingObj = operator.MakeScopedRBACObjects(fb.Name, fb.Namespace)
 	} else {
-		rbacObj, saObj, bindingObj = operator.MakeRBACObjects(fb.Name, fb.Namespace)
+		rbacObj, saObj, bindingObj = operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit")
 	}
 	// Set ServiceAccount's owner to this fluentbit
 	if err := ctrl.SetControllerReference(&fb, saObj, r.Scheme); err != nil {
@@ -128,7 +129,7 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	return ctrl.Result{}, nil
 }
 
-func (r *FluentBitReconciler) getContainerLogPath(fb logging.FluentBit) string {
+func (r *FluentBitReconciler) getContainerLogPath(fb fluentbitv1alpha2.FluentBit) string {
 	if fb.Spec.ContainerLogRealPath != "" {
 		return fb.Spec.ContainerLogRealPath
 	} else if r.ContainerLogRealPath != "" {
@@ -138,7 +139,7 @@ func (r *FluentBitReconciler) getContainerLogPath(fb logging.FluentBit) string {
 	}
 }
 
-func (r *FluentBitReconciler) mutate(ds *appsv1.DaemonSet, fb logging.FluentBit) controllerutil.MutateFn {
+func (r *FluentBitReconciler) mutate(ds *appsv1.DaemonSet, fb fluentbitv1alpha2.FluentBit) controllerutil.MutateFn {
 	logPath := r.getContainerLogPath(fb)
 	expected := operator.MakeDaemonSet(fb, logPath)
 
@@ -153,7 +154,7 @@ func (r *FluentBitReconciler) mutate(ds *appsv1.DaemonSet, fb logging.FluentBit)
 	}
 }
 
-func (r *FluentBitReconciler) delete(ctx context.Context, fb *logging.FluentBit) error {
+func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.FluentBit) error {
 	var sa corev1.ServiceAccount
 	err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Name}, &sa)
 	if err == nil {
@@ -178,7 +179,7 @@ func (r *FluentBitReconciler) delete(ctx context.Context, fb *logging.FluentBit)
 }
 
 func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.ServiceAccount{}, ownerKey, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.ServiceAccount{}, fluentbitOwnerKey, func(rawObj client.Object) []string {
 		// grab the job object, extract the owner.
 		sa := rawObj.(*corev1.ServiceAccount)
 		owner := metav1.GetControllerOf(sa)
@@ -186,7 +187,7 @@ func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
 			return nil
 		}
 		// Make sure it's a FluentBit. If so, return it.
-		if owner.APIVersion != apiGVStr || owner.Kind != "FluentBit" {
+		if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "FluentBit" {
 			return nil
 		}
 		return []string{owner.Name}
@@ -194,7 +195,7 @@ func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.DaemonSet{}, ownerKey, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.DaemonSet{}, fluentbitOwnerKey, func(rawObj client.Object) []string {
 		// grab the job object, extract the owner.
 		ds := rawObj.(*appsv1.DaemonSet)
 		owner := metav1.GetControllerOf(ds)
@@ -202,7 +203,7 @@ func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
 			return nil
 		}
 		// Make sure it's a FluentBit. If so, return it.
-		if owner.APIVersion != apiGVStr || owner.Kind != "FluentBit" {
+		if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "FluentBit" {
 			return nil
 		}
 		return []string{owner.Name}
@@ -211,7 +212,7 @@ func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&logging.FluentBit{}).
+		For(&fluentbitv1alpha2.FluentBit{}).
 		Owns(&corev1.ServiceAccount{}).
 		Owns(&appsv1.DaemonSet{}).
 		Complete(r)

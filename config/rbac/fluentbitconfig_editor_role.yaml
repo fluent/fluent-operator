@@ -5,7 +5,7 @@ metadata:
   name: fluentbitconfig-editor-role
 rules:
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentbit.fluent.io
   resources:
   - fluentbitconfigs
   verbs:
@@ -17,7 +17,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentbit.fluent.io
   resources:
   - fluentbitconfigs/status
   verbs:

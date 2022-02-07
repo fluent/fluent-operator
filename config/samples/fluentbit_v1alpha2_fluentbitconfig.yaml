@@ -1,0 +1,25 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: FluentBitConfig
+metadata:
+  name: fluentbitconfig-sample
+spec:
+  service:
+    flush: 1
+    daemon: false
+    logLevel: info
+    parsersFile: parsers.conf
+  inputSelector:
+    matchExpressions:
+    - key: fluentbit.fluent.io/enabled
+      operator: In
+      values: ["true"]
+  filterSelector:
+    matchExpressions:
+    - key: fluentbit.fluent.io/enabled
+      operator: In
+      values: ["true"]
+  outputSelector:
+    matchExpressions:
+    - key: fluentbit.fluent.io/enabled
+      operator: In
+      values: ["true"]

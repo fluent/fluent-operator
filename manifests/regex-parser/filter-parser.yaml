@@ -1,10 +1,10 @@
-apiVersion: logging.kubesphere.io/v1alpha2
+apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Filter
 metadata:
   name: parser
   namespace: kubesphere-logging-system
   labels:
-    logging.kubesphere.io/enabled: "true"
+    fluentbit.fluent.io/enabled: "true"
 spec:
   match: "*"
   filters:

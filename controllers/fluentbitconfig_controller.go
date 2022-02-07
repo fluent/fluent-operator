@@ -19,19 +19,19 @@ package controllers
 import (
 	"context"
 
+	"fluent.io/fluent-operator/apis/fluentbit/v1alpha2/plugins"
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2/plugins"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	logging "kubesphere.io/fluentbit-operator/api/fluentbitoperator/v1alpha2"
+	fluentbitv1alpha2 "fluent.io/fluent-operator/apis/fluentbit/v1alpha2"
 )
 
 // FluentBitConfigReconciler reconciles a FluentBitConfig object
@@ -41,8 +41,8 @@ type FluentBitConfigReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=logging.kubesphere.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=logging.kubesphere.io,resources=inputs;filters;outputs;parsers,verbs=list
+//+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=inputs;filters;outputs;parsers,verbs=list
 //+kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
@@ -57,7 +57,7 @@ type FluentBitConfigReconciler struct {
 func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("fluentbitconfig", req.NamespacedName)
 
-	var cfgs logging.FluentBitConfigList
+	var cfgs fluentbitv1alpha2.FluentBitConfigList
 	if err := r.List(ctx, &cfgs, client.InNamespace(req.Namespace)); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
@@ -67,7 +67,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 	for _, cfg := range cfgs.Items {
 		// List all inputs matching the label selector.
-		var inputs logging.InputList
+		var inputs fluentbitv1alpha2.InputList
 		selector, err := metav1.LabelSelectorAsSelector(&cfg.Spec.InputSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -77,7 +77,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 
 		// List all filters matching the label selector.
-		var filters logging.FilterList
+		var filters fluentbitv1alpha2.FilterList
 		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.FilterSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -87,7 +87,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 
 		// List all outputs matching the label selector.
-		var outputs logging.OutputList
+		var outputs fluentbitv1alpha2.OutputList
 		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.OutputSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -97,7 +97,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 
 		// List all parsers matching the label selector.
-		var parsers logging.ParserList
+		var parsers fluentbitv1alpha2.ParserList
 		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.ParserSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -108,7 +108,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 		// Inject config data into Secret
 		sl := plugins.NewSecretLoader(r.Client, cfg.Namespace, r.Log)
-		mainCfg, err := cfg.RenderMainConfig(sl, inputs, filters, outputs)
+		mainAppCfg, err := cfg.RenderMainConfig(sl, inputs, filters, outputs)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
@@ -137,7 +137,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sec, func() error {
 			sec.Data = map[string][]byte{
-				"fluent-bit.conf": []byte(mainCfg),
+				"fluent-bit.conf": []byte(mainAppCfg),
 				"parsers.conf":    []byte(parserCfg),
 			}
 			for _, s := range scripts {
@@ -157,7 +157,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 }
 
 func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Secret{}, ownerKey, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Secret{}, fluentbitOwnerKey, func(rawObj client.Object) []string {
 		// Grab the job object, extract the owner.
 		sec := rawObj.(*corev1.Secret)
 		owner := metav1.GetControllerOf(sec)
@@ -165,7 +165,7 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 			return nil
 		}
 		// Make sure it's a FluentBitConfig. If so, return it.
-		if owner.APIVersion != apiGVStr || owner.Kind != "FluentBitConfig" {
+		if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "FluentBitConfig" {
 			return nil
 		}
 		return []string{owner.Name}
@@ -174,11 +174,11 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&logging.FluentBitConfig{}).
+		For(&fluentbitv1alpha2.FluentBitConfig{}).
 		Owns(&corev1.Secret{}).
-		Watches(&source.Kind{Type: &logging.Input{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &logging.Filter{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &logging.Output{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &logging.Parser{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &fluentbitv1alpha2.Input{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &fluentbitv1alpha2.Filter{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &fluentbitv1alpha2.Output{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &fluentbitv1alpha2.Parser{}}, &handler.EnqueueRequestForObject{}).
 		Complete(r)
 }

@@ -1,0 +1,24 @@
+# permissions for end users to edit clusteroutputs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusteroutput-editor-role
+rules:
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - clusteroutputs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - clusteroutputs/status
+  verbs:
+  - get

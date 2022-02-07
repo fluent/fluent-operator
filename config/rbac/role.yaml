@@ -49,7 +49,87 @@ rules:
   - update
   - watch
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentd.fluent.io
+  resources:
+  - clusterfilters
+  - clusterinputs
+  - clusteroutputs
+  verbs:
+  - list
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - clusterfluentdconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - filters
+  - inputs
+  - outputs
+  verbs:
+  - list
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentdconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentdconfigs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentdconfigs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentds
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentds/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentds/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - fluentbit.fluent.io
   resources:
   - filters
   - fluentbitconfigs
@@ -65,7 +145,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentbit.fluent.io
   resources:
   - filters
   - inputs
@@ -74,7 +154,7 @@ rules:
   verbs:
   - list
 - apiGroups:
-  - logging.kubesphere.io
+  - fluentbit.fluent.io
   resources:
   - fluentbitconfigs
   verbs:

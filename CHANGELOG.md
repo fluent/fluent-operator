@@ -35,7 +35,7 @@
 - [ENHANCEMENT] Add kustomize file to manifests #99
 - [BUGFIX] Fix the forward output can only use the default port problem. #89
 - [BUGFIX] Fix bug it will loss log when damemonset restart. #90
-- [BUGFIX] Update groupname for client-gen to logging.kubesphere.io #95
+- [BUGFIX] Update groupname for client-gen to fluentbit.fluent.io #95
 
 ## 0.7.1 / 2021-07-08
 

@@ -46,4 +46,4 @@ kubectl apply -f manifests/logging-stack/input-systemd-docker.yaml
 ```
 
 For these, the kubelet log will be collected to the elasticsearch. If the fluentbit operator is installed in the 
-kubesphere, you can search the log with [Log Search](https://v3-0.docs.kubesphere.io/docs/toolbox/log-query/).
+kubesphere, you can search the log with [Log Search](https://v3-0.docs.fluent.io/docs/toolbox/log-query/).

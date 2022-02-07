@@ -1,0 +1,13 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: FluentBit
+metadata:
+  name: fluentbit-sample
+  labels:
+    app: fluent-bit
+spec:
+  image: kubesphere/fluent-bit:v1.8.3
+  imagePullPolicy: IfNotPresent
+  positionDB:
+    hostPath:
+      path: /var/lib/fluent-bit/
+  fluentBitConfigName: fluentbitconfig-sample

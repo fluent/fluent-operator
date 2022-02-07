@@ -8,4 +8,4 @@ webhook:
   port: 9443
 leaderElection:
   leaderElect: true
-  resourceName: 45c4fdd2.kubesphere.io
+  resourceName: 45c4fdd2.fluent.io

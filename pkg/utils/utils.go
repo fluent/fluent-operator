@@ -1,6 +1,10 @@
 package utils
 
-import "strings"
+import (
+	"crypto/md5"
+	"hash"
+	"strings"
+)
 
 func ContainString(slice []string, s string) bool {
 	for _, item := range slice {
@@ -33,4 +37,10 @@ func ConcatString(slice []string, sep string) string {
 	}
 
 	return strings.TrimSuffix(ns, sep)
+}
+
+func HashCode(msg string) string {
+	var h hash.Hash = md5.New()
+	h.Write([]byte(msg))
+	return string(h.Sum(nil))
 }

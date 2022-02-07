@@ -1,0 +1,24 @@
+# permissions for end users to edit fluentds.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fluentd-editor-role
+rules:
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentds
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentds/status
+  verbs:
+  - get

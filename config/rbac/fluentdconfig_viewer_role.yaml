@@ -1,0 +1,20 @@
+# permissions for end users to view fluentdconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fluentdconfig-viewer-role
+rules:
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentdconfigs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentdconfigs/status
+  verbs:
+  - get

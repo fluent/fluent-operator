@@ -1,0 +1,32 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: Filter
+metadata:
+  name: filter-sample
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+spec:
+  match: kube.*
+  filters:
+  - kubernetes:
+      kubeURL: https://kubernetes.default.svc:443
+      kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      labels: false
+      annotations: false
+  - nest:
+      operation: lift
+      nestedUnder: kubernetes
+      addPrefix: kubernetes_
+  - modify:
+      rules:
+      - remove: stream
+      - remove: kubernetes_pod_id
+      - remove: kubernetes_host
+      - remove: kubernetes_pod_id
+      - remove: kubernetes_container_hash
+  - nest:
+      operation: nest
+      wildcard:
+      - kubernetes_*
+      nestUnder: kubernetes
+      removePrefix: kubernetes_

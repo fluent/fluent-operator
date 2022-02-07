@@ -1,0 +1,14 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: Output
+metadata:
+  name: output-sample
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+spec:
+  match: kube.*
+  es:
+    host: elasticsearch-logging-data.kubesphere-logging-system.svc
+    port: 9200
+    logstashPrefix: ks-logstash-log
+    logstashFormat: true
+    timeKey: "@timestamp"

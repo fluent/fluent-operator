@@ -1,4 +1,4 @@
-module kubesphere.io/fluentbit-operator
+module fluent.io/fluent-operator
 
 go 1.16
 

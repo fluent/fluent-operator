@@ -1,56 +1,114 @@
-domain: kubesphere.io
+domain: fluent.io
 layout:
 - go.kubebuilder.io/v3
-projectName: fluentbit-operator
-repo: kubesphere.io/fluentbit-operator
+multigroup: true
+projectName: fluent-operator
+repo: fluent.io/fluent-operator
 resources:
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
-  domain: kubesphere.io
-  group: logging
+  domain: fluent.io
+  group: fluentbit
   kind: FluentBitConfig
-  path: kubesphere.io/fluentbit-operator/api/v1alpha2
+  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
     namespaced: true
-  domain: kubesphere.io
-  group: logging
+  domain: fluent.io
+  group: fluentbit
   kind: FluentBit
-  path: kubesphere.io/fluentbit-operator/api/v1alpha2
+  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
     namespaced: true
-  domain: kubesphere.io
-  group: logging
+  domain: fluent.io
+  group: fluentbit
   kind: Input
-  path: kubesphere.io/fluentbit-operator/api/v1alpha2
+  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
     namespaced: true
-  domain: kubesphere.io
-  group: logging
+  domain: fluent.io
+  group: fluentbit
   kind: Filter
-  path: kubesphere.io/fluentbit-operator/api/v1alpha2
+  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
     namespaced: true
-  domain: kubesphere.io
-  group: logging
+  domain: fluent.io
+  group: fluentbit
   kind: Output
-  path: kubesphere.io/fluentbit-operator/api/v1alpha2
+  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
     namespaced: true
-  domain: kubesphere.io
-  group: logging
+  domain: fluent.io
+  group: fluentbit
   kind: Parser
-  path: kubesphere.io/fluentbit-operator/api/v1alpha2
+  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: fluent.io
+  group: fluentd
+  kind: Fluentd
+  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+  controller: true
+  domain: fluent.io
+  group: fluentd
+  kind: ClusterFluentdConfig
+  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: fluent.io
+  group: fluentd
+  kind: FluentdConfig
+  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+  domain: fluent.io
+  group: fluentd
+  kind: ClusterFilter
+  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: fluent.io
+  group: fluentd
+  kind: Filter
+  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: fluent.io
+  group: fluentd
+  kind: ClusterOutput
+  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: fluent.io
+  group: fluentd
+  kind: Output
+  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  version: v1alpha1
 version: "3"

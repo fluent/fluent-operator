@@ -1,0 +1,91 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: fluent-operator
+  name: fluent-operator
+rules:
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - deployments
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+      - configmaps
+      - serviceaccounts
+      - configmaps
+      - services
+      - persistentvolumeclaims
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - fluentbit.fluent.io
+    resources:
+      - fluentbits
+      - fluentbitconfigs
+      - filters
+      - inputs
+      - outputs
+      - parsers
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - fluentd.fluent.io
+    resources:
+      - fluentds
+      - clusterfluentdconfigs
+      - fluentdconfigs
+      - clusterfilters
+      - filters
+      - clusteroutputs
+      - outputs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterrolebindings
+    verbs:
+      - create
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterroles
+    verbs:
+      - create
