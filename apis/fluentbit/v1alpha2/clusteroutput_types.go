@@ -31,7 +31,7 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// OutputSpec defines the desired state of Output
+// OutputSpec defines the desired state of ClusterOutput
 type OutputSpec struct {
 	// A pattern to match against the tags of incoming records.
 	// It's case sensitive and support the star (*) character as a wildcard.
@@ -72,10 +72,11 @@ type OutputSpec struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Cluster
 // +genclient
 
-// Output is the Schema for the outputs API
-type Output struct {
+// ClusterOutput is the Schema for the cluster-level outputs API
+type ClusterOutput struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
@@ -84,16 +85,16 @@ type Output struct {
 
 // +kubebuilder:object:root=true
 
-// OutputList contains a list of Output
+// OutputList contains a list of ClusterOutput
 type OutputList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Output `json:"items"`
+	Items           []ClusterOutput `json:"items"`
 }
 
 // +kubebuilder:object:generate:=false
 // OutputByName implements sort.Interface for []Output based on the Name field.
-type OutputByName []Output
+type OutputByName []ClusterOutput
 
 func (a OutputByName) Len() int           { return len(a) }
 func (a OutputByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
@@ -144,5 +145,5 @@ func (list OutputList) Load(sl plugins.SecretLoader) (string, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&Output{}, &OutputList{})
+	SchemeBuilder.Register(&ClusterOutput{}, &OutputList{})
 }

@@ -1,8 +1,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
-kind: Filter
+kind: ClusterFilter
 metadata:
   name: containerd
-  namespace: kubesphere-logging-system
   labels:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging

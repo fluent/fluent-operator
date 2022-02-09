@@ -11,10 +11,9 @@ spec:
 
 ---
 apiVersion: fluentbit.fluent.io
-kind: FluentBitConfig
+kind: ClusterFluentBitConfig
 metadata:
   name: fluent-bit-config
-  namespace: kubesphere-logging-system
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
@@ -27,10 +26,9 @@ spec:
 
 ---
 apiVersion: fluentbit.fluent.io
-kind: Input
+kind: ClusterInput
 metadata:
   name: dummy
-  namespace: kubesphere-logging-system
   labels:
     fluentbit.fluent.io/enabled: "true"
 spec:
@@ -39,10 +37,9 @@ spec:
 
 ---
 apiVersion: fluentbit.fluent.io
-kind: Output
+kind: ClusterOutput
 metadata:
   name: stdout
-  namespace: kubesphere-logging-system
   labels:
     fluentbit.fluent.io/enabled: "true"
 spec:

@@ -52,13 +52,13 @@ Filter defines a Filter configuration.
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| grep | Grep defines Grep Filter configuration. | *[filter.Grep](plugins/filter/grep.md) |
-| recordModifier | RecordModifier defines Record Modifier Filter configuration. | *[filter.RecordModifier](plugins/filter/recordmodifier.md) |
-| kubernetes | Kubernetes defines Kubernetes Filter configuration. | *[filter.Kubernetes](plugins/filter/kubernetes.md) |
-| modify | Modify defines Modify Filter configuration. | *[filter.Modify](plugins/filter/modify.md) |
-| nest | Nest defines Nest Filter configuration. | *[filter.Nest](plugins/filter/nest.md) |
-| parser | Parser defines Parser Filter configuration. | *[filter.Parser](plugins/filter/parser.md) |
-| lua | Lua defines Lua Filter configuration. | *[filter.Lua](plugins/filter/lua.md) |
+| grep | Grep defines Grep Filter configuration. | *[filter.Grep](plugins/fluentbit/filter/grep.md) |
+| recordModifier | RecordModifier defines Record Modifier Filter configuration. | *[filter.RecordModifier](plugins/fluentbit/filter/recordmodifier.md) |
+| kubernetes | Kubernetes defines Kubernetes Filter configuration. | *[filter.Kubernetes](plugins/fluentbit/filter/kubernetes.md) |
+| modify | Modify defines Modify Filter configuration. | *[filter.Modify](plugins/fluentbit/filter/modify.md) |
+| nest | Nest defines Nest Filter configuration. | *[filter.Nest](plugins/fluentbit/filter/nest.md) |
+| parser | Parser defines Parser Filter configuration. | *[filter.Parser](plugins/fluentbit/filter/parser.md) |
+| lua | Lua defines Lua Filter configuration. | *[filter.Lua](plugins/fluentbit/filter/lua.md) |
 
 [Back to TOC](#table-of-contents)
 ## FilterList
@@ -192,9 +192,9 @@ InputSpec defines the desired state of Input
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | alias | A user friendly alias name for this input plugin. | string |
-| dummy | Dummy defines Dummy Input configuration. | *[input.Dummy](plugins/input/dummy.md) |
-| tail | Tail defines Tail Input configuration. | *[input.Tail](plugins/input/tail.md) |
-| systemd | Systemd defines Systemd Input configuration. | *[input.Systemd](plugins/input/systemd.md) |
+| dummy | Dummy defines Dummy Input configuration. | *[input.Dummy](plugins/fluentbit/input/dummy.md) |
+| tail | Tail defines Tail Input configuration. | *[input.Tail](plugins/fluentbit/input/tail.md) |
+| systemd | Systemd defines Systemd Input configuration. | *[input.Systemd](plugins/fluentbit/input/systemd.md) |
 
 [Back to TOC](#table-of-contents)
 ## Output
@@ -230,17 +230,17 @@ OutputSpec defines the desired state of Output
 | matchRegex | A regular expression to match against the tags of incoming records. Use this option if you want to use the full regex syntax. | string |
 | alias | A user friendly alias name for this output plugin. | string |
 | retry_limit | This option allows to disable retries or impose a limit to try N times and then discard the data after reaching that limit. | string |
-| es | Elasticsearch defines Elasticsearch Output configuration. | *[output.Elasticsearch](plugins/output/elasticsearch.md) |
-| file | File defines File Output configuration. | *[output.File](plugins/output/file.md) |
-| forward | Forward defines Forward Output configuration. | *[output.Forward](plugins/output/forward.md) |
-| http | HTTP defines HTTP Output configuration. | *[output.HTTP](plugins/output/http.md) |
-| kafka | Kafka defines Kafka Output configuration. | *[output.Kafka](plugins/output/kafka.md) |
-| null | Null defines Null Output configuration. | *[output.Null](plugins/output/null.md) |
-| stdout | Stdout defines Stdout Output configuration. | *[output.Stdout](plugins/output/stdout.md) |
-| tcp | TCP defines TCP Output configuration. | *[output.TCP](plugins/output/tcp.md) |
-| loki | Loki defines Loki Output configuration. | *[output.Loki](plugins/output/loki.md) |
-| syslog | Syslog defines Syslog Output configuration. | *[output.Syslog](plugins/output/syslog.md) |
-| datadog | DataDog defines DataDog Output configuration. | *[output.DataDog](plugins/output/datadog.md) |
+| es | Elasticsearch defines Elasticsearch Output configuration. | *[output.Elasticsearch](plugins/fluentbit/output/elasticsearch.md) |
+| file | File defines File Output configuration. | *[output.File](plugins/fluentbit/output/file.md) |
+| forward | Forward defines Forward Output configuration. | *[output.Forward](plugins/fluentbit/output/forward.md) |
+| http | HTTP defines HTTP Output configuration. | *[output.HTTP](plugins/fluentbit/output/http.md) |
+| kafka | Kafka defines Kafka Output configuration. | *[output.Kafka](plugins/fluentbit/output/kafka.md) |
+| null | Null defines Null Output configuration. | *[output.Null](plugins/fluentbit/output/null.md) |
+| stdout | Stdout defines Stdout Output configuration. | *[output.Stdout](plugins/fluentbit/output/stdout.md) |
+| tcp | TCP defines TCP Output configuration. | *[output.TCP](plugins/fluentbit/output/tcp.md) |
+| loki | Loki defines Loki Output configuration. | *[output.Loki](plugins/fluentbit/output/loki.md) |
+| syslog | Syslog defines Syslog Output configuration. | *[output.Syslog](plugins/fluentbit/output/syslog.md) |
+| datadog | DataDog defines DataDog Output configuration. | *[output.DataDog](plugins/fluentbit/output/datadog.md) |
 
 [Back to TOC](#table-of-contents)
 ## Parser
@@ -272,10 +272,10 @@ ParserSpec defines the desired state of Parser
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| json | JSON defines json parser configuration. | *[parser.JSON](plugins/parser/json.md) |
-| regex | Regex defines regex parser configuration. | *[parser.Regex](plugins/parser/regex.md) |
-| ltsv | LTSV defines ltsv parser configuration. | *[parser.LSTV](plugins/parser/lstv.md) |
-| logfmt | Logfmt defines logfmt parser configuration. | *[parser.Logfmt](plugins/parser/logfmt.md) |
+| json | JSON defines json parser configuration. | *[parser.JSON](plugins/fluentbit/parser/json.md) |
+| regex | Regex defines regex parser configuration. | *[parser.Regex](plugins/fluentbit/parser/regex.md) |
+| ltsv | LTSV defines ltsv parser configuration. | *[parser.LSTV](plugins/fluentbit/parser/lstv.md) |
+| logfmt | Logfmt defines logfmt parser configuration. | *[parser.Logfmt](plugins/fluentbit/parser/logfmt.md) |
 | decoders | Decoders are a built-in feature available through the Parsers file, each Parser definition can optionally set one or multiple decoders. There are two type of decoders type: Decode_Field and Decode_Field_As. | []Decorder |
 
 [Back to TOC](#table-of-contents)

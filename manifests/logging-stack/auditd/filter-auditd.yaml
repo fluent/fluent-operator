@@ -1,8 +1,7 @@
 apiVersion: fluentbit.fluent.io
-kind: Filter
+kind: ClusterFilter
 metadata:
   name: filter-audit-logs
-  namespace: kubesphere-logging-system
   labels:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging

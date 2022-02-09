@@ -6,22 +6,23 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: fluentbitconfigs.fluentbit.fluent.io
+  name: clusterfluentbitconfigs.fluentbit.fluent.io
 spec:
   group: fluentbit.fluent.io
   names:
-    kind: FluentBitConfig
-    listKind: FluentBitConfigList
-    plural: fluentbitconfigs
+    kind: ClusterFluentBitConfig
+    listKind: ClusterFluentBitConfigList
+    plural: clusterfluentbitconfigs
     shortNames:
     - fbc
-    singular: fluentbitconfig
+    singular: clusterfluentbitconfig
   scope: Cluster
   versions:
   - name: v1alpha2
     schema:
       openAPIV3Schema:
-        description: FluentBitConfig is the Schema for the fluentbitconfigs API
+        description: ClusterFluentBitConfig is the Schema for the cluster-level fluentbitconfigs
+          API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -36,7 +37,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: FluentBitConfigSpec defines the desired state of FluentBitConfig
+            description: FluentBitConfigSpec defines the desired state of ClusterFluentBitConfig
             properties:
               filterSelector:
                 description: Select filter plugins

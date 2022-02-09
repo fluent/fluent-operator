@@ -1,8 +1,7 @@
 apiVersion: fluentbit.fluent.io
-kind: Input
+kind: ClusterInput
 metadata:
   name: auditd-input
-  namespace: kubesphere-logging-system
   labels:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging

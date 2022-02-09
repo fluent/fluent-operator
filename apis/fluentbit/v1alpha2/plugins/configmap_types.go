@@ -21,9 +21,9 @@ func NewConfigMapLoader(c client.Client, ns string) ConfigMapLoader {
 	}
 }
 
-func (cl ConfigMapLoader) LoadConfigMap(selector v1.ConfigMapKeySelector) (string, error) {
+func (cl ConfigMapLoader) LoadConfigMap(selector v1.ConfigMapKeySelector, namespace string) (string, error) {
 	var configMap v1.ConfigMap
-	if err := cl.client.Get(context.Background(), client.ObjectKey{Name: selector.Name, Namespace: cl.namespace}, &configMap); err != nil {
+	if err := cl.client.Get(context.Background(), client.ObjectKey{Name: selector.Name, Namespace: namespace}, &configMap); err != nil {
 		return "", err
 	}
 

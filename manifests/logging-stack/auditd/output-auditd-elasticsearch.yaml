@@ -1,8 +1,7 @@
 apiVersion: fluentbit.fluent.io
-kind: Output
+kind: ClusterOutput
 metadata:
   name: auditd-to-es
-  namespace: kubesphere-logging-system
   labels:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging

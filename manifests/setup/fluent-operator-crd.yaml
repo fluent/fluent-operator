@@ -1518,7 +1518,7 @@ spec:
     listKind: FilterList
     plural: filters
     singular: filter
-  scope: Namespaced
+  scope: Cluster
   versions:
   - name: v1alpha2
     schema:
@@ -2452,7 +2452,7 @@ spec:
     shortNames:
     - fbc
     singular: fluentbitconfig
-  scope: Namespaced
+  scope: Cluster
   versions:
   - name: v1alpha2
     schema:
@@ -2562,6 +2562,11 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+              namespace:
+                description: If namespace is defined, then the configmap and secret
+                  for fluent-bit is in this namespace. If it is not defined, it is
+                  in the namespace of the fluentd-operator
+                type: string
               outputSelector:
                 description: Select output plugins
                 properties:
@@ -8352,7 +8357,7 @@ spec:
     listKind: InputList
     plural: inputs
     singular: input
-  scope: Namespaced
+  scope: Cluster
   versions:
   - name: v1alpha2
     schema:
@@ -8634,7 +8639,7 @@ spec:
     listKind: OutputList
     plural: outputs
     singular: output
-  scope: Namespaced
+  scope: Cluster
   versions:
   - name: v1alpha2
     schema:
@@ -10876,7 +10881,7 @@ spec:
     listKind: ParserList
     plural: parsers
     singular: parser
-  scope: Namespaced
+  scope: Cluster
   versions:
   - name: v1alpha2
     schema:

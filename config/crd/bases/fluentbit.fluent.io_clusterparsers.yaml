@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: parsers.fluentbit.fluent.io
+  name: clusterparsers.fluentbit.fluent.io
 spec:
   group: fluentbit.fluent.io
   names:
-    kind: Parser
-    listKind: ParserList
-    plural: parsers
-    singular: parser
+    kind: ClusterParser
+    listKind: ClusterParserList
+    plural: clusterparsers
+    singular: clusterparser
   scope: Cluster
   versions:
   - name: v1alpha2
     schema:
       openAPIV3Schema:
-        description: Parser is the Schema for the parsers API
+        description: ClusterParser is the Schema for the cluster-level parsers API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -34,7 +34,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ParserSpec defines the desired state of Parser
+            description: ParserSpec defines the desired state of ClusterParser
             properties:
               decoders:
                 description: 'Decoders are a built-in feature available through the

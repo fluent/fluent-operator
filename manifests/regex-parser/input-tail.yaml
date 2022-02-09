@@ -1,8 +1,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
-kind: Input
+kind: ClusterInput
 metadata:
   name: tail
-  namespace: kubesphere-logging-system
   labels:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging

@@ -31,7 +31,7 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// FilterSpec defines the desired state of Filter
+// FilterSpec defines the desired state of ClusterFilter
 type FilterSpec struct {
 	// A pattern to match against the tags of incoming records.
 	// It's case-sensitive and support the star (*) character as a wildcard.
@@ -69,10 +69,11 @@ type FilterItem struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Cluster
 // +genclient
 
-// Filter defines a Filter configuration.
-type Filter struct {
+// ClusterFilter defines a cluster-level Filter configuration.
+type ClusterFilter struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	// Specification of desired Filter configuration.
@@ -81,17 +82,17 @@ type Filter struct {
 
 // +kubebuilder:object:root=true
 
-// FilterList contains a list of Filter
+// FilterList contains a list of ClusterFilter
 type FilterList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Filter `json:"items"`
+	Items           []ClusterFilter `json:"items"`
 }
 
 // +kubebuilder:object:generate:=false
 
-// FilterByName implements sort.Interface for []Filter based on the Name field.
-type FilterByName []Filter
+// FilterByName implements sort.Interface for []ClusterFilter based on the Name field.
+type FilterByName []ClusterFilter
 
 func (a FilterByName) Len() int           { return len(a) }
 func (a FilterByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
@@ -138,5 +139,5 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&Filter{}, &FilterList{})
+	SchemeBuilder.Register(&ClusterFilter{}, &FilterList{})
 }

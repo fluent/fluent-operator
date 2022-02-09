@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: inputs.fluentbit.fluent.io
+  name: clusterinputs.fluentbit.fluent.io
 spec:
   group: fluentbit.fluent.io
   names:
-    kind: Input
-    listKind: InputList
-    plural: inputs
-    singular: input
+    kind: ClusterInput
+    listKind: ClusterInputList
+    plural: clusterinputs
+    singular: clusterinput
   scope: Cluster
   versions:
   - name: v1alpha2
     schema:
       openAPIV3Schema:
-        description: Input is the Schema for the inputs API
+        description: ClusterInput is the Schema for the inputs API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -34,7 +34,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: InputSpec defines the desired state of Input
+            description: InputSpec defines the desired state of ClusterInput
             properties:
               alias:
                 description: A user friendly alias name for this input plugin. Used
