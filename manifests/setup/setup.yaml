@@ -11020,6 +11020,7 @@ rules:
   - serviceaccounts
   - configmaps
   - services
+  - namespaces
   verbs:
   - create
   - delete

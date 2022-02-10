@@ -72,11 +72,10 @@ func (ps *PluginStore) Hash() string {
 	return utils.HashCode(c.String())
 }
 
-// Returns the @label value string of this plugin store.
+// Returns tag value
 func (ps *PluginStore) GetTag() string {
 	return ps.Store["tag"]
 }
-
 
 // Returns the @label value string of this plugin store.
 func (ps *PluginStore) RouteLabel() string {

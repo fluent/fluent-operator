@@ -15,6 +15,21 @@ spec:
   fluentdCfgSelector: 
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  filterSelector:
+    matchLabels:
+      filter.fluentd.fluent.io/enabled: "true"
+  outputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
    
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
