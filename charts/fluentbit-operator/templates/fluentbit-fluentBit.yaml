@@ -26,4 +26,7 @@ spec:
           - matchExpressions:
               - key: node-role.kubernetes.io/edge
                 operator: DoesNotExist
+  {{- if .Values.secrets }}
+  secrets:
+  {{ toYaml .Values.secrets | indent 4 }}
   {{- end }}
