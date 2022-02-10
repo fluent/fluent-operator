@@ -108,12 +108,15 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 			}
 			return nil
 		}
-	case *appsv1.Deployment:
-		expected := operator.MakeDeployment(*fd)
+	case *appsv1.StatefulSet:
+		expected := operator.MakeStatefulset(*fd)
 
 		return func() error {
 			o.Labels = expected.Labels
-			o.Spec = expected.Spec
+			o.Spec.Replicas = expected.Spec.Replicas
+			o.Spec.Template = expected.Spec.Template
+			o.Spec.UpdateStrategy = expected.Spec.UpdateStrategy
+			o.Spec.VolumeClaimTemplates = expected.Spec.VolumeClaimTemplates
 			o.SetOwnerReferences(nil)
 			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
 				return err
