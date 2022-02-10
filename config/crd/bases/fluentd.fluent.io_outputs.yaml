@@ -214,6 +214,14 @@ spec:
                           - '*string'
                           - mixed
                           type: string
+                        timekey:
+                          description: Output plugin will flush chunks per specified
+                            time (enabled when time is specified in chunk keys)
+                          type: string
+                        timekeyWait:
+                          description: Output plugin will write chunks after timekey_wait
+                            seconds later after timekey expiration
+                          type: string
                         timezone:
                           description: Uses the specified timezone.
                           type: string

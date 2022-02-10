@@ -10,7 +10,7 @@ rules:
       - apps
     resources:
       - daemonsets
-      - deployments
+      - statefulsets
     verbs:
       - create
       - delete

@@ -1,6 +1,6 @@
 package common
 
-type Match struct {
+type BufferSection struct {
 	// buffer section
 	Buffer *Buffer `json:"buffer,omitempty"`
 	// format section

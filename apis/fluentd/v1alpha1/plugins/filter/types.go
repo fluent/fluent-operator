@@ -154,19 +154,19 @@ func (f *Filter) recordTransformerPlugin(parent *params.PluginStore, loader plug
 			childs = append(childs, child)
 		}
 		if f.RecordTransformer.EnableRuby != nil {
-			parent.InsertPairs("enable_ruby", fmt.Sprint(f.RecordTransformer.EnableRuby))
+			parent.InsertPairs("enable_ruby", fmt.Sprint(*f.RecordTransformer.EnableRuby))
 		}
 		if f.RecordTransformer.AutoTypeCast != nil {
-			parent.InsertPairs("renew_record", fmt.Sprint(f.RecordTransformer.AutoTypeCast))
+			parent.InsertPairs("renew_record", fmt.Sprint(*f.RecordTransformer.AutoTypeCast))
 		}
 		if f.RecordTransformer.RenewTimeKey != nil {
-			parent.InsertPairs("renew_time_key", fmt.Sprint(f.RecordTransformer.RenewTimeKey))
+			parent.InsertPairs("renew_time_key", fmt.Sprint(*f.RecordTransformer.RenewTimeKey))
 		}
 		if f.RecordTransformer.KeepKeys != nil {
-			parent.InsertPairs("keep_keys", fmt.Sprint(f.RecordTransformer.KeepKeys))
+			parent.InsertPairs("keep_keys", fmt.Sprint(*f.RecordTransformer.KeepKeys))
 		}
 		if f.RecordTransformer.RemoveKeys != nil {
-			parent.InsertPairs("remove_keys", fmt.Sprint(f.RecordTransformer.RemoveKeys))
+			parent.InsertPairs("remove_keys", fmt.Sprint(*f.RecordTransformer.RemoveKeys))
 		}
 
 	}

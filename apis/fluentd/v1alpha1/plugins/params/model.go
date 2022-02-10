@@ -17,6 +17,8 @@ type PluginStore struct {
 	Childs []*PluginStore
 	// The prefix whitespaces before this plugin mounted the parent plugin
 	PrefixWhitespaces string
+	// The flag whether to ignore the path field in buffer
+	IgnorePath bool
 }
 
 func NewPluginStore(name string) *PluginStore {
@@ -34,6 +36,11 @@ func (ps *PluginStore) InsertPairs(key, value string) {
 // The @type parameter specifies the type of the plugin.
 func (ps *PluginStore) InsertType(value string) {
 	ps.InsertPairs("@type", value)
+}
+
+// SetIgnorePath will ignore the buffer path.
+func (ps *PluginStore) SetIgnorePath() {
+	ps.IgnorePath = true
 }
 
 // If one label section contains a match section,
@@ -141,6 +148,9 @@ func (ps *PluginStore) processBody(buf *bytes.Buffer) {
 	keys := make([]string, 0, len(ps.Store))
 	for k := range ps.Store {
 		if k == "tag" {
+			continue
+		}
+		if ps.Name == string(BufferPlugin) && ps.IgnorePath {
 			continue
 		}
 		keys = append(keys, k)

@@ -166,7 +166,7 @@ func (r *CfgResources) filterForFilters(cfgId, namespace, name, crdtype string,
 	for n, filter := range filters {
 		filterId := fmt.Sprintf("%s-%s-%s-%s-%d", cfgId, namespace, crdtype, name, n)
 		filter.FilterCommon.Id = &filterId
-		filter.FilterCommon.Tag = &params.DeftaultTag
+		filter.FilterCommon.Tag = &params.DefaultTag
 
 		ps, err := filter.Params(sl)
 		if err != nil {
@@ -190,7 +190,7 @@ func (r *CfgResources) filterForOutputs(cfgId, namespace, name, crdtype string,
 	for n, output := range outputs {
 		outputId := fmt.Sprintf("%s-%s-%s-%s-%d", cfgId, namespace, crdtype, name, n)
 		output.OutputCommon.Id = &outputId
-		output.OutputCommon.Tag = &params.DeftaultTag
+		output.OutputCommon.Tag = &params.DefaultTag
 
 		ps, err := output.Params(sl)
 		if err != nil {
@@ -233,7 +233,7 @@ func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResourc
 	pgr.LabelPluginResources = append(pgr.LabelPluginResources, *cfgLabelPlugin)
 }
 
-func (pgr *PluginResources) RenderMainConfig() (string, error) {
+func (pgr *PluginResources) RenderMainConfig(enableMultiWorkers bool) (string, error) {
 	if len(pgr.InputPlugins) == 0 && len(pgr.LabelPluginResources) == 0 {
 		return "", fmt.Errorf("no plugins detect")
 	}
@@ -243,17 +243,26 @@ func (pgr *PluginResources) RenderMainConfig() (string, error) {
 	// sort global inputs
 	inputs := ByHashcode(pgr.InputPlugins)
 	for _, pluginStore := range inputs {
+		if enableMultiWorkers {
+			pluginStore.SetIgnorePath()
+		}
 		buf.WriteString(pluginStore.String())
 	}
 
 	// sort main routers
 	childRouters := ByRouteLabelsPointers(pgr.MainRouterPlugins.Childs)
 	pgr.MainRouterPlugins.Childs = childRouters
+	if enableMultiWorkers {
+		pgr.MainRouterPlugins.SetIgnorePath()
+	}
 	buf.WriteString(pgr.MainRouterPlugins.String())
 
 	// sort label plugins
 	labelPlugins := ByRouteLabels(pgr.LabelPluginResources)
 	for _, labelPlugin := range labelPlugins {
+		if enableMultiWorkers {
+			labelPlugin.SetIgnorePath()
+		}
 		buf.WriteString(labelPlugin.String())
 	}
 

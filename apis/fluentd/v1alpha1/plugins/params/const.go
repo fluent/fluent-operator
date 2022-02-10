@@ -63,5 +63,8 @@ const (
 )
 
 var (
-	DeftaultTag = "**"
+	DefaultTag        = "**"
+	DefaultFormatType = "json"
+	// Buffer path for single process
+	DefaultBufferPath = "/buffers/fluentd/log"
 )
