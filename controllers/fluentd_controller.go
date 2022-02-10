@@ -107,21 +107,8 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{}, err
 	}
 
-	// Deploy pvc
-	// if not given a definition of buffer, will return default buffer configuration.
-	if fd.Spec.BufferVolume == nil || (!fd.Spec.BufferVolume.DisableBufferVolume && fd.Spec.BufferVolume.PersistentVolumeClaim != nil) {
-		bufferpvc := operator.MakeFluentdPVC(fd)
-		if err := ctrl.SetControllerReference(&fd, &bufferpvc, r.Scheme); err != nil {
-			return ctrl.Result{}, err
-		}
-
-		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, &bufferpvc, r.mutate(&bufferpvc, &fd)); err != nil {
-			return ctrl.Result{}, err
-		}
-	}
-
-	// Deploy Fluentd Deployment
-	dp := operator.MakeDeployment(fd)
+	// Deploy Fluentd Statefulset
+	dp := operator.MakeStatefulset(fd)
 	if err := ctrl.SetControllerReference(&fd, &dp, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -162,10 +149,10 @@ func (r *FluentdReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.Deployment{}, fluentdOwnerKey, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.StatefulSet{}, fluentdOwnerKey, func(rawObj client.Object) []string {
 		// grab the job object, extract the owner.
-		dp := rawObj.(*appsv1.Deployment)
-		owner := metav1.GetControllerOf(dp)
+		sts := rawObj.(*appsv1.StatefulSet)
+		owner := metav1.GetControllerOf(sts)
 		if owner == nil {
 			return nil
 		}
@@ -197,8 +184,7 @@ func (r *FluentdReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&fluentdv1alpha1.Fluentd{}).
 		Owns(&corev1.ServiceAccount{}).
-		Owns(&appsv1.Deployment{}).
+		Owns(&appsv1.StatefulSet{}).
 		Owns(&corev1.Service{}).
-		Owns(&corev1.PersistentVolumeClaim{}).
 		Complete(r)
 }

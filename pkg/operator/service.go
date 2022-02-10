@@ -53,7 +53,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) corev1.Service {
 		}
 
 		if input.Http != nil {
-			httpPort := *input.Forward.Port
+			httpPort := *input.Http.Port
 			if httpPort == 0 {
 				httpPort = DefaultHttpPort
 			}

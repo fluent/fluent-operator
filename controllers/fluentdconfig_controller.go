@@ -57,7 +57,7 @@ const (
 <system>
 	rpc_endpoint 127.0.0.1:24444
 	log_level info
-	workers 1
+	workers %d
 </system>
 `
 	FLUENTD_LOG = `# Do not collect fluentd's own logs to avoid infinite loops.
@@ -147,8 +147,19 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return ctrl.Result{}, err
 		}
 
+		// Get fluentd workers
+		var workers int32 = 1
+		var enableMultiWorkers bool
+		if fd.Spec.Workers != nil {
+			workers = *fd.Spec.Workers
+		}
+
+		if workers > 1 {
+			enableMultiWorkers = true
+		}
+
 		// Create or update the global main app secret of the fluentd instance in its namespace.
-		mainAppCfg, err := pgr.RenderMainConfig()
+		mainAppCfg, err := pgr.RenderMainConfig(enableMultiWorkers)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
@@ -166,7 +177,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			sec.Data = map[string][]byte{
 				FluentdSecretMainKey:   []byte(FlUENT_INCLUDE),
 				FluentdSecretAppKey:    []byte(mainAppCfg),
-				FluentdSecretSystemKey: []byte(SYSTEM),
+				FluentdSecretSystemKey: []byte(fmt.Sprintf(SYSTEM, workers)),
 				FluentdSecretLogKey:    []byte(FLUENTD_LOG),
 			}
 			// The current fd owns the namespaced secret.

@@ -2,6 +2,8 @@ package common
 
 import (
 	"fmt"
+	"path/filepath"
+	"strings"
 
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
@@ -28,6 +30,10 @@ type Buffer struct {
 	*FileSingleBuffer `json:",inline,omitempty"`
 	// The time section of buffer plugin
 	Time *Time `json:",inline,omitempty"`
+	// Output plugin will flush chunks per specified time (enabled when time is specified in chunk keys)
+	TimeKey *string `json:"timekey,omitempty"`
+	// Output plugin will write chunks after timekey_wait seconds later after timekey expiration
+	TimeKeyWait *string `json:"timekeyWait,omitempty"`
 
 	// The path where buffer chunks are stored. This field would make no effect in memory buffer plugin.
 	// +kubebuilder:validation:Required
@@ -163,7 +169,24 @@ func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 	}
 
 	if b.Path != nil {
-		ps.InsertPairs("path", *b.Path)
+		if strings.HasPrefix(*b.Path, "/buffers") {
+			ps.InsertPairs("path", *b.Path)
+		} else {
+			targetPaths := []string{"/buffers"}
+			paths := strings.Split(*b.Path, "/")
+			targetPaths = append(targetPaths, paths...)
+			ps.InsertPairs("path", filepath.Join(targetPaths...))
+		}
+	} else {
+		ps.InsertPairs("path", params.DefaultBufferPath)
+	}
+
+	if b.TimeKey != nil {
+		ps.InsertPairs("timekey", fmt.Sprint(*b.TimeKey))
+	}
+
+	if b.TimeKeyWait != nil {
+		ps.InsertPairs("timekey_wait", fmt.Sprint(*b.TimeKeyWait))
 	}
 
 	ps.InsertPairs("tag", b.Tag)

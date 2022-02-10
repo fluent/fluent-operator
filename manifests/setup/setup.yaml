@@ -810,6 +810,14 @@ spec:
                           - '*string'
                           - mixed
                           type: string
+                        timekey:
+                          description: Output plugin will flush chunks per specified
+                            time (enabled when time is specified in chunk keys)
+                          type: string
+                        timekeyWait:
+                          description: Output plugin will write chunks after timekey_wait
+                            seconds later after timekey expiration
+                          type: string
                         timezone:
                           description: Uses the specified timezone.
                           type: string
@@ -8308,6 +8316,10 @@ spec:
                       type: string
                   type: object
                 type: array
+              workers:
+                description: Numbers of the workers in Fluentd instance
+                format: int32
+                type: integer
             type: object
           status:
             description: FluentdStatus defines the observed state of Fluentd
@@ -10156,6 +10168,14 @@ spec:
                           - '*string'
                           - mixed
                           type: string
+                        timekey:
+                          description: Output plugin will flush chunks per specified
+                            time (enabled when time is specified in chunk keys)
+                          type: string
+                        timekeyWait:
+                          description: Output plugin will write chunks after timekey_wait
+                            seconds later after timekey expiration
+                          type: string
                         timezone:
                           description: Uses the specified timezone.
                           type: string
@@ -10977,7 +10997,7 @@ rules:
   - apps
   resources:
   - daemonsets
-  - deployments
+  - statefulsets
   verbs:
   - create
   - delete
@@ -11000,7 +11020,6 @@ rules:
   - serviceaccounts
   - configmaps
   - services
-  - persistentvolumeclaims
   verbs:
   - create
   - delete

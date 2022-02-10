@@ -33,7 +33,7 @@ spec:
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: Output
 metadata:
-  name: fluentd-stdout
+  name: fluentd-output-es
   namespace: kubesphere-logging-system
   labels:
     output.fluentd.fluent.io/enabled: "true"

@@ -29,13 +29,13 @@ const (
 	InputHttpType    = "http"
 )
 
-func MakeDeployment(fd fluentdv1alpha1.Fluentd) appsv1.Deployment {
+func MakeStatefulset(fd fluentdv1alpha1.Fluentd) appsv1.StatefulSet {
 	replicas := *fd.Spec.Replicas
 	if replicas == 0 {
 		replicas = 1
 	}
 
-	ports := makeDeploymentPorts(fd)
+	ports := makeStatefulsetPorts(fd)
 
 	labels := map[string]string{
 		"app.kubernetes.io/name":      fd.Name,
@@ -51,13 +51,13 @@ func MakeDeployment(fd fluentdv1alpha1.Fluentd) appsv1.Deployment {
 		}
 	}
 
-	dp := appsv1.Deployment{
+	sts := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fd.Name,
 			Namespace: fd.Namespace,
 			Labels:    labels,
 		},
-		Spec: appsv1.DeploymentSpec{
+		Spec: appsv1.StatefulSetSpec{
 			Replicas: &replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
@@ -113,74 +113,62 @@ func MakeDeployment(fd fluentdv1alpha1.Fluentd) appsv1.Deployment {
 	}
 
 	if fd.Spec.RuntimeClassName != "" {
-		dp.Spec.Template.Spec.RuntimeClassName = &fd.Spec.RuntimeClassName
+		sts.Spec.Template.Spec.RuntimeClassName = &fd.Spec.RuntimeClassName
 	}
 
 	if fd.Spec.PriorityClassName != "" {
-		dp.Spec.Template.Spec.PriorityClassName = fd.Spec.PriorityClassName
+		sts.Spec.Template.Spec.PriorityClassName = fd.Spec.PriorityClassName
 	}
-
-	bufferVolName := fmt.Sprintf("%s-buffer", fd.Name)
 
 	// Mount host or emptydir VolumeSource
 	if fd.Spec.BufferVolume != nil && !fd.Spec.BufferVolume.DisableBufferVolume {
-		bufferpvc := fd.Spec.BufferVolume
+		bufferVolName := fmt.Sprintf("%s-buffer", fd.Name)
+		bufferpv := fd.Spec.BufferVolume
 
-		if bufferpvc.HostPath != nil {
-			dp.Spec.Template.Spec.Volumes = append(dp.Spec.Template.Spec.Volumes, corev1.Volume{
+		if bufferpv.HostPath != nil {
+			sts.Spec.Template.Spec.Volumes = append(sts.Spec.Template.Spec.Volumes, corev1.Volume{
 				Name: bufferVolName,
 				VolumeSource: corev1.VolumeSource{
-					HostPath: bufferpvc.HostPath,
+					HostPath: bufferpv.HostPath,
 				},
 			})
 
-			dp.Spec.Template.Spec.Containers[0].VolumeMounts = append(dp.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+			sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
 				Name:      bufferVolName,
 				MountPath: BufferMountPath,
 			})
-			return dp
+			return sts
 		}
 
-		if bufferpvc.EmptyDir != nil {
-			dp.Spec.Template.Spec.Volumes = append(dp.Spec.Template.Spec.Volumes, corev1.Volume{
+		if bufferpv.EmptyDir != nil {
+			sts.Spec.Template.Spec.Volumes = append(sts.Spec.Template.Spec.Volumes, corev1.Volume{
 				Name: bufferVolName,
 				VolumeSource: corev1.VolumeSource{
-					EmptyDir: bufferpvc.EmptyDir,
+					EmptyDir: bufferpv.EmptyDir,
 				},
 			})
 
-			dp.Spec.Template.Spec.Containers[0].VolumeMounts = append(dp.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+			sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
 				Name:      bufferVolName,
 				MountPath: BufferMountPath,
 			})
 
-			return dp
+			return sts
 		}
 	}
 
 	// Bind pvc
-	bufferPVCName := fmt.Sprintf("%s-buffer-pvc", fd.Name)
-	pvcVol := corev1.Volume{
-		Name: bufferPVCName,
-		VolumeSource: corev1.VolumeSource{
-			PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-				ClaimName: bufferPVCName,
-			},
-		},
-	}
+	sts.Spec.VolumeClaimTemplates = append(sts.Spec.VolumeClaimTemplates, MakeFluentdPVC(fd))
 
-	dp.Spec.Template.Spec.Volumes = append(dp.Spec.Template.Spec.Volumes, pvcVol)
-
-	dp.Spec.Template.Spec.Containers[0].VolumeMounts = append(dp.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
-		Name:      bufferPVCName,
+	sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+		Name:      fmt.Sprintf("%s-buffer-pvc", fd.Name),
 		MountPath: BufferMountPath,
 	})
 
-	return dp
-
+	return sts
 }
 
-func makeDeploymentPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
+func makeStatefulsetPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 	ports := []corev1.ContainerPort{
 		{
 			Name:          MetricsName,
@@ -205,7 +193,7 @@ func makeDeploymentPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 			continue
 		}
 		if input.Http != nil {
-			httpPort := *input.Forward.Port
+			httpPort := *input.Http.Port
 			if httpPort == 0 {
 				httpPort = DefaultHttpPort
 			}

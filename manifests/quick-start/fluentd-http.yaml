@@ -7,8 +7,7 @@ metadata:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-    - type: http
-      http: 
+    - http: 
         bind: 0.0.0.0
         port: 9880
   replicas: 1
@@ -43,7 +42,7 @@ metadata:
     filter.fluentd.fluent.io/enabled: "true"
 spec: 
   filters: 
-    - type: stdout
+    - stdout: {}
 
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -55,4 +54,4 @@ metadata:
     output.fluentd.fluent.io/enabled: "true"
 spec: 
   outputs: 
-    - type: stdout
+    - stdout: {}

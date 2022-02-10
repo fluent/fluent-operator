@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -69,20 +68,10 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 		return err
 	}
 
-	var dp appsv1.Deployment
-	err = r.Get(ctx, client.ObjectKey{Namespace: fd.Namespace, Name: fd.Name}, &dp)
+	var sts appsv1.StatefulSet
+	err = r.Get(ctx, client.ObjectKey{Namespace: fd.Namespace, Name: fd.Name}, &sts)
 	if err == nil {
-		if err := r.Delete(ctx, &dp); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
-	} else if !errors.IsNotFound(err) {
-		return err
-	}
-
-	var pvc corev1.PersistentVolumeClaim
-	err = r.Get(ctx, client.ObjectKey{Namespace: fd.Namespace, Name: fmt.Sprintf("%s-buffer-pvc", fd.Name)}, &pvc)
-	if err == nil {
-		if err := r.Delete(ctx, &pvc); err != nil && !errors.IsNotFound(err) {
+		if err := r.Delete(ctx, &sts); err != nil && !errors.IsNotFound(err) {
 			return err
 		}
 	} else if !errors.IsNotFound(err) {
@@ -94,22 +83,8 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 
 func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluentd) controllerutil.MutateFn {
 	switch o := obj.(type) {
-	case *corev1.PersistentVolumeClaim:
-		expected := operator.MakeFluentdPVC(*fd)
-
-		return func() error {
-			o.Labels = expected.Labels
-			o.Spec.AccessModes = expected.Spec.AccessModes
-			o.Spec.Resources = expected.Spec.Resources
-			o.Spec.VolumeMode = expected.Spec.VolumeMode
-			o.SetOwnerReferences(nil)
-			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
-				return err
-			}
-			return nil
-		}
-	case *appsv1.Deployment:
-		expected := operator.MakeDeployment(*fd)
+	case *appsv1.StatefulSet:
+		expected := operator.MakeStatefulset(*fd)
 
 		return func() error {
 			o.Labels = expected.Labels

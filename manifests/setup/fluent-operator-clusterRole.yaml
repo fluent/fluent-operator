@@ -10,7 +10,7 @@ rules:
       - apps
     resources:
       - daemonsets
-      - deployments
+      - statefulsets
     verbs:
       - create
       - delete
@@ -33,7 +33,6 @@ rules:
       - serviceaccounts
       - configmaps
       - services
-      - persistentvolumeclaims
     verbs:
       - create
       - delete

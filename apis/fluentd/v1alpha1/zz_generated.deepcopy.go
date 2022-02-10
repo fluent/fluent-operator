@@ -642,6 +642,11 @@ func (in *FluentdSpec) DeepCopyInto(out *FluentdSpec) {
 		*out = new(int32)
 		**out = **in
 	}
+	if in.Workers != nil {
+		in, out := &in.Workers, &out.Workers
+		*out = new(int32)
+		**out = **in
+	}
 	if in.Args != nil {
 		in, out := &in.Args, &out.Args
 		*out = make([]string, len(*in))

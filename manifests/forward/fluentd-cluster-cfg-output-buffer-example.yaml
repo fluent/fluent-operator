@@ -10,21 +10,23 @@ spec:
     - forward: 
         bind: 0.0.0.0
         port: 24224
-  replicas: 1
-  image: zhu733756/fluentd:config-reloader
+  replicas: 3
+  image: zhu733756/fluentd:v1.14.4-amd64
   fluentdCfgSelector: 
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
-   
+
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
-kind: FluentdConfig
+kind: ClusterFluentdConfig
 metadata:
   name: fluentd-config
-  namespace: kubesphere-logging-system
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
+  watchedNamespaces: 
+    - kube-system
+    - kubesphere-monitoring-system
   filterSelector:
     matchLabels:
       filter.fluentd.fluent.io/enabled: "true"
@@ -34,24 +36,37 @@ spec:
 
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
-kind: Filter
+kind: ClusterFilter
 metadata:
   name: fluentd-filter
-  namespace: kubesphere-logging-system
   labels:
     filter.fluentd.fluent.io/enabled: "true"
 spec: 
   filters: 
-    - stdout: {}
+    - recordTransformer:
+        enableRuby: true
+        records:
+          - key: kubernetes_ns
+            value: ${record["kubernetes"]["namespace_name"]}
 
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
-kind: Output
+kind: ClusterOutput
 metadata:
-  name: fluentd-stdout
-  namespace: kubesphere-logging-system
+  name: fluentd-output
   labels:
     output.fluentd.fluent.io/enabled: "true"
 spec: 
   outputs: 
     - stdout: {}
+      buffer:
+        type: file
+        path: /buffers/stdout.log
+    - elasticsearch:
+        host: elasticsearch-logging-data.kubesphere-logging-system.svc
+        port: 9200
+        logstashFormat: true
+        logstashPrefix: ks-logstash-log
+      buffer:
+        type: file
+        path: /buffers/es.log

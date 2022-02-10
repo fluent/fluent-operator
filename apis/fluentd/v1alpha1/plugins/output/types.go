@@ -22,7 +22,7 @@ type OutputCommon struct {
 type Output struct {
 	OutputCommon `json:",inline,omitempty"`
 	// match setions
-	Match common.Match `json:",inline,omitempty"`
+	common.BufferSection `json:",inline,omitempty"`
 	// out_forward plugin
 	Forward *Forward `json:"forward,omitempty"`
 	// out_http plugin
@@ -72,16 +72,16 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 		ps.InsertPairs("tag", fmt.Sprint(*o.Tag))
 	}
 
-	if o.Match.Buffer != nil {
-		child, _ := o.Match.Buffer.Params(loader)
+	if o.BufferSection.Buffer != nil {
+		child, _ := o.BufferSection.Buffer.Params(loader)
 		childs = append(childs, child)
 	}
-	if o.Match.Inject != nil {
-		child, _ := o.Match.Inject.Params(loader)
+	if o.BufferSection.Inject != nil {
+		child, _ := o.BufferSection.Inject.Params(loader)
 		childs = append(childs, child)
 	}
-	if o.Match.Format != nil {
-		child, _ := o.Match.Format.Params(loader)
+	if o.BufferSection.Format != nil {
+		child, _ := o.BufferSection.Format.Params(loader)
 		childs = append(childs, child)
 	}
 
@@ -99,6 +99,17 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 
 	if o.Kafka != nil {
 		ps.InsertType(string(params.KafkaOutputType))
+
+		// kafka format section can not be empty
+		if o.Format == nil {
+			o.Format = &common.Format{
+				FormatCommon: common.FormatCommon{
+					Type: &params.DefaultFormatType,
+				},
+			}
+			child, _ := o.BufferSection.Format.Params(loader)
+			ps.InsertChilds(child)
+		}
 		return o.kafka2Plugin(ps, loader), nil
 	}
 
@@ -381,7 +392,7 @@ func (o *Output) kafka2Plugin(parent *params.PluginStore, loader plugins.SecretL
 		parent.InsertPairs("default_topic", fmt.Sprint(*o.Kafka.DefaultTopic))
 	}
 	if o.Kafka.UseEventTime != nil {
-		parent.InsertPairs("use_eventTime", fmt.Sprint(*o.Kafka.UseEventTime))
+		parent.InsertPairs("use_event_time", fmt.Sprint(*o.Kafka.UseEventTime))
 	}
 	if o.Kafka.RequiredAcks != nil {
 		parent.InsertPairs("required_acks", fmt.Sprint(*o.Kafka.RequiredAcks))
@@ -389,6 +400,7 @@ func (o *Output) kafka2Plugin(parent *params.PluginStore, loader plugins.SecretL
 	if o.Kafka.CompressionCodec != nil {
 		parent.InsertPairs("compression_codec", fmt.Sprint(*o.Kafka.CompressionCodec))
 	}
+
 	return parent
 }
 

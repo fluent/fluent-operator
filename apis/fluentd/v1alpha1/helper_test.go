@@ -75,7 +75,7 @@ var (
 
 	bufferId             = "common_buffer"
 	bufferType           = "file"
-	bufferPath           = "/fluentd/buffer/"
+	bufferPath           = "/buffers/fd.log"
 	bufferTag            = "buffertag.*"
 	bufferTotalLimitSize = "5GB"
 
@@ -325,7 +325,7 @@ func Test_RenderMainConfig(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < 5 {
-		config, errs := psr.RenderMainConfig()
+		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(expected)).To(Equal(config))
@@ -423,7 +423,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 	outputSpec1 := OutputSpec{
 		Outputs: []output.Output{
 			{
-				Match: common.Match{
+				BufferSection: common.BufferSection{
 					Buffer: &buffer,
 				},
 				Forward: &output.Forward{
@@ -432,7 +432,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 				},
 			},
 			{
-				Match: common.Match{
+				BufferSection: common.BufferSection{
 					Buffer: &buffer,
 				},
 				Kafka: &output.Kafka2{
@@ -445,7 +445,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 	outputSpec2 := OutputSpec{
 		Outputs: []output.Output{
 			{
-				Match: common.Match{
+				BufferSection: common.BufferSection{
 					Buffer: &buffer,
 				},
 				Forward: &output.Forward{
@@ -454,7 +454,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 				},
 			},
 			{
-				Match: common.Match{
+				BufferSection: common.BufferSection{
 					Buffer: &buffer,
 				},
 				Http: &output.Http{
@@ -469,7 +469,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 	outputSpec3 := OutputSpec{
 		Outputs: []output.Output{
 			{
-				Match: common.Match{
+				BufferSection: common.BufferSection{
 					Buffer: &buffer,
 				},
 				Http: &output.Http{
@@ -479,7 +479,7 @@ func createOutputSpecs() (OutputSpec, OutputSpec, OutputSpec) {
 				},
 			},
 			{
-				Match: common.Match{
+				BufferSection: common.BufferSection{
 					Buffer: &buffer,
 				},
 				Kafka: &output.Kafka2{
