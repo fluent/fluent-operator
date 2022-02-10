@@ -313,12 +313,13 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, fdSelector
 		errs := make([]string, 0)
 
 		// Combine the cluster filter/output pluginstores in this fluentd config.
-		cfgResouces, cerrs := pgr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
-		pgr.WithCfgResources(cfgRouterLabel, cfgResouces)
+		clustercfgResouces, cerrs := pgr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
 		errs = append(errs, cerrs...)
 
 		// Combine the namespaced filter/output pluginstores in this fluentd config.
 		cfgResouces, nerrs := pgr.PatchAndFilterNamespacedLevelResources(sl, cfg.GetCfgId(), filters, outputs)
+		cfgResouces.FilterPlugins = append(cfgResouces.FilterPlugins, clustercfgResouces.FilterPlugins...)
+		cfgResouces.OutputPlugins = append(cfgResouces.OutputPlugins, clustercfgResouces.OutputPlugins...)
 		pgr.WithCfgResources(cfgRouterLabel, cfgResouces)
 		errs = append(errs, nerrs...)
 

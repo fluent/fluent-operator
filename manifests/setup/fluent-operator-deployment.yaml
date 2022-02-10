@@ -39,7 +39,7 @@ spec:
           mountPath: /var/run/docker.sock
       containers:
       - name: fluent-operator
-        image: zhu733756/fluent-operator:latest-amd64
+        image: kubesphere/fluent-operator:v1.0.0
         resources:
           limits:
             cpu: 200m
