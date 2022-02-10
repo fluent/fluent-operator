@@ -11,7 +11,7 @@ spec:
         bind: 0.0.0.0
         port: 24224
   replicas: 1
-  image: zhu733756/fluentd:config-reloader
+  image: kubesphere/fluentd:v1.14.4
   fluentdCfgSelector: 
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"

@@ -11112,7 +11112,7 @@ spec:
         app.kubernetes.io/name: fluent-operator
     spec:
       containers:
-      - image: zhu733756/fluent-operator:latest-amd64
+      - image: kubesphere/fluent-operator:v1.0.0
         name: fluent-operator
         resources:
           limits:

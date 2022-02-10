@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o /fluentd/fluentd-watcher /code
 
 # Fluentd main image
 FROM alpine:3.13
-LABEL Description="Fluentd docker image" Vendor="Kubesphere Organization" Version="1.14.4"
+LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.14.4"
 
 # Do not split this into multiple RUN!
 # Docker creates a layer for every RUN-Statement
