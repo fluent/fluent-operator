@@ -33,7 +33,6 @@ rules:
       - serviceaccounts
       - configmaps
       - services
-      - persistentvolumeclaims
     verbs:
       - create
       - delete

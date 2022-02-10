@@ -107,20 +107,7 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{}, err
 	}
 
-	// Deploy pvc
-	// if not given a definition of buffer, will return default buffer configuration.
-	if fd.Spec.BufferVolume == nil || (!fd.Spec.BufferVolume.DisableBufferVolume && fd.Spec.BufferVolume.PersistentVolumeClaim != nil) {
-		bufferpvc := operator.MakeFluentdPVC(fd)
-		if err := ctrl.SetControllerReference(&fd, &bufferpvc, r.Scheme); err != nil {
-			return ctrl.Result{}, err
-		}
-
-		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, &bufferpvc, r.mutate(&bufferpvc, &fd)); err != nil {
-			return ctrl.Result{}, err
-		}
-	}
-
-	// Deploy Fluentd Deployment
+	// Deploy Fluentd Statefulset
 	dp := operator.MakeStatefulset(fd)
 	if err := ctrl.SetControllerReference(&fd, &dp, r.Scheme); err != nil {
 		return ctrl.Result{}, err
@@ -199,6 +186,5 @@ func (r *FluentdReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&corev1.ServiceAccount{}).
 		Owns(&appsv1.StatefulSet{}).
 		Owns(&corev1.Service{}).
-		Owns(&corev1.PersistentVolumeClaim{}).
 		Complete(r)
 }

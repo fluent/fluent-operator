@@ -73,7 +73,7 @@ func main() {
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
 
-	if envs, err := godotenv.Read("/fluentbit-operator/fluent-bit.env"); err == nil {
+	if envs, err := godotenv.Read("/fluent-operator/fluent-bit.env"); err == nil {
 		logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
 	}
 
