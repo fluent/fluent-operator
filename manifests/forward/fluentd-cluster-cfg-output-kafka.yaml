@@ -1,7 +1,7 @@
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
-  name: fluentd-forward
+  name: fluentd
   namespace: kubesphere-logging-system
   labels:
     app.kubernetes.io/name: fluentd
@@ -27,10 +27,10 @@ spec:
   watchedNamespaces: 
     - kube-system
     - kubesphere-monitoring-system
-  filterSelector:
+  clusterFilterSelector:
     matchLabels:
       filter.fluentd.fluent.io/enabled: "true"
-  outputSelector:
+  clusterOutputSelector:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
 

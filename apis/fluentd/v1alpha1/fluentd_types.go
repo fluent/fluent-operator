@@ -35,7 +35,7 @@ type FluentdSpec struct {
 	// Numbers of the Fluentd instance
 	Replicas *int32 `json:"replicas,omitempty"`
 	// Numbers of the workers in Fluentd instance
-	Workers  *int32 `json:"workers,omitempty"`
+	Workers *int32 `json:"workers,omitempty"`
 	// Fluentd image.
 	Image string `json:"image,omitempty"`
 	// Fluentd Watcher command line arguments.

@@ -39,10 +39,10 @@ type ClusterFluentdConfigSpec struct {
 	WatchedContainers []string `json:"watchedConstainers,omitempty"`
 	// Use this field to filter the logs, will make no effect if EnableFilterKubernetes is set false.
 	WatchedLabels map[string]string `json:"watchedLabels,omitempty"`
-	// Select filter plugins
-	FilterSelector metav1.LabelSelector `json:"filterSelector,omitempty"`
-	// Select output plugins
-	OutputSelector metav1.LabelSelector `json:"outputSelector,omitempty"`
+	// Select cluster filter plugins
+	ClusterFilterSelector *metav1.LabelSelector `json:"clusterFilterSelector,omitempty"`
+	// Select cluster output plugins
+	ClusterOutputSelector *metav1.LabelSelector `json:"clusterOutputSelector,omitempty"`
 }
 
 // ClusterFluentdConfigStatus defines the observed state of ClusterFluentdConfig
