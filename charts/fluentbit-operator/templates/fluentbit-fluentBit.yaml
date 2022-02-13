@@ -30,3 +30,4 @@ spec:
   secrets:
   {{ toYaml .Values.secrets | indent 4 }}
   {{- end }}
+{{- end }}
