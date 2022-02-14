@@ -164,7 +164,7 @@ func (pgr *PluginResources) PatchAndFilterNamespacedLevelResources(sl plugins.Se
 func (r *CfgResources) filterForFilters(cfgId, namespace, name, crdtype string,
 	sl plugins.SecretLoader, filters []filter.Filter) error {
 	for n, filter := range filters {
-		filterId := fmt.Sprintf("%s-%s-%s-%s-%d", cfgId, namespace, crdtype, name, n)
+		filterId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
 		filter.FilterCommon.Id = &filterId
 		filter.FilterCommon.Tag = &params.DefaultTag
 
@@ -188,7 +188,7 @@ func (r *CfgResources) filterForFilters(cfgId, namespace, name, crdtype string,
 func (r *CfgResources) filterForOutputs(cfgId, namespace, name, crdtype string,
 	sl plugins.SecretLoader, outputs []output.Output) error {
 	for n, output := range outputs {
-		outputId := fmt.Sprintf("%s-%s-%s-%s-%d", cfgId, namespace, crdtype, name, n)
+		outputId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
 		output.OutputCommon.Id = &outputId
 		output.OutputCommon.Tag = &params.DefaultTag
 

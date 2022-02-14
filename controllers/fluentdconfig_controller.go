@@ -246,7 +246,7 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 		}
 
 		// list all cluster CRs
-		clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(ctx, cfg.GetCfgId(), &cfg.Spec.FilterSelector, &cfg.Spec.OutputSelector)
+		clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(ctx, cfg.GetCfgId(), cfg.Spec.ClusterFilterSelector, cfg.Spec.ClusterOutputSelector)
 		if err != nil {
 			return err
 		}
@@ -298,13 +298,13 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, fdSelector
 		}
 
 		// list all cluster CRs
-		clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(ctx, cfg.GetCfgId(), &cfg.Spec.FilterSelector, &cfg.Spec.OutputSelector)
+		clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(ctx, cfg.GetCfgId(), cfg.Spec.ClusterFilterSelector, cfg.Spec.ClusterOutputSelector)
 		if err != nil {
 			return err
 		}
 
 		// list all namespaced CRs
-		filters, outputs, err := r.ListNamespacedLevelResources(ctx, cfg.Namespace, cfg.GetCfgId(), &cfg.Spec.FilterSelector, &cfg.Spec.OutputSelector)
+		filters, outputs, err := r.ListNamespacedLevelResources(ctx, cfg.Namespace, cfg.GetCfgId(), cfg.Spec.FilterSelector, cfg.Spec.OutputSelector)
 		if err != nil {
 			return err
 		}
@@ -350,24 +350,27 @@ func (r *FluentdConfigReconciler) ListClusterLevelResources(ctx context.Context,
 	filterSelector, outputSelector *metav1.LabelSelector) ([]fluentdv1alpha1.ClusterFilter, []fluentdv1alpha1.ClusterOutput, error) {
 	// List all filters matching the label selector.
 	var clusterfilters fluentdv1alpha1.ClusterFilterList
-	selector, err := metav1.LabelSelectorAsSelector(filterSelector)
-	if err != nil {
-		return nil, nil, err
-	}
-	if err = r.List(ctx, &clusterfilters, client.MatchingLabelsSelector{Selector: selector}); err != nil {
-		return nil, nil, err
+	if filterSelector != nil {
+		selector, err := metav1.LabelSelectorAsSelector(filterSelector)
+		if err != nil {
+			return nil, nil, err
+		}
+		if err = r.List(ctx, &clusterfilters, client.MatchingLabelsSelector{Selector: selector}); err != nil {
+			return nil, nil, err
+		}
 	}
 
 	// List all outputs matching the label selector.
 	var clusteroutputs fluentdv1alpha1.ClusterOutputList
-	selector, err = metav1.LabelSelectorAsSelector(outputSelector)
-	if err != nil {
-		return nil, nil, err
+	if outputSelector != nil {
+		selector, err := metav1.LabelSelectorAsSelector(outputSelector)
+		if err != nil {
+			return nil, nil, err
+		}
+		if err = r.List(ctx, &clusteroutputs, client.MatchingLabelsSelector{Selector: selector}); err != nil {
+			return nil, nil, err
+		}
 	}
-	if err = r.List(ctx, &clusteroutputs, client.MatchingLabelsSelector{Selector: selector}); err != nil {
-		return nil, nil, err
-	}
-
 	return clusterfilters.Items, clusteroutputs.Items, nil
 }
 
@@ -375,22 +378,26 @@ func (r *FluentdConfigReconciler) ListNamespacedLevelResources(ctx context.Conte
 	filterSelector, outputSelector *metav1.LabelSelector) ([]fluentdv1alpha1.Filter, []fluentdv1alpha1.Output, error) {
 	// List and patch the related cluster CRs
 	var filters fluentdv1alpha1.FilterList
-	selector, err := metav1.LabelSelectorAsSelector(filterSelector)
-	if err != nil {
-		return nil, nil, err
-	}
-	if err = r.List(ctx, &filters, client.InNamespace(namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
-		return nil, nil, err
+	if filterSelector != nil {
+		selector, err := metav1.LabelSelectorAsSelector(filterSelector)
+		if err != nil {
+			return nil, nil, err
+		}
+		if err = r.List(ctx, &filters, client.InNamespace(namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+			return nil, nil, err
+		}
 	}
 
 	// List all outputs matching the label selector.
 	var outputs fluentdv1alpha1.OutputList
-	selector, err = metav1.LabelSelectorAsSelector(outputSelector)
-	if err != nil {
-		return nil, nil, err
-	}
-	if err = r.List(ctx, &outputs, client.InNamespace(namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
-		return nil, nil, err
+	if outputSelector != nil {
+		selector, err := metav1.LabelSelectorAsSelector(outputSelector)
+		if err != nil {
+			return nil, nil, err
+		}
+		if err = r.List(ctx, &outputs, client.InNamespace(namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+			return nil, nil, err
+		}
 	}
 
 	return filters.Items, outputs.Items, nil
