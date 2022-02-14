@@ -29,7 +29,7 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// FluentBitConfigSpec defines the desired state of FluentBitConfig
+// FluentBitConfigSpec defines the desired state of ClusterFluentBitConfig
 type FluentBitConfigSpec struct {
 	// Service defines the global behaviour of the Fluent Bit engine.
 	Service *Service `json:"service,omitempty"`
@@ -41,6 +41,9 @@ type FluentBitConfigSpec struct {
 	OutputSelector metav1.LabelSelector `json:"outputSelector,omitempty"`
 	// Select parser plugins
 	ParserSelector metav1.LabelSelector `json:"parserSelector,omitempty"`
+	//If namespace is defined, then the configmap and secret for fluent-bit is in this namespace.
+	//If it is not defined, it is in the namespace of the fluentd-operator
+	Namespace *string `json:"namespace,omitempty"`
 }
 
 type Service struct {
@@ -69,11 +72,11 @@ type Service struct {
 }
 
 // +kubebuilder:object:root=true
-// +kubebuilder:resource:shortName=fbc
+// +kubebuilder:resource:shortName=fbc,scope=Cluster
 // +genclient
 
-// FluentBitConfig is the Schema for the fluentbitconfigs API
-type FluentBitConfig struct {
+// ClusterFluentBitConfig is the Schema for the cluster-level fluentbitconfigs API
+type ClusterFluentBitConfig struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
@@ -82,15 +85,15 @@ type FluentBitConfig struct {
 
 // +kubebuilder:object:root=true
 
-// FluentBitConfigList contains a list of FluentBitConfig
+// FluentBitConfigList contains a list of ClusterFluentBitConfig
 type FluentBitConfigList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []FluentBitConfig `json:"items"`
+	Items           []ClusterFluentBitConfig `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&FluentBitConfig{}, &FluentBitConfigList{})
+	SchemeBuilder.Register(&ClusterFluentBitConfig{}, &FluentBitConfigList{})
 }
 
 func (s *Service) Params() *params.KVs {
@@ -125,7 +128,7 @@ func (s *Service) Params() *params.KVs {
 	return m
 }
 
-func (cfg FluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs InputList, filters FilterList, outputs OutputList) (string, error) {
+func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs InputList, filters FilterList, outputs OutputList) (string, error) {
 	var buf bytes.Buffer
 
 	// The Service defines the global behaviour of the Fluent Bit engine.
@@ -161,7 +164,7 @@ func (cfg FluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs Inpu
 	return buf.String(), nil
 }
 
-func (cfg FluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers ParserList) (string, error) {
+func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers ParserList) (string, error) {
 	var buf bytes.Buffer
 
 	parserSections, err := parsers.Load(sl)
@@ -188,13 +191,13 @@ func (a ByName) Len() int           { return len(a) }
 func (a ByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
-func (cfg FluentBitConfig) RenderLuaScript(cl plugins.ConfigMapLoader, filters FilterList) ([]Script, error) {
+func (cfg ClusterFluentBitConfig) RenderLuaScript(cl plugins.ConfigMapLoader, filters FilterList, namespace string) ([]Script, error) {
 
 	scripts := make([]Script, 0)
 	for _, f := range filters.Items {
 		for _, p := range f.Spec.FilterItems {
 			if p.Lua != nil {
-				script, err := cl.LoadConfigMap(p.Lua.Script)
+				script, err := cl.LoadConfigMap(p.Lua.Script, namespace)
 				if err != nil {
 					return nil, err
 				}

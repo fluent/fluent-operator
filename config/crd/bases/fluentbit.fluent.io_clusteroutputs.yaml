@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: outputs.fluentbit.fluent.io
+  name: clusteroutputs.fluentbit.fluent.io
 spec:
   group: fluentbit.fluent.io
   names:
-    kind: Output
-    listKind: OutputList
-    plural: outputs
-    singular: output
+    kind: ClusterOutput
+    listKind: ClusterOutputList
+    plural: clusteroutputs
+    singular: clusteroutput
   scope: Cluster
   versions:
   - name: v1alpha2
     schema:
       openAPIV3Schema:
-        description: Output is the Schema for the outputs API
+        description: ClusterOutput is the Schema for the cluster-level outputs API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -34,7 +34,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: OutputSpec defines the desired state of Output
+            description: OutputSpec defines the desired state of ClusterOutput
             properties:
               alias:
                 description: A user friendly alias name for this output plugin. Used

@@ -18,6 +18,8 @@ package controllers
 
 import (
 	"context"
+	"fmt"
+	"os"
 
 	"fluent.io/fluent-operator/apis/fluentbit/v1alpha2/plugins"
 	"github.com/go-logr/logr"
@@ -58,7 +60,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	_ = r.Log.WithValues("fluentbitconfig", req.NamespacedName)
 
 	var cfgs fluentbitv1alpha2.FluentBitConfigList
-	if err := r.List(ctx, &cfgs, client.InNamespace(req.Namespace)); err != nil {
+	if err := r.List(ctx, &cfgs); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
 		}
@@ -72,7 +74,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		if err != nil {
 			return ctrl.Result{}, err
 		}
-		if err = r.List(ctx, &inputs, client.InNamespace(req.Namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+		if err = r.List(ctx, &inputs, client.MatchingLabelsSelector{Selector: selector}); err != nil {
 			return ctrl.Result{}, err
 		}
 
@@ -82,7 +84,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		if err != nil {
 			return ctrl.Result{}, err
 		}
-		if err = r.List(ctx, &filters, client.InNamespace(req.Namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+		if err = r.List(ctx, &filters, client.MatchingLabelsSelector{Selector: selector}); err != nil {
 			return ctrl.Result{}, err
 		}
 
@@ -92,7 +94,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		if err != nil {
 			return ctrl.Result{}, err
 		}
-		if err = r.List(ctx, &outputs, client.InNamespace(req.Namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+		if err = r.List(ctx, &outputs, client.MatchingLabelsSelector{Selector: selector}); err != nil {
 			return ctrl.Result{}, err
 		}
 
@@ -102,12 +104,17 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		if err != nil {
 			return ctrl.Result{}, err
 		}
-		if err = r.List(ctx, &parsers, client.InNamespace(req.Namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+		if err = r.List(ctx, &parsers, client.MatchingLabelsSelector{Selector: selector}); err != nil {
 			return ctrl.Result{}, err
 		}
-
+		var ns string
+		if cfg.Spec.Namespace != nil {
+			ns = fmt.Sprintf(*cfg.Spec.Namespace)
+		} else {
+			ns = os.Getenv("NAMESPACE")
+		}
 		// Inject config data into Secret
-		sl := plugins.NewSecretLoader(r.Client, cfg.Namespace, r.Log)
+		sl := plugins.NewSecretLoader(r.Client, ns, r.Log)
 		mainAppCfg, err := cfg.RenderMainConfig(sl, inputs, filters, outputs)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -117,8 +124,8 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			return ctrl.Result{}, err
 		}
 
-		cl := plugins.NewConfigMapLoader(r.Client, cfg.Namespace)
-		scripts, err := cfg.RenderLuaScript(cl, filters)
+		cl := plugins.NewConfigMapLoader(r.Client, ns)
+		scripts, err := cfg.RenderLuaScript(cl, filters, ns)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
@@ -127,7 +134,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		sec := &corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      cfg.Name,
-				Namespace: cfg.Namespace,
+				Namespace: ns,
 			},
 		}
 
@@ -174,11 +181,11 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&fluentbitv1alpha2.FluentBitConfig{}).
+		For(&fluentbitv1alpha2.ClusterFluentBitConfig{}).
 		Owns(&corev1.Secret{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.Input{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.Filter{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.Output{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.Parser{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterInput{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterFilter{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterOutput{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterParser{}}, &handler.EnqueueRequestForObject{}).
 		Complete(r)
 }

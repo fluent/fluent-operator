@@ -30,7 +30,7 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// ParserSpec defines the desired state of Parser
+// ParserSpec defines the desired state of ClusterParser
 type ParserSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
@@ -58,10 +58,11 @@ type Decorder struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Cluster
 // +genclient
 
-// Parser is the Schema for the parsers API
-type Parser struct {
+// ClusterParser is the Schema for the cluster-level parsers API
+type ClusterParser struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
@@ -70,16 +71,16 @@ type Parser struct {
 
 // +kubebuilder:object:root=true
 
-// ParserList contains a list of Parser
+// ParserList contains a list of ClusterParser
 type ParserList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Parser `json:"items"`
+	Items           []ClusterParser `json:"items"`
 }
 
 // +kubebuilder:object:generate:=false
 // ParserByName implements sort.Interface for []Parser based on the Name field.
-type ParserByName []Parser
+type ParserByName []ClusterParser
 
 func (a ParserByName) Len() int           { return len(a) }
 func (a ParserByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
@@ -129,5 +130,5 @@ func (list ParserList) Load(sl plugins.SecretLoader) (string, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&Parser{}, &ParserList{})
+	SchemeBuilder.Register(&ClusterParser{}, &ParserList{})
 }

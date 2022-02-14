@@ -94,7 +94,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		"lbl1":   "lvl1",
 	}
 
-	inputObj := &Input{
+	inputObj := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
 			Kind:       "Input",
@@ -120,10 +120,10 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	}
 
 	inputs := InputList{
-		Items: []Input{*inputObj},
+		Items: []ClusterInput{*inputObj},
 	}
 
-	filterObj := &Filter{
+	filterObj := &ClusterFilter{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
 			Kind:       "Filter",
@@ -181,10 +181,10 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	}
 
 	filters := FilterList{
-		Items: []Filter{*filterObj},
+		Items: []ClusterFilter{*filterObj},
 	}
 
-	syslogOut := Output{
+	syslogOut := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
 			Kind:       "Output",
@@ -218,7 +218,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	headers["X-Log-Header-0"] = "testing"
 	headers["X-Log-Header-App-ID"] = "9780495d9db3"
 
-	httpOutput := Output{
+	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
 			Kind:       "Output",
@@ -247,10 +247,10 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	}
 
 	outputs := OutputList{
-		Items: []Output{syslogOut, httpOutput},
+		Items: []ClusterOutput{syslogOut, httpOutput},
 	}
 
-	cfg := FluentBitConfig{
+	cfg := ClusterFluentBitConfig{
 		Spec: FluentBitConfigSpec{Service: &Service{
 			Daemon:       ptrBool(false),
 			FlushSeconds: ptrInt64(1),

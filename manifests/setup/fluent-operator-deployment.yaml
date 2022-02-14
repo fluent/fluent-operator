@@ -40,6 +40,12 @@ spec:
       containers:
       - name: fluent-operator
         image: kubesphere/fluent-operator:v1.0.0
+        env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
         resources:
           limits:
             cpu: 200m

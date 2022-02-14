@@ -30,7 +30,7 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// InputSpec defines the desired state of Input
+// InputSpec defines the desired state of ClusterInput
 type InputSpec struct {
 	// A user friendly alias name for this input plugin.
 	// Used in metrics for distinction of each configured input.
@@ -44,10 +44,11 @@ type InputSpec struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Cluster
 // +genclient
 
-// Input is the Schema for the inputs API
-type Input struct {
+// ClusterInput is the Schema for the inputs API
+type ClusterInput struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
@@ -56,7 +57,7 @@ type Input struct {
 
 // +kubebuilder:object:generate:=false
 // InputByName implements sort.Interface for []Input based on the Name field.
-type InputByName []Input
+type InputByName []ClusterInput
 
 func (a InputByName) Len() int           { return len(a) }
 func (a InputByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
@@ -64,11 +65,11 @@ func (a InputByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
 // +kubebuilder:object:root=true
 
-// InputList contains a list of Input
+// ClusterInputList contains a list of Input
 type InputList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Input `json:"items"`
+	Items           []ClusterInput `json:"items"`
 }
 
 func (list InputList) Load(sl plugins.SecretLoader) (string, error) {
@@ -107,5 +108,5 @@ func (list InputList) Load(sl plugins.SecretLoader) (string, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&Input{}, &InputList{})
+	SchemeBuilder.Register(&ClusterInput{}, &InputList{})
 }

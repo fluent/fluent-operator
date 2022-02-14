@@ -1,8 +1,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
-kind: Filter
+kind: ClusterFilter
 metadata:
   name: parser
-  namespace: kubesphere-logging-system
   labels:
     fluentbit.fluent.io/enabled: "true"
 spec:
