@@ -9,6 +9,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
+// OutputCommon defines the common parameters for output plugin
 type OutputCommon struct {
 	Id *string `json:"-"`
 	// The @log_level parameter specifies the plugin-specific logging level
@@ -19,6 +20,7 @@ type OutputCommon struct {
 	Tag *string `json:"-"`
 }
 
+// Output defines all types for output plugin
 type Output struct {
 	OutputCommon `json:",inline,omitempty"`
 	// match setions

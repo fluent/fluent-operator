@@ -7,6 +7,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
+// FormatCommon defines common parameters of format Plugins
 type FormatCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`

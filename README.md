@@ -10,31 +10,45 @@ Once installed, the Fluent Bit Operator provides the following features:
 
 ## Table of contents
 
-- [Overview](#overview)
-- [Get Started](#get-started)
-  - [Prerequisites](#prerequisites)
-  - [Install](#Install)
-    - [Deploy Fluent Bit Operator with YAML](#deploy-fluent-bit-operator-with-yaml)
-    - [Deploy Fluent Bit Operator with Helm](#deploy-fluent-bit-operator-with-helm)
-  - [Quick Start](#quick-start)
-  - [Configure Custom Watch Namespaces](#configure-custom-watch-namespaces)
-  - [Collect Kubernetes logs](#collect-kubernetes-logs)
-    - [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
-    - [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
-    - [Collect Auditd logs](#collect-auditd-logs)
-- [Monitoring](#monitoring)
-- [API Doc](#api-doc)
-- [Best Practice](#best-practice)
-  - [Plugin Grouping](#plugin-grouping)
-  - [Path Convention](#path-convention)
-- [Custom Parser](#custom-parser)
-- [Roadmap](#roadmap)
-- [Development](#development)
-  - [Requirements](#requirements)
-  - [Running](#running)
-- [Contributing](#contributing)
-  - [Documentation](#documentation)
-  - [Manifests](#manifests)
+- [Fluent Bit Operator](#fluent-bit-operator)
+  - [Table of contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Get Started](#get-started)
+    - [Prerequisites](#prerequisites)
+    - [Install](#install)
+        - [Deploy Fluent Bit Operator with YAML](#deploy-fluent-bit-operator-with-yaml)
+        - [Deploy Fluent Bit Operator with Helm](#deploy-fluent-bit-operator-with-helm)
+    - [Quick Start](#quick-start)
+    - [Configure Custom Watch Namespaces](#configure-custom-watch-namespaces)
+    - [Collect Kubernetes logs](#collect-kubernetes-logs)
+        - [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
+        - [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
+    - [Collect auditd logs](#collect-auditd-logs)
+    - [Fluentd](#fluentd)
+      - [Collect logs from Fluentbit](#collect-logs-from-fluentbit)
+        - [Enable Fluentbit forward plugin](#enable-fluentbit-forward-plugin)
+        - [Fluentd ClusterFluentdConfig example](#fluentd-clusterfluentdconfig-example)
+        - [Fluentd FluentdConfig example](#fluentd-fluentdconfig-example)
+        - [Fluentd mixed FluentdConfig and ClusterFluentdConfig example](#fluentd-mixed-fluentdconfig-and-clusterfluentdconfig-example)
+        - [Fluentd ClusterOutput and Output example in multi-tenant scenario](#fluentd-clusteroutput-and-output-example-in-multi-tenant-scenario)
+        - [Fluentd outputs to kafka/es example](#fluentd-outputs-to-kafkaes-example)
+        - [Fluentd buffer example](#fluentd-buffer-example)
+      - [Collect logs over HTTP](#collect-logs-over-http)
+  - [Monitoring](#monitoring)
+  - [API Doc](#api-doc)
+    - [Fluent Bit](#fluent-bit)
+    - [Fluentd](#fluentd-1)
+  - [Best Practice](#best-practice)
+    - [Plugin Grouping](#plugin-grouping)
+    - [Path Convention](#path-convention)
+  - [Custom Parser](#custom-parser)
+  - [Roadmap](#roadmap)
+  - [Development](#development)
+    - [Requirements](#requirements)
+    - [Running](#running)
+  - [Contributing](#contributing)
+    - [Documentation](#documentation)
+    - [Manifests](#manifests)
 
 ## Overview
 
@@ -54,6 +68,10 @@ Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent B
 To enable fluent-bit to pick up and use the latest config whenever the fluent-bit config changes, a wrapper called fluent-bit watcher is added to restart the fluent-bit process as soon as fluent-bit config changes are detected. This way the fluent-bit pod needn't be restarted to reload the new config. The fluent-bit config is reloaded in this way because there is no reload interface in fluent-bit itself. Please refer to this [known issue](https://github.com/fluent/fluent-bit/issues/365) for more details.
 
 ![Kubesphere-logging-fluentbit](docs/images/kubesphere-logging-fluentbit.svg)
+
+Besides, we have finished [the pr #189](https://github.com/fluent/fluentbit-operator/pull/189) to integrate fluent-operator as a forward log layer, aims to collect logs from fluentbit or other apps. The whole workflow could be described as below.
+
+![Fluent-operator](docs/images/fluent-operator.svg)
 
 ## Get Started
 
@@ -212,6 +230,63 @@ $ curl localhost:9200/_cat/indices
 green open ks-logstash-log-2021.04.06 QeI-k_LoQZ2h1z23F3XiHg  5 1 404879 0 298.4mb 149.2mb
 ```
 
+### Fluentd 
+
+Fluentd acts as a forward log layer to collect logs from fluentbit and other Apps. 
+
+#### Collect logs from Fluentbit
+
+##### Enable Fluentbit forward plugin
+
+At first, we should enable the forward plugin in fluentbit to send logs to fluentd.
+
+```shell
+kubectl apply -f manifests/fluentd/fluentbit-output-forward.yaml
+```
+
+##### Fluentd ClusterFluentdConfig example
+
+```shell
+kubectl apply -f manifests/fluentd/fluentd-cluster-cfg-output-es.yaml
+```
+
+##### Fluentd FluentdConfig example
+
+```shell
+kubectl apply -f manifests/fluentd/fluentd-namespaced-cfg-output-es.yaml
+```
+
+##### Fluentd mixed FluentdConfig and ClusterFluentdConfig example
+
+```shell
+kubectl apply -f manifests/fluentd/fluentd-mixed-cfgs-output-es.yaml
+```
+
+##### Fluentd ClusterOutput and Output example in multi-tenant scenario
+
+```shell
+kubectl apply -f manifests/fluentd/fluentd-mixed-cfgs-multi-tenant-output.yaml
+```
+
+##### Fluentd outputs to kafka/es example
+
+```shell
+kubectl apply -f manifests/fluentd/fluentd-cluster-cfg-output-kafka.yaml
+kubectl apply -f manifests/fluentd/fluentd-cluster-cfg-output-es.yaml
+```
+
+##### Fluentd buffer example
+
+```shell
+kubectl apply -f manifests/fluentd/fluentd-cluster-cfg-output-buffer-example.yaml
+```
+
+#### Collect logs over HTTP
+
+```shell
+kubectl apply -f manifests/quick-start/fluentd-http.yaml
+```
+
 ## Monitoring
 
 Fluent Bit comes with a built-in HTTP Server. According to the official [documentation](https://docs.fluentbit.io/manual/administration/monitoring) of fluentbit You can enable this by enabling the HTTP server from the fluent bit configuration file:
@@ -223,7 +298,7 @@ Fluent Bit comes with a built-in HTTP Server. According to the official [documen
     HTTP_PORT    2020
 ```
 
-When you use the kubesphere/fluentbit-operator, You can enable this from `FluentBitConfig` manifest. Example is below:
+When you use the fluent-operator, You can enable this from `FluentBitConfig` manifest. Example is below:
 
 ```yaml
 apiVersion: fluentbit.fluent.io/v1alpha2
@@ -291,18 +366,20 @@ curl <podIP>:2020 | jq .
 
 ## API Doc
 
+### Fluent Bit
+
 The list below shows supported plugins which are based on Fluent Bit v1.7.x+. For more information, please refer to the API docs of each plugin.
 
-- [Input](docs/crd.md#input)
+- [Input](docs/fluentbit.md#input)
   - [dummy](docs/plugins/fluentbit/input/dummy.md)
   - [tail](docs/plugins/fluentbit/input/tail.md)
   - [systemd](docs/plugins/fluentbit/input/systemd.md)
-- [Parser](docs/crd.md#parser)
+- [Parser](docs/fluentbit.md#parser)
   - [json](docs/plugins/fluentbit/parser/json.md)
   - [logfmt](docs/plugins/fluentbit/parser/logfmt.md)
   - [lstv](docs/plugins/fluentbit/parser/lstv.md)
   - [regex](docs/plugins/fluentbit/parser/regex.md)
-- [Filter](docs/crd.md#filter)
+- [Filter](docs/fluentbit.md#filter)
   - [kubernetes](docs/plugins/fluentbit/filter/kubernetes.md)
   - [modify](docs/plugins/fluentbit/filter/modify.md)
   - [nest](docs/plugins/fluentbit/filter/nest.md)
@@ -313,7 +390,7 @@ The list below shows supported plugins which are based on Fluent Bit v1.7.x+. Fo
   - [throttle](docs/plugins/fluentbit/filter/throttle.md)
   - [aws](docs/plugins/fluentbit/filter/aws.md)
   - [multiline](docs/plugins/fluentbit/filter/multiline.md)
-- [Output](docs/crd.md#output)
+- [Output](docs/fluentbit.md#output)
   - [elasticsearch](docs/plugins/fluentbit/output/elasticsearch.md)
   - [file](docs/plugins/fluentbit/output/file.md)
   - [forward](docs/plugins/fluentbit/output/forward.md)
@@ -325,6 +402,39 @@ The list below shows supported plugins which are based on Fluent Bit v1.7.x+. Fo
   - [loki](docs/plugins/fluentbit/output/loki.md)
   - [syslog](docs/plugins/fluentbit/output/syslog.md)
   - [datadog](docs/plugins/fluentbit/output/datadog.md)
+
+### Fluentd
+
+The list below shows supported plugins which are based on Fluentd v1.14.4+. For more information, please refer to the API docs of each plugin.
+
+- Common
+  - [buffer](docs/plugins/fluentd/common/buffer.md)
+  - [format](docs/plugins/fluentd/common/format.md)
+  - [parse](docs/plugins/fluentd/common/parse.md)
+  - [time](docs/plugins/fluentd/common/common.md#time)
+  - [inject](docs/plugins/fluentd/common/common.md#inject)
+  - [security](docs/plugins/fluentd/common/common.md#security)
+  - [user](docs/plugins/fluentd/common/common.md#user)
+  - [transport](docs/plugins/fluentd/common/common.md#transport)
+  - [client](docs/plugins/fluentd/common/common.md#client)
+  - [auth](docs/plugins/fluentd/common/common.md#auth)
+  - [server](docs/plugins/fluentd/common/common.md#server)
+  - [service_discovery](docs/plugins/fluentd/common/common.md#ServiceDiscovery)
+- [Input]((docs/fluentd/input/types.md)
+  - [http](docs/plugins/fluentd/input/http.md)
+  - [forward](docs/plugins/fluentd/input/forward.md)
+- [Filter](docs/fluentd/filter/types.md)
+  - [parser](docs/plugins/fluentd/filter/parser.md)
+  - [grep](docs/plugins/fluentd/filter/grep.md)
+  - [record modifier](docs/plugins/fluentd/filter/record_modifier.md)
+  - [stdout](docs/plugins/fluentd/filter/stdout.md)
+- [Output](docs/plugins/fluentd/output/types.md)
+  - [elasticsearch](docs/plugins/fluentd/output/elasticsearch.md)
+  - [forward](docs/plugins/fluentd/output/forward.md)
+  - [http](docs/plugins/fluentd/output/http.md)
+  - [kafka](docs/plugins/fluentd/output/kafka.md)
+  - stdout
+
 
 ## Best Practice
 
@@ -340,8 +450,8 @@ Path to file in Fluent Bit config should be well regulated. Fluent Bit Operator 
 
 |Dir Path|Description|
 |---|---|
-|/fluent-bit/tail|Stores tail related files, eg. file tracking db. Using [fluentbit.spec.positionDB](docs/crd.md#fluentbitspec) will mount a file `pos.db` under this dir by default.|
-|/fluent-bit/secrets/{secret_name}|Stores secrets, eg. TLS files. Specify secrets to mount in [fluentbit.spec.secrets](docs/crd.md#fluentbitspec), then you have access.|
+|/fluent-bit/tail|Stores tail related files, eg. file tracking db. Using [fluentbit.spec.positionDB](docs/fluentbit.md#fluentbitspec) will mount a file `pos.db` under this dir by default.|
+|/fluent-bit/secrets/{secret_name}|Stores secrets, eg. TLS files. Specify secrets to mount in [fluentbit.spec.secrets](docs/fluentbit.md#fluentbitspec), then you have access.|
 |/fluent-bit/config|Stores the main config file and user-defined parser config file.|
 
 > Note that ServiceAccount files are mounted at `/var/run/secrets/kubernetes.io/serviceaccount`.
@@ -377,7 +487,7 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 
 ### Documentation
 
-[API Doc](docs/crd.md) is generated automatically. To modify it, edit the comment above struct fields, then run `go run cmd/doc-gen/main.go`.
+[API Doc](docs/fluentbit.md) is generated automatically. To modify it, edit the comment above struct fields, then run `go run cmd/doc-gen/main.go`.
 
 ### Manifests
 

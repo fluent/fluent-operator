@@ -152,3 +152,6 @@ endef
 
 go-deps: # download go dependencies
 	go mod download
+
+docs-update:
+	go run ./cmd/doc-gen/main.go

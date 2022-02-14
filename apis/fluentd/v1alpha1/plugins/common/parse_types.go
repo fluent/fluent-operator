@@ -7,6 +7,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
+// ParseCommon defines the common parameters for parse Plugins
 type ParseCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
@@ -17,6 +18,7 @@ type ParseCommon struct {
 	LogLevel *string `json:"logLevel,omitempty"`
 }
 
+// Parse defines all types for parse Plugins
 type Parse struct {
 	ParseCommon `json:",inline"`
 	Time        `json:",inline,omitempty"`

@@ -1,14 +1,14 @@
 # Secret
 
-
+Secret defines a value source of a secret.
 
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| valueFrom | ValueSource represents a source for the value of a secret. | ValueSource |
+| valueFrom |  | ValueSource |
 # ValueSource
 
-
+ValueSource defines a value source of a secret.
 
 
 | Field | Description | Scheme |

@@ -2,6 +2,7 @@ package filter
 
 import "fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
 
+// Stdout defines the parameters for filter_stdout plugin
 type Stdout struct {
 	// The format section
 	Format *common.Format `json:"format,omitempty"`

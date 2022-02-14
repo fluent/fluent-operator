@@ -4,6 +4,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
 )
 
+// Http defines the parameters for out_http output plugin
 type Http struct {
 	// Auth section for this plugin
 	*common.Auth `json:"auth,omitempty"`

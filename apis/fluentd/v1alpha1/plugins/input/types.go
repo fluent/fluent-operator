@@ -9,6 +9,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
+// InputCommon defines the common parameters for input plugins
 type InputCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
@@ -18,6 +19,7 @@ type InputCommon struct {
 	Label *string `json:"label,omitempty"`
 }
 
+// Input defines the supported types for input plugins
 type Input struct {
 	InputCommon `json:",inline"`
 	// in_forward plugin

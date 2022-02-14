@@ -1174,6 +1174,7 @@ spec:
               globalInputs:
                 description: Fluentd global inputs.
                 items:
+                  description: Input defines the supported types for input plugins
                   properties:
                     forward:
                       description: in_forward plugin

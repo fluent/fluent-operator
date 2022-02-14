@@ -1,5 +1,6 @@
 package output
 
+// S3 defines the parameters for out_s3 output plugin
 type S3 struct {
 	// The AWS access key id.
 	AwsKeyId *string `json:"awsKeyId,omitempty"`

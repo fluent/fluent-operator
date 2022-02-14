@@ -7,6 +7,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
+// Grep defines all supported types for filter_grep plugin
 type Grep struct {
 	Regexps  []*Regexp  `json:"regexp,omitempty"`
 	Excludes []*Exclude `json:"exclude,omitempty"`
@@ -14,21 +15,25 @@ type Grep struct {
 	Ors      []*Or      `json:"or,omitempty"`
 }
 
+// Regexp defines the parameters for regexp plugin
 type Regexp struct {
 	Key     *string `json:"key,omitempty"`
 	Pattern *string `json:"pattern,omitempty"`
 }
 
+// Exclude defines the parameters for exclude plugin
 type Exclude struct {
 	Key     *string `json:"key,omitempty"`
 	Pattern *string `json:"pattern,omitempty"`
 }
 
+// And defines the parameters for and plugin
 type And struct {
 	*Regexp  `json:"regexp,omitempty"`
 	*Exclude `json:"exclude,omitempty"`
 }
 
+// Or defines the parameters for or plugin
 type Or struct {
 	*Regexp  `json:"regexp,omitempty"`
 	*Exclude `json:"exclude,omitempty"`

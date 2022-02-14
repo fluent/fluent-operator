@@ -9,6 +9,7 @@ type Record struct {
 	Value *string `json:"value"`
 }
 
+// RecordTransformer defines the parameters for filter_record_transformer plugin
 type RecordTransformer struct {
 	Records []*Record `json:"records,omitempty"`
 	// When set to true, the full Ruby syntax is enabled in the ${...} expression. The default value is false.

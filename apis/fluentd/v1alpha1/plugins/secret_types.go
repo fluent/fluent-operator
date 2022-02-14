@@ -11,11 +11,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
+// Secret defines a value source of a secret.
 type Secret struct {
-	// ValueSource represents a source for the value of a secret.
 	ValueFrom ValueSource `json:"valueFrom,omitempty"`
 }
 
+// ValueSource represents a source for the value of a secret.
 type ValueSource struct {
 	// Selects a key of a secret in the pod's namespace
 	// +optional
