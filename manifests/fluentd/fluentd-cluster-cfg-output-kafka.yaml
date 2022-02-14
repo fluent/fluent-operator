@@ -7,9 +7,9 @@ metadata:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-    - forward: 
-        bind: 0.0.0.0
-        port: 24224
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
   replicas: 1
   image: kubesphere/fluentd:v1.14.4
   fluentdCfgSelector: 
@@ -25,8 +25,8 @@ metadata:
     config.fluentd.fluent.io/enabled: "true"
 spec:
   watchedNamespaces: 
-    - kube-system
-    - kubesphere-monitoring-system
+  - kube-system
+  - kubesphere-monitoring-system
   clusterFilterSelector:
     matchLabels:
       filter.fluentd.fluent.io/enabled: "true"
@@ -43,11 +43,11 @@ metadata:
     filter.fluentd.fluent.io/enabled: "true"
 spec: 
   filters: 
-    - recordTransformer:
-        enableRuby: true
-        records:
-          - key: kubernetes_ns
-            value: ${record["kubernetes"]["namespace_name"]}
+  - recordTransformer:
+      enableRuby: true
+      records:
+      - key: kubernetes_ns
+        value: ${record["kubernetes"]["namespace_name"]}
 
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -58,7 +58,7 @@ metadata:
     output.fluentd.fluent.io/enabled: "true"
 spec: 
   outputs: 
-    - kafka:
-        brokers: my-cluster-kafka-bootstrap.default.svc:9091,my-cluster-kafka-bootstrap.default.svc:9092,my-cluster-kafka-bootstrap.default.svc:9093
-        useEventTime: true
-        topicKey: kubernetes_ns
+  - kafka:
+      brokers: my-cluster-kafka-bootstrap.default.svc:9091,my-cluster-kafka-bootstrap.default.svc:9092,my-cluster-kafka-bootstrap.default.svc:9093
+      useEventTime: true
+      topicKey: kubernetes_ns

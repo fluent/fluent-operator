@@ -1,0 +1,60 @@
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 1
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+   
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  watchedNamespaces: 
+  - kube-system
+  - kubesphere-monitoring-system
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentd-config
+  namespace: kubesphere-logging-system
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-es
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log

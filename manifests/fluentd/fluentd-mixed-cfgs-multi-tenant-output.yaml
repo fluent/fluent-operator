@@ -1,0 +1,100 @@
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 1
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+   
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentd-config-user1
+  namespace: kubesphere-logging-system
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  outputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+      output.fluentd.fluent.io/user: "user1"
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+      output.fluentd.fluent.io/role: "log-operator"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config-cluster
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  watchedNamespaces: 
+  - kube-system
+  - kubesphere-system
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+      output.fluentd.fluent.io/scope: "cluster"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-output-user1
+  namespace: kubesphere-logging-system
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+    output.fluentd.fluent.io/user: "user1"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-user1
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-log-operator
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+    output.fluentd.fluent.io/role: "log-operator"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-operator
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-cluster
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+    output.fluentd.fluent.io/scope: "cluster"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log

@@ -7,15 +7,15 @@ metadata:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-    - forward: 
-        bind: 0.0.0.0
-        port: 24224
-  replicas: 1
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 3
   image: kubesphere/fluentd:v1.14.4
   fluentdCfgSelector: 
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
-   
+
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterFluentdConfig
@@ -25,36 +25,48 @@ metadata:
     config.fluentd.fluent.io/enabled: "true"
 spec:
   watchedNamespaces: 
-    - kube-system
-    - kubesphere-monitoring-system
+  - kube-system
+  - kubesphere-monitoring-system
+  clusterFilterSelector:
+    matchLabels:
+      filter.fluentd.fluent.io/enabled: "true"
   clusterOutputSelector:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
 
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
-kind: FluentdConfig
+kind: ClusterFilter
 metadata:
-  name: fluentd-config
-  namespace: kubesphere-logging-system
+  name: fluentd-filter
   labels:
-    config.fluentd.fluent.io/enabled: "true"
-spec:
-  clusterOutputSelector:
-    matchLabels:
-      output.fluentd.fluent.io/enabled: "true"
+    filter.fluentd.fluent.io/enabled: "true"
+spec: 
+  filters: 
+  - recordTransformer:
+      enableRuby: true
+      records:
+      - key: kubernetes_ns
+        value: ${record["kubernetes"]["namespace_name"]}
 
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:
-  name: fluentd-output-es
+  name: fluentd-output
   labels:
     output.fluentd.fluent.io/enabled: "true"
 spec: 
   outputs: 
-    - elasticsearch:
-        host: elasticsearch-logging-data.kubesphere-logging-system.svc
-        port: 9200
-        logstashFormat: true
-        logstashPrefix: ks-logstash-log
+  - stdout: {}
+    buffer:
+      type: file
+      path: /buffers/stdout.log
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log
+    buffer:
+      type: file
+      path: /buffers/es.log
