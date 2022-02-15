@@ -1,0 +1,18 @@
+{{- if .Values.Kubernetes -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFilter
+metadata:
+  name: systemd
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  match: service.*
+  filters:
+  - lua:
+      script:
+        key: systemd.lua
+        name: fluent-bit-lua
+      call: add_time
+      timeAsTable: true
+  {{- end }}

@@ -1,0 +1,18 @@
+{{- if .Values.Kubernetes -}}
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: {{ .Values.flentd.name }}
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+    - forward:
+        bind: 0.0.0.0
+        port: {{ .Values.flentd.port }}
+  replicas: {{ .Values.flentd.replicas }}
+  image: {{ .Values.flentd.image }}:{{ .Values.flentd.tag }}
+  fluentdCfgSelector:
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+  {{- end }}

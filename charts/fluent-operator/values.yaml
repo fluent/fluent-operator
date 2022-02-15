@@ -1,0 +1,104 @@
+# Default values for fluentbit-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+operator:
+  image: "kubesphere/fluent-operator"
+  tag: "v1.0.0"
+  initcontainer:
+    image: "docker"
+    tag: "19.03"
+
+fluentbit:
+  image: "kubesphere/fluent-bit"
+  tag: "v1.8.3"
+
+## Reference to one or more secrets to be used when pulling images
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+##
+imagePullSecrets: []
+# - name: "image-pull-secret"
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+
+resources:
+  # fluentbit resources. If you do want to specify resources, adjust them as necessary
+  fluentbit:
+    # Fluent Bit resources. User can adjust it based on the log volume.
+    resources:
+      limits:
+        cpu: 500m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 25Mi
+
+  operator:
+  # FluentBit operator resources. Usually user needn't to adjust these.
+    resources:
+      limits:
+        cpu: 100m
+        memory: 30Mi
+      requests:
+        cpu: 100m
+        memory: 20Mi
+
+secrets: []
+
+Kubernetes: false
+
+#Set a limit of memory that Tail plugin can use when appending data to the Engine.
+#If the limit is reach, it will be paused; when the data is flushed it resumes.
+#if the inbound traffic is less than 2.4Mbps, setting memBufLimit to 5MB is enough
+#if the inbound traffic is less than 4.0Mbps, setting memBufLimit to 10MB is enough
+#if the inbound traffic is less than 13.64Mbps, setting memBufLimit to 50MB is enough
+input:
+  tail:
+    memBufLimit: 5MB
+#Set this to containerd or crio if you want to collect CRI format logs
+containerRuntime: docker
+logPath:
+  crio: /var/log
+  containerd: /var/log
+
+flentd:
+  name: flentd
+  port: 24224
+  image: "kubesphere/fluentd"
+  tag: "v1.14.4"
+  replicas: 1
+  watchedNamespaces:
+    - kube-system
+    - kubesphere-monitoring-system
+
+
+output:
+  #Configure the output plugin parameter in FluentBit.
+  #You can set enable to true to output logs to the specified location.
+  fluentbit:
+    forward:
+      enable: false
+      host: "fluentd.kubesphere-logging-system.svc"
+      port: 24224
+    es:
+      enable: false
+      host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
+      port: 9200
+      logstashPrefix: ks-logstash-log
+    kafka:
+      enable: false
+      brokers: "<kafka broker list like xxx.xxx.xxx.xxx:9092,yyy.yyy.yyy.yyy:9092>"
+      topics: ks-log
+  fluentd:
+    es:
+      enable: false
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashPrefix: ks-logstash-log
+    kafka:
+      enable: false
+      brokers: "my-cluster-kafka-bootstrap.default.svc:9091,my-cluster-kafka-bootstrap.default.svc:9092,my-cluster-kafka-bootstrap.default.svc:9093"
+      topicKey: kubernetes_ns
+
+
+

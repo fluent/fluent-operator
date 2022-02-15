@@ -82,8 +82,8 @@ type ClusterFilter struct {
 
 // +kubebuilder:object:root=true
 
-// FilterList contains a list of ClusterFilter
-type FilterList struct {
+// ClusterFilterList contains a list of ClusterFilter
+type ClusterFilterList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []ClusterFilter `json:"items"`
@@ -98,7 +98,7 @@ func (a FilterByName) Len() int           { return len(a) }
 func (a FilterByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a FilterByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
-func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
+func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
 
 	sort.Sort(FilterByName(list.Items))
@@ -139,5 +139,5 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&ClusterFilter{}, &FilterList{})
+	SchemeBuilder.Register(&ClusterFilter{}, &ClusterFilterList{})
 }

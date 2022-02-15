@@ -119,7 +119,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 			}},
 	}
 
-	inputs := InputList{
+	inputs := ClusterInputList{
 		Items: []ClusterInput{*inputObj},
 	}
 
@@ -180,7 +180,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		},
 	}
 
-	filters := FilterList{
+	filters := ClusterFilterList{
 		Items: []ClusterFilter{*filterObj},
 	}
 
@@ -246,7 +246,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		},
 	}
 
-	outputs := OutputList{
+	outputs := ClusterOutputList{
 		Items: []ClusterOutput{syslogOut, httpOutput},
 	}
 

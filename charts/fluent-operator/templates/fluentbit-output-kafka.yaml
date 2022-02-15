@@ -1,0 +1,16 @@
+{{- if .Values.Kubernetes -}}
+{{- if .Values.output.fluentbit.kafka.enable -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  name: kafka
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  matchRegex: (?:kube|service)\.(.*)
+  kafka:
+    brokers: {{ .Values.output.fluentbit.kafka.brokers }}
+    topics: {{ .Values.output.fluentbit.kafka.topics }}
+  {{- end }}
+  {{- end }}

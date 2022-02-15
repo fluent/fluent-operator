@@ -1,3 +1,4 @@
+{{- if .Values.Kubernetes -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
@@ -8,5 +9,6 @@ metadata:
 spec:
   matchRegex: (?:kube|service)\.(.*)
   forward:
-    host: fluentd.kubesphere-logging-system.svc
-    port: 24224
+    host: {{ .Values.output.fluentbit.forward.host }}
+    port: {{ .Values.output.fluentbit.forward.port }}
+  {{- end }}

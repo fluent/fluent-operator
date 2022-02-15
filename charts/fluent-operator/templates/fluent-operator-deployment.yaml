@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluent-operator
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: operator
+      app.kubernetes.io/name: fluent-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: operator
+        app.kubernetes.io/name: fluent-operator
+    spec:
+      {{- if eq .Values.containerRuntime "docker" }}
+      volumes:
+      - name: env
+        emptyDir: {}
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+      initContainers:
+      - name: setenv
+        image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
+        command:
+        - /bin/sh
+        - '-c'
+        - set -ex;
+          echo CONTAINER_ROOT_DIR=$(docker info -f '{{`{{.DockerRootDir}}`}}' 2> /dev/null) > /fluent-operator/fluent-bit.env
+        volumeMounts:
+        - name: env
+          mountPath: /fluent-operator
+        - name: dockersock
+          readOnly: true
+          mountPath: /var/run/docker.sock
+      {{- else if eq .Values.containerRuntime "containerd" }}
+      volumes:
+      - name: env
+        emptyDir: {}
+      initContainers:
+      - name: setenv
+        image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
+        command:
+        - /bin/sh
+        - '-c'
+        - set -ex;
+          echo CONTAINER_ROOT_DIR={{ .Values.logPath.containerd }} > /fluent-operator/fluent-bit.env
+        volumeMounts:
+        - name: env
+          mountPath: /fluent-operator
+      {{- else if eq .Values.containerRuntime "crio" }}
+      volumes:
+        - name: env
+          emptyDir: {}
+      initContainers:
+      - name: setenv
+        image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
+        command:
+        - /bin/sh
+        - '-c'
+        - set -ex;
+          echo CONTAINER_ROOT_DIR={{ .Values.logPath.crio }} > /fluent-operator/fluent-bit.env
+        volumeMounts:
+        - name: env
+          mountPath: /fluentbit-operator
+      {{- end }}
+      containers:
+      - name: fluent-operator
+        image: {{ .Values.operator.image }}:{{ .Values.operator.tag }}
+        resources:
+          {{- toYaml .Values.resources.operator.resources | nindent 10 }}
+        env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+        volumeMounts:
+        - name: env
+          mountPath: /fluent-operator
+      serviceAccountName: fluent-operator
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}

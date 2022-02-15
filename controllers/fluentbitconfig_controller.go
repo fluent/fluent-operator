@@ -59,7 +59,7 @@ type FluentBitConfigReconciler struct {
 func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("fluentbitconfig", req.NamespacedName)
 
-	var cfgs fluentbitv1alpha2.FluentBitConfigList
+	var cfgs fluentbitv1alpha2.ClusterFluentBitConfigList
 	if err := r.List(ctx, &cfgs); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
@@ -69,7 +69,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 	for _, cfg := range cfgs.Items {
 		// List all inputs matching the label selector.
-		var inputs fluentbitv1alpha2.InputList
+		var inputs fluentbitv1alpha2.ClusterInputList
 		selector, err := metav1.LabelSelectorAsSelector(&cfg.Spec.InputSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -79,7 +79,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 
 		// List all filters matching the label selector.
-		var filters fluentbitv1alpha2.FilterList
+		var filters fluentbitv1alpha2.ClusterFilterList
 		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.FilterSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -89,7 +89,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 
 		// List all outputs matching the label selector.
-		var outputs fluentbitv1alpha2.OutputList
+		var outputs fluentbitv1alpha2.ClusterOutputList
 		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.OutputSelector)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -99,7 +99,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 
 		// List all parsers matching the label selector.
-		var parsers fluentbitv1alpha2.ParserList
+		var parsers fluentbitv1alpha2.ClusterParserList
 		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.ParserSelector)
 		if err != nil {
 			return ctrl.Result{}, err
