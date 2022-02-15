@@ -10,31 +10,45 @@ Once installed, the Fluent Bit Operator provides the following features:
 
 ## Table of contents
 
-- [Overview](#overview)
-- [Get Started](#get-started)
-  - [Prerequisites](#prerequisites)
-  - [Install](#Install)
-    - [Deploy Fluent Bit Operator with YAML](#deploy-fluent-bit-operator-with-yaml)
-    - [Deploy Fluent Bit Operator with Helm](#deploy-fluent-bit-operator-with-helm)
-  - [Quick Start](#quick-start)
-  - [Configure Custom Watch Namespaces](#configure-custom-watch-namespaces)
-  - [Collect Kubernetes logs](#collect-kubernetes-logs)
-    - [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
-    - [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
-    - [Collect Auditd logs](#collect-auditd-logs)
-- [Monitoring](#monitoring)
-- [API Doc](#api-doc)
-- [Best Practice](#best-practice)
-  - [Plugin Grouping](#plugin-grouping)
-  - [Path Convention](#path-convention)
-- [Custom Parser](#custom-parser)
-- [Roadmap](#roadmap)
-- [Development](#development)
-  - [Requirements](#requirements)
-  - [Running](#running)
-- [Contributing](#contributing)
-  - [Documentation](#documentation)
-  - [Manifests](#manifests)
+- [Fluent Bit Operator](#fluent-bit-operator)
+  - [Table of contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Get Started](#get-started)
+    - [Prerequisites](#prerequisites)
+    - [Install](#install)
+        - [Deploy Fluent Bit Operator with YAML](#deploy-fluent-bit-operator-with-yaml)
+        - [Deploy Fluent Bit Operator with Helm](#deploy-fluent-bit-operator-with-helm)
+    - [Quick Start](#quick-start)
+    - [Configure Custom Watch Namespaces](#configure-custom-watch-namespaces)
+    - [Collect Kubernetes logs](#collect-kubernetes-logs)
+        - [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
+        - [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
+    - [Collect auditd logs](#collect-auditd-logs)
+    - [Fluentd](#fluentd)
+      - [Collecting logs from Fluent Bit](#collecting-logs-from-fluent-bit)
+        - [Enable Fluent Bit forward plugin](#enable-fluent-bit-forward-plugin)
+        - [ClusterFluentdConfig: Fluentd cluster-wide configuration](#clusterfluentdconfig-fluentd-cluster-wide-configuration)
+        - [FluentdConfig: Fluentd namespaced-wide configuration](#fluentdconfig-fluentd-namespaced-wide-configuration)
+        - [Combining Fluentd cluster-wide and namespaced-wide configuration](#combining-fluentd-cluster-wide-and-namespaced-wide-configuration)
+        - [Combining Fluentd cluster-wide output and namespace-wide output for the multi-tenant scenario](#combining-fluentd-cluster-wide-output-and-namespace-wide-output-for-the-multi-tenant-scenario)
+        - [Outputing logs to Kafka or Elasticsearch](#outputing-logs-to-kafka-or-elasticsearch)
+        - [Using buffer for Fluentd output](#using-buffer-for-fluentd-output)
+      - [Collecting logs over HTTP](#collecting-logs-over-http)
+  - [Monitoring](#monitoring)
+  - [API Doc](#api-doc)
+    - [Fluent Bit](#fluent-bit)
+    - [Fluentd](#fluentd-1)
+  - [Best Practice](#best-practice)
+    - [Plugin Grouping](#plugin-grouping)
+    - [Path Convention](#path-convention)
+  - [Custom Parser](#custom-parser)
+  - [Roadmap](#roadmap)
+  - [Development](#development)
+    - [Requirements](#requirements)
+    - [Running](#running)
+  - [Contributing](#contributing)
+    - [Documentation](#documentation)
+    - [Manifests](#manifests)
 
 ## Overview
 
@@ -53,7 +67,11 @@ Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent B
 
 To enable fluent-bit to pick up and use the latest config whenever the fluent-bit config changes, a wrapper called fluent-bit watcher is added to restart the fluent-bit process as soon as fluent-bit config changes are detected. This way the fluent-bit pod needn't be restarted to reload the new config. The fluent-bit config is reloaded in this way because there is no reload interface in fluent-bit itself. Please refer to this [known issue](https://github.com/fluent/fluent-bit/issues/365) for more details.
 
-![Kubesphere-logging-fluentbit](docs/images/kubesphere-logging-fluentbit.svg)
+![fluentbit-operator](docs/images/fluentbit-operator.svg)
+
+Now users can use Fluentd to perform more advanced processing on logs received from fluent-bit and then forward logs to more sinks like S3, Kafka, Elasticsearch, etc. The whole workflow could be described as below.
+
+![Fluent-operator](docs/images/fluent-operator.svg)
 
 ## Get Started
 
@@ -212,6 +230,582 @@ $ curl localhost:9200/_cat/indices
 green open ks-logstash-log-2021.04.06 QeI-k_LoQZ2h1z23F3XiHg  5 1 404879 0 298.4mb 149.2mb
 ```
 
+### Fluentd 
+
+Fluentd acts as a log forward layer that receives logs from Fluent Bit or other Apps through the network.
+
+#### Collecting logs from Fluent Bit
+
+##### Enable Fluent Bit forward plugin
+
+At first, you should enable the forward plugin in Fluent Bit to send logs to Fluentd.
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  name: fluentd
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  matchRegex: (?:kube|service)\.(.*)
+  forward:
+    host: fluentd-forward.kubesphere-logging-system.svc
+    port: 24224
+EOF
+```
+
+And secondly, Fluentd also needs to use the forward input plugin to receive these input logs. This part has been combined into the following examples.
+
+##### ClusterFluentdConfig: Fluentd cluster-wide configuration
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 1
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+   
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  watchedNamespaces: 
+  - kube-system
+  - kubesphere-monitoring-system
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-es
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log
+EOF
+```
+
+##### FluentdConfig: Fluentd namespaced-wide configuration
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 1
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+   
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentd-config
+  namespace: kubesphere-logging-system
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  outputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-output-es
+  namespace: kubesphere-logging-system
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log
+EOF
+```
+
+##### Combining Fluentd cluster-wide and namespaced-wide configuration
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 1
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+   
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  watchedNamespaces: 
+  - kube-system
+  - kubesphere-monitoring-system
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentd-config
+  namespace: kubesphere-logging-system
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-es
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log
+EOF
+```
+
+##### Combining Fluentd cluster-wide output and namespace-wide output for the multi-tenant scenario
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 1
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+   
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentd-config-user1
+  namespace: kubesphere-logging-system
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  outputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+      output.fluentd.fluent.io/user: "user1"
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+      output.fluentd.fluent.io/role: "log-operator"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config-cluster
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  watchedNamespaces: 
+  - kube-system
+  - kubesphere-system
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+      output.fluentd.fluent.io/scope: "cluster"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-output-user1
+  namespace: kubesphere-logging-system
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+    output.fluentd.fluent.io/user: "user1"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-user1
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-log-operator
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+    output.fluentd.fluent.io/role: "log-operator"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-operator
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-cluster
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+    output.fluentd.fluent.io/scope: "cluster"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log
+EOF
+```
+
+##### Outputing logs to Kafka or Elasticsearch
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 1
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  watchedNamespaces: 
+  - kube-system
+  - kubesphere-monitoring-system
+  clusterFilterSelector:
+    matchLabels:
+      filter.fluentd.fluent.io/enabled: "true"
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFilter
+metadata:
+  name: fluentd-filter
+  labels:
+    filter.fluentd.fluent.io/enabled: "true"
+spec: 
+  filters: 
+  - recordTransformer:
+      enableRuby: true
+      records:
+      - key: kubernetes_ns
+        value: ${record["kubernetes"]["namespace_name"]}
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-kafka
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - kafka:
+      brokers: my-cluster-kafka-bootstrap.default.svc:9091,my-cluster-kafka-bootstrap.default.svc:9092,my-cluster-kafka-bootstrap.default.svc:9093
+      useEventTime: true
+      topicKey: kubernetes_ns
+EOF
+```
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 1
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+   
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  watchedNamespaces: 
+  - kube-system
+  - kubesphere-monitoring-system
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-es
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log
+EOF
+```
+
+##### Using buffer for Fluentd output
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - forward: 
+      bind: 0.0.0.0
+      port: 24224
+  replicas: 3
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  watchedNamespaces: 
+  - kube-system
+  - kubesphere-monitoring-system
+  clusterFilterSelector:
+    matchLabels:
+      filter.fluentd.fluent.io/enabled: "true"
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFilter
+metadata:
+  name: fluentd-filter
+  labels:
+    filter.fluentd.fluent.io/enabled: "true"
+spec: 
+  filters: 
+  - recordTransformer:
+      enableRuby: true
+      records:
+      - key: kubernetes_ns
+        value: ${record["kubernetes"]["namespace_name"]}
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - stdout: {}
+    buffer:
+      type: file
+      path: /buffers/stdout.log
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log
+    buffer:
+      type: file
+      path: /buffers/es.log
+EOF
+```
+
+#### Collecting logs over HTTP
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd-http
+  namespace: kubesphere-logging-system
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+    - http: 
+        bind: 0.0.0.0
+        port: 9880
+  replicas: 1
+  image: kubesphere/fluentd:v1.14.4
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+   
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentd-config
+  namespace: kubesphere-logging-system
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  filterSelector:
+    matchLabels:
+      filter.fluentd.fluent.io/enabled: "true"
+  outputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Filter
+metadata:
+  name: fluentd-filter
+  namespace: kubesphere-logging-system
+  labels:
+    filter.fluentd.fluent.io/enabled: "true"
+spec: 
+  filters: 
+    - stdout: {}
+
+---
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-stdout
+  namespace: kubesphere-logging-system
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+    - stdout: {}
+EOF
+```
+
 ## Monitoring
 
 Fluent Bit comes with a built-in HTTP Server. According to the official [documentation](https://docs.fluentbit.io/manual/administration/monitoring) of fluentbit You can enable this by enabling the HTTP server from the fluent bit configuration file:
@@ -223,7 +817,7 @@ Fluent Bit comes with a built-in HTTP Server. According to the official [documen
     HTTP_PORT    2020
 ```
 
-When you use the kubesphere/fluentbit-operator, You can enable this from `FluentBitConfig` manifest. Example is below:
+When you use the fluent-operator, You can enable this from `FluentBitConfig` manifest. Example is below:
 
 ```yaml
 apiVersion: fluentbit.fluent.io/v1alpha2
@@ -291,18 +885,20 @@ curl <podIP>:2020 | jq .
 
 ## API Doc
 
+### Fluent Bit
+
 The list below shows supported plugins which are based on Fluent Bit v1.7.x+. For more information, please refer to the API docs of each plugin.
 
-- [Input](docs/crd.md#input)
+- [Input](docs/fluentbit.md#input)
   - [dummy](docs/plugins/fluentbit/input/dummy.md)
   - [tail](docs/plugins/fluentbit/input/tail.md)
   - [systemd](docs/plugins/fluentbit/input/systemd.md)
-- [Parser](docs/crd.md#parser)
+- [Parser](docs/fluentbit.md#parser)
   - [json](docs/plugins/fluentbit/parser/json.md)
   - [logfmt](docs/plugins/fluentbit/parser/logfmt.md)
   - [lstv](docs/plugins/fluentbit/parser/lstv.md)
   - [regex](docs/plugins/fluentbit/parser/regex.md)
-- [Filter](docs/crd.md#filter)
+- [Filter](docs/fluentbit.md#filter)
   - [kubernetes](docs/plugins/fluentbit/filter/kubernetes.md)
   - [modify](docs/plugins/fluentbit/filter/modify.md)
   - [nest](docs/plugins/fluentbit/filter/nest.md)
@@ -313,7 +909,7 @@ The list below shows supported plugins which are based on Fluent Bit v1.7.x+. Fo
   - [throttle](docs/plugins/fluentbit/filter/throttle.md)
   - [aws](docs/plugins/fluentbit/filter/aws.md)
   - [multiline](docs/plugins/fluentbit/filter/multiline.md)
-- [Output](docs/crd.md#output)
+- [Output](docs/fluentbit.md#output)
   - [elasticsearch](docs/plugins/fluentbit/output/elasticsearch.md)
   - [file](docs/plugins/fluentbit/output/file.md)
   - [forward](docs/plugins/fluentbit/output/forward.md)
@@ -325,6 +921,39 @@ The list below shows supported plugins which are based on Fluent Bit v1.7.x+. Fo
   - [loki](docs/plugins/fluentbit/output/loki.md)
   - [syslog](docs/plugins/fluentbit/output/syslog.md)
   - [datadog](docs/plugins/fluentbit/output/datadog.md)
+
+### Fluentd
+
+The list below shows supported plugins which are based on Fluentd v1.14.4+. For more information, please refer to the API docs of each plugin.
+
+- Common
+  - [buffer](docs/plugins/fluentd/common/buffer.md)
+  - [format](docs/plugins/fluentd/common/format.md)
+  - [parse](docs/plugins/fluentd/common/parse.md)
+  - [time](docs/plugins/fluentd/common/common.md#time)
+  - [inject](docs/plugins/fluentd/common/common.md#inject)
+  - [security](docs/plugins/fluentd/common/common.md#security)
+  - [user](docs/plugins/fluentd/common/common.md#user)
+  - [transport](docs/plugins/fluentd/common/common.md#transport)
+  - [client](docs/plugins/fluentd/common/common.md#client)
+  - [auth](docs/plugins/fluentd/common/common.md#auth)
+  - [server](docs/plugins/fluentd/common/common.md#server)
+  - [service_discovery](docs/plugins/fluentd/common/common.md#ServiceDiscovery)
+- [Input](docs/fluentd/input/types.md)
+  - [http](docs/plugins/fluentd/input/http.md)
+  - [forward](docs/plugins/fluentd/input/forward.md)
+- [Filter](docs/fluentd/filter/types.md)
+  - [parser](docs/plugins/fluentd/filter/parser.md)
+  - [grep](docs/plugins/fluentd/filter/grep.md)
+  - [record modifier](docs/plugins/fluentd/filter/record_modifier.md)
+  - [stdout](docs/plugins/fluentd/filter/stdout.md)
+- [Output](docs/plugins/fluentd/output/types.md)
+  - [elasticsearch](docs/plugins/fluentd/output/elasticsearch.md)
+  - [forward](docs/plugins/fluentd/output/forward.md)
+  - [http](docs/plugins/fluentd/output/http.md)
+  - [kafka](docs/plugins/fluentd/output/kafka.md)
+  - stdout
+
 
 ## Best Practice
 
@@ -340,8 +969,8 @@ Path to file in Fluent Bit config should be well regulated. Fluent Bit Operator 
 
 |Dir Path|Description|
 |---|---|
-|/fluent-bit/tail|Stores tail related files, eg. file tracking db. Using [fluentbit.spec.positionDB](docs/crd.md#fluentbitspec) will mount a file `pos.db` under this dir by default.|
-|/fluent-bit/secrets/{secret_name}|Stores secrets, eg. TLS files. Specify secrets to mount in [fluentbit.spec.secrets](docs/crd.md#fluentbitspec), then you have access.|
+|/fluent-bit/tail|Stores tail related files, eg. file tracking db. Using [fluentbit.spec.positionDB](docs/fluentbit.md#fluentbitspec) will mount a file `pos.db` under this dir by default.|
+|/fluent-bit/secrets/{secret_name}|Stores secrets, eg. TLS files. Specify secrets to mount in [fluentbit.spec.secrets](docs/fluentbit.md#fluentbitspec), then you have access.|
 |/fluent-bit/config|Stores the main config file and user-defined parser config file.|
 
 > Note that ServiceAccount files are mounted at `/var/run/secrets/kubernetes.io/serviceaccount`.
@@ -354,9 +983,9 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 
 ## Roadmap
 
-- [ ] Support containerd log format
-- [ ] Add Fluentd CRDs as the log aggregation layer with group name `fluentd.fluent.io`
-- [ ] Add FluentBit Cluster CRDs with new group name `fluentbit.fluent.io`
+- [x] Support containerd log format
+- [x] Add Fluentd CRDs as the log aggregation layer with group name `fluentd.fluent.io`
+- [x] Add FluentBit Cluster CRDs with new group name `fluentbit.fluent.io`
 - [ ] Rename the entire project to Fluent Operator
 - [ ] Support more Fluentd & FluentBit plugins
 
@@ -377,7 +1006,7 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 
 ### Documentation
 
-[API Doc](docs/crd.md) is generated automatically. To modify it, edit the comment above struct fields, then run `go run cmd/doc-gen/main.go`.
+[API Doc](docs/fluentbit.md) is generated automatically. To modify it, edit the comment above struct fields, then run `go run cmd/doc-gen/main.go`.
 
 ### Manifests
 

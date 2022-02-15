@@ -1,5 +1,6 @@
 package output
 
+// Elasticsearch defines the parameters for out_es output plugin
 type Elasticsearch struct {
 	// The hostname of your Elasticsearch node (default: localhost).
 	Host *string `json:"host,omitempty"`

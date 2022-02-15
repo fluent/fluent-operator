@@ -2,6 +2,7 @@ package filter
 
 import "fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
 
+// Parser defines the parameters for filter_parser plugin
 type Parser struct {
 	Parse *common.Parse `json:"parse"`
 

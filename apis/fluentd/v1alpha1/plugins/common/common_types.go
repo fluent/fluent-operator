@@ -8,7 +8,7 @@ import (
 )
 
 // +kubebuilder:object:generate:=true
-// CommonFields defines parameters for all the Plugins
+// CommonFields defines the common parameters for all plugins
 type CommonFields struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
@@ -18,6 +18,7 @@ type CommonFields struct {
 	LogLevel *string `json:"logLevel,omitempty"`
 }
 
+// Time defines the common parameters for the time plugin
 type Time struct {
 	// parses/formats value according to this type, default is *string
 	// +kubebuilder:validation:Enum:=float;unixtime;*string;mixed
@@ -34,7 +35,7 @@ type Time struct {
 	TimeFormatFallbacks *string `json:"timeFormatFallbacks,omitempty"`
 }
 
-// Inject defines parameters for all inject Plugins
+// Inject defines the common parameters for the inject plugin
 // The inject section can be under <match> or <filter> section.
 type Inject struct {
 	// Time section
@@ -52,6 +53,7 @@ type Inject struct {
 	TimeKey *string `json:"timeKey,omitempty"`
 }
 
+// Security defines the common parameters for the security plugin
 type Security struct {
 	// The hostname.
 	SelfHostname *string `json:"selfHostname,omitempty"`
@@ -65,11 +67,13 @@ type Security struct {
 	*User `json:"user,omitempty"`
 }
 
+// User defines the common parameters for the user plugin
 type User struct {
 	Username *string `json:"username,omitempty"`
 	Password *string `json:"password,omitempty"`
 }
 
+// Transport defines the commont parameters for the transport plugin
 type Transport struct {
 	// The protocal name of this plugin, i.e: tls
 	Protocol *string `json:"protocol,omitempty"`
@@ -94,6 +98,7 @@ type Transport struct {
 	CertVerifier *string `json:"certVerifier,omitempty"`
 }
 
+// Client defines the commont parameters for the client plugin
 type Client struct {
 	// The IP address or hostname of the client. This is exclusive with Network.
 	Host *string `json:"host,omitempty"`
@@ -105,6 +110,7 @@ type Client struct {
 	Users *string `json:"users,omitempty"`
 }
 
+// Auth defines the common parameters for the auth plugin
 type Auth struct {
 	// The method for HTTP authentication. Now only basic.
 	// +kubebuilder:validation:Enum:basic
@@ -115,7 +121,7 @@ type Auth struct {
 	Password *string `json:"password,omitempty"`
 }
 
-// The server plug-in
+// Server defines the common parameters for the server plugin
 type Server struct {
 	CommonFields `json:",inline"`
 
@@ -137,6 +143,7 @@ type Server struct {
 	Weight *string `json:"weight,omitempty"`
 }
 
+// SDCommon defines the common parameters for the ServiceDiscovery plugin
 type SDCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
@@ -147,6 +154,7 @@ type SDCommon struct {
 	LogLevel *string `json:"logLevel,omitempty"`
 }
 
+// ServiceDiscovery defines various parameters for the ServiceDiscovery plugin.
 // Fluentd has a pluggable system called Service Discovery that lets the user extend and reuse custom output service discovery.
 type ServiceDiscovery struct {
 	SDCommon `json:",inline,omitempty"`
@@ -156,6 +164,7 @@ type ServiceDiscovery struct {
 	*SrvServiceDiscovery  `json:",inline,omitempty"`
 }
 
+// FileServiceDiscovery defines the file type for the ServiceDiscovery plugin
 type FileServiceDiscovery struct {
 	// The path of the target list. Default is '/etc/fluent/sd.yaml'
 	Path *string `json:"path,omitempty"`
@@ -163,6 +172,7 @@ type FileServiceDiscovery struct {
 	ConfEncoding *string `json:"confEncoding,omitempty"`
 }
 
+// SrvServiceDiscovery defines the srv type for the ServiceDiscovery plugin
 type SrvServiceDiscovery struct {
 	// Service without the underscore in RFC2782.
 	Service *string `json:"service,omitempty"`

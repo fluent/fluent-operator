@@ -1,5 +1,6 @@
 package output
 
+// Kafka2 defines the parameters for out_kafka output plugin
 type Kafka2 struct {
 	// The list of all seed brokers, with their host and port information. Default: localhost:9092
 	Brokers *string `json:"brokers,omitempty"`

@@ -3,22 +3,22 @@ package plugins
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/go-logr/logr"
 	"github.com/go-openapi/errors"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"strings"
 )
 
 // +kubebuilder:object:generate:=true
-
+// Secret defines the key of a value.
 type Secret struct {
-	// ValueSource represents a source for the value of a secret.
 	ValueFrom ValueSource `json:"valueFrom,omitempty"`
 }
 
 // +kubebuilder:object:generate:=true
-
+// ValueSource defines how to find a value's key.
 type ValueSource struct {
 	// Selects a key of a secret in the pod's namespace
 	// +optional

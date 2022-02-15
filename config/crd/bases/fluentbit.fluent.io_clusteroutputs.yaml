@@ -148,8 +148,7 @@ spec:
                     description: Password for user defined in HTTP_User
                     properties:
                       valueFrom:
-                        description: ValueSource represents a source for the value
-                          of a secret.
+                        description: ValueSource defines how to find a value's key.
                         properties:
                           secretKeyRef:
                             description: Selects a key of a secret in the pod's namespace
@@ -176,8 +175,7 @@ spec:
                     description: Optional username credential for Elastic X-Pack access
                     properties:
                       valueFrom:
-                        description: ValueSource represents a source for the value
-                          of a secret.
+                        description: ValueSource defines how to find a value's key.
                         properties:
                           secretKeyRef:
                             description: Selects a key of a secret in the pod's namespace
@@ -303,8 +301,8 @@ spec:
                         description: Optional password for tls.key_file file
                         properties:
                           valueFrom:
-                            description: ValueSource represents a source for the value
-                              of a secret.
+                            description: ValueSource defines how to find a value's
+                              key.
                             properties:
                               secretKeyRef:
                                 description: Selects a key of a secret in the pod's
@@ -456,8 +454,7 @@ spec:
                     description: Specify the password corresponding to the username.
                     properties:
                       valueFrom:
-                        description: ValueSource represents a source for the value
-                          of a secret.
+                        description: ValueSource defines how to find a value's key.
                         properties:
                           secretKeyRef:
                             description: Selects a key of a secret in the pod's namespace
@@ -539,8 +536,8 @@ spec:
                         description: Optional password for tls.key_file file
                         properties:
                           valueFrom:
-                            description: ValueSource represents a source for the value
-                              of a secret.
+                            description: ValueSource defines how to find a value's
+                              key.
                             properties:
                               secretKeyRef:
                                 description: Selects a key of a secret in the pod's
@@ -577,8 +574,7 @@ spec:
                       that enables user_auth.
                     properties:
                       valueFrom:
-                        description: ValueSource represents a source for the value
-                          of a secret.
+                        description: ValueSource defines how to find a value's key.
                         properties:
                           secretKeyRef:
                             description: Selects a key of a secret in the pod's namespace
@@ -658,8 +654,7 @@ spec:
                     description: Basic Auth Password. Requires HTTP_User to be set
                     properties:
                       valueFrom:
-                        description: ValueSource represents a source for the value
-                          of a secret.
+                        description: ValueSource defines how to find a value's key.
                         properties:
                           secretKeyRef:
                             description: Selects a key of a secret in the pod's namespace
@@ -686,8 +681,7 @@ spec:
                     description: Basic Auth Username
                     properties:
                       valueFrom:
-                        description: ValueSource represents a source for the value
-                          of a secret.
+                        description: ValueSource defines how to find a value's key.
                         properties:
                           secretKeyRef:
                             description: Selects a key of a secret in the pod's namespace
@@ -762,8 +756,8 @@ spec:
                         description: Optional password for tls.key_file file
                         properties:
                           valueFrom:
-                            description: ValueSource represents a source for the value
-                              of a secret.
+                            description: ValueSource defines how to find a value's
+                              key.
                             properties:
                               secretKeyRef:
                                 description: Selects a key of a secret in the pod's
@@ -877,8 +871,7 @@ spec:
                       authentication password
                     properties:
                       valueFrom:
-                        description: ValueSource represents a source for the value
-                          of a secret.
+                        description: ValueSource defines how to find a value's key.
                         properties:
                           secretKeyRef:
                             description: Selects a key of a secret in the pod's namespace
@@ -905,8 +898,7 @@ spec:
                     description: Set HTTP basic authentication user name.
                     properties:
                       valueFrom:
-                        description: ValueSource represents a source for the value
-                          of a secret.
+                        description: ValueSource defines how to find a value's key.
                         properties:
                           secretKeyRef:
                             description: Selects a key of a secret in the pod's namespace
@@ -967,8 +959,7 @@ spec:
                       mode and no X-Scope-OrgID header is sent.
                     properties:
                       valueFrom:
-                        description: ValueSource represents a source for the value
-                          of a secret.
+                        description: ValueSource defines how to find a value's key.
                         properties:
                           secretKeyRef:
                             description: Selects a key of a secret in the pod's namespace
@@ -1024,8 +1015,8 @@ spec:
                         description: Optional password for tls.key_file file
                         properties:
                           valueFrom:
-                            description: ValueSource represents a source for the value
-                              of a secret.
+                            description: ValueSource defines how to find a value's
+                              key.
                             properties:
                               secretKeyRef:
                                 description: Selects a key of a secret in the pod's
@@ -1189,8 +1180,8 @@ spec:
                         description: Optional password for tls.key_file file
                         properties:
                           valueFrom:
-                            description: ValueSource represents a source for the value
-                              of a secret.
+                            description: ValueSource defines how to find a value's
+                              key.
                             properties:
                               secretKeyRef:
                                 description: Selects a key of a secret in the pod's
@@ -1290,8 +1281,8 @@ spec:
                         description: Optional password for tls.key_file file
                         properties:
                           valueFrom:
-                            description: ValueSource represents a source for the value
-                              of a secret.
+                            description: ValueSource defines how to find a value's
+                              key.
                             properties:
                               secretKeyRef:
                                 description: Selects a key of a secret in the pod's

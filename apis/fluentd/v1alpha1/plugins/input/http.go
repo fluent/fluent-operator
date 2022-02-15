@@ -4,6 +4,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
 )
 
+// Http defines the in_http Input plugin that listens to a TCP socket to receive the event stream.
 type Http struct {
 	// The transport section of http plugin
 	Transport *common.Transport `json:"transport,omitempty"`

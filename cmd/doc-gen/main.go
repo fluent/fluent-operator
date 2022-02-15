@@ -16,8 +16,13 @@ import (
 
 const (
 	firstParagraph = `# API Docs
-This Document documents the types introduced by the Fluent Bit Operator to be consumed by users.
+This Document documents the types introduced by the %s Operator.
 > Note this document is generated from code comments. When contributing a change to this document please do so by changing the code comments.`
+
+	fluentbitPluginPath = "apis/fluentbit/v1alpha2/plugins/"
+	fluentdPluginPath   = "apis/fluentd/v1alpha1/plugins/"
+	fluentbitCrdsPath   = "apis/fluentbit/v1alpha2/"
+	fluentdCrdsPath     = "apis/fluentd/v1alpha1/"
 )
 
 var (
@@ -34,33 +39,130 @@ var (
 	}
 
 	selfLinks = map[string]string{}
+
+	unincludedKeyWords = []string{
+		"deepcopy.go",
+		"params",
+		"test",
+		"interface",
+	}
 )
+
+type DocumentsLocation struct {
+	path string
+	name string
+}
 
 // Inspired by coreos/prometheus-operator: https://github.com/coreos/prometheus-operator
 func main() {
-	plugins()
-	crds()
+	var pluginsLoactions = []DocumentsLocation{
+		{
+			path: fluentbitPluginPath,
+			name: "fluentbit",
+		},
+		{
+			path: fluentdPluginPath,
+			name: "fluentd",
+		},
+	}
+	plugins(pluginsLoactions)
+
+	var crdsLoactions = []DocumentsLocation{
+		{
+			path: fluentbitCrdsPath,
+			name: "fluentbit",
+		},
+		{
+			path: fluentdCrdsPath,
+			name: "fluentd",
+		},
+	}
+	crds(crdsLoactions)
 }
 
-func plugins() {
-	var srcs []string
-	err := filepath.Walk("api/v1alpha2/plugins", func(path string, info os.FileInfo, err error) error {
+func plugins(docsLocations []DocumentsLocation) {
+	for _, dl := range docsLocations {
+		var srcs []string
+		err := filepath.Walk(dl.path, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if strings.HasSuffix(path, ".go") {
+				var flag bool = true
+				for _, keyword := range unincludedKeyWords {
+					flag = flag && !strings.Contains(path, keyword)
+				}
+				if flag {
+					srcs = append(srcs, path)
+				}
+			}
+			return nil
+		})
 		if err != nil {
-			return err
+			panic(err)
 		}
-		if strings.HasSuffix(path, "_types.go") {
-			srcs = append(srcs, path)
+
+		for _, src := range srcs {
+			var buffer bytes.Buffer
+
+			types := ParseDocumentationFrom(src, true)
+
+			for _, t := range types {
+				strukt := t[0]
+				if len(t) > 1 {
+					buffer.WriteString(fmt.Sprintf("# %s\n\n%s\n\n\n", strukt.Name, strukt.Doc))
+
+					buffer.WriteString("| Field | Description | Scheme |\n")
+					buffer.WriteString("| ----- | ----------- | ------ |\n")
+					fields := t[1:(len(t))]
+					for _, f := range fields {
+						buffer.WriteString(fmt.Sprintf("| %s | %s | %s |\n", f.Name, f.Doc, f.Type))
+					}
+					buffer.WriteString("")
+				}
+			}
+
+			src_name := strings.TrimPrefix(src, dl.path)
+			if strings.HasSuffix(src_name, "_types.go") {
+				src_name = strings.TrimSuffix(src_name, "_types.go")
+			} else {
+				src_name = strings.TrimSuffix(src_name, ".go")
+			}
+
+			dst := fmt.Sprintf("./docs/plugins/%s/%s.md", dl.name, src_name)
+			f, _ := os.Create(dst)
+			f.WriteString(buffer.String())
 		}
-		return nil
-	})
-	if err != nil {
-		panic(err)
 	}
+}
 
-	for _, src := range srcs {
+func crds(docsLoactions []DocumentsLocation) {
+	for _, dl := range docsLoactions {
+		var srcs []string
+		err := filepath.Walk(dl.path, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if !strings.Contains(path, "/plugins") && strings.HasSuffix(path, "_types.go") {
+				srcs = append(srcs, path)
+			}
+			return nil
+		})
+		if err != nil {
+			panic(err)
+		}
+
 		var buffer bytes.Buffer
+		var types []KubeTypes
+		for _, src := range srcs {
+			types = append(types, ParseDocumentationFrom(src, false)...)
+		}
 
-		types := ParseDocumentationFrom(src, true)
+		sort.Slice(types, func(i, j int) bool {
+			return interface{}(types[i]).(KubeTypes)[0].Name < interface{}(types[j]).(KubeTypes)[0].Name
+		})
+
+		buffer = printTOC(types)
 
 		for _, t := range types {
 			strukt := t[0]
@@ -73,15 +175,13 @@ func plugins() {
 				for _, f := range fields {
 					buffer.WriteString(fmt.Sprintf("| %s | %s | %s |\n", f.Name, f.Doc, f.Type))
 				}
-				buffer.WriteString("")
+				buffer.WriteString("\n")
+				buffer.WriteString("[Back to TOC](#table-of-contents)\n")
 			}
 		}
 
-		src := strings.TrimPrefix(src, "api/v1alpha2/plugins/")
-		src = strings.TrimSuffix(src, "_types.go")
-		dst := fmt.Sprintf("docs/plugins/" + src + ".md")
-		f, _ := os.Create(dst)
-		f.WriteString(buffer.String())
+		f, _ := os.Create(fmt.Sprintf("./docs/%s.md", dl.name))
+		f.WriteString(fmt.Sprintf(firstParagraph, dl.name) + buffer.String())
 	}
 }
 
@@ -101,53 +201,6 @@ func printTOC(types []KubeTypes) bytes.Buffer {
 		}
 	}
 	return buffer
-}
-
-func crds() {
-	var srcs []string
-	err := filepath.Walk("api/v1alpha2", func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !strings.Contains(path, "/plugins") && strings.HasSuffix(path, "_types.go") {
-			srcs = append(srcs, path)
-		}
-		return nil
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	var buffer bytes.Buffer
-	var types []KubeTypes
-	for _, src := range srcs {
-		types = append(types, ParseDocumentationFrom(src, false)...)
-	}
-
-	sort.Slice(types, func(i, j int) bool {
-		return interface{}(types[i]).(KubeTypes)[0].Name < interface{}(types[j]).(KubeTypes)[0].Name
-	})
-
-	buffer = printTOC(types)
-
-	for _, t := range types {
-		strukt := t[0]
-		if len(t) > 1 {
-			buffer.WriteString(fmt.Sprintf("## %s\n\n%s\n\n\n", strukt.Name, strukt.Doc))
-
-			buffer.WriteString("| Field | Description | Scheme |\n")
-			buffer.WriteString("| ----- | ----------- | ------ |\n")
-			fields := t[1:(len(t))]
-			for _, f := range fields {
-				buffer.WriteString(fmt.Sprintf("| %s | %s | %s |\n", f.Name, f.Doc, f.Type))
-			}
-			buffer.WriteString("\n")
-			buffer.WriteString("[Back to TOC](#table-of-contents)\n")
-		}
-	}
-
-	f, _ := os.Create("docs/crd.md")
-	f.WriteString(firstParagraph + buffer.String())
 }
 
 // Pair of strings. We need the name of fields and the doc

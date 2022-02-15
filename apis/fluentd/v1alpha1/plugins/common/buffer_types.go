@@ -10,7 +10,7 @@ import (
 )
 
 // +kubebuilder:object:generate:=true
-// BufferCommon defines parameters for all buffer Plugins
+// BufferCommon defines common parameters for the buffer plugin
 type BufferCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
@@ -22,6 +22,7 @@ type BufferCommon struct {
 	LogLevel *string `json:"logLevel,omitempty"`
 }
 
+// Buffer defines various parameters for the buffer Plugin
 type Buffer struct {
 	BufferCommon `json:",inline,omitempty"`
 	// The file buffer plugin
@@ -137,6 +138,16 @@ type FileSingleBuffer struct {
 	// ChunkFormat specifies the chunk format for calc_num_records.
 	// +kubebuilder:validation:Enum:=msgpack;text;auto
 	ChunkFormat *string `json:"chunkFormat,omitempty"`
+}
+
+// BufferSection defines the common parameters for buffer sections
+type BufferSection struct {
+	// buffer section
+	Buffer *Buffer `json:"buffer,omitempty"`
+	// format section
+	Format *Format `json:"format,omitempty"`
+	// inject section
+	Inject *Inject `json:"inject,omitempty"`
 }
 
 func (b *Buffer) Name() string {

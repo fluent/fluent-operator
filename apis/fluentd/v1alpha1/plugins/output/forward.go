@@ -4,7 +4,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
 )
 
-// The out_forward Buffered Output plugin forwards events to other fluentd nodes.
+// Forward defines the out_forward Buffered Output plugin forwards events to other fluentd nodes.
 type Forward struct {
 	// Servers defines the servers section, at least one is required
 	Servers []*common.Server `json:"servers"`

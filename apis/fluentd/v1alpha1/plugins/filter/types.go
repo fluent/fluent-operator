@@ -8,7 +8,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
-// FilterCommon defines parameters for filter Plugins
+// FilterCommon defines the common parameters for the filter plugin.
 type FilterCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"-"`
@@ -18,6 +18,7 @@ type FilterCommon struct {
 	Tag *string `json:"-"`
 }
 
+// Filter defines all available filter plugins and their parameters.
 type Filter struct {
 	// The common fields
 	FilterCommon `json:",inline,omitempty"`
@@ -28,7 +29,7 @@ type Filter struct {
 	RecordTransformer *RecordTransformer `json:"recordTransformer,omitempty"`
 	// The filter_parser filter plugin
 	Parser *Parser `json:"parser,omitempty"`
-	// The filter_parser filter plugin
+	// The filter_stdout filter plugin
 	Stdout *Stdout `json:"stdout,omitempty"`
 }
 

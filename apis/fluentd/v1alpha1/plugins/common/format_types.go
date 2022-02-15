@@ -7,6 +7,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
+// FormatCommon defines common parameters of the format plugin
 type FormatCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
@@ -17,7 +18,7 @@ type FormatCommon struct {
 	LogLevel *string `json:"logLevel,omitempty"`
 }
 
-// Format defines all types of Format Plugins
+// Format defines various parameters of the format plugin
 type Format struct {
 	FormatCommon `json:",inline,omitempty"`
 	// Time defines time parameters for Format Plugins
