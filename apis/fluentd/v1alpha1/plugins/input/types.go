@@ -19,7 +19,7 @@ type InputCommon struct {
 	Label *string `json:"label,omitempty"`
 }
 
-// Input defines the supported types for input plugins
+// Input defines all available input plugins and their parameters
 type Input struct {
 	InputCommon `json:",inline"`
 	// in_forward plugin

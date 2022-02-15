@@ -1,6 +1,6 @@
 # Forward
 
-Forward defines the in_forward Input plugin listens to a TCP socket to receive the event stream
+Forward defines the in_forward Input plugin that listens to a TCP socket to receive the event stream.
 
 
 | Field | Description | Scheme |

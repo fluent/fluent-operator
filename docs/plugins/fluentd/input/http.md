@@ -1,6 +1,6 @@
 # Http
 
-Http defines the in_http Input plugin listens to a TCP socket to receive the event stream
+Http defines the in_http Input plugin that listens to a TCP socket to receive the event stream.
 
 
 | Field | Description | Scheme |

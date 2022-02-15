@@ -1,6 +1,6 @@
 # Grep
 
-Grep defines all supported types for filter_grep plugin
+Grep defines various parameters for the grep plugin
 
 
 | Field | Description | Scheme |
@@ -11,7 +11,7 @@ Grep defines all supported types for filter_grep plugin
 | or |  | []*Or |
 # Regexp
 
-Regexp defines the parameters for regexp plugin
+Regexp defines the parameters for the regexp plugin
 
 
 | Field | Description | Scheme |
@@ -20,7 +20,7 @@ Regexp defines the parameters for regexp plugin
 | pattern |  | *string |
 # Exclude
 
-Exclude defines the parameters for exclude plugin
+Exclude defines the parameters for the exclude plugin
 
 
 | Field | Description | Scheme |
@@ -29,7 +29,7 @@ Exclude defines the parameters for exclude plugin
 | pattern |  | *string |
 # And
 
-And defines the parameters for and plugin
+And defines the parameters for the \"and\" plugin
 
 
 | Field | Description | Scheme |
@@ -38,7 +38,7 @@ And defines the parameters for and plugin
 | exclude |  | *Exclude |
 # Or
 
-Or defines the parameters for or plugin
+Or defines the parameters for the \"or\" plugin
 
 
 | Field | Description | Scheme |

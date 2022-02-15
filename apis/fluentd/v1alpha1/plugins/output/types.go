@@ -20,7 +20,7 @@ type OutputCommon struct {
 	Tag *string `json:"-"`
 }
 
-// Output defines all types for output plugin
+// Output defines all available output plugins and their parameters
 type Output struct {
 	OutputCommon `json:",inline,omitempty"`
 	// match setions

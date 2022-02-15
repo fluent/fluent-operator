@@ -10,7 +10,7 @@ InputCommon defines the common parameters for input plugins
 | label | The @label parameter is to route the input events to <label> sections. | *string |
 # Input
 
-Input defines the supported types for input plugins
+Input defines all available input plugins and their parameters
 
 
 | Field | Description | Scheme |

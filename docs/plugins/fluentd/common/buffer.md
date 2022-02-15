@@ -1,6 +1,6 @@
 # BufferCommon
 
-BufferCommon defines common parameters for all buffer Plugins
+BufferCommon defines common parameters for the buffer plugin
 
 
 | Field | Description | Scheme |
@@ -10,7 +10,7 @@ BufferCommon defines common parameters for all buffer Plugins
 | logLevel | The @log_level parameter specifies the plugin-specific logging level | *string |
 # Buffer
 
-Buffer defines all types for all buffer Plugins
+Buffer defines various parameters for the buffer Plugin
 
 
 | Field | Description | Scheme |

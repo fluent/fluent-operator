@@ -4,7 +4,7 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
 )
 
-// Forward defines the in_forward Input plugin listens to a TCP socket to receive the event stream
+// Forward defines the in_forward Input plugin that listens to a TCP socket to receive the event stream.
 type Forward struct {
 	// The transport section of forward plugin
 	Transport *common.Transport `json:"transport,omitempty"`

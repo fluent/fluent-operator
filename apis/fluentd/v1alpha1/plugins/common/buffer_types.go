@@ -10,7 +10,7 @@ import (
 )
 
 // +kubebuilder:object:generate:=true
-// BufferCommon defines common parameters for all buffer Plugins
+// BufferCommon defines common parameters for the buffer plugin
 type BufferCommon struct {
 	// The @id parameter specifies a unique name for the configuration.
 	Id *string `json:"id,omitempty"`
@@ -22,7 +22,7 @@ type BufferCommon struct {
 	LogLevel *string `json:"logLevel,omitempty"`
 }
 
-// Buffer defines all types for all buffer Plugins
+// Buffer defines various parameters for the buffer Plugin
 type Buffer struct {
 	BufferCommon `json:",inline,omitempty"`
 	// The file buffer plugin

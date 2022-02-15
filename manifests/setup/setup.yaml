@@ -35,18 +35,20 @@ spec:
             properties:
               filters:
                 items:
-                  description: Filter defines all types for filter Plugins
+                  description: Filter defines all available filter plugins and their
+                    parameters.
                   properties:
                     grep:
                       description: The filter_grep filter plugin
                       properties:
                         and:
                           items:
-                            description: And defines the parameters for and plugin
+                            description: And defines the parameters for the "and"
+                              plugin
                             properties:
                               exclude:
-                                description: Exclude defines the parameters for exclude
-                                  plugin
+                                description: Exclude defines the parameters for the
+                                  exclude plugin
                                 properties:
                                   key:
                                     type: string
@@ -54,8 +56,8 @@ spec:
                                     type: string
                                 type: object
                               regexp:
-                                description: Regexp defines the parameters for regexp
-                                  plugin
+                                description: Regexp defines the parameters for the
+                                  regexp plugin
                                 properties:
                                   key:
                                     type: string
@@ -66,7 +68,7 @@ spec:
                           type: array
                         exclude:
                           items:
-                            description: Exclude defines the parameters for exclude
+                            description: Exclude defines the parameters for the exclude
                               plugin
                             properties:
                               key:
@@ -77,11 +79,11 @@ spec:
                           type: array
                         or:
                           items:
-                            description: Or defines the parameters for or plugin
+                            description: Or defines the parameters for the "or" plugin
                             properties:
                               exclude:
-                                description: Exclude defines the parameters for exclude
-                                  plugin
+                                description: Exclude defines the parameters for the
+                                  exclude plugin
                                 properties:
                                   key:
                                     type: string
@@ -89,8 +91,8 @@ spec:
                                     type: string
                                 type: object
                               regexp:
-                                description: Regexp defines the parameters for regexp
-                                  plugin
+                                description: Regexp defines the parameters for the
+                                  regexp plugin
                                 properties:
                                   key:
                                     type: string
@@ -101,7 +103,7 @@ spec:
                           type: array
                         regexp:
                           items:
-                            description: Regexp defines the parameters for regexp
+                            description: Regexp defines the parameters for the regexp
                               plugin
                             properties:
                               key:
@@ -139,7 +141,8 @@ spec:
                             => {"user":1}'
                           type: string
                         parse:
-                          description: Parse defines all types for parse Plugins
+                          description: Parse defines various parameters for the parse
+                            plugin
                           properties:
                             estimateCurrentEvent:
                               description: If true, use Fluent::Eventnow(current time)
@@ -650,7 +653,8 @@ spec:
             properties:
               outputs:
                 items:
-                  description: Output defines all types for output plugin
+                  description: Output defines all available output plugins and their
+                    parameters
                   properties:
                     buffer:
                       description: buffer section
@@ -1081,7 +1085,7 @@ spec:
                             one is required
                           items:
                             description: Server defines the common parameters for
-                              server plugin
+                              the server plugin
                             properties:
                               host:
                                 description: Host defines the IP address or host name
@@ -2076,18 +2080,20 @@ spec:
             properties:
               filters:
                 items:
-                  description: Filter defines all types for filter Plugins
+                  description: Filter defines all available filter plugins and their
+                    parameters.
                   properties:
                     grep:
                       description: The filter_grep filter plugin
                       properties:
                         and:
                           items:
-                            description: And defines the parameters for and plugin
+                            description: And defines the parameters for the "and"
+                              plugin
                             properties:
                               exclude:
-                                description: Exclude defines the parameters for exclude
-                                  plugin
+                                description: Exclude defines the parameters for the
+                                  exclude plugin
                                 properties:
                                   key:
                                     type: string
@@ -2095,8 +2101,8 @@ spec:
                                     type: string
                                 type: object
                               regexp:
-                                description: Regexp defines the parameters for regexp
-                                  plugin
+                                description: Regexp defines the parameters for the
+                                  regexp plugin
                                 properties:
                                   key:
                                     type: string
@@ -2107,7 +2113,7 @@ spec:
                           type: array
                         exclude:
                           items:
-                            description: Exclude defines the parameters for exclude
+                            description: Exclude defines the parameters for the exclude
                               plugin
                             properties:
                               key:
@@ -2118,11 +2124,11 @@ spec:
                           type: array
                         or:
                           items:
-                            description: Or defines the parameters for or plugin
+                            description: Or defines the parameters for the "or" plugin
                             properties:
                               exclude:
-                                description: Exclude defines the parameters for exclude
-                                  plugin
+                                description: Exclude defines the parameters for the
+                                  exclude plugin
                                 properties:
                                   key:
                                     type: string
@@ -2130,8 +2136,8 @@ spec:
                                     type: string
                                 type: object
                               regexp:
-                                description: Regexp defines the parameters for regexp
-                                  plugin
+                                description: Regexp defines the parameters for the
+                                  regexp plugin
                                 properties:
                                   key:
                                     type: string
@@ -2142,7 +2148,7 @@ spec:
                           type: array
                         regexp:
                           items:
-                            description: Regexp defines the parameters for regexp
+                            description: Regexp defines the parameters for the regexp
                               plugin
                             properties:
                               key:
@@ -2180,7 +2186,8 @@ spec:
                             => {"user":1}'
                           type: string
                         parse:
-                          description: Parse defines all types for parse Plugins
+                          description: Parse defines various parameters for the parse
+                            plugin
                           properties:
                             estimateCurrentEvent:
                               description: If true, use Fluent::Eventnow(current time)
@@ -8028,7 +8035,8 @@ spec:
               globalInputs:
                 description: Fluentd global inputs.
                 items:
-                  description: Input defines the supported types for input plugins
+                  description: Input defines all available input plugins and their
+                    parameters
                   properties:
                     forward:
                       description: in_forward plugin
@@ -10120,7 +10128,8 @@ spec:
             properties:
               outputs:
                 items:
-                  description: Output defines all types for output plugin
+                  description: Output defines all available output plugins and their
+                    parameters
                   properties:
                     buffer:
                       description: buffer section
@@ -10551,7 +10560,7 @@ spec:
                             one is required
                           items:
                             description: Server defines the common parameters for
-                              server plugin
+                              the server plugin
                             properties:
                               host:
                                 description: Host defines the IP address or host name

@@ -1,6 +1,6 @@
 # ParseCommon
 
-ParseCommon defines the common parameters for parse Plugins
+ParseCommon defines the common parameters for the parse plugin
 
 
 | Field | Description | Scheme |
@@ -10,7 +10,7 @@ ParseCommon defines the common parameters for parse Plugins
 | logLevel | The @log_level parameter specifies the plugin-specific logging level | *string |
 # Parse
 
-Parse defines all types for parse Plugins
+Parse defines various parameters for the parse plugin
 
 
 | Field | Description | Scheme |

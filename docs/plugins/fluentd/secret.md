@@ -1,6 +1,6 @@
 # Secret
 
-Secret defines a value source of a secret.
+Secret defines the key of a value.
 
 
 | Field | Description | Scheme |
@@ -8,7 +8,7 @@ Secret defines a value source of a secret.
 | valueFrom |  | ValueSource |
 # ValueSource
 
-ValueSource represents a source for the value of a secret.
+ValueSource defines how to find a value's key.
 
 
 | Field | Description | Scheme |

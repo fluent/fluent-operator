@@ -12,13 +12,13 @@ import (
 )
 
 // +kubebuilder:object:generate:=true
-// Secret defines a value source of a secret.
+// Secret defines the key of a value.
 type Secret struct {
 	ValueFrom ValueSource `json:"valueFrom,omitempty"`
 }
 
 // +kubebuilder:object:generate:=true
-// ValueSource defines a value source of a secret.
+// ValueSource defines how to find a value's key.
 type ValueSource struct {
 	// Selects a key of a secret in the pod's namespace
 	// +optional

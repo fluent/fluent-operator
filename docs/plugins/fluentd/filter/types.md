@@ -1,6 +1,6 @@
 # FilterCommon
 
-FilterCommon defines the common parameters for filter Plugins
+FilterCommon defines the common parameters for the filter plugin.
 
 
 | Field | Description | Scheme |
@@ -8,7 +8,7 @@ FilterCommon defines the common parameters for filter Plugins
 | logLevel | The @log_level parameter specifies the plugin-specific logging level | *string |
 # Filter
 
-Filter defines all types for filter Plugins
+Filter defines all available filter plugins and their parameters.
 
 
 | Field | Description | Scheme |

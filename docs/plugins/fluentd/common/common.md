@@ -10,7 +10,7 @@ CommonFields defines the common parameters for all plugins
 | logLevel | The @log_level parameter specifies the plugin-specific logging level | *string |
 # Time
 
-Time defines the common parameters for time plugin
+Time defines the common parameters for the time plugin
 
 
 | Field | Description | Scheme |
@@ -23,7 +23,7 @@ Time defines the common parameters for time plugin
 | timeFormatFallbacks | Uses the specified time format as a fallback in the specified order. You can parse undetermined time format by using time_format_fallbacks. This options is enabled when time_type is mixed. | *string |
 # Inject
 
-Inject defines the common parameters for inject plugin The inject section can be under <match> or <filter> section.
+Inject defines the common parameters for the inject plugin The inject section can be under <match> or <filter> section.
 
 
 | Field | Description | Scheme |
@@ -35,7 +35,7 @@ Inject defines the common parameters for inject plugin The inject section can be
 | timeKey | The field name to inject time | *string |
 # Security
 
-Security defines the common parameters for security plugin
+Security defines the common parameters for the security plugin
 
 
 | Field | Description | Scheme |
@@ -47,7 +47,7 @@ Security defines the common parameters for security plugin
 | user | Defines user section directly. | *User |
 # User
 
-User defines the common parameters for user plugin
+User defines the common parameters for the user plugin
 
 
 | Field | Description | Scheme |
@@ -56,7 +56,7 @@ User defines the common parameters for user plugin
 | password |  | *string |
 # Transport
 
-Transport defines the commont parameters for transport plugin
+Transport defines the commont parameters for the transport plugin
 
 
 | Field | Description | Scheme |
@@ -76,7 +76,7 @@ Transport defines the commont parameters for transport plugin
 | certVerifier | other parameters | *string |
 # Client
 
-Client defines the commont parameters for client plugin
+Client defines the commont parameters for the client plugin
 
 
 | Field | Description | Scheme |
@@ -87,7 +87,7 @@ Client defines the commont parameters for client plugin
 | users | The array of usernames. | *string |
 # Auth
 
-Auth defines the common parameters for auth plugin
+Auth defines the common parameters for the auth plugin
 
 
 | Field | Description | Scheme |
@@ -97,7 +97,7 @@ Auth defines the common parameters for auth plugin
 | password | The password for basic authentication. | *string |
 # Server
 
-Server defines the common parameters for server plugin
+Server defines the common parameters for the server plugin
 
 
 | Field | Description | Scheme |
@@ -112,7 +112,7 @@ Server defines the common parameters for server plugin
 | weight | Weight defines the load balancing weight | *string |
 # SDCommon
 
-SDCommon defines the common parameters for ServiceDiscovery plugin
+SDCommon defines the common parameters for the ServiceDiscovery plugin
 
 
 | Field | Description | Scheme |
@@ -122,7 +122,7 @@ SDCommon defines the common parameters for ServiceDiscovery plugin
 | logLevel | The @log_level parameter specifies the plugin-specific logging level | *string |
 # ServiceDiscovery
 
-ServiceDiscovery defines all types for the ServiceDiscovery plugin. Fluentd has a pluggable system called Service Discovery that lets the user extend and reuse custom output service discovery.
+ServiceDiscovery defines various parameters for the ServiceDiscovery plugin. Fluentd has a pluggable system called Service Discovery that lets the user extend and reuse custom output service discovery.
 
 
 | Field | Description | Scheme |

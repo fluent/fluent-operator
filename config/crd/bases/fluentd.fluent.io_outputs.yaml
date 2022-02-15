@@ -38,7 +38,8 @@ spec:
             properties:
               outputs:
                 items:
-                  description: Output defines all types for output plugin
+                  description: Output defines all available output plugins and their
+                    parameters
                   properties:
                     buffer:
                       description: buffer section
@@ -469,7 +470,7 @@ spec:
                             one is required
                           items:
                             description: Server defines the common parameters for
-                              server plugin
+                              the server plugin
                             properties:
                               host:
                                 description: Host defines the IP address or host name

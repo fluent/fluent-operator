@@ -8,7 +8,7 @@ OutputCommon defines the common parameters for output plugin
 | logLevel | The @log_level parameter specifies the plugin-specific logging level | *string |
 # Output
 
-Output defines all types for output plugin
+Output defines all available output plugins and their parameters
 
 
 | Field | Description | Scheme |

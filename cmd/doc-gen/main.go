@@ -16,7 +16,7 @@ import (
 
 const (
 	firstParagraph = `# API Docs
-This Document documents the types introduced by the %s Operator to be consumed by users.
+This Document documents the types introduced by the %s Operator.
 > Note this document is generated from code comments. When contributing a change to this document please do so by changing the code comments.`
 
 	fluentbitPluginPath = "apis/fluentbit/v1alpha2/plugins/"

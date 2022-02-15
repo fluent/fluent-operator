@@ -1,6 +1,6 @@
 # FormatCommon
 
-FormatCommon defines common parameters of format Plugins
+FormatCommon defines common parameters of the format plugin
 
 
 | Field | Description | Scheme |
@@ -10,7 +10,7 @@ FormatCommon defines common parameters of format Plugins
 | logLevel | The @log_level parameter specifies the plugin-specific logging level | *string |
 # Format
 
-Format defines all types of Format Plugins
+Format defines various parameters of the format plugin
 
 
 | Field | Description | Scheme |
