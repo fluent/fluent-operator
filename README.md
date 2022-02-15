@@ -67,7 +67,7 @@ Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent B
 
 To enable fluent-bit to pick up and use the latest config whenever the fluent-bit config changes, a wrapper called fluent-bit watcher is added to restart the fluent-bit process as soon as fluent-bit config changes are detected. This way the fluent-bit pod needn't be restarted to reload the new config. The fluent-bit config is reloaded in this way because there is no reload interface in fluent-bit itself. Please refer to this [known issue](https://github.com/fluent/fluent-bit/issues/365) for more details.
 
-![Kubesphere-logging-fluentbit](docs/images/kubesphere-logging-fluentbit.svg)
+![fluentbit-operator](docs/images/fluentbit-operator.svg)
 
 Besides, we have finished [the pr #189](https://github.com/fluent/fluentbit-operator/pull/189) to integrate fluent-operator as a forward log layer, aims to collect logs from fluentbit or other apps. The whole workflow could be described as below.
 
@@ -420,7 +420,7 @@ The list below shows supported plugins which are based on Fluentd v1.14.4+. For 
   - [auth](docs/plugins/fluentd/common/common.md#auth)
   - [server](docs/plugins/fluentd/common/common.md#server)
   - [service_discovery](docs/plugins/fluentd/common/common.md#ServiceDiscovery)
-- [Input]((docs/fluentd/input/types.md)
+- [Input](docs/fluentd/input/types.md)
   - [http](docs/plugins/fluentd/input/http.md)
   - [forward](docs/plugins/fluentd/input/forward.md)
 - [Filter](docs/fluentd/filter/types.md)
