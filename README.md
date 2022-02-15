@@ -464,9 +464,9 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 
 ## Roadmap
 
-- [ ] Support containerd log format
-- [ ] Add Fluentd CRDs as the log aggregation layer with group name `fluentd.fluent.io`
-- [ ] Add FluentBit Cluster CRDs with new group name `fluentbit.fluent.io`
+- [x] Support containerd log format
+- [x] Add Fluentd CRDs as the log aggregation layer with group name `fluentd.fluent.io`
+- [x] Add FluentBit Cluster CRDs with new group name `fluentbit.fluent.io`
 - [ ] Rename the entire project to Fluent Operator
 - [ ] Support more Fluentd & FluentBit plugins
 
