@@ -3,6 +3,7 @@ package v1alpha1
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/filter"
@@ -266,7 +267,7 @@ func (pgr *PluginResources) RenderMainConfig(enableMultiWorkers bool) (string, e
 		buf.WriteString(labelPlugin.String())
 	}
 
-	return buf.String(), nil
+	return strings.TrimRight(buf.String(), "\n"), nil
 }
 
 // +kubebuilder:object:generate:=false
