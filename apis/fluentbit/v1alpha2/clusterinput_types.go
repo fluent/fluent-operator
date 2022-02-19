@@ -56,7 +56,7 @@ type ClusterInput struct {
 }
 
 // +kubebuilder:object:generate:=false
-// InputByName implements sort.Interface for []Input based on the Name field.
+// InputByName implements sort.Interface for []ClusterInput based on the Name field.
 type InputByName []ClusterInput
 
 func (a InputByName) Len() int           { return len(a) }
@@ -65,14 +65,14 @@ func (a InputByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
 // +kubebuilder:object:root=true
 
-// ClusterInputList contains a list of Input
-type InputList struct {
+// ClusterInputList contains a list of ClusterInput
+type ClusterInputList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []ClusterInput `json:"items"`
 }
 
-func (list InputList) Load(sl plugins.SecretLoader) (string, error) {
+func (list ClusterInputList) Load(sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
 
 	sort.Sort(InputByName(list.Items))
@@ -108,5 +108,5 @@ func (list InputList) Load(sl plugins.SecretLoader) (string, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&ClusterInput{}, &InputList{})
+	SchemeBuilder.Register(&ClusterInput{}, &ClusterInputList{})
 }

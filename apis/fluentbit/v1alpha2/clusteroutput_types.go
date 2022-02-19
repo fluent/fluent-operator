@@ -85,22 +85,22 @@ type ClusterOutput struct {
 
 // +kubebuilder:object:root=true
 
-// OutputList contains a list of ClusterOutput
-type OutputList struct {
+// ClusterOutputList contains a list of ClusterOutput
+type ClusterOutputList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []ClusterOutput `json:"items"`
 }
 
 // +kubebuilder:object:generate:=false
-// OutputByName implements sort.Interface for []Output based on the Name field.
+// OutputByName implements sort.Interface for []ClusterOutput based on the Name field.
 type OutputByName []ClusterOutput
 
 func (a OutputByName) Len() int           { return len(a) }
 func (a OutputByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a OutputByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
-func (list OutputList) Load(sl plugins.SecretLoader) (string, error) {
+func (list ClusterOutputList) Load(sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
 
 	sort.Sort(OutputByName(list.Items))
@@ -145,5 +145,5 @@ func (list OutputList) Load(sl plugins.SecretLoader) (string, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&ClusterOutput{}, &OutputList{})
+	SchemeBuilder.Register(&ClusterOutput{}, &ClusterOutputList{})
 }

@@ -2,12 +2,12 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
-- fluentbit.fluent.io_fluentbitconfigs.yaml
+- fluentbit.fluent.io_clusterfluentbitconfigs.yaml
 - fluentbit.fluent.io_fluentbits.yaml
-- fluentbit.fluent.io_inputs.yaml
-- fluentbit.fluent.io_filters.yaml
-- fluentbit.fluent.io_outputs.yaml
-- fluentbit.fluent.io_parsers.yaml
+- fluentbit.fluent.io_clusterinputs.yaml
+- fluentbit.fluent.io_clusterfilters.yaml
+- fluentbit.fluent.io_clusteroutputs.yaml
+- fluentbit.fluent.io_clusterparsers.yaml
 - fluentd.fluent.io_fluentds.yaml
 - fluentd.fluent.io_clusterfluentdconfigs.yaml
 - fluentd.fluent.io_fluentdconfigs.yaml

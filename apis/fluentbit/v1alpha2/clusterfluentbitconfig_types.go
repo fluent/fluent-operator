@@ -85,15 +85,15 @@ type ClusterFluentBitConfig struct {
 
 // +kubebuilder:object:root=true
 
-// FluentBitConfigList contains a list of ClusterFluentBitConfig
-type FluentBitConfigList struct {
+// ClusterFluentBitConfigList contains a list of ClusterFluentBitConfig
+type ClusterFluentBitConfigList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []ClusterFluentBitConfig `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&ClusterFluentBitConfig{}, &FluentBitConfigList{})
+	SchemeBuilder.Register(&ClusterFluentBitConfig{}, &ClusterFluentBitConfigList{})
 }
 
 func (s *Service) Params() *params.KVs {
@@ -128,7 +128,7 @@ func (s *Service) Params() *params.KVs {
 	return m
 }
 
-func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs InputList, filters FilterList, outputs OutputList) (string, error) {
+func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList, outputs ClusterOutputList) (string, error) {
 	var buf bytes.Buffer
 
 	// The Service defines the global behaviour of the Fluent Bit engine.
@@ -164,7 +164,7 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 	return buf.String(), nil
 }
 
-func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers ParserList) (string, error) {
+func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers ClusterParserList) (string, error) {
 	var buf bytes.Buffer
 
 	parserSections, err := parsers.Load(sl)
@@ -191,7 +191,7 @@ func (a ByName) Len() int           { return len(a) }
 func (a ByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
-func (cfg ClusterFluentBitConfig) RenderLuaScript(cl plugins.ConfigMapLoader, filters FilterList, namespace string) ([]Script, error) {
+func (cfg ClusterFluentBitConfig) RenderLuaScript(cl plugins.ConfigMapLoader, filters ClusterFilterList, namespace string) ([]Script, error) {
 
 	scripts := make([]Script, 0)
 	for _, f := range filters.Items {

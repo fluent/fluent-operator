@@ -1,0 +1,12 @@
+{{- if .Values.Kubernetes -}}
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentd-config
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+  {{- end }}

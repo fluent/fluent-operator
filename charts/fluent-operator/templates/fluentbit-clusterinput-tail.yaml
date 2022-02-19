@@ -1,0 +1,25 @@
+{{- if .Values.Kubernetes -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterInput
+metadata:
+  name: tail
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  tail:
+    tag: kube.*
+    path: /var/log/containers/*.log
+    {{- if eq .Values.containerRuntime "docker" }}
+    parser: docker
+    {{- else if eq .Values.containerRuntime "containerd" }}
+    parser: cri
+    {{- else if eq .Values.containerRuntime "crio" }}
+    parser: cri
+    {{- end }}
+    refreshIntervalSeconds: 10
+    memBufLimit: {{ .Values.input.tail.memBufLimit }}
+    skipLongLines: true
+    db: /fluent-bit/tail/pos.db
+    dbSync: Normal
+  {{- end }}

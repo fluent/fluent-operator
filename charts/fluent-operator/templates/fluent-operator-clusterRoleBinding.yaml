@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: fluent-operator
+  name: fluent-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: fluent-operator
+subjects:
+- kind: ServiceAccount
+  name: fluent-operator
+  namespace: {{ .Release.Namespace }}

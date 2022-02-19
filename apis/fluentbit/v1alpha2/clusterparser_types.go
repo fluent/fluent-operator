@@ -71,22 +71,22 @@ type ClusterParser struct {
 
 // +kubebuilder:object:root=true
 
-// ParserList contains a list of ClusterParser
-type ParserList struct {
+// ClusterParserList contains a list of ClusterParser
+type ClusterParserList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []ClusterParser `json:"items"`
 }
 
 // +kubebuilder:object:generate:=false
-// ParserByName implements sort.Interface for []Parser based on the Name field.
+// ParserByName implements sort.Interface for []ClusterParser based on the Name field.
 type ParserByName []ClusterParser
 
 func (a ParserByName) Len() int           { return len(a) }
 func (a ParserByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ParserByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
-func (list ParserList) Load(sl plugins.SecretLoader) (string, error) {
+func (list ClusterParserList) Load(sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
 
 	sort.Sort(ParserByName(list.Items))
@@ -130,5 +130,5 @@ func (list ParserList) Load(sl plugins.SecretLoader) (string, error) {
 }
 
 func init() {
-	SchemeBuilder.Register(&ClusterParser{}, &ParserList{})
+	SchemeBuilder.Register(&ClusterParser{}, &ClusterParserList{})
 }
