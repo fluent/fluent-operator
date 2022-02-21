@@ -21,5 +21,5 @@ data:
             return 0,timestamp,record
            end
     end
-    {{- end }}
+{{- end }}
 

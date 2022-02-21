@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentd.enable -}}
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterFluentdConfig
 metadata:
@@ -7,10 +8,11 @@ metadata:
     config.fluentd.fluent.io/enabled: "true"
 spec:
   watchedNamespaces:
-  {{- range .Values.flentd.watchedNamespaces }}
+  {{- range .Values.fluentd.watchedNamespaces }}
   - {{ . }}
   {{- end }}
   clusterOutputSelector:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
-  {{- end }}
+{{- end }}
+{{- end }}

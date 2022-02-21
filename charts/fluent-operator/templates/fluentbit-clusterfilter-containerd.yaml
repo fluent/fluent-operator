@@ -15,4 +15,4 @@ spec:
         name: fluent-bit-containerd-config
       call: containerd
       timeAsTable: true
-  {{- end }}
+{{- end }}

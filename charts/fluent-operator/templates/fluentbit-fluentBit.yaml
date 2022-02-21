@@ -6,16 +6,16 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
-  image: {{ .Values.fluentbit.image }}:{{ .Values.fluentbit.tag }}
-  {{- if .Values.imagePullSecrets }}
+  image: {{ .Values.fluentbit.image.repository }}:{{ .Values.fluentbit.image.tag }}
+  {{- if .Values.fluentbit.imagePullSecrets }}
   imagePullSecrets:
-  {{ toYaml .Values.imagePullSecrets | indent 4 }}
+  {{ toYaml .Values.fluentbit.imagePullSecrets | indent 4 }}
   {{- end }}
   positionDB:
     hostPath:
       path: /var/lib/fluent-bit/
   resources:
-    {{- toYaml .Values.resources.fluentbit.resources | nindent 4  }}
+    {{- toYaml .Values.fluentbit.resources | nindent 4  }}
   fluentBitConfigName: fluent-bit-config
   tolerations:
     - operator: Exists
@@ -26,8 +26,8 @@ spec:
           - matchExpressions:
               - key: node-role.kubernetes.io/edge
                 operator: DoesNotExist
-  {{- if .Values.secrets }}
+  {{- if .Values.fluentbit.secrets }}
   secrets:
-  {{ toYaml .Values.secrets | indent 4 }}
+  {{ toYaml .Values.fluentbit.secrets | indent 4 }}
   {{- end }}
 {{- end }}

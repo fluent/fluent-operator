@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentd.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
@@ -9,6 +10,7 @@ metadata:
 spec:
   matchRegex: (?:kube|service)\.(.*)
   forward:
-    host: {{ .Values.output.fluentbit.forward.host }}
-    port: {{ .Values.output.fluentbit.forward.port }}
-  {{- end }}
+    host: {{ .Values.fluentd.name }}.{{ .Values.fluentd.forward.host }}
+    port: {{ .Values.fluentd.forward.port }}
+{{- end }}
+{{- end }}
