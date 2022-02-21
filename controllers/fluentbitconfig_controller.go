@@ -43,8 +43,8 @@ type FluentBitConfigReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=inputs;filters;outputs;parsers,verbs=list
+//+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterfluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs;clusterparsers,verbs=list
 //+kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
@@ -158,6 +158,8 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}); err != nil {
 			return ctrl.Result{}, err
 		}
+
+		r.Log.Info("Fluent Bit main configuration has updated", "logging-control-plane", ns, "fluentbitconfig", cfg.Name, "secret", sec.Name)
 	}
 
 	return ctrl.Result{}, nil

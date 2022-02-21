@@ -14,6 +14,8 @@ require (
 	k8s.io/api v0.21.3
 	k8s.io/apimachinery v0.21.3
 	k8s.io/client-go v0.21.3
+	k8s.io/cri-api v0.23.4
+	k8s.io/klog/v2 v2.8.0
 	sigs.k8s.io/controller-runtime v0.9.6
-	sigs.k8s.io/yaml v1.2.0 // indirect
+	sigs.k8s.io/yaml v1.2.0
 )

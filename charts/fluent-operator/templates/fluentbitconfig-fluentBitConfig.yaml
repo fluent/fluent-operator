@@ -17,4 +17,4 @@ spec:
   outputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
-  {{- end }}
+{{- end }}

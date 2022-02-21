@@ -102,9 +102,8 @@ type FluentdConfigReconciler struct {
 func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("fluendconfig", req.NamespacedName)
 
-	// Get Fluentd instances located ns
 	var fluentdList fluentdv1alpha1.FluentdList
-
+	// List all fluentd instances to bind the generated runtime configuration to each fluentd.
 	if err := r.List(ctx, &fluentdList); err != nil {
 		if errors.IsNotFound(err) {
 			r.Log.V(1).Info("can not find fluentd CR definition.")
@@ -114,36 +113,35 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	for _, fd := range fluentdList.Items {
-		// Get the selector contained in this fluentd instance
+		// Get the config selector in this fluentd instance
 		fdSelector, err := metav1.LabelSelectorAsSelector(&fd.Spec.FluentdCfgSelector)
 		if err != nil {
-			// Patch this fluentd instance if the selectors exsits errors
+			// Patch this fluentd instance if the selectors exsit errors
 			if err := r.PatchObjectErrors(ctx, &fd, err.Error()); err != nil {
 				return ctrl.Result{}, err
 			}
 		}
 
-		// A secret loader supports method to store the targeted fluentd config to the fd namespace, the the fd instance can share it.
+		// A secret loader supports LoadSecret method to parse the targeted secret.
 		sl := plugins.NewSecretLoader(r.Client, fd.Namespace, r.Log)
 
-		// pgr acts as a global plugins to store the related plugin resources
-		pgr := fluentdv1alpha1.NewGlobalPluginResources("main")
+		// gpr acts as a global resource to store the related plugin resources
+		gpr := fluentdv1alpha1.NewGlobalPluginResources("main")
 
-		// Firstly, we will combine the defined global inputs.
-		// Each cluster/namespace fluentd config will generate its own filters/outputs plugins with its cfgId/cfgLabel,
-		// and finally they would combine here together.
-		pgr.CombineGlobalInputsPlugins(sl, fd.Spec.GlobalInputs)
+		// Each cluster/namespace scope fluentd configs will generate their own filters/outputs plugins with their own cfgId/cfgLabel,
+		// and they will finally be combined into one fluentd config file.
+		gpr.CombineGlobalInputsPlugins(sl, fd.Spec.GlobalInputs)
 
 		// globalCfgLabels stores cfgLabels, the same cfg label is not allowed.
 		globalCfgLabels := make(map[string]bool)
 
-		// combine cluster cfgs
-		if err := r.ClusterCfgsForFluentd(ctx, fdSelector, sl, pgr, globalCfgLabels); err != nil {
+		// Combine the resources matching the FluentdClusterConfigs selector into gpr
+		if err := r.ClusterCfgsForFluentd(ctx, fdSelector, sl, gpr, globalCfgLabels); err != nil {
 			return ctrl.Result{}, err
 		}
 
-		// combine namespaced cfgs
-		if err := r.CfgsForFluentd(ctx, fdSelector, sl, pgr, globalCfgLabels); err != nil {
+		// Combine the resources matching the FluentdConfigs selector into gpr
+		if err := r.CfgsForFluentd(ctx, fdSelector, sl, gpr, globalCfgLabels); err != nil {
 			return ctrl.Result{}, err
 		}
 
@@ -158,8 +156,8 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			enableMultiWorkers = true
 		}
 
-		// Create or update the global main app secret of the fluentd instance in its namespace.
-		mainAppCfg, err := pgr.RenderMainConfig(enableMultiWorkers)
+		// Create or update the secret of the fluentd instance in its namespace.
+		mainAppCfg, err := gpr.RenderMainConfig(enableMultiWorkers)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
@@ -190,7 +188,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return ctrl.Result{}, err
 		}
 
-		r.Log.Info("Main configuration has updated", "logging-control-plane", fd.Namespace, "fd", fd.Name, "secret", secName)
+		r.Log.Info("Fluentd main configuration has updated", "logging-control-plane", fd.Namespace, "fd", fd.Name, "secret", secName)
 
 	}
 
@@ -199,7 +197,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 // ClusterCfgsForFluentd combines all cluster cfgs selected by this fd
 func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
-	ctx context.Context, fdSelector labels.Selector, sl plugins.SecretLoader, pgr *fluentdv1alpha1.PluginResources,
+	ctx context.Context, fdSelector labels.Selector, sl plugins.SecretLoader, gpr *fluentdv1alpha1.PluginResources,
 	globalCfgLabels map[string]bool) error {
 
 	var clustercfgs fluentdv1alpha1.ClusterFluentdConfigList
@@ -211,30 +209,27 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 		return err
 	}
 
-	allNamespaces := make([]string, 0)
-
 	for _, cfg := range clustercfgs.Items {
 		// If the field watchedNamespaces is empty, all namesapces will be watched.
 		watchedNamespaces := cfg.GetWatchedNamespaces()
 
 		if len(watchedNamespaces) == 0 {
-			if len(allNamespaces) == 0 {
-				var namespaceList corev1.NamespaceList
-				if err := r.List(ctx, &namespaceList); err != nil {
-					return err
-				}
-
-				for _, item := range namespaceList.Items {
-					allNamespaces = append(allNamespaces, item.Name)
-				}
+			var namespaceList corev1.NamespaceList
+			if err := r.List(ctx, &namespaceList); err != nil {
+				return err
 			}
 
-			cfg.Spec.WatchedNamespaces = allNamespaces
+			for _, item := range namespaceList.Items {
+				watchedNamespaces = append(watchedNamespaces, item.Name)
+			}
+
+			// Don't patch the CR, or it would requeue.
+			cfg.Spec.WatchedNamespaces = watchedNamespaces
 		}
 
 		// Build the inner router for this cfg.
 		// Each cfg is a workflow.
-		cfgRouter, err := pgr.BuildCfgRouter(&cfg)
+		cfgRouter, err := gpr.BuildCfgRouter(&cfg)
 		if err != nil {
 			return err
 		}
@@ -255,8 +250,8 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 		errs := make([]string, 0)
 
 		// Combine the filter/output pluginstores in this fluentd config.
-		cfgResouces, combinedErrs := pgr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
-		pgr.WithCfgResources(cfgRouterLabel, cfgResouces)
+		cfgResouces, combinedErrs := gpr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
+		gpr.WithCfgResources(cfgRouterLabel, cfgResouces)
 		errs = append(errs, combinedErrs...)
 
 		if len(errs) > 0 {
@@ -272,7 +267,7 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 
 // CfgsForFluentd combines all namespaced cfgs selected by this fd
 func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, fdSelector labels.Selector, sl plugins.SecretLoader,
-	pgr *fluentdv1alpha1.PluginResources, globalCfgLabels map[string]bool) error {
+	gpr *fluentdv1alpha1.PluginResources, globalCfgLabels map[string]bool) error {
 
 	var cfgs fluentdv1alpha1.FluentdConfigList
 	// Use fluentd selector to match the namespaced configs.
@@ -285,7 +280,7 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, fdSelector
 
 	for _, cfg := range cfgs.Items {
 		// build the inner router for this cfg.
-		cfgRouter, err := pgr.BuildCfgRouter(&cfg)
+		cfgRouter, err := gpr.BuildCfgRouter(&cfg)
 		if err != nil {
 			return err
 		}
@@ -313,14 +308,14 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, fdSelector
 		errs := make([]string, 0)
 
 		// Combine the cluster filter/output pluginstores in this fluentd config.
-		clustercfgResouces, cerrs := pgr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
+		clustercfgResouces, cerrs := gpr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
 		errs = append(errs, cerrs...)
 
 		// Combine the namespaced filter/output pluginstores in this fluentd config.
-		cfgResouces, nerrs := pgr.PatchAndFilterNamespacedLevelResources(sl, cfg.GetCfgId(), filters, outputs)
+		cfgResouces, nerrs := gpr.PatchAndFilterNamespacedLevelResources(sl, cfg.GetCfgId(), filters, outputs)
 		cfgResouces.FilterPlugins = append(cfgResouces.FilterPlugins, clustercfgResouces.FilterPlugins...)
 		cfgResouces.OutputPlugins = append(cfgResouces.OutputPlugins, clustercfgResouces.OutputPlugins...)
-		pgr.WithCfgResources(cfgRouterLabel, cfgResouces)
+		gpr.WithCfgResources(cfgRouterLabel, cfgResouces)
 		errs = append(errs, nerrs...)
 
 		if len(errs) > 0 {

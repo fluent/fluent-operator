@@ -2,6 +2,7 @@ package cfgrender
 
 import (
 	"encoding/json"
+	"os"
 	"sync"
 
 	fluentdv1alpha1 "fluent.io/fluent-operator/apis/fluentd/v1alpha1"
@@ -13,8 +14,8 @@ import (
 )
 
 var (
-	fluentd    fluentdv1alpha1.Fluentd
-	fluentdRaw = `
+	Fluentd    fluentdv1alpha1.Fluentd
+	FluentdRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
@@ -34,8 +35,8 @@ spec:
       config.fluentd.fluent.io/enabled: "true"
 `
 
-	clusterFluentdConfig1    fluentdv1alpha1.ClusterFluentdConfig
-	clusterFluentdConfig1Raw = `
+	FluentdClusterFluentdConfig1    fluentdv1alpha1.ClusterFluentdConfig
+	FluentdClusterFluentdConfig1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterFluentdConfig
 metadata:
@@ -54,8 +55,8 @@ spec:
       output.fluentd.fluent.io/enabled: "true"
 `
 
-	clusterFluentdConfig2    fluentdv1alpha1.ClusterFluentdConfig
-	clusterFluentdConfig2Raw = `
+	FluentdClusterFluentdConfig2    fluentdv1alpha1.ClusterFluentdConfig
+	FluentdClusterFluentdConfig2Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterFluentdConfig
 metadata:
@@ -72,8 +73,8 @@ spec:
       output.fluentd.fluent.io/scope: "cluster"
 `
 
-	fluentdConfig1    fluentdv1alpha1.FluentdConfig
-	fluentdConfig1Raw = `
+	FluentdConfig1    fluentdv1alpha1.FluentdConfig
+	FluentdConfig1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
@@ -86,8 +87,8 @@ spec:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
 `
-	fluentdConfigUser1    fluentdv1alpha1.FluentdConfig
-	fluentdConfigUser1Raw = `
+	FluentdConfigUser1    fluentdv1alpha1.FluentdConfig
+	FluentdConfigUser1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
@@ -106,8 +107,8 @@ spec:
       output.fluentd.fluent.io/role: "log-operator"
 `
 
-	clusterFilter1    fluentdv1alpha1.ClusterFilter
-	clusterFilter1Raw = `
+	FluentdClusterFilter1    fluentdv1alpha1.ClusterFilter
+	FluentdClusterFilter1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterFilter
 metadata:
@@ -123,8 +124,8 @@ spec:
         value: ${record["kubernetes"]["namespace_name"]}
 `
 
-	clusterOutputBuffer    fluentdv1alpha1.ClusterOutput
-	clusterOutputBufferRaw = `
+	FluentdClusterOutputBuffer    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutputBufferRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:
@@ -147,8 +148,8 @@ spec:
       path: /buffers/es.log
   `
 
-	clusterOutput2ES    fluentdv1alpha1.ClusterOutput
-	clusterOutput2ESRaw = `
+	FluentdclusterOutput2ES    fluentdv1alpha1.ClusterOutput
+	FluentdclusterOutput2ESRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:
@@ -164,8 +165,8 @@ spec:
       logstashPrefix: ks-logstash-log
 `
 
-	clusterOutput2Kafka    fluentdv1alpha1.ClusterOutput
-	clusterOutput2kafkaRaw = `
+	FluentdClusterOutput2kafka    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutput2kafkaRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:
@@ -179,8 +180,8 @@ spec:
       useEventTime: true
       topicKey: kubernetes_ns
 `
-	clusterOutputLogOperator    fluentdv1alpha1.ClusterOutput
-	clusterOutputLogOperatorRaw = `
+	FluentdClusterOutputLogOperator    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutputLogOperatorRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:
@@ -197,8 +198,8 @@ spec:
       logstashPrefix: ks-logstash-log-operator
 `
 
-	clusterOutputCluster    fluentdv1alpha1.ClusterOutput
-	clusterOutputClusterRaw = `
+	FluentdClusterOutputCluster    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutputClusterRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:
@@ -215,8 +216,8 @@ spec:
       logstashPrefix: ks-logstash-log
 `
 
-	outputUser1    fluentdv1alpha1.Output
-	outputUser1Raw = `
+	FluentdOutputUser1    fluentdv1alpha1.Output
+	FluentdOutputUser1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: Output
 metadata:
@@ -246,24 +247,6 @@ var (
 	forwardPrivateKeyPath = "/etc/td-agent/certs/fluentd.key"
 
 	forwardPort int32 = 24224
-
-	inputs = []input.Input{
-		{
-			InputCommon: input.InputCommon{
-				Id:       &forwardId,
-				LogLevel: &forwardLogLevel,
-				Label:    &forwardLabel,
-			},
-			Forward: &input.Forward{
-				Transport: &common.Transport{
-					Protocol:       &transportTls,
-					CertPath:       &forwardCertPath,
-					PrivateKeyPath: &forwardPrivateKeyPath,
-				},
-				Port: &forwardPort,
-			},
-		},
-	}
 
 	recordKey1   = "avg"
 	recordValue1 = `${record["total"] / record["count"]}`
@@ -347,26 +330,46 @@ var (
 	brokers = "broker1,broker2"
 )
 
+var (
+	GlobalInputs = []input.Input{
+		{
+			InputCommon: input.InputCommon{
+				Id:       &forwardId,
+				LogLevel: &forwardLogLevel,
+				Label:    &forwardLabel,
+			},
+			Forward: &input.Forward{
+				Transport: &common.Transport{
+					Protocol:       &transportTls,
+					CertPath:       &forwardCertPath,
+					PrivateKeyPath: &forwardPrivateKeyPath,
+				},
+				Port: &forwardPort,
+			},
+		},
+	}
+)
+
 func init() {
 	once.Do(
 		func() {
-			parseIntoObject(fluentdRaw, &fluentd)
-			parseIntoObject(clusterFluentdConfig1Raw, &clusterFluentdConfig1)
-			parseIntoObject(clusterFluentdConfig2Raw, &clusterFluentdConfig2)
-			parseIntoObject(fluentdConfigUser1Raw, &fluentdConfigUser1)
-			parseIntoObject(fluentdConfig1Raw, &fluentdConfig1)
-			parseIntoObject(clusterFilter1Raw, &clusterFilter1)
-			parseIntoObject(clusterOutputClusterRaw, &clusterOutputCluster)
-			parseIntoObject(clusterOutputLogOperatorRaw, &clusterOutputLogOperator)
-			parseIntoObject(clusterOutputBufferRaw, &clusterOutputBuffer)
-			parseIntoObject(clusterOutput2ESRaw, &clusterOutput2ES)
-			parseIntoObject(clusterOutput2kafkaRaw, &clusterOutput2Kafka)
-			parseIntoObject(outputUser1Raw, &outputUser1)
+			ParseIntoObject(FluentdRaw, &Fluentd)
+			ParseIntoObject(FluentdClusterFluentdConfig1Raw, &FluentdClusterFluentdConfig1)
+			ParseIntoObject(FluentdClusterFluentdConfig2Raw, &FluentdClusterFluentdConfig2)
+			ParseIntoObject(FluentdConfigUser1Raw, &FluentdConfigUser1)
+			ParseIntoObject(FluentdConfig1Raw, &FluentdConfig1)
+			ParseIntoObject(FluentdClusterFilter1Raw, &FluentdClusterFilter1)
+			ParseIntoObject(FluentdClusterOutputClusterRaw, &FluentdClusterOutputCluster)
+			ParseIntoObject(FluentdClusterOutputLogOperatorRaw, &FluentdClusterOutputLogOperator)
+			ParseIntoObject(FluentdClusterOutputBufferRaw, &FluentdClusterOutputBuffer)
+			ParseIntoObject(FluentdclusterOutput2ESRaw, &FluentdclusterOutput2ES)
+			ParseIntoObject(FluentdClusterOutput2kafkaRaw, &FluentdClusterOutput2kafka)
+			ParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
 		},
 	)
 }
 
-func parseIntoObject(data string, obj interface{}) error {
+func ParseIntoObject(data string, obj interface{}) error {
 	body, err := yaml.YAMLToJSON([]byte(data))
 	if err != nil {
 		return err
@@ -380,7 +383,12 @@ func parseIntoObject(data string, obj interface{}) error {
 	return nil
 }
 
-func createFilterSpecs() (fluentdv1alpha1.FilterSpec, fluentdv1alpha1.FilterSpec, fluentdv1alpha1.FilterSpec) {
+func getExpectedCfg(path string) []byte {
+	data, _ := os.ReadFile(path)
+	return data
+}
+
+func CreateFluentdFilterSpecs() (fluentdv1alpha1.FilterSpec, fluentdv1alpha1.FilterSpec, fluentdv1alpha1.FilterSpec) {
 	filterSpec1 := fluentdv1alpha1.FilterSpec{
 		Filters: []filter.Filter{
 			{
@@ -464,7 +472,7 @@ func createFilterSpecs() (fluentdv1alpha1.FilterSpec, fluentdv1alpha1.FilterSpec
 	return filterSpec1, filterSpec2, filterSpec3
 }
 
-func createOutputSpecs() (fluentdv1alpha1.OutputSpec, fluentdv1alpha1.OutputSpec, fluentdv1alpha1.OutputSpec) {
+func CreateFluentdOutputSpecs() (fluentdv1alpha1.OutputSpec, fluentdv1alpha1.OutputSpec, fluentdv1alpha1.OutputSpec) {
 	outputSpec1 := fluentdv1alpha1.OutputSpec{
 		Outputs: []output.Output{
 			{

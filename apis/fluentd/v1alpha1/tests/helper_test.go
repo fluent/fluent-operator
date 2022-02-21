@@ -1,7 +1,6 @@
 package cfgrender
 
 import (
-	"os"
 	"testing"
 
 	. "github.com/onsi/gomega"
@@ -11,27 +10,30 @@ import (
 	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
 )
 
+const (
+	maxRuntimes = 5
+)
+
 func Test_Cfg2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
-	psr.CombineGlobalInputsPlugins(sl, fluentd.Spec.GlobalInputs)
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
-	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{clusterOutput2ES}
-	cfgRouter, err := psr.BuildCfgRouter(&fluentdConfig1)
+	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ES}
+	cfgRouter, err := psr.BuildCfgRouter(&FluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
-	cfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, fluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForCluster)
+	cfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForCluster)
 	psr.WithCfgResources(*cfgRouter.Label, cfgResources)
-	expected, _ := os.ReadFile("./expected/fluentd-namespaced-cfg-output-es.cfg")
 
 	// we should not see any permutations in serialized config
 	i := 0
-	for i < 5 {
+	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
-		g.Expect(string(expected)).To(Equal(config))
+		g.Expect(string(getExpectedCfg("./expected/fluentd-namespaced-cfg-output-es.cfg"))).To(Equal(config))
 
 		i++
 	}
@@ -39,27 +41,25 @@ func Test_Cfg2ES(t *testing.T) {
 
 func Test_ClusterCfgOutput2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
-	psr.CombineGlobalInputsPlugins(sl, fluentd.Spec.GlobalInputs)
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
-	clustercfgRouter, err := psr.BuildCfgRouter(&clusterFluentdConfig1)
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
 	clusterFilters := []fluentdv1alpha1.ClusterFilter{}
-	clusterOutputs := []fluentdv1alpha1.ClusterOutput{clusterOutput2ES}
-	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, clusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ES}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
 	psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
-
-	expected, _ := os.ReadFile("./expected/fluentd-cluster-cfg-output-es.cfg")
 
 	// we should not see any permutations in serialized config
 	i := 0
-	for i < 5 {
+	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
-		g.Expect(string(expected)).To(Equal(config))
+		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-es.cfg"))).To(Equal(config))
 
 		i++
 	}
@@ -67,27 +67,25 @@ func Test_ClusterCfgOutput2ES(t *testing.T) {
 
 func Test_ClusterCfgOutput2Kafka(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
-	psr.CombineGlobalInputsPlugins(sl, fluentd.Spec.GlobalInputs)
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
-	clustercfgRouter, err := psr.BuildCfgRouter(&clusterFluentdConfig1)
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
-	clusterFilters := []fluentdv1alpha1.ClusterFilter{clusterFilter1}
-	clusterOutputs := []fluentdv1alpha1.ClusterOutput{clusterOutput2Kafka}
-	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, clusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
+	clusterFilters := []fluentdv1alpha1.ClusterFilter{FluentdClusterFilter1}
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutput2kafka}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
 	psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
-
-	expected, _ := os.ReadFile("./expected/fluentd-cluster-cfg-output-kafka.cfg")
 
 	// we should not see any permutations in serialized config
 	i := 0
-	for i < 5 {
+	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
-		g.Expect(string(expected)).To(Equal(config))
+		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-kafka.cfg"))).To(Equal(config))
 
 		i++
 	}
@@ -95,31 +93,29 @@ func Test_ClusterCfgOutput2Kafka(t *testing.T) {
 
 func Test_MixedCfgs2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
-	psr.CombineGlobalInputsPlugins(sl, fluentd.Spec.GlobalInputs)
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
-	clustercfgRouter, err := psr.BuildCfgRouter(&clusterFluentdConfig1)
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
-	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{clusterOutput2ES}
-	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, clusterFluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForCluster)
+	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ES}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForCluster)
 	psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 
-	cfgRouter, err := psr.BuildCfgRouter(&fluentdConfig1)
+	cfgRouter, err := psr.BuildCfgRouter(&FluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
-	cfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, fluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForCluster)
+	cfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForCluster)
 	psr.WithCfgResources(*cfgRouter.Label, cfgResources)
-
-	expected, _ := os.ReadFile("./expected/fluentd-mixed-cfgs-output-es.cfg")
 
 	// we should not see any permutations in serialized config
 	i := 0
-	for i < 5 {
+	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
-		g.Expect(string(expected)).To(Equal(config))
+		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-es.cfg"))).To(Equal(config))
 
 		i++
 	}
@@ -127,36 +123,34 @@ func Test_MixedCfgs2ES(t *testing.T) {
 
 func Test_MixedCfgs2MultiTenant(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
-	psr.CombineGlobalInputsPlugins(sl, fluentd.Spec.GlobalInputs)
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
-	clustercfgRouter, err := psr.BuildCfgRouter(&clusterFluentdConfig2)
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig2)
 	g.Expect(err).NotTo(HaveOccurred())
-	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{clusterOutputCluster}
-	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, clusterFluentdConfig2.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForCluster)
+	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputCluster}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig2.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForCluster)
 	psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 
-	cfgRouter, err := psr.BuildCfgRouter(&fluentdConfigUser1)
+	cfgRouter, err := psr.BuildCfgRouter(&FluentdConfigUser1)
 	g.Expect(err).NotTo(HaveOccurred())
-	clusterOutputsForUser1 := []fluentdv1alpha1.ClusterOutput{clusterOutputLogOperator}
-	outputsForUser1 := []fluentdv1alpha1.Output{outputUser1}
-	clustercfgResourcesForUser1, _ := psr.PatchAndFilterClusterLevelResources(sl, fluentdConfigUser1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForUser1)
-	cfgResourcesForUser1, _ := psr.PatchAndFilterNamespacedLevelResources(sl, fluentdConfigUser1.GetCfgId(), []fluentdv1alpha1.Filter{}, outputsForUser1)
+	clusterOutputsForUser1 := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputLogOperator}
+	outputsForUser1 := []fluentdv1alpha1.Output{FluentdOutputUser1}
+	clustercfgResourcesForUser1, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdConfigUser1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForUser1)
+	cfgResourcesForUser1, _ := psr.PatchAndFilterNamespacedLevelResources(sl, FluentdConfigUser1.GetCfgId(), []fluentdv1alpha1.Filter{}, outputsForUser1)
 	cfgResourcesForUser1.FilterPlugins = append(cfgResourcesForUser1.FilterPlugins, clustercfgResourcesForUser1.FilterPlugins...)
 	cfgResourcesForUser1.OutputPlugins = append(cfgResourcesForUser1.OutputPlugins, clustercfgResourcesForUser1.OutputPlugins...)
 	psr.WithCfgResources(*cfgRouter.Label, cfgResourcesForUser1)
 
-	expected, _ := os.ReadFile("./expected/fluentd-mixed-cfgs-multi-tenant-output.cfg")
-
 	// we should not see any permutations in serialized config
 	i := 0
-	for i < 5 {
+	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
-		g.Expect(string(expected)).To(Equal(config))
+		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-multi-tenant-output.cfg"))).To(Equal(config))
 
 		i++
 	}
@@ -164,27 +158,25 @@ func Test_MixedCfgs2MultiTenant(t *testing.T) {
 
 func Test_OutputWithBuffer(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
-	psr.CombineGlobalInputsPlugins(sl, fluentd.Spec.GlobalInputs)
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
-	clustercfgRouter, err := psr.BuildCfgRouter(&clusterFluentdConfig1)
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
-	clusterFilters := []fluentdv1alpha1.ClusterFilter{clusterFilter1}
-	clusterOutputs := []fluentdv1alpha1.ClusterOutput{clusterOutputBuffer}
-	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, clusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
+	clusterFilters := []fluentdv1alpha1.ClusterFilter{FluentdClusterFilter1}
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputBuffer}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
 	psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
-
-	expected, _ := os.ReadFile("./expected/fluentd-cluster-cfg-output-buffer-example.cfg")
 
 	// we should not see any permutations in serialized config
 	i := 0
-	for i < 5 {
+	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
-		g.Expect(string(expected)).To(Equal(config))
+		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-buffer-example.cfg"))).To(Equal(config))
 
 		i++
 	}
@@ -201,8 +193,8 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 		"label3": "lv3",
 	}
 
-	filterspec1, filterspec2, filterspec3 := createFilterSpecs()
-	outputspec1, outputspec2, outputspec3 := createOutputSpecs()
+	filterspec1, filterspec2, filterspec3 := CreateFluentdFilterSpecs()
+	outputspec1, outputspec2, outputspec3 := CreateFluentdOutputSpecs()
 
 	clusterFilters := []fluentdv1alpha1.ClusterFilter{
 		{
@@ -371,7 +363,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 	}
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
-	psr.CombineGlobalInputsPlugins(sl, inputs)
+	psr.CombineGlobalInputsPlugins(sl, GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&clustercfg)
 	g.Expect(err).NotTo(HaveOccurred())
@@ -383,15 +375,13 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 	cfgResources, _ := psr.PatchAndFilterNamespacedLevelResources(sl, cfg.GetCfgId(), filters, outputs)
 	psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 
-	expected, _ := os.ReadFile("./expected/duplicate-removal-cr-specs.cfg")
-
 	// we should not see any permutations in serialized config
 	i := 0
-	for i < 5 {
+	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
-		g.Expect(string(expected)).To(Equal(config))
+		g.Expect(string(getExpectedCfg("./expected/duplicate-removal-cr-specs.cfg"))).To(Equal(config))
 
 		i++
 	}
