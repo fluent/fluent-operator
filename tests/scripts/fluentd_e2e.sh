@@ -1,5 +1,6 @@
 PROJECT_ROOT=$PWD
 E2E_DIR=$(realpath $(dirname $0)/..)
+LOGGING_NAMESPACE=kubesphere-logging-system
 
 function build_ginkgo_test() {
   cd $E2E_DIR
@@ -9,27 +10,21 @@ function build_ginkgo_test() {
 function cleanup() {
   cd $PROJECT_ROOT
   kubectl delete -f manifests/setup/setup.yaml
-  kubectl delete ns kubesphere-logging-system
+  kubectl delete ns $LOGGING_NAMESPACE
   kind delete cluster --name test && exit 0
 }
 
 function prepare_cluster() {
   kind create cluster --name test 
-  kubectl create ns kubesphere-logging-system
+  kubectl create ns $LOGGING_NAMESPACE
 
   echo "wait the control-plane ready..."
   kubectl wait --for=condition=Ready node/test-control-plane --timeout=60s
 }
 
 function start_fluent_operator() {
-  export KUBECONFIG=$HOME/.kube/config
-
   cd $PROJECT_ROOT && kubectl apply -f manifests/setup/setup.yaml
-
-  while true; do
-      sleep 3
-      kubectl -nkubesphere-logging-system get po -l app.kubernetes.io/name=fluent-operator | grep Running && break
-  done
+  kubectl -n $LOGGING_NAMESPACE wait --for=condition=available deployment/fluent-operator --timeout=60s
 }
 
 function run_test() {
@@ -63,8 +58,6 @@ trap cleanup ERR
 
 echo -e "\nBuilding testcases..."
 build_ginkgo_test
-
-export KUBECONFIG=$HOME/.kube/config
 
 echo -e "\nPreparing cluster..."
 prepare_cluster
