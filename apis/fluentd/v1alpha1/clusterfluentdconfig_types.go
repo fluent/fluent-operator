@@ -53,8 +53,7 @@ type ClusterFluentdConfigStatus struct {
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
-//+kubebuilder:resource:scope=Cluster
-//+kubebuilder:resource:shortName=fdcc
+//+kubebuilder:resource:shortName=cfdc,scope=Cluster
 //+genclient
 
 // ClusterFluentdConfig is the Schema for the clusterfluentdconfigs API
