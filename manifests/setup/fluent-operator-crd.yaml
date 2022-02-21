@@ -1236,9 +1236,9 @@ spec:
     listKind: ClusterFluentdConfigList
     plural: clusterfluentdconfigs
     shortNames:
-    - fdcc
+    - cfdc
     singular: clusterfluentdconfig
-  scope: Namespaced
+  scope: Cluster
   versions:
   - name: v1alpha1
     schema:
