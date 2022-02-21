@@ -13,7 +13,7 @@ on:
       - 'release-*'
 
 jobs:
-  basic-tests:
+  basic_tests:
     runs-on: ubuntu-18.04
     timeout-minutes: 30
     name: Basic test and verify
@@ -51,13 +51,12 @@ jobs:
       - name: Run verify crds test
         run:  make verify
 
-  e2e-tests:
+  e2e_tests:
     runs-on: ubuntu-18.04
     timeout-minutes: 30
     name: e2e tests
     env:
       GO111MODULE: "on"
-      TESTCONFIG: "$HOME/.kube/config"
     steps:
       - name: Install Go
         uses: actions/setup-go@v2

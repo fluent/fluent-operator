@@ -10,7 +10,7 @@ function cleanup() {
   cd $PROJECT_ROOT
   kubectl delete -f manifests/setup/setup.yaml
   kubectl delete ns kubesphere-logging-system
-  kind delete cluster --name test
+  kind delete cluster --name test && exit 0
 }
 
 function prepare_cluster() {
@@ -19,8 +19,6 @@ function prepare_cluster() {
 
   echo "wait the control-plane ready..."
   kubectl wait --for=condition=Ready node/test-control-plane --timeout=60s
-
-  # kubectl create clusterrolebinding system:anonymous --clusterrole=cluster-admin --user=system:anonymous
 }
 
 function start_fluent_operator() {
@@ -30,7 +28,7 @@ function start_fluent_operator() {
 
   while true; do
       sleep 3
-      kubectl get po -nkubesphere-logging-system 2>/dev/null | grep -q fluent-operator && break
+      kubectl -nkubesphere-logging-system get po -l app.kubernetes.io/name=fluent-operator | grep Running && break
   done
 }
 

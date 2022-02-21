@@ -25,7 +25,7 @@ func TestCompareFluentdMainAppConfig(t *testing.T) {
 	BeforeSuite(func() {
 		path := os.Getenv("TESTCONFIG")
 		if path == "" {
-			path = "/root/.kube/config"
+			path = fmt.Sprintf("%s/.kube/config", os.Getenv("HOME"))
 		}
 
 		cfg, err := clientcmd.BuildConfigFromFlags("", path)
