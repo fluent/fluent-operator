@@ -21,7 +21,7 @@ const (
 )
 
 var (
-	ctx context.Context
+	ctx     context.Context
 	objects []client.Object
 )
 
@@ -47,7 +47,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 				&fluentdtestcases.FluentdClusterOutputBuffer,
 			}
 
-			err := CreateObjsIfNoExists(ctx, objects)
+			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
 			time.Sleep(time.Second * 2)
@@ -75,7 +75,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 				&fluentdtestcases.FluentdclusterOutput2ES,
 			}
 
-			err := CreateObjsIfNoExists(ctx, objects)
+			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
 			time.Sleep(time.Second * 2)
@@ -94,7 +94,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 		})
 	})
 
-	Describe("Test create and delete the fluentd CRs - 3", func() {	
+	Describe("Test create and delete the fluentd CRs - 3", func() {
 		It("E2E_FLUENTD_MAIN_APP_CONFIGURATION: fluentd clusterconfig and output to kafka", func() {
 
 			objects := []client.Object{
@@ -104,7 +104,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 				&fluentdtestcases.FluentdClusterOutput2kafka,
 			}
 
-			err := CreateObjsIfNoExists(ctx, objects)
+			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
 			time.Sleep(time.Second * 2)
@@ -136,7 +136,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 				&fluentdtestcases.FluentdOutputUser1,
 			}
 
-			err := CreateObjsIfNoExists(ctx, objects)
+			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
 			time.Sleep(time.Second * 2)
@@ -166,7 +166,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 				&fluentdtestcases.FluentdclusterOutput2ES,
 			}
 
-			err := CreateObjsIfNoExists(ctx, objects)
+			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
 			time.Sleep(time.Second * 2)
@@ -186,7 +186,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 	})
 
 	Describe("Test create and delete the fluentd CRs - 6", func() {
-	
+
 		It("E2E_FLUENTD_MAIN_APP_CONFIGURATION: fluentd namespaced config and output to es", func() {
 
 			objects := []client.Object{
@@ -195,7 +195,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 				&fluentdtestcases.FluentdclusterOutput2ES,
 			}
 
-			err := CreateObjsIfNoExists(ctx, objects)
+			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
 			time.Sleep(time.Second * 2)
@@ -215,8 +215,8 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 	})
 })
 
-// CreateObjsIfNoExists create objs if not exists
-func CreateObjsIfNoExists(ctx context.Context, objs []client.Object) error {
+// CreateObjs create objs if not exists
+func CreateObjs(ctx context.Context, objs []client.Object) error {
 	for _, obj := range objs {
 		err := k8sClient.Get(ctx, client.ObjectKeyFromObject(obj), obj)
 		if err != nil {
@@ -237,7 +237,7 @@ func CreateObjsIfNoExists(ctx context.Context, objs []client.Object) error {
 	return nil
 }
 
-// create objes with k8s client
+// DeleteObjs delete objs with k8s client
 func DeleteObjs(ctx context.Context, objs []client.Object) error {
 	for _, obj := range objs {
 		err := k8sClient.Delete(ctx, obj, client.GracePeriodSeconds(0))
@@ -249,7 +249,7 @@ func DeleteObjs(ctx context.Context, objs []client.Object) error {
 	return nil
 }
 
-// get the configuration from the secret which mounted to the fluentd
+// GetCfgFromSecret gets the configuration from the secret which mounted to the fluentd
 func GetCfgFromSecret(ctx context.Context, key client.ObjectKey) (string, error) {
 	var se corev1.Secret
 	if err := k8sClient.Get(ctx, key, &se); err != nil {
