@@ -4,6 +4,7 @@ FB_IMG ?= kubesphere/fluent-bit:v1.8.3
 FD_IMG ?= kubesphere/fluentd:v1.14.4
 FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
 
+AMD64 ?= -amd64
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
 
@@ -101,15 +102,15 @@ build-amd64: build-op-amd64 build-fb-amd64 build-fd-amd64
 
 # Build amd64 Fluent Operator container image
 build-op-amd64:
-	docker build -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
+	docker build -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}${AMD64}
 
 # Build amd64 Fluent Bit container image
 build-fb-amd64:
-	docker build -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
+	docker build -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}${AMD64}
 
 # Build amd64 Fluent Bit container image
 build-fd-amd64:
-	docker build -f cmd/fluent-watcher/fluentd/Dockerfile.complete . -t ${FD_IMG}
+	docker build -f cmd/fluent-watcher/fluentd/Dockerfile.complete . -t ${FD_IMG}${AMD64}
 
 # Push the amd64 docker image
 push-amd64:
