@@ -1,0 +1,46 @@
+name: Building Fluent Bit image
+
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
+    paths:
+      - ".github/workflows/build-fb-image.yaml"
+      - "cmd/fluent-watcher/fluentbit/**"
+      - "pkg/filenotify/**"
+
+env:
+  FB_IMG: 'kubesphere/fluent-bit:v1.8.11'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: Build Image for Fluent Bit and Fluentd
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.x
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and Push Image for Fluent Bit
+        run: |
+          make build-fb-amd64 -e FB_IMG=${{ env.FB_IMG }} && docker push ${{ env.FB_IMG }}
