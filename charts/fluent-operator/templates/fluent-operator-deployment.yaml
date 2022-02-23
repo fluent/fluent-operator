@@ -25,7 +25,7 @@ spec:
           path: /var/run/docker.sock
       initContainers:
       - name: setenv
-        image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
+        image: {{ .Values.operator.initcontainer.repository }}:{{ .Values.operator.initcontainer.tag }}
         command:
         - /bin/sh
         - '-c'
@@ -43,12 +43,12 @@ spec:
         emptyDir: {}
       initContainers:
       - name: setenv
-        image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
+        image: {{ .Values.operator.initcontainer.repository }}:{{ .Values.operator.initcontainer.tag }}
         command:
         - /bin/sh
         - '-c'
         - set -ex;
-          echo CONTAINER_ROOT_DIR={{ .Values.logPath.containerd }} > /fluent-operator/fluent-bit.env
+          echo CONTAINER_ROOT_DIR={{ .Values.operator.logPath.containerd }} > /fluent-operator/fluent-bit.env
         volumeMounts:
         - name: env
           mountPath: /fluent-operator
@@ -58,21 +58,21 @@ spec:
           emptyDir: {}
       initContainers:
       - name: setenv
-        image: {{ .Values.operator.initcontainer.image }}:{{ .Values.operator.initcontainer.tag }}
+        image: {{ .Values.operator.initcontainer.repository }}:{{ .Values.operator.initcontainer.tag }}
         command:
         - /bin/sh
         - '-c'
         - set -ex;
-          echo CONTAINER_ROOT_DIR={{ .Values.logPath.crio }} > /fluent-operator/fluent-bit.env
+          echo CONTAINER_ROOT_DIR={{ .Values.operator.logPath.crio }} > /fluent-operator/fluent-bit.env
         volumeMounts:
         - name: env
           mountPath: /fluentbit-operator
       {{- end }}
       containers:
       - name: fluent-operator
-        image: {{ .Values.operator.image }}:{{ .Values.operator.tag }}
+        image: {{ .Values.operator.container.repository }}:{{ .Values.operator.container.tag }}
         resources:
-          {{- toYaml .Values.resources.operator.resources | nindent 10 }}
+          {{- toYaml .Values.operator.resources | nindent 10 }}
         env:
           - name: NAMESPACE
             valueFrom:
@@ -83,7 +83,7 @@ spec:
         - name: env
           mountPath: /fluent-operator
       serviceAccountName: fluent-operator
-      {{- if .Values.imagePullSecrets }}
+      {{- if .Values.operator.imagePullSecrets }}
       imagePullSecrets:
-      {{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{ toYaml .Values.operator.imagePullSecrets | indent 8 }}
       {{- end }}

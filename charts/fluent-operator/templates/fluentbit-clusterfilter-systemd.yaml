@@ -15,4 +15,4 @@ spec:
         name: fluent-bit-lua
       call: add_time
       timeAsTable: true
-  {{- end }}
+{{- end }}

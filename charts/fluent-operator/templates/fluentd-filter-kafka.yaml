@@ -1,5 +1,6 @@
 {{- if .Values.Kubernetes -}}
-{{- if .Values.output.fluentd.kafka.enable -}}
+{{- if .Values.fluentd.enable -}}
+{{- if .Values.fluentd.output.kafka.enable -}}
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterFilter
 metadata:
@@ -11,7 +12,8 @@ spec:
     - recordTransformer:
         enableRuby: true
         records:
-          - key: {{ .Values.output.fluentd.kafka.topicKey }}
+          - key: {{ .Values.fluentd.output.kafka.topicKey }}
             value: ${record["kubernetes"]["namespace_name"]
-  {{- end }}
-  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

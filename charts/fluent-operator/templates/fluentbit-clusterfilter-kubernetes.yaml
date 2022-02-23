@@ -31,4 +31,4 @@ spec:
       - kubernetes_*
       nestUnder: kubernetes
       removePrefix: kubernetes_
-  {{- end }}
+{{- end }}

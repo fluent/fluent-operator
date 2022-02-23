@@ -18,8 +18,8 @@ spec:
     parser: cri
     {{- end }}
     refreshIntervalSeconds: 10
-    memBufLimit: {{ .Values.input.tail.memBufLimit }}
+    memBufLimit: {{ .Values.fluentbit.input.tail.memBufLimit }}
     skipLongLines: true
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
-  {{- end }}
+{{- end }}

@@ -25,4 +25,4 @@ data:
 
       return 1, timestamp, new_record
     end
-  {{- end }}
+{{- end }}

@@ -112,19 +112,19 @@ Fluent Bit Operator supports `docker` as well as `containerd` and `CRI-O`. `cont
 If your container runtime is `docker`
 
 ```shell
-helm install fluentbit-operator  --create-namespace -n kubesphere-logging-system charts/fluent-operator/ --set containerRuntime=docker
+helm install fluent-operator  --create-namespace -n kubesphere-logging-system charts/fluent-operator/ --set containerRuntime=docker
 ```
 
 If your container runtime is `containerd`
 
 ```shell
-helm install fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set containerRuntime=containerd
+helm install fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set containerRuntime=containerd
 ```
 
 If your container runtime is `cri-o`
 
 ```shell
-helm install fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set containerRuntime=crio
+helm install fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set containerRuntime=crio
 ```
 
 ### Quick Start
@@ -187,19 +187,39 @@ kubectl apply -f manifests/logging-stack
 If your container runtime is `docker`
 
 ```shell
-helm upgrade fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker
+helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker
 ```
 
 If your container runtime is `containerd`
 
 ```shell
-helm upgrade fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=containerd
+helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=containerd
 ```
 
 If your container runtime is `cri-o`
 
 ```shell
-helm upgrade fluentbit-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=crio
+helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=crio
+```
+
+If you want to install the fluentd plugin, you can execute the following command:
+
+If your container runtime is `docker`
+
+```shell
+helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker,fluentd.enable=true
+```
+
+If your container runtime is `containerd`
+
+```shell
+helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=containerd,fluentd.enable=true
+```
+
+If your container runtime is `cri-o`
+
+```shell
+helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=crio,fluentd.enable=true
 ```
 
 Within a couple of minutes, you should observe an index available:
