@@ -1,0 +1,87 @@
+# Fluentd watcher agent
+FROM golang:1.16.6-alpine3.13 as buildergo
+RUN mkdir -p /fluentd
+RUN mkdir -p /code
+COPY . /code/
+WORKDIR /code
+RUN echo $(ls -al /code)
+RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
+
+# To set multiarch build for Docker hub automated build.
+FROM golang:alpine AS builderqemu
+WORKDIR /go
+ENV QEMU_DOWNLOAD_SHA256 5db25cccb40ac7b1ca857653b883376b931d91b06ff34ffe70dcf6180bd07bb8
+RUN apk add curl --no-cache
+RUN curl -sL -o qemu-6.0.0.balena1-aarch64.tar.gz https://github.com/balena-io/qemu/releases/download/v6.0.0%2Bbalena1/qemu-6.0.0.balena1-aarch64.tar.gz && echo "$QEMU_DOWNLOAD_SHA256 *qemu-6.0.0.balena1-aarch64.tar.gz" | sha256sum -c - | tar zxvf qemu-6.0.0.balena1-aarch64.tar.gz -C . && mv qemu-6.0.0+balena1-aarch64/qemu-aarch64-static .
+
+# Fluentd main image
+FROM arm64v8/ruby:2.7-slim-bullseye
+COPY --from=builderqemu /go/qemu-aarch64-static /usr/bin/
+LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.14.4"
+ENV TINI_VERSION=0.18.0
+
+# Do not split this into multiple RUN!
+# Docker creates a layer for every RUN-Statement
+# therefore an 'apt-get purge' has no effect
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+            ca-certificates \
+ && buildDeps=" \
+      make gcc g++ libc-dev \
+      wget bzip2 gnupg dirmngr \
+    " \
+ && apt-get install -y --no-install-recommends $buildDeps \
+ && echo 'gem: --no-document' >> /etc/gemrc \
+ && gem install oj -v 3.10.18 \
+ && gem install json -v 2.4.1 \
+ && gem install async-http -v 0.54.0 \
+ && gem install ext_monitor -v 0.1.2 \
+ && gem install fluentd -v 1.14.4 \
+ && gem install bigdecimal -v 1.4.4 \
+ && gem install resolv -v 0.2.1 \
+ && gem install elasticsearch -v 7.13.3 \
+ && gem install elasticsearch-xpack -v 7.13.3 \
+ && gem install fluent-plugin-detect-exceptions -v 0.0.14 \
+ && gem install \
+         fluent-plugin-s3 \
+         fluent-plugin-rewrite-tag-filter \
+         fluent-plugin-oss \
+         fluent-plugin-dedot_filter \
+         fluent-plugin-sumologic_output \
+         fluent-plugin-kafka \
+         fluent-plugin-label-router \
+         fluent-plugin-record-modifier \
+         fluent-plugin-multi-format-parser \
+         fluent-plugin-aws-elasticsearch-service \
+ && echo "plugin installed." \
+ && wget -O /tmp/jemalloc-4.5.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/4.5.0/jemalloc-4.5.0.tar.bz2 \
+ && cd /tmp && tar -xjf jemalloc-4.5.0.tar.bz2 && cd jemalloc-4.5.0/ \
+ && ./configure && make \
+ && mv lib/libjemalloc.so.2 /usr/lib \
+ && apt-get purge -y --auto-remove \
+                  -o APT::AutoRemove::RecommendsImportant=false \
+                  $buildDeps \
+ && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem /usr/lib/ruby/gems/2.*/gems/fluentd-*/test
+
+RUN groupadd -r fluent && useradd -r -g fluent fluent \
+    # for log storage (maybe shared with host)
+    && mkdir -p /fluentd/log \
+    # configuration/plugins path (default: copied from .)
+    && mkdir -p /fluentd/etc /fluentd/plugins \
+    && chown -R fluent /fluentd && chgrp -R fluent /fluentd
+
+ENV FLUENTD_CONF="fluent.conf"
+
+ENV LD_PRELOAD="/usr/lib/libjemalloc.so.2"
+EXPOSE 24224 5140
+
+USER fluent
+
+COPY ./cmd/fluent-watcher/fluentd/base/fluent.conf /fluentd/etc/
+COPY ./cmd/fluent-watcher/fluentd/app/app.conf /fluentd/etc/
+
+# copy the output in buildergo
+COPY --from=buildergo /fluentd/fluentd-watcher /fluentd/bin/fluentd-watcher
+# Entry point
+ENTRYPOINT ["/fluentd/bin/fluentd-watcher"]

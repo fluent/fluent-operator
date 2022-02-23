@@ -4,6 +4,8 @@ FB_IMG ?= kubesphere/fluent-bit:v1.8.11
 FD_IMG ?= kubesphere/fluentd:v1.14.4
 FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
 
+ARCH ?= arm64
+
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
 
@@ -89,12 +91,8 @@ build-op:
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
 
 # Build amd64/arm64 Fluent Bit container image
-build-fb:
+build-fb: prepare-build
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
-
-# Build amd64/arm64 Fluentd container image
-build-fd:
-	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.complete . -t ${FD_IMG}
 
 # Build all amd64 docker images
 build-amd64: build-op-amd64 build-fb-amd64 build-fd-amd64
@@ -107,9 +105,17 @@ build-op-amd64:
 build-fb-amd64:
 	docker build -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
 
-# Build amd64 Fluent Bit container image
+# Build amd64 Fluentd container image
 build-fd-amd64:
-	docker build -f cmd/fluent-watcher/fluentd/Dockerfile.complete . -t ${FD_IMG}
+	docker build -f cmd/fluent-watcher/fluentd/Dockerfile.amd64 . -t ${FD_IMG}
+
+# Use docker buildx to build arm64 Fluentd container image
+build-fd-arm64: prepare-build
+	docker buildx build --push --platform linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.arm64 . -t ${FD_IMG}${ARCH}
+
+# Prepare for arm64 building
+prepare-build:
+	chmod +x cmd/fluent-watcher/hooks/post-hook.sh && bash cmd/fluent-watcher/hooks/post-hook.sh
 
 # Push the amd64 docker image
 push-amd64:

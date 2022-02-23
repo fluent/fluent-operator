@@ -9,7 +9,6 @@ on:
     paths:
       - ".github/workflows/build-op-image.yaml"
       - "apis/**"
-      - "charts/**"
       - "cmd/fluent-manager/**"
       - "controllers/**"
       - "hack/**"
