@@ -73,10 +73,13 @@ binary:
 	go build -o bin/fb-watcher cmd/fluent-watcher/fluentbit/main.go
 	go build -o bin/fd-watcher cmd/fluent-watcher/fluentd/main.go
 
-verify: verify-crds
+verify: verify-crds verify-helm-package
 
 verify-crds:
-	sudo chmod a+x ./hack/verify-crds.sh && ./hack/verify-crds.sh
+	chmod a+x ./hack/verify-crds.sh && ./hack/verify-crds.sh
+
+verify-helm-package:
+	chmod a+x ./hack/verify-helm-package.sh && ./hack/verify-helm-package.sh
 
 build: generate fmt vet ## Build manager binary.
 	go build -o bin/fluent-manager cmd/fluent-manager/main.go
@@ -160,8 +163,11 @@ endef
 go-deps: # download go dependencies
 	go mod download
 
-docs-update:
+docs-update: # update api docs
 	go run ./cmd/doc-gen/main.go
 
-e2e:
+e2e: # make e2e tests
 	chmod a+x tests/scripts/fluentd_e2e.sh && bash tests/scripts/fluentd_e2e.sh
+
+update-helm-package: # update helm repo
+	chmod a+x ./hack/update-helm-package.sh && ./hack/update-helm-package.sh
