@@ -1,5 +1,7 @@
 package output
 
+import "fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
+
 // Elasticsearch defines the parameters for out_es output plugin
 type Elasticsearch struct {
 	// The hostname of your Elasticsearch node (default: localhost).
@@ -10,10 +12,6 @@ type Elasticsearch struct {
 	Port *uint32 `json:"port,omitempty"`
 	// Hosts defines a list of hosts if you want to connect to more than one Elasticsearch nodes
 	Hosts *string `json:"hosts,omitempty"`
-	// The login credentials to connect to the Elasticsearch node
-	User *string `json:"user,omitempty"`
-	// The login credentials to connect to the Elasticsearch node
-	Password *string `json:"password,omitempty"`
 	// Specify https if your Elasticsearch endpoint supports SSL (default: http).
 	Scheme *string `json:"scheme,omitempty"`
 	// Path defines the REST API endpoint of Elasticsearch to post write requests (default: nil).
@@ -24,4 +22,8 @@ type Elasticsearch struct {
 	LogstashFormat *bool `json:"logstashFormat,omitempty"`
 	// LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash).
 	LogstashPrefix *string `json:"logstashPrefix,omitempty"`
+	// Optional, The login credentials to connect to Elasticsearch
+	User *plugins.Secret `json:"user,omitempty"`
+	// Optional, The login credentials to connect to Elasticsearch
+	Password *plugins.Secret `json:"password,omitempty"`
 }

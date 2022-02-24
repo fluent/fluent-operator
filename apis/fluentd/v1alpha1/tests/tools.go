@@ -315,13 +315,9 @@ var (
 	}
 
 	authMethod = "basic"
-	username   = "username"
-	password   = "password"
 
 	auth = common.Auth{
-		Method:   &authMethod,
-		Username: &username,
-		Password: &password,
+		Method: &authMethod,
 	}
 
 	endpoint           = "http://logserver.com:9000/api"

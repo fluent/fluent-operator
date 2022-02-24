@@ -69,8 +69,8 @@ type Security struct {
 
 // User defines the common parameters for the user plugin
 type User struct {
-	Username *string `json:"username,omitempty"`
-	Password *string `json:"password,omitempty"`
+	Username *plugins.Secret `json:"username,omitempty"`
+	Password *plugins.Secret `json:"password,omitempty"`
 }
 
 // Transport defines the commont parameters for the transport plugin
@@ -116,9 +116,9 @@ type Auth struct {
 	// +kubebuilder:validation:Enum:basic
 	Method *string `json:"auth,omitempty"`
 	// The username for basic authentication.
-	Username *string `json:"username,omitempty"`
+	Username *plugins.Secret `json:"username,omitempty"`
 	// The password for basic authentication.
-	Password *string `json:"password,omitempty"`
+	Password *plugins.Secret `json:"password,omitempty"`
 }
 
 // Server defines the common parameters for the server plugin
@@ -134,9 +134,9 @@ type Server struct {
 	// SharedKey defines the shared key per server.
 	SharedKey *string `json:"sharedKey,omitempty"`
 	// Username defines the username for authentication.
-	Username *string `json:"username,omitempty"`
+	Username *plugins.Secret `json:"username,omitempty"`
 	// Password defines the password for authentication.
-	Password *string `json:"password,omitempty"`
+	Password *plugins.Secret `json:"password,omitempty"`
 	// Standby marks a node as the standby node for an Active-Standby model between Fluentd nodes.
 	Standby *string `json:"standby,omitempty"`
 	// Weight defines the load balancing weight
@@ -263,10 +263,24 @@ func (u *User) Name() string {
 	return "user"
 }
 
-func (u *User) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
+func (u *User) Params(loader plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore(u.Name())
-	ps.InsertPairs("username", fmt.Sprint(*u.Username))
-	ps.InsertPairs("password", fmt.Sprint(*u.Password))
+	if u.Username != nil {
+		user, err := loader.LoadSecret(*u.Username)
+		if err != nil {
+			return nil, err
+		}
+		ps.InsertPairs("username", user)
+	}
+
+	if u.Password != nil {
+		pwd, err := loader.LoadSecret(*u.Username)
+		if err != nil {
+			return nil, err
+		}
+		ps.InsertPairs("password", pwd)
+	}
+
 	return ps, nil
 }
 
@@ -274,10 +288,24 @@ func (a *Auth) Name() string {
 	return "auth"
 }
 
-func (a *Auth) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
+func (a *Auth) Params(loader plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore(a.Name())
-	ps.InsertPairs("username", fmt.Sprint(*a.Username))
-	ps.InsertPairs("password", fmt.Sprint(*a.Password))
+	if a.Username != nil {
+		user, err := loader.LoadSecret(*a.Username)
+		if err != nil {
+			return nil, err
+		}
+		ps.InsertPairs("username", user)
+	}
+
+	if a.Password != nil {
+		pwd, err := loader.LoadSecret(*a.Password)
+		if err != nil {
+			return nil, err
+		}
+		ps.InsertPairs("password", pwd)
+	}
+
 	if a.Method != nil {
 		ps.InsertPairs("method", fmt.Sprint(*a.Method))
 	}
@@ -358,7 +386,7 @@ func (s *Server) Name() string {
 	return "server"
 }
 
-func (s *Server) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
+func (s *Server) Params(loader plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore(s.Name())
 
 	if s.Id != nil {
@@ -384,10 +412,20 @@ func (s *Server) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 		ps.InsertPairs("shared_key", fmt.Sprint(*s.SharedKey))
 	}
 	if s.Username != nil {
-		ps.InsertPairs("username", fmt.Sprint(*s.Username))
+		user, err := loader.LoadSecret(*s.Username)
+		if err != nil {
+			return nil, err
+		}
+
+		ps.InsertPairs("username", user)
 	}
 	if s.Password != nil {
-		ps.InsertPairs("password", fmt.Sprint(*s.Password))
+		pwd, err := loader.LoadSecret(*s.Password)
+		if err != nil {
+			return nil, err
+		}
+
+		ps.InsertPairs("password", pwd)
 	}
 	if s.Standby != nil {
 		ps.InsertPairs("standby", fmt.Sprint(*s.Host))
