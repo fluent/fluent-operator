@@ -1,6 +1,7 @@
 PROJECT_ROOT=$PWD
 E2E_DIR=$(realpath $(dirname $0)/..)
 LOGGING_NAMESPACE=kubesphere-logging-system
+IMAGE_TAG=latest
 
 function build_ginkgo_test() {
   cd $E2E_DIR
@@ -22,6 +23,12 @@ function prepare_cluster() {
   kubectl wait --for=condition=Ready node/test-control-plane --timeout=60s
 }
 
+function build_image() { 
+  cd $PROJECT_ROOT
+  make build-op-amd64 -e FO_IMG=kubesphere/fluent-operator:$IMAGE_TAG
+  kind load docker-image kubesphere/fluent-operator:$IMAGE_TAG --name test
+}
+
 function start_fluent_operator() {
   cd $PROJECT_ROOT && kubectl apply -f manifests/setup/setup.yaml
   kubectl -n $LOGGING_NAMESPACE wait --for=condition=available deployment/fluent-operator --timeout=60s
@@ -32,7 +39,6 @@ function run_test() {
   :> /tmp/testcase.log
   $E2E_DIR/e2e/fluentd/fluentd.test $debugflag 2>&1 | tee -a /tmp/testcase.log
   
-  #stop the edgecore after the test completion
   grep  -e "Running Suite" -e "SUCCESS\!" -e "FAIL\!" /tmp/testcase.log | sed -r 's/\x1B\[([0-9];)?([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g' | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g'
   echo "Integration Test Final Summary Report"
   echo "======================================================="
@@ -61,6 +67,9 @@ build_ginkgo_test
 
 echo -e "\nPreparing cluster..."
 prepare_cluster
+
+echo -e "\nBuilding image..."
+build_image
 
 echo -e "\nStart fluent operator..."
 start_fluent_operator

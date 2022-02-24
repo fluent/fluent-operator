@@ -49,7 +49,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 2)
 
 			seckey := types.NamespacedName{
 				Namespace: fluentdtestcases.Fluentd.Namespace,
@@ -77,7 +77,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 2)
 
 			seckey := types.NamespacedName{
 				Namespace: fluentdtestcases.Fluentd.Namespace,
@@ -106,7 +106,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 2)
 
 			seckey := types.NamespacedName{
 				Namespace: fluentdtestcases.Fluentd.Namespace,
@@ -138,7 +138,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 2)
 
 			seckey := types.NamespacedName{
 				Namespace: fluentdtestcases.Fluentd.Namespace,
@@ -168,7 +168,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 2)
 
 			seckey := types.NamespacedName{
 				Namespace: fluentdtestcases.Fluentd.Namespace,
@@ -197,7 +197,7 @@ var _ = Describe("Apply the fluentd forward CRs, comparing with the genrated con
 			err := CreateObjs(ctx, objects)
 			Expect(err).NotTo(HaveOccurred())
 
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 2)
 
 			seckey := types.NamespacedName{
 				Namespace: fluentdtestcases.Fluentd.Namespace,
