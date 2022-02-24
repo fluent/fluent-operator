@@ -117,7 +117,7 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 
 	if o.Elasticsearch != nil {
 		ps.InsertType(string(params.ElasticsearchOutputType))
-		return o.elasticsearchPlugin(ps, loader), nil
+		return o.elasticsearchPlugin(ps, loader)
 	}
 
 	if o.S3 != nil {
@@ -339,7 +339,7 @@ func (o *Output) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 	return parent
 }
 
-func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
 	if o.Elasticsearch.Host != nil {
 		parent.InsertPairs("host", fmt.Sprint(*o.Elasticsearch.Host))
 	}
@@ -353,11 +353,19 @@ func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.
 	}
 
 	if o.Elasticsearch.User != nil {
-		parent.InsertPairs("user", fmt.Sprint(*o.Elasticsearch.User))
+		user, err := loader.LoadSecret(*o.Elasticsearch.User)
+		if err != nil {
+			return nil, err
+		}
+		parent.InsertPairs("user", user)
 	}
 
 	if o.Elasticsearch.Password != nil {
-		parent.InsertPairs("password", fmt.Sprint(*o.Elasticsearch.Password))
+		pwd, err := loader.LoadSecret(*o.Elasticsearch.User)
+		if err != nil {
+			return nil, err
+		}
+		parent.InsertPairs("password", pwd)
 	}
 
 	if o.Elasticsearch.Scheme != nil {
@@ -380,7 +388,7 @@ func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.
 		parent.InsertPairs("logstash_prefix", fmt.Sprint(*o.Elasticsearch.LogstashPrefix))
 	}
 
-	return parent
+	return parent, nil
 }
 
 func (o *Output) kafka2Plugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
