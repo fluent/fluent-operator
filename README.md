@@ -1,26 +1,33 @@
-# Fluent Bit Operator
+# Fluent Operator
 
-Fluent Bit Operator facilitates the deployment of Fluent Bit and provides great flexibility in building a logging layer based on Fluent Bit.
+Fluent Operator provides great flexibility in building a logging layer based on Fluent Bit and Fluentd.
 
-Once installed, the Fluent Bit Operator provides the following features:
+Once installed, the Fluent Operator provides the following features:
 
 - **Fluent Bit Management**: Deploy and destroy Fluent Bit DaemonSet automatically.
+- **Fluentd Management**: Deploy and destroy Fluentd StatefulSet automatically.
 - **Custom Configuration**: Select input/filter/output plugins via labels.
-- **Dynamic Reloading**: Update configuration without rebooting Fluent Bit pods.
+- **Dynamic Reloading**: Update configuration without rebooting Fluent Bit and Fluentd pods.
+- **Multi-tenant log isolation**: Fluentd supports multi-tenant log isolation through `label_router` plugin.
+- **Pluggable deployment components**: Either Fluent Bit or Fluentd can be deployed separately.
 
 ## Table of contents
 
-- [Fluent Bit Operator](#fluent-bit-operator)
+- [Fluent Operator](#fluent-operator)
   - [Table of contents](#table-of-contents)
   - [Overview](#overview)
+    - [Fluent Bit Operator](#fluent-bit-operator)
+    - [Fluentd Operator](#fluentd-operator)
   - [Get Started](#get-started)
     - [Prerequisites](#prerequisites)
     - [Install](#install)
-        - [Deploy Fluent Bit Operator with YAML](#deploy-fluent-bit-operator-with-yaml)
-        - [Deploy Fluent Bit Operator with Helm](#deploy-fluent-bit-operator-with-helm)
+        - [Deploy Fluent Operator with YAML](#deploy-fluent-operator-with-yaml)
+        - [Deploy Fluent Operator with Helm](#deploy-fluent-operator-with-helm)
     - [Quick Start](#quick-start)
-    - [Configure Custom Watch Namespaces](#configure-custom-watch-namespaces)
-    - [Collect Kubernetes logs](#collect-kubernetes-logs)
+        - [Fluent Bit quick start](#fluent-bit-quick-start)
+        - [Fluentd quick start](#fluentd-quick-start)
+        - [Configure Custom Watch Namespaces](#configure-custom-watch-namespaces)
+    - [Fluent Bit: Collect Kubernetes logs](#fluent-bit-collect-kubernetes-logs)
         - [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
         - [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
     - [Collect auditd logs](#collect-auditd-logs)
@@ -52,14 +59,17 @@ Once installed, the Fluent Bit Operator provides the following features:
 
 ## Overview
 
-Fluent Bit Operator defines five custom resources using CustomResourceDefinition (CRD):
+Fluent Operator is mainly composed of Fluent Bit Operator and Fluentd Operator.
 
+### Fluent Bit Operator
+
+Fluent Bit Operator defines five custom resources using CustomResourceDefinition (CRD):
 - **`FluentBit`**: Defines the Fluent Bit DaemonSet and its configs. A custom Fluent Bit image `kubesphere/fluent-bit` is required to work with FluentBit Operator for dynamic configuration reloading.
-- **`FluentBitConfig`**: Select input/filter/output plugins and generates the final config into a Secret.
-- **`Input`**: Defines input config sections.
-- **`Parser`**: Defines parser config sections.
-- **`Filter`**: Defines filter config sections.
-- **`Output`**: Defines output config sections.
+- **`ClusterFluentBitConfig`**: Select cluster-level input/filter/output plugins and generates the final config into a Secret.
+- **`ClusterInput`**: Defines cluster-level input config sections.
+- **`clusterParser`**: Defines cluster-level parser config sections.
+- **`ClusterFilter`**: Defines cluster-level filter config sections.
+- **`ClusterOutput`**: Defines cluster-level output config sections.
 
 Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent Bit config section, which are selected by **`FluentBitConfig`** via label selectors. The operator watches those objects, constructs the final config, and finally creates a Secret to store the config. This secret will be mounted into the Fluent Bit DaemonSet. The entire workflow looks like below:
 
@@ -69,7 +79,19 @@ To enable fluent-bit to pick up and use the latest config whenever the fluent-bi
 
 ![fluentbit-operator](docs/images/fluentbit-operator.svg)
 
-Now users can use Fluentd to perform more advanced processing on logs received from fluent-bit and then forward logs to more sinks like S3, Kafka, Elasticsearch, etc. The whole workflow could be described as below.
+### Fluentd Operator
+
+Fluentd Operator defines five custom resources using CustomResourceDefinition (CRD):
+
+- **`Fluentd`**: Defines the Fluentd Statefulset and its configs. A custom Fluentd image `kubesphere/fluentd` is required to work with Fluentd Operator for dynamic configuration reloading.
+- **`FluentdConfig`**: Select cluster-level or namespace-level scope input/filter/output plugins and generates the final config into a Secret.
+- **`ClusterFluentdConfig`**: Select cluster-level input/filter/output plugins and generates the final config into a Secret.
+- **`Filter`**: Defines namespace-level filter config sections.
+- **`ClusterFilter`**: Defines cluster-level filter config sections.
+- **`Output`**: Defines namespace-level output config sections.
+- **`ClusterOutput`**: Defines cluster-level output config sections.
+
+Fluentd Operator can be used to perform more advanced processing on logs received from Fluent Bit and then forward logs to more sinks like S3, Kafka, Elasticsearch, etc. The whole workflow could be described as below.
 
 ![Fluent-operator](docs/images/fluent-operator.svg)
 
@@ -77,16 +99,16 @@ Now users can use Fluentd to perform more advanced processing on logs received f
 
 ### Prerequisites
 
-Kubernetes v1.16.13+ is necessary for running Fluent Bit Operator.
+Kubernetes v1.16.13+ is necessary for running Fluent Operator.
 
 ### Install
 
-##### Deploy Fluent Bit Operator with YAML
+##### Deploy Fluent Operator with YAML
 
 Install the latest stable version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.12/manifests/setup/setup.yaml
+kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/release-0.12/manifests/setup/setup.yaml
 
 # You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch 
 # and then use command below to install to another namespace
@@ -96,18 +118,18 @@ kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator
 Install the development version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/setup/setup.yaml
+kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/master/manifests/setup/setup.yaml
 
 # You can change the namespace in manifests/setup/kustomization.yaml 
 # and then use command below to install to another namespace
 # kubectl kustomize manifests/setup/ | kubectl apply -f -
 ```
 
-##### Deploy Fluent Bit Operator with Helm
+##### Deploy Fluent Operator with Helm
 
 > Note: For the Helm-based installation you need Helm v3.2.1 or later.
 
-Fluent Bit Operator supports `docker` as well as `containerd` and `CRI-O`. `containerd` and `CRI-O` use the `CRI Log` format which is slightly different and requires additional parsing to parse JSON application logs. You should set different `containerRuntime` depending on  your container runtime.
+The Fluent Bit section of the Fluent Operator supports different CRI `docker` as well as `containerd` and `CRI-O`. `containerd` and `CRI-O` use the `CRI Log` format which is slightly different and requires additional parsing to parse JSON application logs. You should set different `containerRuntime` depending on your container runtime.
 
 If your container runtime is `docker`
 
@@ -128,6 +150,8 @@ helm install fluent-operator --create-namespace -n kubesphere-logging-system cha
 ```
 
 ### Quick Start
+
+##### Fluent Bit quick start
 
 The quick start instructs you to deploy fluent bit with `dummy` as input and `stdout` as output, which is equivalent to execute the binary with `fluent-bit -i dummy -o stdout`.
 
@@ -151,20 +175,53 @@ It means the FluentBit Operator works properly if you see the above messages, yo
 kubectl delete -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/quick-start/quick-start.yaml
 ```
 
-### Configure Custom Watch Namespaces
+##### Fluentd quick start
 
-When starting the operator, you can pass an optional set of namespaces to watch for resources in with the `--watch-namespaces` flag. It takes a comma-separated list of namespaces to watch:
+Fluentd can receives logs from Fluent Bit, both needs to enable the forward plugin.
 
 ```
-...
-      spec:
-        containers:
-          image: kubesphere/fluentbit-operator
-        - args:
-          - --watch-namespaces=namespace1,namespace2
+kubectl apply -f manifests/quick-start/fluentd-forward.yaml
 ```
 
-### Collect Kubernetes logs
+##### Configure Custom Watch Namespaces
+
+It is recommended to use the CRDs like FluentdConfig or ClusterFluentdConfig to watch namespaces.
+
+Cluster-level ClusterFluentdConfig defined like follows:
+
+```
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFluentdConfig
+metadata:
+  name: fluentd-config
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  watchedNamespaces: 
+  - kube-system
+  - kubesphere-monitoring-system
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+```
+
+Namespace-level FluentdConfig will collect the logs from its namespace field.
+
+```
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentd-config
+  namespace: kubesphere-logging-system
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "true"
+```
+
+### Fluent Bit: Collect Kubernetes logs
 
 This guide provisions a logging pipeline including the Fluent Bit DaemonSet and its log input/filter/output configurations to collect Kubernetes logs including container logs and kubelet logs.
 
