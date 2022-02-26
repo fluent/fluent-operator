@@ -273,9 +273,36 @@ spec:
                             (default: logstash).'
                           type: string
                         password:
-                          description: The login credentials to connect to the Elasticsearch
-                            node
-                          type: string
+                          description: Optional, The login credentials to connect
+                            to Elasticsearch
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
                         path:
                           description: 'Path defines the REST API endpoint of Elasticsearch
                             to post write requests (default: nil).'
@@ -292,9 +319,36 @@ spec:
                             supports SSL (default: http).'
                           type: string
                         user:
-                          description: The login credentials to connect to the Elasticsearch
-                            node
-                          type: string
+                          description: Optional, The login credentials to connect
+                            to Elasticsearch
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
                       type: object
                     format:
                       description: format section
@@ -453,9 +507,67 @@ spec:
                               description: Defines user section directly.
                               properties:
                                 password:
-                                  type: string
+                                  description: Secret defines the key of a value.
+                                  properties:
+                                    valueFrom:
+                                      description: ValueSource defines how to find
+                                        a value's key.
+                                      properties:
+                                        secretKeyRef:
+                                          description: Selects a key of a secret in
+                                            the pod's namespace
+                                          properties:
+                                            key:
+                                              description: The key of the secret to
+                                                select from.  Must be a valid secret
+                                                key.
+                                              type: string
+                                            name:
+                                              description: 'Name of the referent.
+                                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                TODO: Add other useful fields. apiVersion,
+                                                kind, uid?'
+                                              type: string
+                                            optional:
+                                              description: Specify whether the Secret
+                                                or its key must be defined
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
+                                      type: object
+                                  type: object
                                 username:
-                                  type: string
+                                  description: Secret defines the key of a value.
+                                  properties:
+                                    valueFrom:
+                                      description: ValueSource defines how to find
+                                        a value's key.
+                                      properties:
+                                        secretKeyRef:
+                                          description: Selects a key of a secret in
+                                            the pod's namespace
+                                          properties:
+                                            key:
+                                              description: The key of the secret to
+                                                select from.  Must be a valid secret
+                                                key.
+                                              type: string
+                                            name:
+                                              description: 'Name of the referent.
+                                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                TODO: Add other useful fields. apiVersion,
+                                                kind, uid?'
+                                              type: string
+                                            optional:
+                                              description: Specify whether the Secret
+                                                or its key must be defined
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
+                                      type: object
+                                  type: object
                               type: object
                             userAuth:
                               description: If true, user-based authentication is used.
@@ -491,7 +603,35 @@ spec:
                                 type: string
                               password:
                                 description: Password defines the password for authentication.
-                                type: string
+                                properties:
+                                  valueFrom:
+                                    description: ValueSource defines how to find a
+                                      value's key.
+                                    properties:
+                                      secretKeyRef:
+                                        description: Selects a key of a secret in
+                                          the pod's namespace
+                                        properties:
+                                          key:
+                                            description: The key of the secret to
+                                              select from.  Must be a valid secret
+                                              key.
+                                            type: string
+                                          name:
+                                            description: 'Name of the referent. More
+                                              info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                              TODO: Add other useful fields. apiVersion,
+                                              kind, uid?'
+                                            type: string
+                                          optional:
+                                            description: Specify whether the Secret
+                                              or its key must be defined
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
+                                    type: object
+                                type: object
                               port:
                                 description: Port defines the port number of the host.
                                   Note that both TCP packets (event stream) and UDP
@@ -511,7 +651,35 @@ spec:
                                 type: string
                               username:
                                 description: Username defines the username for authentication.
-                                type: string
+                                properties:
+                                  valueFrom:
+                                    description: ValueSource defines how to find a
+                                      value's key.
+                                    properties:
+                                      secretKeyRef:
+                                        description: Selects a key of a secret in
+                                          the pod's namespace
+                                        properties:
+                                          key:
+                                            description: The key of the secret to
+                                              select from.  Must be a valid secret
+                                              key.
+                                            type: string
+                                          name:
+                                            description: 'Name of the referent. More
+                                              info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                              TODO: Add other useful fields. apiVersion,
+                                              kind, uid?'
+                                            type: string
+                                          optional:
+                                            description: Specify whether the Secret
+                                              or its key must be defined
+                                            type: boolean
+                                        required:
+                                        - key
+                                        type: object
+                                    type: object
+                                type: object
                               weight:
                                 description: Weight defines the load balancing weight
                                 type: string
@@ -576,7 +744,35 @@ spec:
                                   type: string
                                 password:
                                   description: Password defines the password for authentication.
-                                  type: string
+                                  properties:
+                                    valueFrom:
+                                      description: ValueSource defines how to find
+                                        a value's key.
+                                      properties:
+                                        secretKeyRef:
+                                          description: Selects a key of a secret in
+                                            the pod's namespace
+                                          properties:
+                                            key:
+                                              description: The key of the secret to
+                                                select from.  Must be a valid secret
+                                                key.
+                                              type: string
+                                            name:
+                                              description: 'Name of the referent.
+                                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                TODO: Add other useful fields. apiVersion,
+                                                kind, uid?'
+                                              type: string
+                                            optional:
+                                              description: Specify whether the Secret
+                                                or its key must be defined
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
+                                      type: object
+                                  type: object
                                 port:
                                   description: Port defines the port number of the
                                     host. Note that both TCP packets (event stream)
@@ -598,7 +794,35 @@ spec:
                                   type: string
                                 username:
                                   description: Username defines the username for authentication.
-                                  type: string
+                                  properties:
+                                    valueFrom:
+                                      description: ValueSource defines how to find
+                                        a value's key.
+                                      properties:
+                                        secretKeyRef:
+                                          description: Selects a key of a secret in
+                                            the pod's namespace
+                                          properties:
+                                            key:
+                                              description: The key of the secret to
+                                                select from.  Must be a valid secret
+                                                key.
+                                              type: string
+                                            name:
+                                              description: 'Name of the referent.
+                                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                                TODO: Add other useful fields. apiVersion,
+                                                kind, uid?'
+                                              type: string
+                                            optional:
+                                              description: Specify whether the Secret
+                                                or its key must be defined
+                                              type: boolean
+                                          required:
+                                          - key
+                                          type: object
+                                      type: object
+                                  type: object
                                 weight:
                                   description: Weight defines the load balancing weight
                                   type: string
@@ -681,10 +905,64 @@ spec:
                               type: string
                             password:
                               description: The password for basic authentication.
-                              type: string
+                              properties:
+                                valueFrom:
+                                  description: ValueSource defines how to find a value's
+                                    key.
+                                  properties:
+                                    secretKeyRef:
+                                      description: Selects a key of a secret in the
+                                        pod's namespace
+                                      properties:
+                                        key:
+                                          description: The key of the secret to select
+                                            from.  Must be a valid secret key.
+                                          type: string
+                                        name:
+                                          description: 'Name of the referent. More
+                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                            TODO: Add other useful fields. apiVersion,
+                                            kind, uid?'
+                                          type: string
+                                        optional:
+                                          description: Specify whether the Secret
+                                            or its key must be defined
+                                          type: boolean
+                                      required:
+                                      - key
+                                      type: object
+                                  type: object
+                              type: object
                             username:
                               description: The username for basic authentication.
-                              type: string
+                              properties:
+                                valueFrom:
+                                  description: ValueSource defines how to find a value's
+                                    key.
+                                  properties:
+                                    secretKeyRef:
+                                      description: Selects a key of a secret in the
+                                        pod's namespace
+                                      properties:
+                                        key:
+                                          description: The key of the secret to select
+                                            from.  Must be a valid secret key.
+                                          type: string
+                                        name:
+                                          description: 'Name of the referent. More
+                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                            TODO: Add other useful fields. apiVersion,
+                                            kind, uid?'
+                                          type: string
+                                        optional:
+                                          description: Specify whether the Secret
+                                            or its key must be defined
+                                          type: boolean
+                                      required:
+                                      - key
+                                      type: object
+                                  type: object
+                              type: object
                           type: object
                         contentType:
                           description: ContentType defines Content-Type for HTTP request.
