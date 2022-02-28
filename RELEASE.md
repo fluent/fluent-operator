@@ -66,7 +66,7 @@ git commit -s -m "regenerate setup.yaml"
 git push
 ```
 
-Manually build and push the container image:
+Images will be automatically built and pushed whenever code changes or a tag is created. If users want to build images manually, use the following command:
 
 ```bash
 make build-op-amd64 -e FO_IMG=<image of fluent operator>
@@ -77,8 +77,6 @@ make build-fd-amd64 -e FD_IMG=<image of fluentd>
 docker push <image of fluentd>
 ```
 
-Currently, a CI pipeline automatically pushed the container images to [docker hub](https://hub.docker.com/repository/docker/kubesphere).
-
 Tag the new release with a tag named `v<major>.<minor>.<patch>`, e.g. `v2.1.3`. Note the `v` prefix. You can do the tagging on the commandline:
 
 ```bash
@@ -88,6 +86,11 @@ git push origin "${tag}"
 ```
 Commit all the changes.
 
-Go to https://github.com/fluent/fluent-operator/releases/new, associate the new release with the before pushed tag, paste in changes made to `CHANGELOG.md`, add file `setup.yaml` from `manifests/setup/setup.yaml` and then click "Publish release".
+Finally, create a new release:
 
-For patch releases, submit a pull request to merge back the release branch into the `master` branch.
+- Go to https://github.com/fluent/fluent-operator/releases/new.
+- Associate the new release with the previously pushed tag.
+- Add release notes based on `CHANGELOG.md`.
+- Add file `setup.yaml` from `manifests/setup/setup.yaml` and then click "Publish release".
+
+For patch releases, cherry-pick the commits from the release branch into the master branch.

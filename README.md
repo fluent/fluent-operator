@@ -16,8 +16,8 @@ Once installed, the Fluent Operator provides the following features:
 - [Fluent Operator](#fluent-operator)
   - [Table of contents](#table-of-contents)
   - [Overview](#overview)
-    - [Fluent Bit Operator](#fluent-bit-operator)
-    - [Fluentd Operator](#fluentd-operator)
+    - [Fluent Bit](#fluent-bit)
+    - [Fluentd](#fluentd)
   - [Get Started](#get-started)
     - [Prerequisites](#prerequisites)
     - [Install](#install)
@@ -31,7 +31,7 @@ Once installed, the Fluent Operator provides the following features:
         - [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
         - [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
     - [Collect auditd logs](#collect-auditd-logs)
-    - [Fluentd](#fluentd)
+    - [Fluentd](#fluentd-1)
       - [Collecting logs from Fluent Bit](#collecting-logs-from-fluent-bit)
         - [Enable Fluent Bit forward plugin](#enable-fluent-bit-forward-plugin)
         - [ClusterFluentdConfig: Fluentd cluster-wide configuration](#clusterfluentdconfig-fluentd-cluster-wide-configuration)
@@ -43,8 +43,8 @@ Once installed, the Fluent Operator provides the following features:
       - [Collecting logs over HTTP](#collecting-logs-over-http)
   - [Monitoring](#monitoring)
   - [API Doc](#api-doc)
-    - [Fluent Bit](#fluent-bit)
-    - [Fluentd](#fluentd-1)
+    - [Fluent Bit](#fluent-bit-1)
+    - [Fluentd](#fluentd-2)
   - [Best Practice](#best-practice)
     - [Plugin Grouping](#plugin-grouping)
     - [Path Convention](#path-convention)
@@ -59,11 +59,11 @@ Once installed, the Fluent Operator provides the following features:
 
 ## Overview
 
-Fluent Operator is mainly composed of Fluent Bit Operator and Fluentd Operator.
+Fluent Operator includes CRDs and controllers for both Fluent Bit and Fluentd.
 
-### Fluent Bit Operator
+### Fluent Bit
 
-Fluent Bit Operator defines five custom resources using CustomResourceDefinition (CRD):
+The following CRDs are defined for Fluent Bit:
 - **`FluentBit`**: Defines the Fluent Bit DaemonSet and its configs. A custom Fluent Bit image `kubesphere/fluent-bit` is required to work with FluentBit Operator for dynamic configuration reloading.
 - **`ClusterFluentBitConfig`**: Select cluster-level input/filter/output plugins and generates the final config into a Secret.
 - **`ClusterInput`**: Defines cluster-level input config sections.
@@ -71,7 +71,7 @@ Fluent Bit Operator defines five custom resources using CustomResourceDefinition
 - **`ClusterFilter`**: Defines cluster-level filter config sections.
 - **`ClusterOutput`**: Defines cluster-level output config sections.
 
-Each **`Input`**, **`Parser`**, **`Filter`**, **`Output`** represents a Fluent Bit config section, which are selected by **`FluentBitConfig`** via label selectors. The operator watches those objects, constructs the final config, and finally creates a Secret to store the config. This secret will be mounted into the Fluent Bit DaemonSet. The entire workflow looks like below:
+Each **`ClusterInput`**, **`ClusterParser`**, **`ClusterFilter`**, **`ClusterOutput`** represents a Fluent Bit config section, which are selected by **`ClusterFluentBitConfig`** via label selectors. The operator watches those objects, constructs the final config, and finally creates a Secret to store the config. This secret will be mounted into the Fluent Bit DaemonSet. The entire workflow looks like below:
 
 ![Fluent Bit workflow](docs/images/fluent-bit-operator-workflow.svg)
 
@@ -79,9 +79,9 @@ To enable fluent-bit to pick up and use the latest config whenever the fluent-bi
 
 ![fluentbit-operator](docs/images/fluentbit-operator.svg)
 
-### Fluentd Operator
+### Fluentd
 
-Fluentd Operator defines five custom resources using CustomResourceDefinition (CRD):
+The following CRDs are defined for Fluentd:
 
 - **`Fluentd`**: Defines the Fluentd Statefulset and its configs. A custom Fluentd image `kubesphere/fluentd` is required to work with Fluentd Operator for dynamic configuration reloading.
 - **`FluentdConfig`**: Select cluster-level or namespace-level scope input/filter/output plugins and generates the final config into a Secret.
@@ -177,7 +177,7 @@ kubectl delete -f https://raw.githubusercontent.com/kubesphere/fluentbit-operato
 
 ##### Fluentd quick start
 
-Fluentd can receives logs from Fluent Bit, both needs to enable the forward plugin.
+Fluentd in Fluent Operator is used to receive logs from Fluent Bit or other sources like HTTP and Syslog, etc.
 
 ```
 kubectl apply -f manifests/quick-start/fluentd-forward.yaml
