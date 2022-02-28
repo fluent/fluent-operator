@@ -71,14 +71,14 @@ fluentbit:
 
 fluentd:
   enable: false
-  name: flentd
+  name: fluentd
   port: 24224
   image:
     repository: "kubesphere/fluentd"
     tag: "v1.14.4"
   replicas: 1
   forward:
-    host: "kubesphere-logging-system.svc"
+    host: "fluent.svc"
     port: 24224
   watchedNamespaces:
     - kube-system
