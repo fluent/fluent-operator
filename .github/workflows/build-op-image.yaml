@@ -13,7 +13,9 @@ on:
       - "controllers/**"
       - "hack/**"
       - "manifests/setup/setup.yaml"
-      - "!pkg/filenotify/**"
+      - "pkg/fluentd/router/**"
+      - "pkg/fluentd/operator/**"
+      - "pkg/fluentd/utils/**"
       - "Makefile"
 
 env:

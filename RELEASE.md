@@ -22,68 +22,75 @@ This page describes the release process and the currently planned schedule for u
 | v0.11.0          | 2021-09-01                                 | Wanjun Lei (GitHub: @wanjunlei)         |
 | v0.12.0          | 2021-09-13                                 | Wanjun Lei (GitHub: @wanjunlei)         |
 
-## How to cut an individual release
+# How to cut a new release
 
-These instructions are currently valid for the [fluentbit operator repository](https://github.com/kubesphere/fluentbit-operator.git).
-### Branch management and versioning strategy
+> This guide is strongly based on the [Prometheus release instructions](https://github.com/prometheus/prometheus/blob/master/RELEASE.md).
 
-We use [Semantic Versioning](https://semver.org/).
+## Branch management and versioning strategy
+
+We use [Semantic Versioning](http://semver.org/).
 
 We maintain a separate branch for each minor release, named `release-<major>.<minor>`, e.g. `release-1.1`, `release-2.0`.
 
-Note that branch protection kicks in automatically for any branches whose name starts with `release-`. Never use names starting with `release-` for branches that are not release branches.
+The usual flow is to merge new features and changes into the master branch and to merge bug fixes into the latest release branch. Bug fixes are then merged into master from the latest release branch. The master branch should always contain all commits from the latest release branch.
 
-The usual flow is to merge new features and changes into the main branch and to merge bug fixes into the latest release branch. Bug fixes are then merged into main from the latest release branch. The main branch should always contain all commits from the latest release branch. As long as main hasn't deviated from the release branch, new commits can also go to main, followed by merging main back into the release branch.
-
-If a bug fix got accidentally merged into main after non-bug-fix changes in main, the bug-fix commits have to be cherry-picked into the release branch, which then have to be merged back into main. Try to avoid that situation.
+If a bug fix got accidentally merged into master, cherry-pick commits have to be created in the latest release branch, which then have to be merged back into master. Try to avoid that situation.
 
 Maintaining the release branches for older minor releases happens on a best effort basis.
 
-### 1. Prepare your release
+## Prepare your release
 
-At the start of a new major or minor release cycle create the corresponding release branch based on the main branch. 
-For example if we're releasing `0.6.0` and the previous stable release is `0.5.0` we need to create a `release-0.6` branch. 
-Note that all releases are handled in protected release branches, see the above `Branch management and versioning` section. 
-Release candidates and patch releases for any given major or minor release happen in the same `release-<major>.<minor>` branch. 
-Do not create `release-<version>` for patch or release candidate releases.
+For a new major or minor release, work from the `main` branch. For a patch release, work in the branch of the minor release you want to patch (e.g. `release-0.1` if you're releasing `v0.1.1`).
 
-Note that it need to update the image version of `fluentbit-operator` to the `release-<version>`.
-
-Changes for a patch release or release candidate should be merged into the previously mentioned release branch via pull request.
-
-Bump the version in the `VERSION` file. Do this in a proper PR pointing to the release branch as this gives others the opportunity to chime in on the release in general and on the addition to the changelog in particular. 
-For a release candidate, append something like `-rc.0` to the version (with the corresponding changes to the tag name, the release name etc.).
-
-For release candidates still update `CHANGELOG.md`, but when you cut the final release later, merge all the changes from the pre-releases into the one final update.
-
-Entries in the `CHANGELOG.md` are meant to be in this order:
+Add an entry for the new version to the `CHANGELOG.md` file. Entries in the `CHANGELOG.md` should be in this order:
 
 * `[CHANGE]`
 * `[FEATURE]`
 * `[ENHANCEMENT]`
 * `[BUGFIX]`
 
-### 2. Draft the new release
+Create a PR for the changes to be reviewed.
 
-Tag the new release via the following commands:
+## Publish the new release
+
+For new minor and major releases, create the `release-<major>.<minor>` branch starting at the PR merge commit.
+From now on, all work happens on the `release-<major>.<minor>` branch.
+
+Bump the version in the `VERSION` file in the root of the repository.
+
+Regenerate setup.yaml based on latest code and then commit the changed bundle.yaml to the `release-<major>.<minor>` branch:
+```bash
+make manifests
+git add ./
+git commit -s -m "regenerate setup.yaml"
+git push
+```
+
+Images will be automatically built and pushed whenever code changes or a tag is created. If users want to build images manually, use the following command:
 
 ```bash
-$ tag="v$(< VERSION)"
-$ git tag -s "${tag}" -m "${tag}"
-$ git push origin "${tag}"
+make build-op-amd64 -e FO_IMG=<image of fluent operator>
+docker push <image of fluent operator>
+make build-fb-amd64 -e FB_IMG=<image of fluent bit>
+docker push <image of fluent bit>
+make build-fd-amd64 -e FD_IMG=<image of fluentd>
+docker push <image of fluentd>
 ```
 
-Optionally, you can use this handy `.gitconfig` alias.
-
-```ini
-[alias]
-  tag-release = "!f() { tag=v${1:-$(cat VERSION)} ; git tag -s ${tag} -m ${tag} && git push origin ${tag}; }; f"
-```
-
-Then release with `git tag-release`.
-
-### 3. Build and push image
+Tag the new release with a tag named `v<major>.<minor>.<patch>`, e.g. `v2.1.3`. Note the `v` prefix. You can do the tagging on the commandline:
 
 ```bash
-make build
+tag="$(< VERSION)"
+git tag -a "${tag}" -m "${tag}"
+git push origin "${tag}"
 ```
+Commit all the changes.
+
+Finally, create a new release:
+
+- Go to https://github.com/fluent/fluent-operator/releases/new.
+- Associate the new release with the previously pushed tag.
+- Add release notes based on `CHANGELOG.md`.
+- Add file `setup.yaml` from `manifests/setup/setup.yaml` and then click "Publish release".
+
+For patch releases, cherry-pick the commits from the release branch into the master branch.
