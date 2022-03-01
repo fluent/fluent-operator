@@ -71,7 +71,7 @@ fluentbit:
 
 fluentd:
   enable: false
-  name: flentd
+  name: fluentd
   port: 24224
   image:
     repository: "kubesphere/fluentd"

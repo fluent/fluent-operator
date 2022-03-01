@@ -169,5 +169,8 @@ docs-update: # update api docs
 e2e: # make e2e tests
 	chmod a+x tests/scripts/fluentd_e2e.sh && bash tests/scripts/fluentd_e2e.sh
 
+helm-e2e: # make helm e2e tests
+	chmod a+x tests/scripts/fluentd_helm_e2e.sh && bash tests/scripts/fluentd_helm_e2e.sh
+
 update-helm-package: # update helm repo
 	chmod a+x ./hack/update-helm-package.sh && ./hack/update-helm-package.sh
