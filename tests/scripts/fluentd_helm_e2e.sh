@@ -10,36 +10,35 @@ function build_ginkgo_test() {
 
 function cleanup() {
   cd $PROJECT_ROOT
-  kubectl delete -f manifests/setup/setup.yaml
+  helm uninstall fluent-operator -n $LOGGING_NAMESPACE
   kubectl delete ns $LOGGING_NAMESPACE
   kind delete cluster --name test && exit 0
 }
 
 function prepare_cluster() {
-  kind create cluster --name test 
+  kind create cluster --name test
   kubectl create ns $LOGGING_NAMESPACE
 
   echo "wait the control-plane ready..."
   kubectl wait --for=condition=Ready node/test-control-plane --timeout=60s
 }
 
-function build_image() { 
+function build_image() {
   cd $PROJECT_ROOT
   make build-op-amd64 -e FO_IMG=kubesphere/fluent-operator:$IMAGE_TAG
   kind load docker-image kubesphere/fluent-operator:$IMAGE_TAG --name test
 }
 
 function start_fluent_operator() {
-  cd $PROJECT_ROOT && kubectl apply -f manifests/setup/setup.yaml
+  cd $PROJECT_ROOT && helm install fluent-operator  --create-namespace -n $LOGGING_NAMESPACE charts/fluent-operator/  --set operator.container.tag=$IMAGE_TAG
   kubectl -n $LOGGING_NAMESPACE wait --for=condition=available deployment/fluent-operator --timeout=60s
-  kubectl patch deployment fluent-operator --patch '{"spec": {"template": {"spec": {"containers": [{"name": "fluent-operator","image":"kubesphere/fluent-operator:${IMAGE_TAG}"}]}}}}' -n $LOGGING_NAMESPACE
 }
 
 function run_test() {
   # inspired by github.com/kubeedge/kubeedge/tests/e2e/scripts/helm_keadm_e2e.sh
   :> /tmp/testcase.log
   $E2E_DIR/e2e/fluentd/fluentd.test $debugflag 2>&1 | tee -a /tmp/testcase.log
-  
+
   grep  -e "Running Suite" -e "SUCCESS\!" -e "FAIL\!" /tmp/testcase.log | sed -r 's/\x1B\[([0-9];)?([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g' | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g'
   echo "Integration Test Final Summary Report"
   echo "======================================================="
