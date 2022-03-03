@@ -1713,7 +1713,12 @@ spec:
           status:
             description: FluentdStatus defines the observed state of Fluentd
             properties:
-              errs:
+              messages:
+                description: Messages defines the plugin errors which is selected
+                  by this fluentdconfig
+                type: string
+              state:
+                description: The state of this fluentd
                 type: string
             type: object
         type: object

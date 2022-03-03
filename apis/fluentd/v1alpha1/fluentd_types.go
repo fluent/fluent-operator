@@ -23,6 +23,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+const (
+	ActiveState   StatusState = "active"
+	InactiveState StatusState = "inactive"
+)
+
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
@@ -76,7 +81,10 @@ type BufferVolume struct {
 
 // FluentdStatus defines the observed state of Fluentd
 type FluentdStatus struct {
-	Errors string `json:"errs,omitempty"`
+	// Messages defines the plugin errors which is selected by this fluentdconfig
+	Messages string `json:"messages,omitempty"`
+	// The state of this fluentd
+	State StatusState `json:"state,omitempty"`
 }
 
 //+kubebuilder:object:root=true
