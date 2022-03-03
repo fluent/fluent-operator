@@ -1,7 +1,7 @@
 PROJECT_ROOT=$PWD
 E2E_DIR=$(realpath $(dirname $0)/..)
 LOGGING_NAMESPACE=kubesphere-logging-system
-IMAGE_TAG=`date "+%Y-%m-%d-%H-%M-%S"`
+IMAGE_TAG=latest
 
 function build_ginkgo_test() {
   cd $E2E_DIR
@@ -25,7 +25,7 @@ function prepare_cluster() {
 
 function build_image() { 
   cd $PROJECT_ROOT
-  make build-op-amd64 -e FO_IMG=kubesphere/fluent-operator:$IMAGE_TAG
+##  make build-op-amd64 -e FO_IMG=kubesphere/fluent-operator:$IMAGE_TAG
   kind load docker-image kubesphere/fluent-operator:$IMAGE_TAG --name test
 }
 
