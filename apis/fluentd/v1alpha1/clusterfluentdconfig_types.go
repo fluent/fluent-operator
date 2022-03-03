@@ -22,6 +22,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type StatusState string
+
+const (
+	InvalidState StatusState = "invalid"
+	ValidState   StatusState = "valid"
+)
+
 // ClusterFluentdConfigSpec defines the desired state of ClusterFluentdConfig
 type ClusterFluentdConfigSpec struct {
 	// Emit mode. If batch, the plugin will emit events per labels matched. Enum: record, batch.
@@ -47,8 +54,10 @@ type ClusterFluentdConfigSpec struct {
 
 // ClusterFluentdConfigStatus defines the observed state of ClusterFluentdConfig
 type ClusterFluentdConfigStatus struct {
-	// Errors defines the plugin errors which is selected by this fluentdconfig
-	Errors string `json:"errors,omitempty"`
+	// Messages defines the plugin errors which is selected by this fluentdconfig
+	Messages string `json:"messages,omitempty"`
+	// The state of this fluentd config
+	State StatusState `json:"state,omitempty"`
 }
 
 //+kubebuilder:object:root=true

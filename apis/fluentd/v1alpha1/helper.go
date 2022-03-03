@@ -2,6 +2,7 @@ package v1alpha1
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -211,9 +212,9 @@ func (r *CfgResources) filterForOutputs(cfgId, namespace, name, crdtype string,
 }
 
 // convert the cfg plugins to a label plugin, appends to the global label plugins
-func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResources) {
+func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResources) error {
 	if len(r.FilterPlugins) == 0 && len(r.OutputPlugins) == 0 {
-		return
+		return errors.New("no filter plugins or output plugins matched")
 	}
 
 	cfgLabelPlugin := params.NewPluginStore("label")
@@ -232,6 +233,7 @@ func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResourc
 	}
 
 	pgr.LabelPluginResources = append(pgr.LabelPluginResources, *cfgLabelPlugin)
+	return nil
 }
 
 func (pgr *PluginResources) RenderMainConfig(enableMultiWorkers bool) (string, error) {

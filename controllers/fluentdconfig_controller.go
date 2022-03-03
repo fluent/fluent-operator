@@ -26,7 +26,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -72,6 +71,8 @@ const (
 	</match>
 </label>
 `
+
+	EMPTY_CFG = ``
 )
 
 // FluentdConfigReconciler reconciles a FluentdConfig object
@@ -106,7 +107,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	// List all fluentd instances to bind the generated runtime configuration to each fluentd.
 	if err := r.List(ctx, &fluentdList); err != nil {
 		if errors.IsNotFound(err) {
-			r.Log.V(1).Info("can not find fluentd CR definition.")
+			r.Log.Info("can not find fluentd CR definition.")
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Duration(1)}, nil
 		}
 		return ctrl.Result{}, err
@@ -117,9 +118,11 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		fdSelector, err := metav1.LabelSelectorAsSelector(&fd.Spec.FluentdCfgSelector)
 		if err != nil {
 			// Patch this fluentd instance if the selectors exsit errors
-			if err := r.PatchObjectErrors(ctx, &fd, err.Error()); err != nil {
+			if err := r.PatchObjects(ctx, &fd, fluentdv1alpha1.InactiveState, err.Error()); err != nil {
 				return ctrl.Result{}, err
 			}
+
+			continue
 		}
 
 		// A secret loader supports LoadSecret method to parse the targeted secret.
@@ -136,30 +139,54 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		globalCfgLabels := make(map[string]bool)
 
 		// Combine the resources matching the FluentdClusterConfigs selector into gpr
-		if err := r.ClusterCfgsForFluentd(ctx, fdSelector, sl, gpr, globalCfgLabels); err != nil {
+		var clustercfgs fluentdv1alpha1.ClusterFluentdConfigList
+		// Use fluentd selector to match the cluster config.
+		if err := r.List(ctx, &clustercfgs, client.MatchingLabelsSelector{Selector: fdSelector}); err != nil {
+			if !errors.IsNotFound(err) {
+				return ctrl.Result{}, err
+			}
+		}
+		if err := r.ClusterCfgsForFluentd(ctx, clustercfgs, sl, gpr, globalCfgLabels); err != nil {
 			return ctrl.Result{}, err
 		}
 
 		// Combine the resources matching the FluentdConfigs selector into gpr
-		if err := r.CfgsForFluentd(ctx, fdSelector, sl, gpr, globalCfgLabels); err != nil {
+		var cfgs fluentdv1alpha1.FluentdConfigList
+		// Use fluentd selector to match the cluster config.
+		if err := r.List(ctx, &cfgs, client.MatchingLabelsSelector{Selector: fdSelector}); err != nil {
+			if !errors.IsNotFound(err) {
+				return ctrl.Result{}, err
+			}
+		}
+		if err := r.CfgsForFluentd(ctx, cfgs, sl, gpr, globalCfgLabels); err != nil {
 			return ctrl.Result{}, err
 		}
 
-		// Get fluentd workers
-		var workers int32 = 1
-		var enableMultiWorkers bool
-		if fd.Spec.Workers != nil {
-			workers = *fd.Spec.Workers
-		}
-
-		if workers > 1 {
-			enableMultiWorkers = true
-		}
-
-		// Create or update the secret of the fluentd instance in its namespace.
-		mainAppCfg, err := gpr.RenderMainConfig(enableMultiWorkers)
-		if err != nil {
+		// Checks and returns the state of the matched cfgs
+		state, msg := r.CheckAllState(cfgs, clustercfgs)
+		if err := r.PatchObjects(ctx, &fd, state, msg); err != nil {
 			return ctrl.Result{}, err
+		}
+
+		var mainAppCfg string
+		var systemCfg string
+		if state == fluentdv1alpha1.InactiveState {
+			mainAppCfg = EMPTY_CFG
+			systemCfg = EMPTY_CFG
+		} else {
+			// Get fluentd workers
+			var workers int32 = 1
+			if fd.Spec.Workers != nil {
+				workers = *fd.Spec.Workers
+			}
+
+			// Create or update the secret of the fluentd instance in its namespace.
+			mainAppCfg, err = gpr.RenderMainConfig(bool(workers > 1))
+			if err != nil {
+				return ctrl.Result{}, err
+			}
+
+			systemCfg = fmt.Sprintf(SYSTEM, workers)
 		}
 
 		secName := fmt.Sprintf("%s-config", fd.Name)
@@ -175,7 +202,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			sec.Data = map[string][]byte{
 				FluentdSecretMainKey:   []byte(FlUENT_INCLUDE),
 				FluentdSecretAppKey:    []byte(mainAppCfg),
-				FluentdSecretSystemKey: []byte(fmt.Sprintf(SYSTEM, workers)),
+				FluentdSecretSystemKey: []byte(systemCfg),
 				FluentdSecretLogKey:    []byte(FLUENTD_LOG),
 			}
 			// The current fd owns the namespaced secret.
@@ -189,7 +216,6 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 
 		r.Log.Info("Fluentd main configuration has updated", "logging-control-plane", fd.Namespace, "fd", fd.Name, "secret", secName)
-
 	}
 
 	return ctrl.Result{}, nil
@@ -197,17 +223,8 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 // ClusterCfgsForFluentd combines all cluster cfgs selected by this fd
 func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
-	ctx context.Context, fdSelector labels.Selector, sl plugins.SecretLoader, gpr *fluentdv1alpha1.PluginResources,
+	ctx context.Context, clustercfgs fluentdv1alpha1.ClusterFluentdConfigList, sl plugins.SecretLoader, gpr *fluentdv1alpha1.PluginResources,
 	globalCfgLabels map[string]bool) error {
-
-	var clustercfgs fluentdv1alpha1.ClusterFluentdConfigList
-	// Use fluentd selector to match the cluster config.
-	if err := r.List(ctx, &clustercfgs, client.MatchingLabelsSelector{Selector: fdSelector}); err != nil {
-		if errors.IsNotFound(err) {
-			return nil
-		}
-		return err
-	}
 
 	for _, cfg := range clustercfgs.Items {
 		// If the field watchedNamespaces is empty, all namesapces will be watched.
@@ -231,34 +248,58 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 		// Each cfg is a workflow.
 		cfgRouter, err := gpr.BuildCfgRouter(&cfg)
 		if err != nil {
-			return err
+			r.Log.Info("Build router failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
+				return err
+			}
+
+			continue
 		}
 
 		cfgRouterLabel := fmt.Sprint(*cfgRouter.Label)
 		if err := r.registerCfgLabel(cfgRouterLabel, globalCfgLabels); err != nil {
-			r.Log.V(1).Info(err.Error())
-			return err
+			r.Log.Info("Register fluentd config label failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
+				return err
+			}
+
+			continue
 		}
 
 		// list all cluster CRs
 		clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(ctx, cfg.GetCfgId(), cfg.Spec.ClusterFilterSelector, cfg.Spec.ClusterOutputSelector)
 		if err != nil {
-			return err
-		}
-
-		// The errors array patched to this cfg if this array is not empty.
-		errs := make([]string, 0)
-
-		// Combine the filter/output pluginstores in this fluentd config.
-		cfgResouces, combinedErrs := gpr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
-		gpr.WithCfgResources(cfgRouterLabel, cfgResouces)
-		errs = append(errs, combinedErrs...)
-
-		if len(errs) > 0 {
-			err = r.PatchObjectErrors(ctx, &cfg, strings.Join(errs, ","))
-			if err != nil {
+			r.Log.Info("List cluster level resources failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
 				return err
 			}
+
+			continue
+		}
+
+		// Combine the filter/output pluginstores in this fluentd config.
+		cfgResouces, errs := gpr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
+		if len(errs) > 0 {
+			r.Log.Info("Patch and filter cluster level resources failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, strings.Join(errs, ", ")); err != nil {
+				return err
+			}
+
+			continue
+		}
+
+		// WithCfgResources will collect all plugins to generate main config.
+		var msg string
+		err = gpr.WithCfgResources(cfgRouterLabel, cfgResouces)
+		if err != nil {
+			r.Log.Info("Combine resources failed", "config", cfg.Name, "err", err.Error())
+			msg = err.Error()
+		} else {
+			msg = "Generate fluentd configs successfully"
+		}
+
+		if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, msg); err != nil {
+			return err
 		}
 	}
 
@@ -266,67 +307,122 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 }
 
 // CfgsForFluentd combines all namespaced cfgs selected by this fd
-func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, fdSelector labels.Selector, sl plugins.SecretLoader,
+func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, cfgs fluentdv1alpha1.FluentdConfigList, sl plugins.SecretLoader,
 	gpr *fluentdv1alpha1.PluginResources, globalCfgLabels map[string]bool) error {
-
-	var cfgs fluentdv1alpha1.FluentdConfigList
-	// Use fluentd selector to match the namespaced configs.
-	if err := r.List(ctx, &cfgs, client.MatchingLabelsSelector{Selector: fdSelector}); err != nil {
-		if errors.IsNotFound(err) {
-			return nil
-		}
-		return err
-	}
 
 	for _, cfg := range cfgs.Items {
 		// build the inner router for this cfg.
 		cfgRouter, err := gpr.BuildCfgRouter(&cfg)
 		if err != nil {
-			return err
+			r.Log.Info("Build router failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
+				return err
+			}
+
+			continue
 		}
 
 		// register routeLabel, the same routelabel is not allowed.
 		cfgRouterLabel := fmt.Sprint(*cfgRouter.Label)
 		if err := r.registerCfgLabel(cfgRouterLabel, globalCfgLabels); err != nil {
-			r.Log.V(1).Info(err.Error())
-			return err
+			r.Log.Info("Register fluentd config label failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
+				return err
+			}
+
+			continue
 		}
 
 		// list all cluster CRs
 		clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(ctx, cfg.GetCfgId(), cfg.Spec.ClusterFilterSelector, cfg.Spec.ClusterOutputSelector)
 		if err != nil {
-			return err
+			r.Log.Info("List cluster level resources failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
+				return err
+			}
+
+			continue
 		}
 
 		// list all namespaced CRs
 		filters, outputs, err := r.ListNamespacedLevelResources(ctx, cfg.Namespace, cfg.GetCfgId(), cfg.Spec.FilterSelector, cfg.Spec.OutputSelector)
 		if err != nil {
-			return err
-		}
-
-		// The errors array patched to this cfg if this array is not empty.
-		errs := make([]string, 0)
-
-		// Combine the cluster filter/output pluginstores in this fluentd config.
-		clustercfgResouces, cerrs := gpr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
-		errs = append(errs, cerrs...)
-
-		// Combine the namespaced filter/output pluginstores in this fluentd config.
-		cfgResouces, nerrs := gpr.PatchAndFilterNamespacedLevelResources(sl, cfg.GetCfgId(), filters, outputs)
-		cfgResouces.FilterPlugins = append(cfgResouces.FilterPlugins, clustercfgResouces.FilterPlugins...)
-		cfgResouces.OutputPlugins = append(cfgResouces.OutputPlugins, clustercfgResouces.OutputPlugins...)
-		gpr.WithCfgResources(cfgRouterLabel, cfgResouces)
-		errs = append(errs, nerrs...)
-
-		if len(errs) > 0 {
-			err = r.PatchObjectErrors(ctx, &cfg, strings.Join(errs, ","))
-			if err != nil {
+			r.Log.Info("List namespace level resources failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
 				return err
 			}
+
+			continue
+		}
+
+		// Combine the cluster filter/output pluginstores in this fluentd config.
+		clustercfgResouces, errs := gpr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterfilters, clusteroutputs)
+		if len(errs) > 0 {
+			r.Log.Info("Patch and filter cluster level resources failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, strings.Join(errs, ", ")); err != nil {
+				return err
+			}
+
+			continue
+		}
+
+		// Combine the namespaced filter/output pluginstores in this fluentd config.
+		cfgResouces, errs := gpr.PatchAndFilterNamespacedLevelResources(sl, cfg.GetCfgId(), filters, outputs)
+		if len(errs) > 0 {
+			r.Log.Info("Patch and filter namespace level resources failed", "config", cfg.Name, "err", err.Error())
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, strings.Join(errs, ", ")); err != nil {
+				return err
+			}
+
+			continue
+		}
+
+		cfgResouces.FilterPlugins = append(cfgResouces.FilterPlugins, clustercfgResouces.FilterPlugins...)
+		cfgResouces.OutputPlugins = append(cfgResouces.OutputPlugins, clustercfgResouces.OutputPlugins...)
+
+		// WithCfgResources will collect all plugins to generate main config.
+		var msg string
+		err = gpr.WithCfgResources(cfgRouterLabel, cfgResouces)
+		if err != nil {
+			r.Log.Info("Combine resources failed", "config", cfg.Name, "err", err.Error())
+			msg = err.Error()
+		} else {
+			msg = "Generate fluentd configs successfully"
+		}
+
+		if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, msg); err != nil {
+			return err
 		}
 	}
 
 	return nil
+}
+
+func (r *FluentdConfigReconciler) CheckAllState(
+	cfgs fluentdv1alpha1.FluentdConfigList, clustercfgs fluentdv1alpha1.ClusterFluentdConfigList) (fluentdv1alpha1.StatusState, string) {
+	invalidCfgIds := make([]string, 0, len(cfgs.Items)+len(cfgs.Items))
+
+	for _, cfg := range cfgs.Items {
+		if cfg.Status.State == fluentdv1alpha1.InvalidState {
+			invalidCfgIds = append(invalidCfgIds, cfg.GetCfgId())
+		}
+	}
+
+	for _, cfg := range clustercfgs.Items {
+		if cfg.Status.State == fluentdv1alpha1.InvalidState {
+			invalidCfgIds = append(invalidCfgIds, cfg.GetCfgId())
+		}
+	}
+
+	if len(invalidCfgIds) == 0 {
+		return fluentdv1alpha1.ActiveState, "all matched cfgs is valid"
+	}
+
+	if len(invalidCfgIds) < cap(invalidCfgIds) {
+		return fluentdv1alpha1.ActiveState, "part of the cfgs are invalid. Invalid cfgs: " + strings.Join(invalidCfgIds, ", ")
+	}
+
+	return fluentdv1alpha1.InactiveState, "all matched cfgs is invalid. Invalid cfgs: " + strings.Join(invalidCfgIds, ", ")
 }
 
 // registerCfgLabel registers a cfglabel for this clustercfg/cfg
@@ -398,24 +494,27 @@ func (r *FluentdConfigReconciler) ListNamespacedLevelResources(ctx context.Conte
 	return filters.Items, outputs.Items, nil
 }
 
-// PatchObjectErrors patches the errors to the obj
-func (r *FluentdConfigReconciler) PatchObjectErrors(ctx context.Context, obj client.Object, errs string) error {
+// PatchObjects patches the errors to the obj
+func (r *FluentdConfigReconciler) PatchObjects(ctx context.Context, obj client.Object, state fluentdv1alpha1.StatusState, msg string) error {
 	switch o := obj.(type) {
 	case *fluentdv1alpha1.ClusterFluentdConfig:
-		o.Status.Errors = errs
-		err := r.Status().Patch(ctx, o, client.MergeFromWithOptions(o))
+		o.Status.State = state
+		o.Status.Messages = msg
+		err := r.Status().Update(ctx, o)
 		if err != nil {
 			return err
 		}
 	case *fluentdv1alpha1.FluentdConfig:
-		o.Status.Errors = errs
-		err := r.Status().Patch(ctx, o, client.MergeFromWithOptions(o))
+		o.Status.State = state
+		o.Status.Messages = msg
+		err := r.Status().Update(ctx, o)
 		if err != nil {
 			return err
 		}
 	case *fluentdv1alpha1.Fluentd:
-		o.Status.Errors = errs
-		err := r.Status().Patch(ctx, o, client.MergeFromWithOptions(o))
+		o.Status.State = state
+		o.Status.Messages = msg
+		err := r.Status().Update(ctx, o)
 		if err != nil {
 			return err
 		}

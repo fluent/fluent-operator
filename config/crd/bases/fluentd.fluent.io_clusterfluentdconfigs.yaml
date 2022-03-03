@@ -167,9 +167,12 @@ spec:
             description: ClusterFluentdConfigStatus defines the observed state of
               ClusterFluentdConfig
             properties:
-              errors:
-                description: Errors defines the plugin errors which is selected by
-                  this fluentdconfig
+              messages:
+                description: Messages defines the plugin errors which is selected
+                  by this fluentdconfig
+                type: string
+              state:
+                description: The state of this fluentd config
                 type: string
             type: object
         type: object
