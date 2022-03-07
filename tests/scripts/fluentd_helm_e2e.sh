@@ -30,8 +30,9 @@ function build_image() {
 }
 
 function start_fluent_operator() {
-  cd $PROJECT_ROOT && helm install fluent-operator  --create-namespace -n $LOGGING_NAMESPACE charts/fluent-operator/  --set operator.container.tag=$IMAGE_TAG
-  kubectl -n $LOGGING_NAMESPACE wait --for=condition=available deployment/fluent-operator --timeout=60s
+  cd $PROJECT_ROOT && helm install fluent-operator  --create-namespace -n $LOGGING_NAMESPACE charts/fluent-operator/
+  kubectl patch deployment fluent-operator --patch '{"spec": {"template": {"spec": {"containers": [{"name": "fluent-operator","image":"kubesphere/fluent-operator:${IMAGE_TAG}"}]}}}}' -n $LOGGING_NAMESPACE
+  kubectl -n $LOGGING_NAMESPACE wait --for=condition=available deployment/fluent-operator --timeout=120s
 }
 
 function run_test() {

@@ -49,8 +49,10 @@ type FluentdConfigSpec struct {
 
 // FluentdConfigStatus defines the observed state of FluentdConfig
 type FluentdConfigStatus struct {
-	// Errors defines the plugin errors which is selected by this fluentdconfig
-	Errors string `json:"errors,omitempty"`
+	// Messages defines the plugin errors which is selected by this fluentdconfig
+	Messages string `json:"messages,omitempty"`
+	// The state of this fluentd config
+	State StatusState `json:"state,omitempty"`
 }
 
 //+kubebuilder:object:root=true
