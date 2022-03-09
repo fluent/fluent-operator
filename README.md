@@ -59,7 +59,19 @@ Once installed, the Fluent Operator provides the following features:
 
 ## Overview
 
-Fluent Operator includes CRDs and controllers for both Fluent Bit and Fluentd.
+Although both Fluent Bit and Fluentd are able to collect, process(parse and filter) and then forward log to the final destinations, still they have their own strengh in different aspects.
+
+Fluent Bit is a good choice as a logging agent because of its lightweight and efficiency, while Fluentd is more powerful to perform advanced processing on logs because of its rich plugins.
+
+- Fluent Bit only mode: If you just need to collect log and send logs to the final destinations, all you need is Fluent Bit.
+- Fluent Bit + Fluentd mode: If you also need to perform some advanced processing on the logs collected or send to more sinks, then you also need Fluentd.
+- Fluentd only mode: If you need to receive logs through network like HTTP or Syslog and then process and send the log to the final sinks, you only need Fluentd.
+
+Fluent Operator includes CRDs and controllers for both Fluent Bit and Fluentd which allows you to config your log processing pipelines in the 3 modes mentioned above as you wish.
+
+Fluent Bit will be deployed as a DaemonSet while Fluentd will be deployed as a StatefulSet. The whole workflow could be described as below:
+
+![Fluent-operator](docs/images/fluent-operator.svg)
 
 ### Fluent Bit
 
@@ -71,11 +83,11 @@ The following CRDs are defined for Fluent Bit:
 - **`ClusterFilter`**: Defines cluster-level filter config sections.
 - **`ClusterOutput`**: Defines cluster-level output config sections.
 
-Each **`ClusterInput`**, **`ClusterParser`**, **`ClusterFilter`**, **`ClusterOutput`** represents a Fluent Bit config section, which are selected by **`ClusterFluentBitConfig`** via label selectors. The operator watches those objects, constructs the final config, and finally creates a Secret to store the config. This secret will be mounted into the Fluent Bit DaemonSet. The entire workflow looks like below:
+Each **`ClusterInput`**, **`ClusterParser`**, **`ClusterFilter`**, **`ClusterOutput`** represents a Fluent Bit config section, which are selected by **`ClusterFluentBitConfig`** via label selectors. Fluent Operator watches those objects, constructs the final config, and finally creates a Secret to store the config which will be mounted into the Fluent Bit DaemonSet. The entire workflow looks like below:
 
 ![Fluent Bit workflow](docs/images/fluent-bit-operator-workflow.svg)
 
-To enable fluent-bit to pick up and use the latest config whenever the fluent-bit config changes, a wrapper called fluent-bit watcher is added to restart the fluent-bit process as soon as fluent-bit config changes are detected. This way the fluent-bit pod needn't be restarted to reload the new config. The fluent-bit config is reloaded in this way because there is no reload interface in fluent-bit itself. Please refer to this [known issue](https://github.com/fluent/fluent-bit/issues/365) for more details.
+To enable Fluent Bit to pick up and use the latest config whenever the Fluent Bit config changes, a wrapper called Fluent Bit watcher is added to restart the Fluent Bit process as soon as Fluent Bit config changes are detected. This way, the Fluent Bit pod needn't be restarted to reload the new config. The Fluent Bit config is reloaded in this way because there is no reloading interface in Fluent Bit itself. Please refer to this [known issue](https://github.com/fluent/fluent-bit/issues/365) for more details.
 
 ![fluentbit-operator](docs/images/fluentbit-operator.svg)
 
@@ -90,10 +102,6 @@ The following CRDs are defined for Fluentd:
 - **`ClusterFilter`**: Defines cluster-level filter config sections.
 - **`Output`**: Defines namespace-level output config sections.
 - **`ClusterOutput`**: Defines cluster-level output config sections.
-
-Fluentd Operator can be used to perform more advanced processing on logs received from Fluent Bit and then forward logs to more sinks like S3, Kafka, Elasticsearch, etc. The whole workflow could be described as below.
-
-![Fluent-operator](docs/images/fluent-operator.svg)
 
 ## Get Started
 
@@ -127,9 +135,10 @@ kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/mas
 
 ##### Deploy Fluent Operator with Helm
 
-> Note: For the Helm-based installation you need Helm v3.2.1 or later.
+> Note: For the helm based install, Helm v3.2.1 or higher is needed.
 
-The Fluent Bit section of the Fluent Operator supports different CRI `docker` as well as `containerd` and `CRI-O`. `containerd` and `CRI-O` use the `CRI Log` format which is slightly different and requires additional parsing to parse JSON application logs. You should set different `containerRuntime` depending on your container runtime.
+The Fluent Bit section of the Fluent Operator supports different CRI `docker`, `containerd`,  and `CRI-O`. 
+`containerd` and `CRI-O` use the `CRI Log` format which is different with `docker`, they requires additional parser to parse JSON application logs. You should set different `containerRuntime` depending on your container runtime.
 
 If your container runtime is `docker`
 
