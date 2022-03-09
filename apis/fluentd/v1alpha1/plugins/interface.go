@@ -1,6 +1,6 @@
 package plugins
 
-import "fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
+import "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 
 // +kubebuilder:object:generate=false
 

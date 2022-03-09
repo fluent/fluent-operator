@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"strings"
 
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/filter"
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/input"
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/output"
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
-	fluentdRouter "fluent.io/fluent-operator/pkg/fluentd/router"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/filter"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/input"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/output"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
+	fluentdRouter "github.com/fluent/fluent-operator/pkg/fluentd/router"
 )
 
 // +kubebuilder:object:generate=false

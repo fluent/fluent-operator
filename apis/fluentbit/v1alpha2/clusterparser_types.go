@@ -22,8 +22,8 @@ import (
 	"reflect"
 	"sort"
 
-	"fluent.io/fluent-operator/apis/fluentbit/v1alpha2/plugins"
-	"fluent.io/fluent-operator/apis/fluentbit/v1alpha2/plugins/parser"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/parser"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

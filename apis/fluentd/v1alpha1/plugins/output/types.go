@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
 // OutputCommon defines the common parameters for output plugin

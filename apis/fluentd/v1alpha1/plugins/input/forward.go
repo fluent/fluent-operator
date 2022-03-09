@@ -1,7 +1,7 @@
 package input
 
 import (
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
 )
 
 // Forward defines the in_forward Input plugin that listens to a TCP socket to receive the event stream.

@@ -3,7 +3,7 @@ layout:
 - go.kubebuilder.io/v3
 multigroup: true
 projectName: fluent-operator
-repo: fluent.io/fluent-operator
+repo: fluent/fluent-operator
 resources:
 - api:
     crdVersion: v1
@@ -12,7 +12,7 @@ resources:
   domain: fluent.io
   group: fluentbit
   kind: FluentBitConfig
-  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
+  path: fluent/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
@@ -20,7 +20,7 @@ resources:
   domain: fluent.io
   group: fluentbit
   kind: FluentBit
-  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
+  path: fluent/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
@@ -28,7 +28,7 @@ resources:
   domain: fluent.io
   group: fluentbit
   kind: Input
-  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
+  path: fluent/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
@@ -36,7 +36,7 @@ resources:
   domain: fluent.io
   group: fluentbit
   kind: Filter
-  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
+  path: fluent/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
@@ -44,7 +44,7 @@ resources:
   domain: fluent.io
   group: fluentbit
   kind: Output
-  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
+  path: fluent/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
@@ -52,7 +52,7 @@ resources:
   domain: fluent.io
   group: fluentbit
   kind: Parser
-  path: fluent.io/fluent-operator/apis/fluentbit/v1alpha2
+  path: fluent/fluent-operator/apis/fluentbit/v1alpha2
   version: v1alpha2
 - api:
     crdVersion: v1
@@ -61,7 +61,7 @@ resources:
   domain: fluent.io
   group: fluentd
   kind: Fluentd
-  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  path: fluent/fluent-operator/apis/fluentd/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -69,7 +69,7 @@ resources:
   domain: fluent.io
   group: fluentd
   kind: ClusterFluentdConfig
-  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  path: fluent/fluent-operator/apis/fluentd/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -78,14 +78,14 @@ resources:
   domain: fluent.io
   group: fluentd
   kind: FluentdConfig
-  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  path: fluent/fluent-operator/apis/fluentd/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
   domain: fluent.io
   group: fluentd
   kind: ClusterFilter
-  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  path: fluent/fluent-operator/apis/fluentd/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -93,7 +93,7 @@ resources:
   domain: fluent.io
   group: fluentd
   kind: Filter
-  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  path: fluent/fluent-operator/apis/fluentd/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -101,7 +101,7 @@ resources:
   domain: fluent.io
   group: fluentd
   kind: ClusterOutput
-  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  path: fluent/fluent-operator/apis/fluentd/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -109,6 +109,6 @@ resources:
   domain: fluent.io
   group: fluentd
   kind: Output
-  path: fluent.io/fluent-operator/apis/fluentd/v1alpha1
+  path: fluent/fluent-operator/apis/fluentd/v1alpha1
   version: v1alpha1
 version: "3"

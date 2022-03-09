@@ -3,9 +3,9 @@ package output
 import (
 	"fmt"
 
-	"fluent.io/fluent-operator/apis/fluentbit/v1alpha2/plugins"
-	"fluent.io/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
-	"fluent.io/fluent-operator/pkg/utils"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/pkg/utils"
 )
 
 // +kubebuilder:object:generate:=true
