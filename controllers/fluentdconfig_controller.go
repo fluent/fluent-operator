@@ -298,7 +298,7 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 			msg = "Generate fluentd configs successfully"
 		}
 
-		if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, msg); err != nil {
+		if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.ValidState, msg); err != nil {
 			return err
 		}
 	}
@@ -390,7 +390,7 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, cfgs fluen
 			msg = "Generate fluentd configs successfully"
 		}
 
-		if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, msg); err != nil {
+		if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.ValidState, msg); err != nil {
 			return err
 		}
 	}
@@ -500,22 +500,19 @@ func (r *FluentdConfigReconciler) PatchObjects(ctx context.Context, obj client.O
 	case *fluentdv1alpha1.ClusterFluentdConfig:
 		o.Status.State = state
 		o.Status.Messages = msg
-		err := r.Status().Update(ctx, o)
-		if err != nil {
+		if err := r.Status().Update(ctx, o); err != nil {
 			return err
 		}
 	case *fluentdv1alpha1.FluentdConfig:
 		o.Status.State = state
 		o.Status.Messages = msg
-		err := r.Status().Update(ctx, o)
-		if err != nil {
+		if err := r.Status().Update(ctx, o); err != nil {
 			return err
 		}
 	case *fluentdv1alpha1.Fluentd:
 		o.Status.State = state
 		o.Status.Messages = msg
-		err := r.Status().Update(ctx, o)
-		if err != nil {
+		if err := r.Status().Update(ctx, o); err != nil {
 			return err
 		}
 	default:

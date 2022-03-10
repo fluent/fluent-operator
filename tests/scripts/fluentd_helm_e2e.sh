@@ -1,7 +1,7 @@
 PROJECT_ROOT=$PWD
 E2E_DIR=$(realpath $(dirname $0)/..)
 LOGGING_NAMESPACE=kubesphere-logging-system
-IMAGE_TAG=latest
+IMAGE_TAG=`date "+%Y-%m-%d-%H-%M-%S"`
 
 function build_ginkgo_test() {
   cd $E2E_DIR
@@ -25,14 +25,13 @@ function prepare_cluster() {
 
 function build_image() {
   cd $PROJECT_ROOT
- ## make build-op-amd64 -e FO_IMG=kubesphere/fluent-operator:$IMAGE_TAG
+  make build-op-amd64 -e FO_IMG=kubesphere/fluent-operator:$IMAGE_TAG
   kind load docker-image kubesphere/fluent-operator:$IMAGE_TAG --name test
 }
 
 function start_fluent_operator() {
-  cd $PROJECT_ROOT && helm install fluent-operator  --create-namespace -n $LOGGING_NAMESPACE charts/fluent-operator/
-  kubectl patch deployment fluent-operator --patch '{"spec": {"template": {"spec": {"containers": [{"name": "fluent-operator","image":"kubesphere/fluent-operator:${IMAGE_TAG}"}]}}}}' -n $LOGGING_NAMESPACE
-  kubectl -n $LOGGING_NAMESPACE wait --for=condition=available deployment/fluent-operator --timeout=120s
+  cd $PROJECT_ROOT && helm install --wait --timeout 30s fluent-operator  --create-namespace -n $LOGGING_NAMESPACE charts/fluent-operator/ --set operator.container.tag=$IMAGE_TAG
+  kubectl -n $LOGGING_NAMESPACE wait --for=condition=available deployment/fluent-operator --timeout=60s
 }
 
 function run_test() {

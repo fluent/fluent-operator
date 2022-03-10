@@ -11862,8 +11862,11 @@ rules:
   - fluentd.fluent.io
   resources:
   - fluentds
+  - fluentds/status
   - clusterfluentdconfigs
+  - clusterfluentdconfigs/status
   - fluentdconfigs
+  - fluentdconfigs/status
   - clusterfilters
   - filters
   - clusteroutputs
