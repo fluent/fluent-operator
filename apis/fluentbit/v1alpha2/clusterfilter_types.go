@@ -24,8 +24,8 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"fluent.io/fluent-operator/apis/fluentbit/v1alpha2/plugins"
-	"fluent.io/fluent-operator/apis/fluentbit/v1alpha2/plugins/filter"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/filter"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!

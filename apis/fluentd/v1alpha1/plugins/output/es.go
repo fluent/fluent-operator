@@ -1,6 +1,6 @@
 package output
 
-import "fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
+import "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
 
 // Elasticsearch defines the parameters for out_es output plugin
 type Elasticsearch struct {

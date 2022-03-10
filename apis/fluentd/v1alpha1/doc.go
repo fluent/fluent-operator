@@ -16,4 +16,4 @@ limitations under the License.
 // +k8s:deepcopy-gen=package
 // +groupName=fluentd.fluent.io
 
-package v1alpha1 // import "fluent.io/fluent-operator/apis/fluentd/v1alpha1"
+package v1alpha1 // import "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1"

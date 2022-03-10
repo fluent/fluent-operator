@@ -6,8 +6,8 @@ import (
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	fluentdv1alpha1 "fluent.io/fluent-operator/apis/fluentd/v1alpha1"
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
 )
 
 const (
