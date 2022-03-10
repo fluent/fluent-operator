@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
 type RouterCommon struct {

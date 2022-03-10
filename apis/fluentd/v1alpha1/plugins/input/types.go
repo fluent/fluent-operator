@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins"
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 
 // InputCommon defines the common parameters for input plugins

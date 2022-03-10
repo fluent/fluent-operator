@@ -3,7 +3,7 @@ package plugins
 import (
 	"fmt"
 
-	"fluent.io/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true

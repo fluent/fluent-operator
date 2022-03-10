@@ -17,8 +17,8 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"fluent.io/fluent-operator/apis/fluentd/v1alpha1/plugins/input"
-	"fluent.io/fluent-operator/pkg/utils"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/input"
+	"github.com/fluent/fluent-operator/pkg/utils"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

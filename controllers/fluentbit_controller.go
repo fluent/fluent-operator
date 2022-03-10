@@ -30,8 +30,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	fluentbitv1alpha2 "fluent.io/fluent-operator/apis/fluentbit/v1alpha2"
-	"fluent.io/fluent-operator/pkg/operator"
+	fluentbitv1alpha2 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2"
+	"github.com/fluent/fluent-operator/pkg/operator"
 )
 
 // FluentBitReconciler reconciles a FluentBit object

@@ -12,8 +12,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	fluentdtestcases "fluent.io/fluent-operator/apis/fluentd/v1alpha1/tests"
-	"fluent.io/fluent-operator/tests/utils"
+	fluentdtestcases "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/tests"
+	"github.com/fluent/fluent-operator/tests/utils"
 )
 
 const (
