@@ -1,3 +1,16 @@
+## 1.0.0 / 2022-03-11
+
+- [FEATURE] Renaming fluentbit-operator to fluent-operator #189 #190
+- [FEATURE] Add more fluentd examples for fluent-operator #194
+- [FEATURE] Integrate Fluentd to helm charts #204 #208 
+- [FEATURE] Encrypt sensitive information for output plugin #219 
+- [FEATURE] Multi-workers in a single fluentd pod #194
+- [FEATURE] Integrate e2e/function tests for generating fluentd configuration. #203 #206 
+- [FEATURE] Enhance docs explanations #199 #228
+- [FEATURE] Refactor multi images/binaries build, add github CI. #213 #214 
+- [ENHANCEMENT] Fix ci and make the repository importable and downloadable #229
+- [ENHANCEMENT] Fix CR status patching #225
+
 ## 0.12.0 / 2021-09-07
 
 - [FEATURE] Add support for collecting contained and cri-o service log. #142
