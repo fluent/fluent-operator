@@ -2,6 +2,7 @@ PROJECT_ROOT=$PWD
 E2E_DIR=$(realpath $(dirname $0)/..)
 LOGGING_NAMESPACE=kubesphere-logging-system
 IMAGE_TAG=`date "+%Y-%m-%d-%H-%M-%S"`
+VERSION=$(cat VERSION | tr -d " \t\n\r")
 
 function build_ginkgo_test() {
   cd $E2E_DIR
@@ -30,8 +31,8 @@ function build_image() {
 }
 
 function start_fluent_operator() {
-  cd $PROJECT_ROOT 
-  cat manifests/setup/setup.yaml | sed  "s#kubesphere/fluent-operator:latest#kubesphere/fluent-operator:${IMAGE_TAG}#g"  | kubectl apply -f -
+  cd $PROJECT_ROOT
+  cat manifests/setup/setup.yaml | sed  "s#kubesphere/fluent-operator:${VERSION}#kubesphere/fluent-operator:${IMAGE_TAG}#g"  | kubectl apply -f -
   kubectl -n $LOGGING_NAMESPACE wait --for=condition=available deployment/fluent-operator --timeout=60s
 }
 
