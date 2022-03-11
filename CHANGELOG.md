@@ -1,28 +1,29 @@
 ## 1.0.0 / 2022-03-11
+
 - [FEATURE] Add priority class to FluentBit type (#146) 
 - [FEATURE] Add support for RetryLimit in outputs (#148) 
-- [FEATURE] feature: add datadog_output type (#149)  
+- [FEATURE] Add datadog_output type (#149)  
 - [FEATURE] Add support for rewrite tag (#155)  
 - [FEATURE] Multiline support (#172)
 - [FEATURE] Add aws filter plugin (#173)
 - [FEATURE] Add multiline filter plugin (#176) 
 - [FEATURE] Firehose plugin support (#178)
 - [FEATURE] Add volume crd (#186)
-- [FEATURE] Renaming fluentbit-operator to fluent-operator #189 #190
-- [FEATURE] Add more fluentd examples for fluent-operator #194
-- [FEATURE] Integrate Fluentd to helm charts #204 #208 
-- [FEATURE] Encrypt sensitive information for output plugin #219 
-- [FEATURE] Multi-workers in a single fluentd pod #194
-- [FEATURE] Integrate e2e/function tests for generating fluentd configuration. #203 #206 
-- [FEATURE] Enhance docs explanations #199 #228
-- [FEATURE] Refactor multi images/binaries build, add github CI. #152 #154 #213 #214
+- [FEATURE] Renaming fluentbit-operator to fluent-operator (#189 #190)
+- [FEATURE] Add more fluentd examples for fluent-operator (#194)
+- [FEATURE] Integrate Fluentd to helm charts (#204 #208 )
+- [FEATURE] Encrypt sensitive information for output plugin (#219) 
+- [FEATURE] Multi-workers in a single fluentd pod (#194)
+- [FEATURE] Integrate e2e/function tests for generating fluentd configuration (#203 #206 )
+- [FEATURE] Enhance docs explanations (#199 #228)
+- [FEATURE] Refactor multi images/binaries build, add github CI. (#152 #154 #213 #214)
 - [ENHANCEMENT] Set the crictl path to a variable (#181) 
-- [ENHANCEMENT] Fix ci and make the repository importable and downloadable #229
-- [ENHANCEMENT] Fix CR status patching #225
 - [ENHANCEMENT] Improved kafka plugin (#182)
 - [BUGFIX] Fix the incorrect key of the es parser plugin (#164) 
 - [BUGFIX] Fix the incorrect keys of the es output plugin (#160) 
 - [BUGFIX] Fix initcontainer script (#202) 
+- [BUGFIX] Fix ci and make the repository importable and downloadable (#229)
+- [BUGFIX] Fix CR status patching (#225)
 
 ## 0.12.0 / 2021-09-07
 
