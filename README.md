@@ -68,7 +68,7 @@ Kubernetes v1.16.13+ is necessary for running Fluent Bit Operator.
 Install the latest stable version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.12/manifests/setup/setup.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/release-0.13/manifests/setup/setup.yaml
 
 # You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch 
 # and then use command below to install to another namespace
