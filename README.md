@@ -143,7 +143,7 @@ The Fluent Bit section of the Fluent Operator supports different CRI `docker`, `
 If your container runtime is `docker`:
 
 ```shell
-helm install fluent-operator  --create-namespace -n kubesphere-logging-system charts/fluent-operator/ 
+helm install fluent-operator  --create-namespace -n kubesphere-logging-system charts/fluent-operator/ [ --set containerRuntime=docker ]
 ```
 
 If your container runtime is `containerd`:
@@ -164,7 +164,7 @@ Install through the online chart link by releases:
 helm install fluent-operator --create-namespace -n kubesphere-logging-system https://github.com/fluent/fluent-operator/releases/download/v1.0.0-rc.0/fluent-operator.tgz  --set containerRuntime=docker
 ```
 
-Install through the online chart link by master branch:
+Optionally, you can choose to install the latest chart on the Master branch:
 
 ```shell
 helm install fluent-operator --create-namespace -n kubesphere-logging-system https://github.com/fluent/fluent-operator/blob/master/charts/fluent-operator.tgz  --set containerRuntime=docker
