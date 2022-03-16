@@ -32,7 +32,7 @@ import (
 // ClusterInputsGetter has a method to return a ClusterInputInterface.
 // A group's client should implement this interface.
 type ClusterInputsGetter interface {
-	ClusterInputs(namespace string) ClusterInputInterface
+	ClusterInputs() ClusterInputInterface
 }
 
 // ClusterInputInterface has methods to work with ClusterInput resources.
@@ -51,14 +51,12 @@ type ClusterInputInterface interface {
 // clusterInputs implements ClusterInputInterface
 type clusterInputs struct {
 	client rest.Interface
-	ns     string
 }
 
 // newClusterInputs returns a ClusterInputs
-func newClusterInputs(c *FluentbitV1alpha2Client, namespace string) *clusterInputs {
+func newClusterInputs(c *FluentbitV1alpha2Client) *clusterInputs {
 	return &clusterInputs{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -66,7 +64,6 @@ func newClusterInputs(c *FluentbitV1alpha2Client, namespace string) *clusterInpu
 func (c *clusterInputs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.ClusterInput, err error) {
 	result = &v1alpha2.ClusterInput{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterinputs").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -83,7 +80,6 @@ func (c *clusterInputs) List(ctx context.Context, opts v1.ListOptions) (result *
 	}
 	result = &v1alpha2.ClusterInputList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterinputs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -100,7 +96,6 @@ func (c *clusterInputs) Watch(ctx context.Context, opts v1.ListOptions) (watch.I
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterinputs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -111,7 +106,6 @@ func (c *clusterInputs) Watch(ctx context.Context, opts v1.ListOptions) (watch.I
 func (c *clusterInputs) Create(ctx context.Context, clusterInput *v1alpha2.ClusterInput, opts v1.CreateOptions) (result *v1alpha2.ClusterInput, err error) {
 	result = &v1alpha2.ClusterInput{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("clusterinputs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(clusterInput).
@@ -124,7 +118,6 @@ func (c *clusterInputs) Create(ctx context.Context, clusterInput *v1alpha2.Clust
 func (c *clusterInputs) Update(ctx context.Context, clusterInput *v1alpha2.ClusterInput, opts v1.UpdateOptions) (result *v1alpha2.ClusterInput, err error) {
 	result = &v1alpha2.ClusterInput{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("clusterinputs").
 		Name(clusterInput.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -137,7 +130,6 @@ func (c *clusterInputs) Update(ctx context.Context, clusterInput *v1alpha2.Clust
 // Delete takes name of the clusterInput and deletes it. Returns an error if one occurs.
 func (c *clusterInputs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterinputs").
 		Name(name).
 		Body(&opts).
@@ -152,7 +144,6 @@ func (c *clusterInputs) DeleteCollection(ctx context.Context, opts v1.DeleteOpti
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterinputs").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -165,7 +156,6 @@ func (c *clusterInputs) DeleteCollection(ctx context.Context, opts v1.DeleteOpti
 func (c *clusterInputs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.ClusterInput, err error) {
 	result = &v1alpha2.ClusterInput{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("clusterinputs").
 		Name(name).
 		SubResource(subresources...).

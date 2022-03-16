@@ -38,24 +38,24 @@ type FluentbitV1alpha2Client struct {
 	restClient rest.Interface
 }
 
-func (c *FluentbitV1alpha2Client) ClusterFilters(namespace string) ClusterFilterInterface {
-	return newClusterFilters(c, namespace)
+func (c *FluentbitV1alpha2Client) ClusterFilters() ClusterFilterInterface {
+	return newClusterFilters(c)
 }
 
-func (c *FluentbitV1alpha2Client) ClusterFluentBitConfigs(namespace string) ClusterFluentBitConfigInterface {
-	return newClusterFluentBitConfigs(c, namespace)
+func (c *FluentbitV1alpha2Client) ClusterFluentBitConfigs() ClusterFluentBitConfigInterface {
+	return newClusterFluentBitConfigs(c)
 }
 
-func (c *FluentbitV1alpha2Client) ClusterInputs(namespace string) ClusterInputInterface {
-	return newClusterInputs(c, namespace)
+func (c *FluentbitV1alpha2Client) ClusterInputs() ClusterInputInterface {
+	return newClusterInputs(c)
 }
 
-func (c *FluentbitV1alpha2Client) ClusterOutputs(namespace string) ClusterOutputInterface {
-	return newClusterOutputs(c, namespace)
+func (c *FluentbitV1alpha2Client) ClusterOutputs() ClusterOutputInterface {
+	return newClusterOutputs(c)
 }
 
-func (c *FluentbitV1alpha2Client) ClusterParsers(namespace string) ClusterParserInterface {
-	return newClusterParsers(c, namespace)
+func (c *FluentbitV1alpha2Client) ClusterParsers() ClusterParserInterface {
+	return newClusterParsers(c)
 }
 
 func (c *FluentbitV1alpha2Client) FluentBits(namespace string) FluentBitInterface {

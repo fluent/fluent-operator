@@ -32,7 +32,7 @@ import (
 // ClusterFluentdConfigsGetter has a method to return a ClusterFluentdConfigInterface.
 // A group's client should implement this interface.
 type ClusterFluentdConfigsGetter interface {
-	ClusterFluentdConfigs(namespace string) ClusterFluentdConfigInterface
+	ClusterFluentdConfigs() ClusterFluentdConfigInterface
 }
 
 // ClusterFluentdConfigInterface has methods to work with ClusterFluentdConfig resources.
@@ -52,14 +52,12 @@ type ClusterFluentdConfigInterface interface {
 // clusterFluentdConfigs implements ClusterFluentdConfigInterface
 type clusterFluentdConfigs struct {
 	client rest.Interface
-	ns     string
 }
 
 // newClusterFluentdConfigs returns a ClusterFluentdConfigs
-func newClusterFluentdConfigs(c *FluentdV1alpha1Client, namespace string) *clusterFluentdConfigs {
+func newClusterFluentdConfigs(c *FluentdV1alpha1Client) *clusterFluentdConfigs {
 	return &clusterFluentdConfigs{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -67,7 +65,6 @@ func newClusterFluentdConfigs(c *FluentdV1alpha1Client, namespace string) *clust
 func (c *clusterFluentdConfigs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.ClusterFluentdConfig, err error) {
 	result = &v1alpha1.ClusterFluentdConfig{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterfluentdconfigs").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -84,7 +81,6 @@ func (c *clusterFluentdConfigs) List(ctx context.Context, opts v1.ListOptions) (
 	}
 	result = &v1alpha1.ClusterFluentdConfigList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterfluentdconfigs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -101,7 +97,6 @@ func (c *clusterFluentdConfigs) Watch(ctx context.Context, opts v1.ListOptions) 
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterfluentdconfigs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -112,7 +107,6 @@ func (c *clusterFluentdConfigs) Watch(ctx context.Context, opts v1.ListOptions) 
 func (c *clusterFluentdConfigs) Create(ctx context.Context, clusterFluentdConfig *v1alpha1.ClusterFluentdConfig, opts v1.CreateOptions) (result *v1alpha1.ClusterFluentdConfig, err error) {
 	result = &v1alpha1.ClusterFluentdConfig{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("clusterfluentdconfigs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(clusterFluentdConfig).
@@ -125,7 +119,6 @@ func (c *clusterFluentdConfigs) Create(ctx context.Context, clusterFluentdConfig
 func (c *clusterFluentdConfigs) Update(ctx context.Context, clusterFluentdConfig *v1alpha1.ClusterFluentdConfig, opts v1.UpdateOptions) (result *v1alpha1.ClusterFluentdConfig, err error) {
 	result = &v1alpha1.ClusterFluentdConfig{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("clusterfluentdconfigs").
 		Name(clusterFluentdConfig.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -140,7 +133,6 @@ func (c *clusterFluentdConfigs) Update(ctx context.Context, clusterFluentdConfig
 func (c *clusterFluentdConfigs) UpdateStatus(ctx context.Context, clusterFluentdConfig *v1alpha1.ClusterFluentdConfig, opts v1.UpdateOptions) (result *v1alpha1.ClusterFluentdConfig, err error) {
 	result = &v1alpha1.ClusterFluentdConfig{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("clusterfluentdconfigs").
 		Name(clusterFluentdConfig.Name).
 		SubResource("status").
@@ -154,7 +146,6 @@ func (c *clusterFluentdConfigs) UpdateStatus(ctx context.Context, clusterFluentd
 // Delete takes name of the clusterFluentdConfig and deletes it. Returns an error if one occurs.
 func (c *clusterFluentdConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterfluentdconfigs").
 		Name(name).
 		Body(&opts).
@@ -169,7 +160,6 @@ func (c *clusterFluentdConfigs) DeleteCollection(ctx context.Context, opts v1.De
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterfluentdconfigs").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -182,7 +172,6 @@ func (c *clusterFluentdConfigs) DeleteCollection(ctx context.Context, opts v1.De
 func (c *clusterFluentdConfigs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.ClusterFluentdConfig, err error) {
 	result = &v1alpha1.ClusterFluentdConfig{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("clusterfluentdconfigs").
 		Name(name).
 		SubResource(subresources...).

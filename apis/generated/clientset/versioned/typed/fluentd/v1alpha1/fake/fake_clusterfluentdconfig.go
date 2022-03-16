@@ -32,7 +32,6 @@ import (
 // FakeClusterFluentdConfigs implements ClusterFluentdConfigInterface
 type FakeClusterFluentdConfigs struct {
 	Fake *FakeFluentdV1alpha1
-	ns   string
 }
 
 var clusterfluentdconfigsResource = schema.GroupVersionResource{Group: "fluentd.fluent.io", Version: "v1alpha1", Resource: "clusterfluentdconfigs"}
@@ -42,8 +41,7 @@ var clusterfluentdconfigsKind = schema.GroupVersionKind{Group: "fluentd.fluent.i
 // Get takes name of the clusterFluentdConfig, and returns the corresponding clusterFluentdConfig object, and an error if there is any.
 func (c *FakeClusterFluentdConfigs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.ClusterFluentdConfig, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(clusterfluentdconfigsResource, c.ns, name), &v1alpha1.ClusterFluentdConfig{})
-
+		Invokes(testing.NewRootGetAction(clusterfluentdconfigsResource, name), &v1alpha1.ClusterFluentdConfig{})
 	if obj == nil {
 		return nil, err
 	}
@@ -53,8 +51,7 @@ func (c *FakeClusterFluentdConfigs) Get(ctx context.Context, name string, option
 // List takes label and field selectors, and returns the list of ClusterFluentdConfigs that match those selectors.
 func (c *FakeClusterFluentdConfigs) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.ClusterFluentdConfigList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(clusterfluentdconfigsResource, clusterfluentdconfigsKind, c.ns, opts), &v1alpha1.ClusterFluentdConfigList{})
-
+		Invokes(testing.NewRootListAction(clusterfluentdconfigsResource, clusterfluentdconfigsKind, opts), &v1alpha1.ClusterFluentdConfigList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -75,15 +72,13 @@ func (c *FakeClusterFluentdConfigs) List(ctx context.Context, opts v1.ListOption
 // Watch returns a watch.Interface that watches the requested clusterFluentdConfigs.
 func (c *FakeClusterFluentdConfigs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(clusterfluentdconfigsResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(clusterfluentdconfigsResource, opts))
 }
 
 // Create takes the representation of a clusterFluentdConfig and creates it.  Returns the server's representation of the clusterFluentdConfig, and an error, if there is any.
 func (c *FakeClusterFluentdConfigs) Create(ctx context.Context, clusterFluentdConfig *v1alpha1.ClusterFluentdConfig, opts v1.CreateOptions) (result *v1alpha1.ClusterFluentdConfig, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(clusterfluentdconfigsResource, c.ns, clusterFluentdConfig), &v1alpha1.ClusterFluentdConfig{})
-
+		Invokes(testing.NewRootCreateAction(clusterfluentdconfigsResource, clusterFluentdConfig), &v1alpha1.ClusterFluentdConfig{})
 	if obj == nil {
 		return nil, err
 	}
@@ -93,8 +88,7 @@ func (c *FakeClusterFluentdConfigs) Create(ctx context.Context, clusterFluentdCo
 // Update takes the representation of a clusterFluentdConfig and updates it. Returns the server's representation of the clusterFluentdConfig, and an error, if there is any.
 func (c *FakeClusterFluentdConfigs) Update(ctx context.Context, clusterFluentdConfig *v1alpha1.ClusterFluentdConfig, opts v1.UpdateOptions) (result *v1alpha1.ClusterFluentdConfig, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(clusterfluentdconfigsResource, c.ns, clusterFluentdConfig), &v1alpha1.ClusterFluentdConfig{})
-
+		Invokes(testing.NewRootUpdateAction(clusterfluentdconfigsResource, clusterFluentdConfig), &v1alpha1.ClusterFluentdConfig{})
 	if obj == nil {
 		return nil, err
 	}
@@ -105,8 +99,7 @@ func (c *FakeClusterFluentdConfigs) Update(ctx context.Context, clusterFluentdCo
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
 func (c *FakeClusterFluentdConfigs) UpdateStatus(ctx context.Context, clusterFluentdConfig *v1alpha1.ClusterFluentdConfig, opts v1.UpdateOptions) (*v1alpha1.ClusterFluentdConfig, error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(clusterfluentdconfigsResource, "status", c.ns, clusterFluentdConfig), &v1alpha1.ClusterFluentdConfig{})
-
+		Invokes(testing.NewRootUpdateSubresourceAction(clusterfluentdconfigsResource, "status", clusterFluentdConfig), &v1alpha1.ClusterFluentdConfig{})
 	if obj == nil {
 		return nil, err
 	}
@@ -116,14 +109,13 @@ func (c *FakeClusterFluentdConfigs) UpdateStatus(ctx context.Context, clusterFlu
 // Delete takes name of the clusterFluentdConfig and deletes it. Returns an error if one occurs.
 func (c *FakeClusterFluentdConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(clusterfluentdconfigsResource, c.ns, name), &v1alpha1.ClusterFluentdConfig{})
-
+		Invokes(testing.NewRootDeleteAction(clusterfluentdconfigsResource, name), &v1alpha1.ClusterFluentdConfig{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeClusterFluentdConfigs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(clusterfluentdconfigsResource, c.ns, listOpts)
+	action := testing.NewRootDeleteCollectionAction(clusterfluentdconfigsResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.ClusterFluentdConfigList{})
 	return err
@@ -132,8 +124,7 @@ func (c *FakeClusterFluentdConfigs) DeleteCollection(ctx context.Context, opts v
 // Patch applies the patch and returns the patched clusterFluentdConfig.
 func (c *FakeClusterFluentdConfigs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.ClusterFluentdConfig, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(clusterfluentdconfigsResource, c.ns, name, pt, data, subresources...), &v1alpha1.ClusterFluentdConfig{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(clusterfluentdconfigsResource, name, pt, data, subresources...), &v1alpha1.ClusterFluentdConfig{})
 	if obj == nil {
 		return nil, err
 	}

@@ -60,10 +60,11 @@ type ClusterFluentdConfigStatus struct {
 	State StatusState `json:"state,omitempty"`
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-//+kubebuilder:resource:shortName=cfdc,scope=Cluster
-//+genclient
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:shortName=cfdc,scope=Cluster
+// +genclient
+// +genclient:nonNamespaced
 
 // ClusterFluentdConfig is the Schema for the clusterfluentdconfigs API
 type ClusterFluentdConfig struct {

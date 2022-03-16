@@ -32,7 +32,7 @@ import (
 // ClusterFluentBitConfigsGetter has a method to return a ClusterFluentBitConfigInterface.
 // A group's client should implement this interface.
 type ClusterFluentBitConfigsGetter interface {
-	ClusterFluentBitConfigs(namespace string) ClusterFluentBitConfigInterface
+	ClusterFluentBitConfigs() ClusterFluentBitConfigInterface
 }
 
 // ClusterFluentBitConfigInterface has methods to work with ClusterFluentBitConfig resources.
@@ -51,14 +51,12 @@ type ClusterFluentBitConfigInterface interface {
 // clusterFluentBitConfigs implements ClusterFluentBitConfigInterface
 type clusterFluentBitConfigs struct {
 	client rest.Interface
-	ns     string
 }
 
 // newClusterFluentBitConfigs returns a ClusterFluentBitConfigs
-func newClusterFluentBitConfigs(c *FluentbitV1alpha2Client, namespace string) *clusterFluentBitConfigs {
+func newClusterFluentBitConfigs(c *FluentbitV1alpha2Client) *clusterFluentBitConfigs {
 	return &clusterFluentBitConfigs{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -66,7 +64,6 @@ func newClusterFluentBitConfigs(c *FluentbitV1alpha2Client, namespace string) *c
 func (c *clusterFluentBitConfigs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.ClusterFluentBitConfig, err error) {
 	result = &v1alpha2.ClusterFluentBitConfig{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterfluentbitconfigs").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -83,7 +80,6 @@ func (c *clusterFluentBitConfigs) List(ctx context.Context, opts v1.ListOptions)
 	}
 	result = &v1alpha2.ClusterFluentBitConfigList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterfluentbitconfigs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -100,7 +96,6 @@ func (c *clusterFluentBitConfigs) Watch(ctx context.Context, opts v1.ListOptions
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterfluentbitconfigs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -111,7 +106,6 @@ func (c *clusterFluentBitConfigs) Watch(ctx context.Context, opts v1.ListOptions
 func (c *clusterFluentBitConfigs) Create(ctx context.Context, clusterFluentBitConfig *v1alpha2.ClusterFluentBitConfig, opts v1.CreateOptions) (result *v1alpha2.ClusterFluentBitConfig, err error) {
 	result = &v1alpha2.ClusterFluentBitConfig{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("clusterfluentbitconfigs").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(clusterFluentBitConfig).
@@ -124,7 +118,6 @@ func (c *clusterFluentBitConfigs) Create(ctx context.Context, clusterFluentBitCo
 func (c *clusterFluentBitConfigs) Update(ctx context.Context, clusterFluentBitConfig *v1alpha2.ClusterFluentBitConfig, opts v1.UpdateOptions) (result *v1alpha2.ClusterFluentBitConfig, err error) {
 	result = &v1alpha2.ClusterFluentBitConfig{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("clusterfluentbitconfigs").
 		Name(clusterFluentBitConfig.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -137,7 +130,6 @@ func (c *clusterFluentBitConfigs) Update(ctx context.Context, clusterFluentBitCo
 // Delete takes name of the clusterFluentBitConfig and deletes it. Returns an error if one occurs.
 func (c *clusterFluentBitConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterfluentbitconfigs").
 		Name(name).
 		Body(&opts).
@@ -152,7 +144,6 @@ func (c *clusterFluentBitConfigs) DeleteCollection(ctx context.Context, opts v1.
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterfluentbitconfigs").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -165,7 +156,6 @@ func (c *clusterFluentBitConfigs) DeleteCollection(ctx context.Context, opts v1.
 func (c *clusterFluentBitConfigs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.ClusterFluentBitConfig, err error) {
 	result = &v1alpha2.ClusterFluentBitConfig{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("clusterfluentbitconfigs").
 		Name(name).
 		SubResource(subresources...).

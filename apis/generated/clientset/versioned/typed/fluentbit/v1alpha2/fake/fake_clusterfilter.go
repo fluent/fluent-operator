@@ -32,7 +32,6 @@ import (
 // FakeClusterFilters implements ClusterFilterInterface
 type FakeClusterFilters struct {
 	Fake *FakeFluentbitV1alpha2
-	ns   string
 }
 
 var clusterfiltersResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "clusterfilters"}
@@ -42,8 +41,7 @@ var clusterfiltersKind = schema.GroupVersionKind{Group: "fluentbit.fluent.io", V
 // Get takes name of the clusterFilter, and returns the corresponding clusterFilter object, and an error if there is any.
 func (c *FakeClusterFilters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.ClusterFilter, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(clusterfiltersResource, c.ns, name), &v1alpha2.ClusterFilter{})
-
+		Invokes(testing.NewRootGetAction(clusterfiltersResource, name), &v1alpha2.ClusterFilter{})
 	if obj == nil {
 		return nil, err
 	}
@@ -53,8 +51,7 @@ func (c *FakeClusterFilters) Get(ctx context.Context, name string, options v1.Ge
 // List takes label and field selectors, and returns the list of ClusterFilters that match those selectors.
 func (c *FakeClusterFilters) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.ClusterFilterList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(clusterfiltersResource, clusterfiltersKind, c.ns, opts), &v1alpha2.ClusterFilterList{})
-
+		Invokes(testing.NewRootListAction(clusterfiltersResource, clusterfiltersKind, opts), &v1alpha2.ClusterFilterList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -75,15 +72,13 @@ func (c *FakeClusterFilters) List(ctx context.Context, opts v1.ListOptions) (res
 // Watch returns a watch.Interface that watches the requested clusterFilters.
 func (c *FakeClusterFilters) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(clusterfiltersResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(clusterfiltersResource, opts))
 }
 
 // Create takes the representation of a clusterFilter and creates it.  Returns the server's representation of the clusterFilter, and an error, if there is any.
 func (c *FakeClusterFilters) Create(ctx context.Context, clusterFilter *v1alpha2.ClusterFilter, opts v1.CreateOptions) (result *v1alpha2.ClusterFilter, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(clusterfiltersResource, c.ns, clusterFilter), &v1alpha2.ClusterFilter{})
-
+		Invokes(testing.NewRootCreateAction(clusterfiltersResource, clusterFilter), &v1alpha2.ClusterFilter{})
 	if obj == nil {
 		return nil, err
 	}
@@ -93,8 +88,7 @@ func (c *FakeClusterFilters) Create(ctx context.Context, clusterFilter *v1alpha2
 // Update takes the representation of a clusterFilter and updates it. Returns the server's representation of the clusterFilter, and an error, if there is any.
 func (c *FakeClusterFilters) Update(ctx context.Context, clusterFilter *v1alpha2.ClusterFilter, opts v1.UpdateOptions) (result *v1alpha2.ClusterFilter, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(clusterfiltersResource, c.ns, clusterFilter), &v1alpha2.ClusterFilter{})
-
+		Invokes(testing.NewRootUpdateAction(clusterfiltersResource, clusterFilter), &v1alpha2.ClusterFilter{})
 	if obj == nil {
 		return nil, err
 	}
@@ -104,14 +98,13 @@ func (c *FakeClusterFilters) Update(ctx context.Context, clusterFilter *v1alpha2
 // Delete takes name of the clusterFilter and deletes it. Returns an error if one occurs.
 func (c *FakeClusterFilters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(clusterfiltersResource, c.ns, name), &v1alpha2.ClusterFilter{})
-
+		Invokes(testing.NewRootDeleteAction(clusterfiltersResource, name), &v1alpha2.ClusterFilter{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeClusterFilters) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(clusterfiltersResource, c.ns, listOpts)
+	action := testing.NewRootDeleteCollectionAction(clusterfiltersResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.ClusterFilterList{})
 	return err
@@ -120,8 +113,7 @@ func (c *FakeClusterFilters) DeleteCollection(ctx context.Context, opts v1.Delet
 // Patch applies the patch and returns the patched clusterFilter.
 func (c *FakeClusterFilters) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.ClusterFilter, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(clusterfiltersResource, c.ns, name, pt, data, subresources...), &v1alpha2.ClusterFilter{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(clusterfiltersResource, name, pt, data, subresources...), &v1alpha2.ClusterFilter{})
 	if obj == nil {
 		return nil, err
 	}
