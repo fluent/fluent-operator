@@ -140,11 +140,7 @@ kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/mas
 The Fluent Bit section of the Fluent Operator supports different CRI `docker`, `containerd`,  and `CRI-O`. 
 `containerd` and `CRI-O` use the `CRI Log` format which is different with `docker`, they requires additional parser to parse JSON application logs. You should set different `containerRuntime` depending on your container runtime.
 
-If your container runtime is `docker`:
-
-```shell
-helm install fluent-operator  --create-namespace -n kubesphere-logging-system charts/fluent-operator/ [ --set containerRuntime=docker ]
-```
+The default runtime is docker, you can choose other runtimes as follows.
 
 If your container runtime is `containerd`:
 
@@ -158,17 +154,13 @@ If your container runtime is `cri-o`:
 helm install fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set containerRuntime=crio
 ```
 
-Install through the online chart link by releases:
+Install through the online chart link:
 
 ```shell
-helm install fluent-operator --create-namespace -n kubesphere-logging-system https://github.com/fluent/fluent-operator/releases/download/v1.0.0-rc.0/fluent-operator.tgz  --set containerRuntime=docker
+helm install fluent-operator --create-namespace -n kubesphere-logging-system https://github.com/fluent/fluent-operator/releases/download/< version >/fluent-operator.tgz
 ```
 
-Optionally, you can choose to install the latest chart on the Master branch:
-
-```shell
-helm install fluent-operator --create-namespace -n kubesphere-logging-system https://github.com/fluent/fluent-operator/blob/master/charts/fluent-operator.tgz  --set containerRuntime=docker
-```
+> Please replace < version > with a actual version like v1.0.0
 
 ### Quick Start
 
