@@ -27,24 +27,24 @@ type FakeFluentbitV1alpha2 struct {
 	*testing.Fake
 }
 
-func (c *FakeFluentbitV1alpha2) ClusterFilters(namespace string) v1alpha2.ClusterFilterInterface {
-	return &FakeClusterFilters{c, namespace}
+func (c *FakeFluentbitV1alpha2) ClusterFilters() v1alpha2.ClusterFilterInterface {
+	return &FakeClusterFilters{c}
 }
 
-func (c *FakeFluentbitV1alpha2) ClusterFluentBitConfigs(namespace string) v1alpha2.ClusterFluentBitConfigInterface {
-	return &FakeClusterFluentBitConfigs{c, namespace}
+func (c *FakeFluentbitV1alpha2) ClusterFluentBitConfigs() v1alpha2.ClusterFluentBitConfigInterface {
+	return &FakeClusterFluentBitConfigs{c}
 }
 
-func (c *FakeFluentbitV1alpha2) ClusterInputs(namespace string) v1alpha2.ClusterInputInterface {
-	return &FakeClusterInputs{c, namespace}
+func (c *FakeFluentbitV1alpha2) ClusterInputs() v1alpha2.ClusterInputInterface {
+	return &FakeClusterInputs{c}
 }
 
-func (c *FakeFluentbitV1alpha2) ClusterOutputs(namespace string) v1alpha2.ClusterOutputInterface {
-	return &FakeClusterOutputs{c, namespace}
+func (c *FakeFluentbitV1alpha2) ClusterOutputs() v1alpha2.ClusterOutputInterface {
+	return &FakeClusterOutputs{c}
 }
 
-func (c *FakeFluentbitV1alpha2) ClusterParsers(namespace string) v1alpha2.ClusterParserInterface {
-	return &FakeClusterParsers{c, namespace}
+func (c *FakeFluentbitV1alpha2) ClusterParsers() v1alpha2.ClusterParserInterface {
+	return &FakeClusterParsers{c}
 }
 
 func (c *FakeFluentbitV1alpha2) FluentBits(namespace string) v1alpha2.FluentBitInterface {

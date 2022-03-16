@@ -60,6 +60,7 @@ type Decorder struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster
 // +genclient
+// +genclient:nonNamespaced
 
 // ClusterParser is the Schema for the cluster-level parsers API
 type ClusterParser struct {
