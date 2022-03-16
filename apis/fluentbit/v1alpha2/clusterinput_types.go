@@ -46,6 +46,7 @@ type InputSpec struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster
 // +genclient
+// +genclient:nonNamespaced
 
 // ClusterInput is the Schema for the inputs API
 type ClusterInput struct {

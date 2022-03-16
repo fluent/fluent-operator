@@ -32,7 +32,7 @@ import (
 // ClusterFiltersGetter has a method to return a ClusterFilterInterface.
 // A group's client should implement this interface.
 type ClusterFiltersGetter interface {
-	ClusterFilters(namespace string) ClusterFilterInterface
+	ClusterFilters() ClusterFilterInterface
 }
 
 // ClusterFilterInterface has methods to work with ClusterFilter resources.
@@ -52,14 +52,12 @@ type ClusterFilterInterface interface {
 // clusterFilters implements ClusterFilterInterface
 type clusterFilters struct {
 	client rest.Interface
-	ns     string
 }
 
 // newClusterFilters returns a ClusterFilters
-func newClusterFilters(c *FluentdV1alpha1Client, namespace string) *clusterFilters {
+func newClusterFilters(c *FluentdV1alpha1Client) *clusterFilters {
 	return &clusterFilters{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -67,7 +65,6 @@ func newClusterFilters(c *FluentdV1alpha1Client, namespace string) *clusterFilte
 func (c *clusterFilters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.ClusterFilter, err error) {
 	result = &v1alpha1.ClusterFilter{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterfilters").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -84,7 +81,6 @@ func (c *clusterFilters) List(ctx context.Context, opts v1.ListOptions) (result 
 	}
 	result = &v1alpha1.ClusterFilterList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterfilters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -101,7 +97,6 @@ func (c *clusterFilters) Watch(ctx context.Context, opts v1.ListOptions) (watch.
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterfilters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -112,7 +107,6 @@ func (c *clusterFilters) Watch(ctx context.Context, opts v1.ListOptions) (watch.
 func (c *clusterFilters) Create(ctx context.Context, clusterFilter *v1alpha1.ClusterFilter, opts v1.CreateOptions) (result *v1alpha1.ClusterFilter, err error) {
 	result = &v1alpha1.ClusterFilter{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("clusterfilters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(clusterFilter).
@@ -125,7 +119,6 @@ func (c *clusterFilters) Create(ctx context.Context, clusterFilter *v1alpha1.Clu
 func (c *clusterFilters) Update(ctx context.Context, clusterFilter *v1alpha1.ClusterFilter, opts v1.UpdateOptions) (result *v1alpha1.ClusterFilter, err error) {
 	result = &v1alpha1.ClusterFilter{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("clusterfilters").
 		Name(clusterFilter.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -140,7 +133,6 @@ func (c *clusterFilters) Update(ctx context.Context, clusterFilter *v1alpha1.Clu
 func (c *clusterFilters) UpdateStatus(ctx context.Context, clusterFilter *v1alpha1.ClusterFilter, opts v1.UpdateOptions) (result *v1alpha1.ClusterFilter, err error) {
 	result = &v1alpha1.ClusterFilter{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("clusterfilters").
 		Name(clusterFilter.Name).
 		SubResource("status").
@@ -154,7 +146,6 @@ func (c *clusterFilters) UpdateStatus(ctx context.Context, clusterFilter *v1alph
 // Delete takes name of the clusterFilter and deletes it. Returns an error if one occurs.
 func (c *clusterFilters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterfilters").
 		Name(name).
 		Body(&opts).
@@ -169,7 +160,6 @@ func (c *clusterFilters) DeleteCollection(ctx context.Context, opts v1.DeleteOpt
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterfilters").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -182,7 +172,6 @@ func (c *clusterFilters) DeleteCollection(ctx context.Context, opts v1.DeleteOpt
 func (c *clusterFilters) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.ClusterFilter, err error) {
 	result = &v1alpha1.ClusterFilter{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("clusterfilters").
 		Name(name).
 		SubResource(subresources...).

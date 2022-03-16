@@ -74,6 +74,7 @@ type OutputSpec struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster
 // +genclient
+// +genclient:nonNamespaced
 
 // ClusterOutput is the Schema for the cluster-level outputs API
 type ClusterOutput struct {

@@ -71,6 +71,7 @@ type FilterItem struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster
 // +genclient
+// +genclient:nonNamespaced
 
 // ClusterFilter defines a cluster-level Filter configuration.
 type ClusterFilter struct {

@@ -74,6 +74,7 @@ type Service struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:shortName=fbc,scope=Cluster
 // +genclient
+// +genclient:nonNamespaced
 
 // ClusterFluentBitConfig is the Schema for the cluster-level fluentbitconfigs API
 type ClusterFluentBitConfig struct {

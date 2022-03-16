@@ -32,10 +32,11 @@ type ClusterOutputStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-//+kubebuilder:resource:scope=Cluster
-//+genclient
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:scope=Cluster
+// +genclient
+// +genclient:nonNamespaced
 
 // ClusterOutput is the Schema for the clusteroutputs API
 type ClusterOutput struct {
