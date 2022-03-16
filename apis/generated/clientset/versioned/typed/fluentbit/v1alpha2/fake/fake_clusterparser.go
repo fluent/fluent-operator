@@ -32,7 +32,6 @@ import (
 // FakeClusterParsers implements ClusterParserInterface
 type FakeClusterParsers struct {
 	Fake *FakeFluentbitV1alpha2
-	ns   string
 }
 
 var clusterparsersResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "clusterparsers"}
@@ -42,8 +41,7 @@ var clusterparsersKind = schema.GroupVersionKind{Group: "fluentbit.fluent.io", V
 // Get takes name of the clusterParser, and returns the corresponding clusterParser object, and an error if there is any.
 func (c *FakeClusterParsers) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.ClusterParser, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(clusterparsersResource, c.ns, name), &v1alpha2.ClusterParser{})
-
+		Invokes(testing.NewRootGetAction(clusterparsersResource, name), &v1alpha2.ClusterParser{})
 	if obj == nil {
 		return nil, err
 	}
@@ -53,8 +51,7 @@ func (c *FakeClusterParsers) Get(ctx context.Context, name string, options v1.Ge
 // List takes label and field selectors, and returns the list of ClusterParsers that match those selectors.
 func (c *FakeClusterParsers) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.ClusterParserList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(clusterparsersResource, clusterparsersKind, c.ns, opts), &v1alpha2.ClusterParserList{})
-
+		Invokes(testing.NewRootListAction(clusterparsersResource, clusterparsersKind, opts), &v1alpha2.ClusterParserList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -75,15 +72,13 @@ func (c *FakeClusterParsers) List(ctx context.Context, opts v1.ListOptions) (res
 // Watch returns a watch.Interface that watches the requested clusterParsers.
 func (c *FakeClusterParsers) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(clusterparsersResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(clusterparsersResource, opts))
 }
 
 // Create takes the representation of a clusterParser and creates it.  Returns the server's representation of the clusterParser, and an error, if there is any.
 func (c *FakeClusterParsers) Create(ctx context.Context, clusterParser *v1alpha2.ClusterParser, opts v1.CreateOptions) (result *v1alpha2.ClusterParser, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(clusterparsersResource, c.ns, clusterParser), &v1alpha2.ClusterParser{})
-
+		Invokes(testing.NewRootCreateAction(clusterparsersResource, clusterParser), &v1alpha2.ClusterParser{})
 	if obj == nil {
 		return nil, err
 	}
@@ -93,8 +88,7 @@ func (c *FakeClusterParsers) Create(ctx context.Context, clusterParser *v1alpha2
 // Update takes the representation of a clusterParser and updates it. Returns the server's representation of the clusterParser, and an error, if there is any.
 func (c *FakeClusterParsers) Update(ctx context.Context, clusterParser *v1alpha2.ClusterParser, opts v1.UpdateOptions) (result *v1alpha2.ClusterParser, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(clusterparsersResource, c.ns, clusterParser), &v1alpha2.ClusterParser{})
-
+		Invokes(testing.NewRootUpdateAction(clusterparsersResource, clusterParser), &v1alpha2.ClusterParser{})
 	if obj == nil {
 		return nil, err
 	}
@@ -104,14 +98,13 @@ func (c *FakeClusterParsers) Update(ctx context.Context, clusterParser *v1alpha2
 // Delete takes name of the clusterParser and deletes it. Returns an error if one occurs.
 func (c *FakeClusterParsers) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(clusterparsersResource, c.ns, name), &v1alpha2.ClusterParser{})
-
+		Invokes(testing.NewRootDeleteAction(clusterparsersResource, name), &v1alpha2.ClusterParser{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeClusterParsers) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(clusterparsersResource, c.ns, listOpts)
+	action := testing.NewRootDeleteCollectionAction(clusterparsersResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.ClusterParserList{})
 	return err
@@ -120,8 +113,7 @@ func (c *FakeClusterParsers) DeleteCollection(ctx context.Context, opts v1.Delet
 // Patch applies the patch and returns the patched clusterParser.
 func (c *FakeClusterParsers) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.ClusterParser, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(clusterparsersResource, c.ns, name, pt, data, subresources...), &v1alpha2.ClusterParser{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(clusterparsersResource, name, pt, data, subresources...), &v1alpha2.ClusterParser{})
 	if obj == nil {
 		return nil, err
 	}

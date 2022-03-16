@@ -39,16 +39,16 @@ type FluentdV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *FluentdV1alpha1Client) ClusterFilters(namespace string) ClusterFilterInterface {
-	return newClusterFilters(c, namespace)
+func (c *FluentdV1alpha1Client) ClusterFilters() ClusterFilterInterface {
+	return newClusterFilters(c)
 }
 
-func (c *FluentdV1alpha1Client) ClusterFluentdConfigs(namespace string) ClusterFluentdConfigInterface {
-	return newClusterFluentdConfigs(c, namespace)
+func (c *FluentdV1alpha1Client) ClusterFluentdConfigs() ClusterFluentdConfigInterface {
+	return newClusterFluentdConfigs(c)
 }
 
-func (c *FluentdV1alpha1Client) ClusterOutputs(namespace string) ClusterOutputInterface {
-	return newClusterOutputs(c, namespace)
+func (c *FluentdV1alpha1Client) ClusterOutputs() ClusterOutputInterface {
+	return newClusterOutputs(c)
 }
 
 func (c *FluentdV1alpha1Client) Filters(namespace string) FilterInterface {

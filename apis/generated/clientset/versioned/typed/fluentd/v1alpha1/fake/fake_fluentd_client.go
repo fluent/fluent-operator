@@ -27,16 +27,16 @@ type FakeFluentdV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeFluentdV1alpha1) ClusterFilters(namespace string) v1alpha1.ClusterFilterInterface {
-	return &FakeClusterFilters{c, namespace}
+func (c *FakeFluentdV1alpha1) ClusterFilters() v1alpha1.ClusterFilterInterface {
+	return &FakeClusterFilters{c}
 }
 
-func (c *FakeFluentdV1alpha1) ClusterFluentdConfigs(namespace string) v1alpha1.ClusterFluentdConfigInterface {
-	return &FakeClusterFluentdConfigs{c, namespace}
+func (c *FakeFluentdV1alpha1) ClusterFluentdConfigs() v1alpha1.ClusterFluentdConfigInterface {
+	return &FakeClusterFluentdConfigs{c}
 }
 
-func (c *FakeFluentdV1alpha1) ClusterOutputs(namespace string) v1alpha1.ClusterOutputInterface {
-	return &FakeClusterOutputs{c, namespace}
+func (c *FakeFluentdV1alpha1) ClusterOutputs() v1alpha1.ClusterOutputInterface {
+	return &FakeClusterOutputs{c}
 }
 
 func (c *FakeFluentdV1alpha1) Filters(namespace string) v1alpha1.FilterInterface {

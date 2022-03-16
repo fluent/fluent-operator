@@ -32,7 +32,6 @@ import (
 // FakeClusterInputs implements ClusterInputInterface
 type FakeClusterInputs struct {
 	Fake *FakeFluentbitV1alpha2
-	ns   string
 }
 
 var clusterinputsResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "clusterinputs"}
@@ -42,8 +41,7 @@ var clusterinputsKind = schema.GroupVersionKind{Group: "fluentbit.fluent.io", Ve
 // Get takes name of the clusterInput, and returns the corresponding clusterInput object, and an error if there is any.
 func (c *FakeClusterInputs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.ClusterInput, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(clusterinputsResource, c.ns, name), &v1alpha2.ClusterInput{})
-
+		Invokes(testing.NewRootGetAction(clusterinputsResource, name), &v1alpha2.ClusterInput{})
 	if obj == nil {
 		return nil, err
 	}
@@ -53,8 +51,7 @@ func (c *FakeClusterInputs) Get(ctx context.Context, name string, options v1.Get
 // List takes label and field selectors, and returns the list of ClusterInputs that match those selectors.
 func (c *FakeClusterInputs) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.ClusterInputList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(clusterinputsResource, clusterinputsKind, c.ns, opts), &v1alpha2.ClusterInputList{})
-
+		Invokes(testing.NewRootListAction(clusterinputsResource, clusterinputsKind, opts), &v1alpha2.ClusterInputList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -75,15 +72,13 @@ func (c *FakeClusterInputs) List(ctx context.Context, opts v1.ListOptions) (resu
 // Watch returns a watch.Interface that watches the requested clusterInputs.
 func (c *FakeClusterInputs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(clusterinputsResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(clusterinputsResource, opts))
 }
 
 // Create takes the representation of a clusterInput and creates it.  Returns the server's representation of the clusterInput, and an error, if there is any.
 func (c *FakeClusterInputs) Create(ctx context.Context, clusterInput *v1alpha2.ClusterInput, opts v1.CreateOptions) (result *v1alpha2.ClusterInput, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(clusterinputsResource, c.ns, clusterInput), &v1alpha2.ClusterInput{})
-
+		Invokes(testing.NewRootCreateAction(clusterinputsResource, clusterInput), &v1alpha2.ClusterInput{})
 	if obj == nil {
 		return nil, err
 	}
@@ -93,8 +88,7 @@ func (c *FakeClusterInputs) Create(ctx context.Context, clusterInput *v1alpha2.C
 // Update takes the representation of a clusterInput and updates it. Returns the server's representation of the clusterInput, and an error, if there is any.
 func (c *FakeClusterInputs) Update(ctx context.Context, clusterInput *v1alpha2.ClusterInput, opts v1.UpdateOptions) (result *v1alpha2.ClusterInput, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(clusterinputsResource, c.ns, clusterInput), &v1alpha2.ClusterInput{})
-
+		Invokes(testing.NewRootUpdateAction(clusterinputsResource, clusterInput), &v1alpha2.ClusterInput{})
 	if obj == nil {
 		return nil, err
 	}
@@ -104,14 +98,13 @@ func (c *FakeClusterInputs) Update(ctx context.Context, clusterInput *v1alpha2.C
 // Delete takes name of the clusterInput and deletes it. Returns an error if one occurs.
 func (c *FakeClusterInputs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(clusterinputsResource, c.ns, name), &v1alpha2.ClusterInput{})
-
+		Invokes(testing.NewRootDeleteAction(clusterinputsResource, name), &v1alpha2.ClusterInput{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeClusterInputs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(clusterinputsResource, c.ns, listOpts)
+	action := testing.NewRootDeleteCollectionAction(clusterinputsResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.ClusterInputList{})
 	return err
@@ -120,8 +113,7 @@ func (c *FakeClusterInputs) DeleteCollection(ctx context.Context, opts v1.Delete
 // Patch applies the patch and returns the patched clusterInput.
 func (c *FakeClusterInputs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.ClusterInput, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(clusterinputsResource, c.ns, name, pt, data, subresources...), &v1alpha2.ClusterInput{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(clusterinputsResource, name, pt, data, subresources...), &v1alpha2.ClusterInput{})
 	if obj == nil {
 		return nil, err
 	}

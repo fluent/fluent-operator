@@ -32,7 +32,6 @@ import (
 // FakeClusterFluentBitConfigs implements ClusterFluentBitConfigInterface
 type FakeClusterFluentBitConfigs struct {
 	Fake *FakeFluentbitV1alpha2
-	ns   string
 }
 
 var clusterfluentbitconfigsResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "clusterfluentbitconfigs"}
@@ -42,8 +41,7 @@ var clusterfluentbitconfigsKind = schema.GroupVersionKind{Group: "fluentbit.flue
 // Get takes name of the clusterFluentBitConfig, and returns the corresponding clusterFluentBitConfig object, and an error if there is any.
 func (c *FakeClusterFluentBitConfigs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.ClusterFluentBitConfig, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(clusterfluentbitconfigsResource, c.ns, name), &v1alpha2.ClusterFluentBitConfig{})
-
+		Invokes(testing.NewRootGetAction(clusterfluentbitconfigsResource, name), &v1alpha2.ClusterFluentBitConfig{})
 	if obj == nil {
 		return nil, err
 	}
@@ -53,8 +51,7 @@ func (c *FakeClusterFluentBitConfigs) Get(ctx context.Context, name string, opti
 // List takes label and field selectors, and returns the list of ClusterFluentBitConfigs that match those selectors.
 func (c *FakeClusterFluentBitConfigs) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha2.ClusterFluentBitConfigList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(clusterfluentbitconfigsResource, clusterfluentbitconfigsKind, c.ns, opts), &v1alpha2.ClusterFluentBitConfigList{})
-
+		Invokes(testing.NewRootListAction(clusterfluentbitconfigsResource, clusterfluentbitconfigsKind, opts), &v1alpha2.ClusterFluentBitConfigList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -75,15 +72,13 @@ func (c *FakeClusterFluentBitConfigs) List(ctx context.Context, opts v1.ListOpti
 // Watch returns a watch.Interface that watches the requested clusterFluentBitConfigs.
 func (c *FakeClusterFluentBitConfigs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(clusterfluentbitconfigsResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(clusterfluentbitconfigsResource, opts))
 }
 
 // Create takes the representation of a clusterFluentBitConfig and creates it.  Returns the server's representation of the clusterFluentBitConfig, and an error, if there is any.
 func (c *FakeClusterFluentBitConfigs) Create(ctx context.Context, clusterFluentBitConfig *v1alpha2.ClusterFluentBitConfig, opts v1.CreateOptions) (result *v1alpha2.ClusterFluentBitConfig, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(clusterfluentbitconfigsResource, c.ns, clusterFluentBitConfig), &v1alpha2.ClusterFluentBitConfig{})
-
+		Invokes(testing.NewRootCreateAction(clusterfluentbitconfigsResource, clusterFluentBitConfig), &v1alpha2.ClusterFluentBitConfig{})
 	if obj == nil {
 		return nil, err
 	}
@@ -93,8 +88,7 @@ func (c *FakeClusterFluentBitConfigs) Create(ctx context.Context, clusterFluentB
 // Update takes the representation of a clusterFluentBitConfig and updates it. Returns the server's representation of the clusterFluentBitConfig, and an error, if there is any.
 func (c *FakeClusterFluentBitConfigs) Update(ctx context.Context, clusterFluentBitConfig *v1alpha2.ClusterFluentBitConfig, opts v1.UpdateOptions) (result *v1alpha2.ClusterFluentBitConfig, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(clusterfluentbitconfigsResource, c.ns, clusterFluentBitConfig), &v1alpha2.ClusterFluentBitConfig{})
-
+		Invokes(testing.NewRootUpdateAction(clusterfluentbitconfigsResource, clusterFluentBitConfig), &v1alpha2.ClusterFluentBitConfig{})
 	if obj == nil {
 		return nil, err
 	}
@@ -104,14 +98,13 @@ func (c *FakeClusterFluentBitConfigs) Update(ctx context.Context, clusterFluentB
 // Delete takes name of the clusterFluentBitConfig and deletes it. Returns an error if one occurs.
 func (c *FakeClusterFluentBitConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(clusterfluentbitconfigsResource, c.ns, name), &v1alpha2.ClusterFluentBitConfig{})
-
+		Invokes(testing.NewRootDeleteAction(clusterfluentbitconfigsResource, name), &v1alpha2.ClusterFluentBitConfig{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeClusterFluentBitConfigs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(clusterfluentbitconfigsResource, c.ns, listOpts)
+	action := testing.NewRootDeleteCollectionAction(clusterfluentbitconfigsResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha2.ClusterFluentBitConfigList{})
 	return err
@@ -120,8 +113,7 @@ func (c *FakeClusterFluentBitConfigs) DeleteCollection(ctx context.Context, opts
 // Patch applies the patch and returns the patched clusterFluentBitConfig.
 func (c *FakeClusterFluentBitConfigs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.ClusterFluentBitConfig, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(clusterfluentbitconfigsResource, c.ns, name, pt, data, subresources...), &v1alpha2.ClusterFluentBitConfig{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(clusterfluentbitconfigsResource, name, pt, data, subresources...), &v1alpha2.ClusterFluentBitConfig{})
 	if obj == nil {
 		return nil, err
 	}

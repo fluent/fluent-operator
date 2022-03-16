@@ -32,7 +32,7 @@ import (
 // ClusterParsersGetter has a method to return a ClusterParserInterface.
 // A group's client should implement this interface.
 type ClusterParsersGetter interface {
-	ClusterParsers(namespace string) ClusterParserInterface
+	ClusterParsers() ClusterParserInterface
 }
 
 // ClusterParserInterface has methods to work with ClusterParser resources.
@@ -51,14 +51,12 @@ type ClusterParserInterface interface {
 // clusterParsers implements ClusterParserInterface
 type clusterParsers struct {
 	client rest.Interface
-	ns     string
 }
 
 // newClusterParsers returns a ClusterParsers
-func newClusterParsers(c *FluentbitV1alpha2Client, namespace string) *clusterParsers {
+func newClusterParsers(c *FluentbitV1alpha2Client) *clusterParsers {
 	return &clusterParsers{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -66,7 +64,6 @@ func newClusterParsers(c *FluentbitV1alpha2Client, namespace string) *clusterPar
 func (c *clusterParsers) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.ClusterParser, err error) {
 	result = &v1alpha2.ClusterParser{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterparsers").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -83,7 +80,6 @@ func (c *clusterParsers) List(ctx context.Context, opts v1.ListOptions) (result 
 	}
 	result = &v1alpha2.ClusterParserList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterparsers").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -100,7 +96,6 @@ func (c *clusterParsers) Watch(ctx context.Context, opts v1.ListOptions) (watch.
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("clusterparsers").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -111,7 +106,6 @@ func (c *clusterParsers) Watch(ctx context.Context, opts v1.ListOptions) (watch.
 func (c *clusterParsers) Create(ctx context.Context, clusterParser *v1alpha2.ClusterParser, opts v1.CreateOptions) (result *v1alpha2.ClusterParser, err error) {
 	result = &v1alpha2.ClusterParser{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("clusterparsers").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(clusterParser).
@@ -124,7 +118,6 @@ func (c *clusterParsers) Create(ctx context.Context, clusterParser *v1alpha2.Clu
 func (c *clusterParsers) Update(ctx context.Context, clusterParser *v1alpha2.ClusterParser, opts v1.UpdateOptions) (result *v1alpha2.ClusterParser, err error) {
 	result = &v1alpha2.ClusterParser{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("clusterparsers").
 		Name(clusterParser.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -137,7 +130,6 @@ func (c *clusterParsers) Update(ctx context.Context, clusterParser *v1alpha2.Clu
 // Delete takes name of the clusterParser and deletes it. Returns an error if one occurs.
 func (c *clusterParsers) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterparsers").
 		Name(name).
 		Body(&opts).
@@ -152,7 +144,6 @@ func (c *clusterParsers) DeleteCollection(ctx context.Context, opts v1.DeleteOpt
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("clusterparsers").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -165,7 +156,6 @@ func (c *clusterParsers) DeleteCollection(ctx context.Context, opts v1.DeleteOpt
 func (c *clusterParsers) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha2.ClusterParser, err error) {
 	result = &v1alpha2.ClusterParser{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("clusterparsers").
 		Name(name).
 		SubResource(subresources...).
