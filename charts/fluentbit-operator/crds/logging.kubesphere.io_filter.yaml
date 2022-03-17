@@ -39,6 +39,45 @@ spec:
                 description: A set of filter plugins in order.
                 items:
                   properties:
+                    aws:
+                      description: Aws defines a Aws configuration.
+                      properties:
+                        accountID:
+                          description: The account ID for current EC2 instance.Default
+                            is false.
+                          type: boolean
+                        amiID:
+                          description: The EC2 instance image id.Default is false.
+                          type: boolean
+                        az:
+                          description: The availability zone; for example, "us-east-1a".
+                            Default is true.
+                          type: boolean
+                        ec2InstanceID:
+                          description: The EC2 instance ID.Default is true.
+                          type: boolean
+                        ec2InstanceType:
+                          description: The EC2 instance type.Default is false.
+                          type: boolean
+                        hostName:
+                          description: The hostname for current EC2 instance.Default
+                            is false.
+                          type: boolean
+                        imdsVersion:
+                          description: Specify which version of the instance metadata
+                            service to use. Valid values are 'v1' or 'v2'.
+                          enum:
+                          - v1
+                          - v2
+                          type: string
+                        privateIP:
+                          description: The EC2 instance private ip.Default is false.
+                          type: boolean
+                        vpcID:
+                          description: The VPC ID for current EC2 instance.Default
+                            is false.
+                          type: boolean
+                      type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
                       properties:
@@ -324,6 +363,24 @@ spec:
                             type: object
                           type: array
                       type: object
+                    multiline:
+                      description: Multiline defines a Multiline configuration.
+                      properties:
+                        keyContent:
+                          description: Key name that holds the content to process.
+                            Note that a Multiline Parser definition can already specify
+                            the key_content to use, but this option allows to overwrite
+                            that value for the purpose of the filter.
+                          type: string
+                        parser:
+                          description: Specify one or multiple Multiline Parsing definitions
+                            to apply to the content. You can specify multiple multiline
+                            parsers to detect different formats by separating them
+                            with a comma.
+                          type: string
+                      required:
+                      - parser
+                      type: object
                     nest:
                       description: Nest defines Nest Filter configuration.
                       properties:
@@ -397,6 +454,24 @@ spec:
                             type: string
                           type: array
                       type: object
+                    rewriteTag:
+                      description: RewriteTag defines a RewriteTag configuration.
+                      properties:
+                        emitterName:
+                          description: When the filter emits a record under the new
+                            Tag, there is an internal emitter plugin that takes care
+                            of the job. Since this emitter expose metrics as any other
+                            component of the pipeline, you can use this property to
+                            configure an optional name for it.
+                          type: string
+                        rules:
+                          description: 'Defines the matching criteria and the format
+                            of the Tag for the matching record. The Rule format have
+                            four components: KEY REGEX NEW_TAG KEEP.'
+                          items:
+                            type: string
+                          type: array
+                      type: object
                     throttle:
                       description: Throttle defines a Throttle configuration.
                       properties:
@@ -424,7 +499,7 @@ spec:
                 type: array
               match:
                 description: A pattern to match against the tags of incoming records.
-                  It's case sensitive and support the star (*) character as a wildcard.
+                  It's case-sensitive and support the star (*) character as a wildcard.
                 type: string
               matchRegex:
                 description: A regular expression to match against the tags of incoming
