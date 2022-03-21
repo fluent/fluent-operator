@@ -361,7 +361,7 @@ func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.
 	}
 
 	if o.Elasticsearch.Password != nil {
-		pwd, err := loader.LoadSecret(*o.Elasticsearch.User)
+		pwd, err := loader.LoadSecret(*o.Elasticsearch.Password)
 		if err != nil {
 			return nil, err
 		}
