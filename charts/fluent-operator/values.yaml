@@ -98,10 +98,18 @@ fluentd:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200
       logstashPrefix: ks-logstash-log
+      buffer:
+        enable: false
+        type: file
+        path: /buffers/es
     kafka:
       enable: false
       brokers: "my-cluster-kafka-bootstrap.default.svc:9091,my-cluster-kafka-bootstrap.default.svc:9092,my-cluster-kafka-bootstrap.default.svc:9093"
       topicKey: kubernetes_ns
+      buffer:
+        enable: false
+        type: file
+        path: /buffers/kafka
 
 nameOverride: ""
 fullnameOverride: ""
