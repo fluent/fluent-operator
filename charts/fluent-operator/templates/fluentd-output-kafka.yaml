@@ -13,11 +13,6 @@ spec:
         brokers: {{.Values.fluentd.output.kafka.brokers }}
         useEventTime: true
         topicKey: {{.Values.fluentd.output.kafka.topicKey }}
-      {{- if .Values.fluentd.output.kafka.buffer }}
-      buffer:
-        type: {{ .Values.fluentd.output.kafka.buffer.type }}
-        path: {{ .Values.fluentd.output.kafka.buffer.path }}
-      {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

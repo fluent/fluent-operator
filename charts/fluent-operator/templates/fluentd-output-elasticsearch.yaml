@@ -14,11 +14,6 @@ spec:
         port: {{ .Values.fluentd.output.es.port }}
         logstashFormat: true
         logstashPrefix: {{ .Values.fluentd.output.es.logstashPrefix }}
-      {{- if .Values.fluentd.output.es.buffer }}
-      buffer:
-        type: {{ .Values.fluentd.output.es.buffer.type }}
-        path: {{ .Values.fluentd.output.es.buffer.path }}
-      {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
