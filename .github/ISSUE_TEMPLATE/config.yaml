@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a Question
+    url: https://github.com/fluent/fluent-operator/discussions
+    about: I have questions about Fluent Operator. Please ask and answer questions at https://github.com/fluent/fluent-operator/discussions
