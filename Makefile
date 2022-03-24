@@ -73,13 +73,13 @@ binary:
 	go build -o bin/fb-watcher cmd/fluent-watcher/fluentbit/main.go
 	go build -o bin/fd-watcher cmd/fluent-watcher/fluentd/main.go
 
-verify: verify-crds verify-helm-package
+verify: verify-crds verify-codegen
 
 verify-crds:
 	chmod a+x ./hack/verify-crds.sh && ./hack/verify-crds.sh
 
-verify-helm-package:
-	chmod a+x ./hack/verify-helm-package.sh && ./hack/verify-helm-package.sh
+verify-codegen:
+	chmod a+x ./hack/verify-codegen.sh && ./hack/verify-codegen.sh
 
 build: generate fmt vet ## Build manager binary.
 	go build -o bin/fluent-manager cmd/fluent-manager/main.go

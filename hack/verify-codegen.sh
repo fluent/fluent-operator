@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# copied from: https://github.com/weaveworks/flagger/tree/master/hack
+# inspired by: https://github.com/weaveworks/flagger/tree/master/hack
 
 set -o errexit
 set -o nounset
@@ -34,5 +34,17 @@ ${CODEGEN_PKG}/generate-groups.sh "client" \
     --output-base "${TEMP_DIR}" \
     --go-header-file ${SCRIPT_ROOT}/hack/boilerplate.go.txt
 
-# Copy everything back.
-cp -r "${TEMP_DIR}/github.com/fluent/fluent-operator/apis/." "${SCRIPT_ROOT}/apis/"
+TMP_DIFFROOT=${TEMP_DIR}/github.com/fluent/fluent-operator/apis/generated/clientset
+DIFFROOT=${SCRIPT_ROOT}/apis/generated/clientset
+
+echo "diffing ${DIFFROOT} against freshly generated clientset"
+ret=0
+diff -Naupr "${DIFFROOT}" "${TMP_DIFFROOT}" || ret=$?
+cp -a "${TMP_DIFFROOT}"/* "${DIFFROOT}"
+if [[ $ret -eq 0 ]]
+then
+  echo "${DIFFROOT} up to date."
+else
+  echo "${DIFFROOT} is out of date. Please rerun make generate"
+  exit 1
+fi
