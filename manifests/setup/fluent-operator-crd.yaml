@@ -1958,6 +1958,10 @@ spec:
                     description: When Logstash_Format is enabled, this property defines
                       the format of the timestamp.
                     type: string
+                  timeKeyNanos:
+                    description: When Logstash_Format is enabled, enabling this property
+                      sends nanosecond precision timestamps.
+                    type: boolean
                   tls:
                     description: Fluent Bit provides integrated support for Transport
                       Layer Security (TLS) and it predecessor Secure Sockets Layer
