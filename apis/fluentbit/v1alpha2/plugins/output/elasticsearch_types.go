@@ -70,6 +70,8 @@ type Elasticsearch struct {
 	TimeKey string `json:"timeKey,omitempty"`
 	// When Logstash_Format is enabled, this property defines the format of the timestamp.
 	TimeKeyFormat string `json:"timeKeyFormat,omitempty"`
+	// When Logstash_Format is enabled, enabling this property sends nanosecond precision timestamps.
+	TimeKeyNanos *bool `json:"timeKeyNanos,omitempty"`
 	// When enabled, it append the Tag name to the record.
 	IncludeTagKey *bool `json:"includeTagKey,omitempty"`
 	// When Include_Tag_Key is enabled, this property defines the key name for the tag.
@@ -172,6 +174,9 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if es.TimeKeyFormat != "" {
 		kvs.Insert("Time_Key_Format", es.TimeKeyFormat)
+	}
+	if es.TimeKeyNanos != nil {
+		kvs.Insert("Time_Key_Nanos", fmt.Sprint(*es.TimeKeyNanos))
 	}
 	if es.IncludeTagKey != nil {
 		kvs.Insert("Include_Tag_Key", fmt.Sprint(*es.IncludeTagKey))

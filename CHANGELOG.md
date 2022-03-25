@@ -1,4 +1,4 @@
-## 1.0.0 / 2022-03-24
+## 1.0.0 / 2022-03-25
 
 ### Breaking Changes
 - All Fluent Bit CRDs has been changed from namespaced scope to cluster scope
@@ -21,7 +21,9 @@
 - Enable multi-workers in one Fluentd pod (#194)
 - Integrate e2e/function tests for generating Fluentd configuration (#203 #206 )
 - Refine docs (#199 #228)
-- Refactor multi images/binaries build, add github CI. (#152 #154 #213 #214)
+- Refactor multi images/binaries build, add github CI (#152 #154 #213 #214)
+- Add CI templates (#248)
+- Add Time_Key_Nanos field (#250)
 
 ### ENHANCEMENT
 - Set the crictl path to a variable (#181) 
@@ -33,9 +35,8 @@
 - Fix initcontainer script (#202) 
 - Refine Fluentd CRs status (#225)
 - Fix ci and make the repository importable and downloadable (#229)
-- Fix codegen && add support for verifying codegen. (#234 #238)
-- Fix helm && Optimize helm. (#236 #245 #246)
-
+- Fix codegen && add support for verifying codegen (#234 #238)
+- Fix helm && Optimize helm (#236 #245 #246)
 
 ## 0.13.0 / 2022-3-14
 
