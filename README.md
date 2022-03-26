@@ -116,7 +116,7 @@ Kubernetes v1.16.13+ is necessary for running Fluent Operator.
 Install the latest stable version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/release-0.12/manifests/setup/setup.yaml
+kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/release-1.0/manifests/setup/setup.yaml
 
 # You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch 
 # and then use command below to install to another namespace
@@ -169,7 +169,7 @@ helm install fluent-operator --create-namespace -n kubesphere-logging-system htt
 The quick start instructs you to deploy fluent bit with `dummy` as input and `stdout` as output, which is equivalent to execute the binary with `fluent-bit -i dummy -o stdout`.
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/kubesphere/fluentbit-operator/master/manifests/quick-start/quick-start.yaml
+kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/master/manifests/quick-start/fluentbit.yaml
 ```
 
 Once everything is up, you'll observe messages in fluent bit pod logs like below:
