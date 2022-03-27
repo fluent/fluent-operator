@@ -1,3 +1,60 @@
+## 1.0.0 / 2022-03-25
+
+### Breaking Changes
+- All Fluent Bit CRDs has been changed from namespaced scope to cluster scope
+- CRDs and controller for Fluentd have been added
+
+### Features
+- Add priority class to Fluent Bit type (#146) 
+- Add support for Fluent Bit RetryLimit in outputs (#148) 
+- Add Fluent Bit Datadog output (#149)  
+- Add support for Fluent Bit rewrite tag (#155)  
+- Add Fluent Bit multiline logs support (#172)
+- Add Fluent Bit aws filter plugin (#173)
+- Add Fluent Bit multiline filter plugin (#176) 
+- Add Fluent Bit Firehose plugin support (#178)
+- Add Fluent Bit volume crd (#186)
+- Renaming fluentbit-operator to fluent-operator (#189 #190)
+- Add more fluentd examples (#194)
+- Add Fluentd to helm charts (#204 #208 )
+- Encrypt sensitive information for Fluentd output plugin (#219) 
+- Enable multi-workers in one Fluentd pod (#194)
+- Integrate e2e/function tests for generating Fluentd configuration (#203 #206 )
+- Refine docs (#199 #228)
+- Refactor multi images/binaries build, add github CI (#152 #154 #213 #214)
+- Add CI templates (#248)
+- Add Time_Key_Nanos field (#250)
+
+### ENHANCEMENT
+- Set the crictl path to a variable (#181) 
+- Improved Fluent Bit kafka plugin (#182)
+
+### BUGFIX
+- Fix the incorrect key of the Fluent Bit es parser plugin (#164) 
+- Fix the incorrect keys of the Fluent Bit es output plugin (#160) 
+- Fix initcontainer script (#202) 
+- Refine Fluentd CRs status (#225)
+- Fix ci and make the repository importable and downloadable (#229)
+- Fix codegen && add support for verifying codegen (#234 #238)
+- Fix helm && Optimize helm (#236 #245 #246)
+
+## 0.13.0 / 2022-3-14
+
+- [FEATURE] Add priority class to Fluent Bit type #146
+- [FEATURE] Add support for Fluent Bit RetryLimit in outputs #148
+- [FEATURE] Add Fluent Bit Datadog output. #149
+- [FEATURE] Add main workflow actions. #152
+- [FEATURE] Add support for rewrite tag. #155
+- [FEATURE] Add aws filter plugin. #173
+- [FEATURE] Add multiline filter plugin. #176
+- [FEATURE] Add Firehose plugin support. #178
+- [FEATURE] Add volume crd. #186
+- [ENHANCEMENT] Upgrade layout from Kubebuilder v2 to Kubebuilder v3.1. #147
+- [ENHANCEMENT] Set the crictl path to a variable #181
+- [ENHANCEMENT] Improved Fluent Bit kafka plugin #182
+- [BUGFIX] Fix the incorrect keys of the Fluent Bit es output plugin #160
+- [BUGFIX] Fix the incorrect key of the Fluent Bit es parser plugin #164
+
 ## 0.12.0 / 2021-09-07
 
 - [FEATURE] Add support for collecting contained and cri-o service log. #142
