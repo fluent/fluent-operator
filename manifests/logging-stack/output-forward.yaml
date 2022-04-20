@@ -8,5 +8,5 @@ metadata:
 spec:
   matchRegex: (?:kube|service)\.(.*)
   forward:
-    host: fluentd.kubesphere-logging-system.svc
+    host: fluentd.fluent.svc
     port: 24224

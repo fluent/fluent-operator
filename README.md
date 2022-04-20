@@ -145,19 +145,19 @@ The default runtime is docker, you can choose other runtimes as follows.
 If your container runtime is `containerd`:
 
 ```shell
-helm install fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set containerRuntime=containerd
+helm install fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set containerRuntime=containerd
 ```
 
 If your container runtime is `cri-o`:
 
 ```shell
-helm install fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set containerRuntime=crio
+helm install fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set containerRuntime=crio
 ```
 
 Install through the online chart link:
 
 ```shell
-helm install fluent-operator --create-namespace -n kubesphere-logging-system https://github.com/fluent/fluent-operator/releases/download/< version >/fluent-operator.tgz
+helm install fluent-operator --create-namespace -n fluent https://github.com/fluent/fluent-operator/releases/download/< version >/fluent-operator.tgz
 ```
 
 > Please replace < version > with a actual version like v1.0.0
@@ -212,7 +212,7 @@ metadata:
 spec:
   watchedNamespaces: 
   - kube-system
-  - kubesphere-monitoring-system
+  - default
   clusterOutputSelector:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
@@ -225,7 +225,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
   name: fluentd-config
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
@@ -257,19 +257,19 @@ kubectl apply -f manifests/logging-stack
 If your container runtime is `docker`
 
 ```shell
-helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker
+helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker
 ```
 
 If your container runtime is `containerd`
 
 ```shell
-helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=containerd
+helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=containerd
 ```
 
 If your container runtime is `cri-o`
 
 ```shell
-helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=crio
+helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=crio
 ```
 
 If you want to install the fluentd plugin, you can execute the following command:
@@ -277,19 +277,19 @@ If you want to install the fluentd plugin, you can execute the following command
 If your container runtime is `docker`
 
 ```shell
-helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker,fluentd.enable=true
+helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker,fluentd.enable=true
 ```
 
 If your container runtime is `containerd`
 
 ```shell
-helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=containerd,fluentd.enable=true
+helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=containerd,fluentd.enable=true
 ```
 
 If your container runtime is `cri-o`
 
 ```shell
-helm upgrade fluent-operator --create-namespace -n kubesphere-logging-system charts/fluent-operator/  --set Kubernetes=true,containerRuntime=crio,fluentd.enable=true
+helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=crio,fluentd.enable=true
 ```
 
 Within a couple of minutes, you should observe an index available:
@@ -342,7 +342,7 @@ metadata:
 spec:
   matchRegex: (?:kube|service)\.(.*)
   forward:
-    host: fluentd-forward.kubesphere-logging-system.svc
+    host: fluentd.fluent.svc
     port: 24224
 EOF
 ```
@@ -357,7 +357,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -381,7 +381,7 @@ metadata:
 spec:
   watchedNamespaces: 
   - kube-system
-  - kubesphere-monitoring-system
+  - default
   clusterOutputSelector:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
@@ -411,7 +411,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -430,7 +430,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
   name: fluentd-config
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
@@ -443,7 +443,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Output
 metadata:
   name: fluentd-output-es
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     output.fluentd.fluent.io/enabled: "true"
 spec: 
@@ -464,7 +464,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -488,7 +488,7 @@ metadata:
 spec:
   watchedNamespaces: 
   - kube-system
-  - kubesphere-monitoring-system
+  - default
   clusterOutputSelector:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
@@ -498,7 +498,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
   name: fluentd-config
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
@@ -531,7 +531,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -550,7 +550,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
   name: fluentd-config-user1
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
@@ -573,7 +573,7 @@ metadata:
 spec:
   watchedNamespaces: 
   - kube-system
-  - kubesphere-system
+  - default
   clusterOutputSelector:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
@@ -584,7 +584,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Output
 metadata:
   name: fluentd-output-user1
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     output.fluentd.fluent.io/enabled: "true"
     output.fluentd.fluent.io/user: "user1"
@@ -638,7 +638,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -662,7 +662,7 @@ metadata:
 spec:
   watchedNamespaces: 
   - kube-system
-  - kubesphere-monitoring-system
+  - default
   clusterFilterSelector:
     matchLabels:
       filter.fluentd.fluent.io/enabled: "true"
@@ -707,7 +707,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -731,7 +731,7 @@ metadata:
 spec:
   watchedNamespaces: 
   - kube-system
-  - kubesphere-monitoring-system
+  - default
   clusterOutputSelector:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
@@ -761,7 +761,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -785,7 +785,7 @@ metadata:
 spec:
   watchedNamespaces: 
   - kube-system
-  - kubesphere-monitoring-system
+  - default
   clusterFilterSelector:
     matchLabels:
       filter.fluentd.fluent.io/enabled: "true"
@@ -840,7 +840,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd-http
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -859,7 +859,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
   name: fluentd-config
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
@@ -875,7 +875,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Filter
 metadata:
   name: fluentd-filter
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     filter.fluentd.fluent.io/enabled: "true"
 spec: 
@@ -887,7 +887,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Output
 metadata:
   name: fluentd-stdout
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     output.fluentd.fluent.io/enabled: "true"
 spec: 
@@ -911,10 +911,11 @@ When you use the fluent-operator, You can enable this from `FluentBitConfig` man
 
 ```yaml
 apiVersion: fluentbit.fluent.io/v1alpha2
-kind: FluentBitConfig
+kind: ClusterFluentBitConfig
 metadata:
   name: fluent-bit-config
-  namespace: logging-system
+  labels:
+    app.kubernetes.io/name: fluent-bit
 spec:
   filterSelector:
     matchLabels:
@@ -1076,7 +1077,7 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 - [x] Support containerd log format
 - [x] Add Fluentd CRDs as the log aggregation layer with group name `fluentd.fluent.io`
 - [x] Add FluentBit Cluster CRDs with new group name `fluentbit.fluent.io`
-- [ ] Rename the entire project to Fluent Operator
+- [x] Rename the entire project to Fluent Operator
 - [ ] Support more Fluentd & FluentBit plugins
 
 ## Development

@@ -1,6 +1,6 @@
 PROJECT_ROOT=$PWD
 E2E_DIR=$(realpath $(dirname $0)/..)
-LOGGING_NAMESPACE=kubesphere-logging-system
+LOGGING_NAMESPACE=fluent
 IMAGE_TAG=`date "+%Y-%m-%d-%H-%M-%S"`
 
 function build_ginkgo_test() {
