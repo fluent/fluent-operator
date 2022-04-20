@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluent-bit-containerd-config
-  namespace: kubesphere-logging-system
+  namespace: fluent
 data:
   containerd.lua: |
     function containerd( tag, timestamp, record)

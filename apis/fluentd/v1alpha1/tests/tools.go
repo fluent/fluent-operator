@@ -20,7 +20,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -46,7 +46,7 @@ metadata:
 spec:
   watchedNamespaces: 
   - kube-system
-  - kubesphere-monitoring-system
+  - default
   clusterFilterSelector:
     matchLabels:
       filter.fluentd.fluent.io/enabled: "true"
@@ -66,7 +66,7 @@ metadata:
 spec:
   watchedNamespaces: 
   - kube-system
-  - kubesphere-system
+  - default
   clusterOutputSelector:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
@@ -79,7 +79,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
   name: fluentd-config
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
@@ -93,7 +93,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
   name: fluentd-config-user1
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
@@ -222,7 +222,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Output
 metadata:
   name: fluentd-output-user1
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     output.fluentd.fluent.io/enabled: "true"
     output.fluentd.fluent.io/user: "user1"

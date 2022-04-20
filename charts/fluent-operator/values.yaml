@@ -78,11 +78,10 @@ fluentd:
     tag: "v1.14.4"
   replicas: 1
   forward:
-    host: "kubesphere-logging-system.svc"
     port: 24224
   watchedNamespaces:
     - kube-system
-    - kubesphere-monitoring-system
+    - default
   resources: {}
   # limits:
     # cpu: 100m

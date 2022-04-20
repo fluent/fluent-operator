@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: fluent-operator
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluent-operator

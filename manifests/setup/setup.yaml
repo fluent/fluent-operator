@@ -11799,7 +11799,7 @@ metadata:
     app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluent-operator
   name: fluent-operator
-  namespace: kubesphere-logging-system
+  namespace: fluent
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -11910,7 +11910,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: fluent-operator
-  namespace: kubesphere-logging-system
+  namespace: fluent
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -11919,7 +11919,7 @@ metadata:
     app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluent-operator
   name: fluent-operator
-  namespace: kubesphere-logging-system
+  namespace: fluent
 spec:
   selector:
     matchLabels:
