@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluent-bit-lua
-  namespace: kubesphere-logging-system
+  namespace: fluent
 data:
   systemd.lua: |
     function add_time(tag, timestamp, record)

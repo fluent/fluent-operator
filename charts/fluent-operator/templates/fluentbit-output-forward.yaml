@@ -10,7 +10,7 @@ metadata:
 spec:
   matchRegex: (?:kube|service)\.(.*)
   forward:
-    host: {{ .Values.fluentd.name }}.{{ .Values.fluentd.forward.host }}
+    host: {{ .Values.fluentd.name }}.{{ .Release.Namespace }}.svc
     port: {{ .Values.fluentd.forward.port }}
 {{- end }}
 {{- end }}

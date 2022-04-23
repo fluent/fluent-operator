@@ -2,7 +2,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: fluentd-forward
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluentd
 spec:
@@ -21,7 +21,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
 metadata:
   name: fluentd-config
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
@@ -37,7 +37,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Filter
 metadata:
   name: fluentd-filter
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     filter.fluentd.fluent.io/enabled: "true"
 spec: 
@@ -49,7 +49,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Output
 metadata:
   name: fluentd-stdout
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     output.fluentd.fluent.io/enabled: "true"
 spec: 
