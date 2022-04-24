@@ -68,10 +68,10 @@ fluentbit:
       index: "fluent-bit"
       httpUser:
       httpPassword:
-      logstashFormat: false
+      logstashFormat: true
       logstashPrefix: ks-logstash-log
       replaceDots: false
-      enableTLS: true
+      enableTLS: false
       tls:
         verify: On
         debug: 1
