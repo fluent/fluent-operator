@@ -12,7 +12,9 @@ spec:
   es:
     host: {{ .Values.fluentbit.output.es.host }}
     port: {{ .Values.fluentbit.output.es.port }}
+{{- if .Values.fluentbit.output.es.path }}
     path: {{ .Values.fluentbit.output.es.path }}
+{{- end }}
     bufferSize: {{ .Values.fluentbit.output.es.bufferSize }}
     index: {{ .Values.fluentbit.output.es.index }}
 {{- if .Values.fluentbit.output.es.httpUser }}
