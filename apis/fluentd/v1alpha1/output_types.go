@@ -37,6 +37,7 @@ type OutputStatus struct {
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
+//+kubebuilder:resource:shortName=fdo
 //+genclient
 
 // Output is the Schema for the outputs API

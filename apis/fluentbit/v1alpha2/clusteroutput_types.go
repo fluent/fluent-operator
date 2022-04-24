@@ -72,7 +72,7 @@ type OutputSpec struct {
 }
 
 // +kubebuilder:object:root=true
-// +kubebuilder:resource:scope=Cluster
+// +kubebuilder:resource:shortName=cfbo,scope=Cluster
 // +genclient
 // +genclient:nonNamespaced
 

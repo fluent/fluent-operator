@@ -34,7 +34,7 @@ type ClusterOutputStatus struct {
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:scope=Cluster
+// +kubebuilder:resource:shortName=cfdo,scope=Cluster
 // +genclient
 // +genclient:nonNamespaced
 
