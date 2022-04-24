@@ -12,9 +12,25 @@ spec:
   es:
     host: {{ .Values.fluentbit.output.es.host }}
     port: {{ .Values.fluentbit.output.es.port }}
+    path: {{ .Values.fluentbit.output.es.path }}
+    bufferSize: {{ .Values.fluentbit.output.es.bufferSize }}
+    index: {{ .Values.fluentbit.output.es.index }}
+{{- if .Values.fluentbit.output.es.httpUser }}
+    httpUser:
+{{ toYaml .Values.fluentbit.output.es.httpUser | indent 6 }}
+{{- end }}
+{{- if .Values.fluentbit.output.es.httpPassword }}
+    httpPassword:
+{{ toYaml .Values.fluentbit.output.es.httpPassword | indent 6 }}
+{{- end }}
+    logstashFormat: {{ .Values.fluentbit.output.es.logstashFormat }}
+    logstashPrefix: {{ .Values.fluentbit.output.es.logstashPrefix }}
+    replaceDots: {{ .Values.fluentbit.output.es.replaceDots }}
     generateID: true
-    logstashPrefix: ks-logstash-log
-    logstashFormat: true
     timeKey: "@timestamp"
+{{- if .Values.fluentbit.output.es.enableTLS }}
+    tls:
+{{ toYaml .Values.fluentbit.output.es.tls | indent 6 }}
+{{- end }}
 {{- end }}
 {{- end }}
