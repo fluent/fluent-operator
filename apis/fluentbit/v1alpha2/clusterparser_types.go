@@ -58,7 +58,7 @@ type Decorder struct {
 }
 
 // +kubebuilder:object:root=true
-// +kubebuilder:resource:scope=Cluster
+// +kubebuilder:resource:shortName=cfbp,scope=Cluster
 // +genclient
 // +genclient:nonNamespaced
 

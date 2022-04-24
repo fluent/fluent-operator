@@ -10,6 +10,8 @@ spec:
     kind: ClusterFilter
     listKind: ClusterFilterList
     plural: clusterfilters
+    shortNames:
+    - cfbf
     singular: clusterfilter
   scope: Cluster
   versions:
@@ -526,6 +528,8 @@ spec:
     kind: ClusterFilter
     listKind: ClusterFilterList
     plural: clusterfilters
+    shortNames:
+    - cfdf
     singular: clusterfilter
   scope: Cluster
   versions:
@@ -1421,6 +1425,8 @@ spec:
     kind: ClusterInput
     listKind: ClusterInputList
     plural: clusterinputs
+    shortNames:
+    - cfbi
     singular: clusterinput
   scope: Cluster
   versions:
@@ -1703,6 +1709,8 @@ spec:
     kind: ClusterOutput
     listKind: ClusterOutputList
     plural: clusteroutputs
+    shortNames:
+    - cfbo
     singular: clusteroutput
   scope: Cluster
   versions:
@@ -3032,6 +3040,8 @@ spec:
     kind: ClusterOutput
     listKind: ClusterOutputList
     plural: clusteroutputs
+    shortNames:
+    - cfdo
     singular: clusteroutput
   scope: Cluster
   versions:
@@ -4221,6 +4231,8 @@ spec:
     kind: ClusterParser
     listKind: ClusterParserList
     plural: clusterparsers
+    shortNames:
+    - cfbp
     singular: clusterparser
   scope: Cluster
   versions:
@@ -4334,6 +4346,8 @@ spec:
     kind: Filter
     listKind: FilterList
     plural: filters
+    shortNames:
+    - fdf
     singular: filter
   scope: Namespaced
   versions:
@@ -10615,6 +10629,8 @@ spec:
     kind: Output
     listKind: OutputList
     plural: outputs
+    shortNames:
+    - fdo
     singular: output
   scope: Namespaced
   versions:

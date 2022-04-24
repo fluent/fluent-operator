@@ -13,6 +13,8 @@ spec:
     kind: ClusterOutput
     listKind: ClusterOutputList
     plural: clusteroutputs
+    shortNames:
+    - cfdo
     singular: clusteroutput
   scope: Cluster
   versions:

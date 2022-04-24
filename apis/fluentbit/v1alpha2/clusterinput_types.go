@@ -44,7 +44,7 @@ type InputSpec struct {
 }
 
 // +kubebuilder:object:root=true
-// +kubebuilder:resource:scope=Cluster
+// +kubebuilder:resource:shortName=cfbi,scope=Cluster
 // +genclient
 // +genclient:nonNamespaced
 

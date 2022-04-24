@@ -69,7 +69,7 @@ type FilterItem struct {
 }
 
 // +kubebuilder:object:root=true
-// +kubebuilder:resource:scope=Cluster
+// +kubebuilder:resource:shortName=cfbf,scope=Cluster
 // +genclient
 // +genclient:nonNamespaced
 
