@@ -4,7 +4,7 @@
 
 #Set this to containerd or crio if you want to collect CRI format logs
 containerRuntime: docker
-Kubernetes: false
+Kubernetes: true
 
 operator:
   initcontainer:
@@ -60,27 +60,27 @@ fluentbit:
   #You can set enable to true to output logs to the specified location.
   output:
     es:
-      enable: false
+      enable: true
       host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
       port: 9200
-      path: ""
-      bufferSize: "4KB"
-      index: "fluent-bit"
-      httpUser:
-      httpPassword:
-      logstashFormat: true
-      logstashPrefix: ks-logstash-log
-      replaceDots: false
-      enableTLS: false
-      tls:
-        verify: On
-        debug: 1
-        caFile: "<Absolute path to CA certificate file>"
-        caPath: "<Absolute path to scan for certificate files>"
-        crtFile: "<Absolute path to private Key file>"
-        keyFile: "<Absolute path to private Key file>"
-        keyPassword:
-        vhost: "<Hostname to be used for TLS SNI extension>"
+#      path: ""
+#      bufferSize: "4KB"
+#      index: "fluent-bit"
+#      httpUser:
+#      httpPassword:
+#      logstashFormat: true
+#      logstashPrefix: ks-logstash-log
+#      replaceDots: false
+#      enableTLS: false
+#      tls:
+#        verify: On
+#        debug: 1
+#        caFile: "<Absolute path to CA certificate file>"
+#        caPath: "<Absolute path to scan for certificate files>"
+#        crtFile: "<Absolute path to private Key file>"
+#        keyFile: "<Absolute path to private Key file>"
+#        keyPassword:
+#        vhost: "<Hostname to be used for TLS SNI extension>"
     kafka:
       enable: false
       brokers: "<kafka broker list like xxx.xxx.xxx.xxx:9092,yyy.yyy.yyy.yyy:9092>"

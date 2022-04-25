@@ -15,8 +15,12 @@ spec:
 {{- if .Values.fluentbit.output.es.path }}
     path: {{ .Values.fluentbit.output.es.path }}
 {{- end }}
+{{- if .Values.fluentbit.output.es.bufferSize }}
     bufferSize: {{ .Values.fluentbit.output.es.bufferSize }}
+{{- end }}
+{{- if .Values.fluentbit.output.es.index }}
     index: {{ .Values.fluentbit.output.es.index }}
+{{- end }}
 {{- if .Values.fluentbit.output.es.httpUser }}
     httpUser:
 {{ toYaml .Values.fluentbit.output.es.httpUser | indent 6 }}
@@ -25,9 +29,9 @@ spec:
     httpPassword:
 {{ toYaml .Values.fluentbit.output.es.httpPassword | indent 6 }}
 {{- end }}
-    logstashFormat: {{ .Values.fluentbit.output.es.logstashFormat }}
-    logstashPrefix: {{ .Values.fluentbit.output.es.logstashPrefix }}
-    replaceDots: {{ .Values.fluentbit.output.es.replaceDots }}
+    logstashFormat: {{ .Values.fluentbit.output.es.logstashFormat | default true }}
+    logstashPrefix: {{ .Values.fluentbit.output.es.logstashPrefix | default "ks-logstash-log" | quote }}
+    replaceDots: {{ .Values.fluentbit.output.es.replaceDots | default false }}
     generateID: true
     timeKey: "@timestamp"
 {{- if .Values.fluentbit.output.es.enableTLS }}
