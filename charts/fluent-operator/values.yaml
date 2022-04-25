@@ -4,7 +4,7 @@
 
 #Set this to containerd or crio if you want to collect CRI format logs
 containerRuntime: docker
-Kubernetes: true
+Kubernetes: false
 
 operator:
   initcontainer:
@@ -60,7 +60,7 @@ fluentbit:
   #You can set enable to true to output logs to the specified location.
   output:
     es:
-      enable: true
+      enable: false
       host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
       port: 9200
 #      path: ""
