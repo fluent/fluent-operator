@@ -13,6 +13,8 @@ spec:
     kind: ClusterParser
     listKind: ClusterParserList
     plural: clusterparsers
+    shortNames:
+    - cfbp
     singular: clusterparser
   scope: Cluster
   versions:

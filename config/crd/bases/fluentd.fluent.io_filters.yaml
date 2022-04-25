@@ -13,6 +13,8 @@ spec:
     kind: Filter
     listKind: FilterList
     plural: filters
+    shortNames:
+    - fdf
     singular: filter
   scope: Namespaced
   versions:
