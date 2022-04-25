@@ -63,13 +63,13 @@ fluentbit:
       enable: false
       host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
       port: 9200
+      logstashPrefix: ks-logstash-log
 #      path: ""
 #      bufferSize: "4KB"
 #      index: "fluent-bit"
 #      httpUser:
 #      httpPassword:
 #      logstashFormat: true
-#      logstashPrefix: ks-logstash-log
 #      replaceDots: false
 #      enableTLS: false
 #      tls:
