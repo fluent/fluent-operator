@@ -14,7 +14,7 @@ spec:
   replicas: {{ .Values.fluentd.replicas }}
   image: {{ .Values.fluentd.image.repository }}:{{ .Values.fluentd.image.tag }}
   resources:
-  {{- toYaml .Values.fluentbit.resources | nindent 4  }}
+  {{- toYaml .Values.fluentd.resources | nindent 4  }}
   fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
