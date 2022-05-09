@@ -21,7 +21,7 @@ import (
 const (
 	defaultBinPath      = "/usr/bin/fluentd"
 	defaultCfgPath      = "/fluentd/etc/fluent.conf"
-	defaultWatchDir     = "/fluentd/etc/app.conf"
+	defaultWatchDir     = "/fluentd/etc"
 	defaultPluginPath   = "/fluentd/plugins"
 	defaultPollInterval = 1 * time.Second
 
@@ -177,7 +177,7 @@ func newWatcher(poll bool, interval time.Duration) (filenotify.FileWatcher, erro
 
 // Inspired by https://github.com/jimmidyson/configmap-reload
 func isValidEvent(event fsnotify.Event) bool {
-	return event.Op == fsnotify.Create || event.Op == fsnotify.Write
+	return event.Op == fsnotify.Rename
 }
 
 func start() {
@@ -277,6 +277,7 @@ func reloadOrStop() {
 	if err == nil {
 		_ = level.Info(logger).Log("msg", "Killed Fluentd")
 		return
+
 	}
 
 	_ = level.Info(logger).Log("msg", "Kill Fluentd error", "error", err)
