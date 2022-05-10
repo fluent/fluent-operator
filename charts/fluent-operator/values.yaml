@@ -12,7 +12,7 @@ operator:
     tag: "19.03"
   container:
     repository: "kubesphere/fluent-operator"
-    tag: "v1.0.0"
+    tag: "v1.0.1"
     # FluentBit operator resources. Usually user needn't to adjust these.
   resources:
     limits:
