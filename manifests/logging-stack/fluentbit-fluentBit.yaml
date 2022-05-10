@@ -2,7 +2,7 @@ apiVersion: fluentbit.fluent.io/v1alpha2
 kind: FluentBit
 metadata:
   name: fluent-bit
-  namespace: kubesphere-logging-system
+  namespace: fluent
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:

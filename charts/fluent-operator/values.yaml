@@ -64,6 +64,23 @@ fluentbit:
       host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
       port: 9200
       logstashPrefix: ks-logstash-log
+#      path: ""
+#      bufferSize: "4KB"
+#      index: "fluent-bit"
+#      httpUser:
+#      httpPassword:
+#      logstashFormat: true
+#      replaceDots: false
+#      enableTLS: false
+#      tls:
+#        verify: On
+#        debug: 1
+#        caFile: "<Absolute path to CA certificate file>"
+#        caPath: "<Absolute path to scan for certificate files>"
+#        crtFile: "<Absolute path to private Key file>"
+#        keyFile: "<Absolute path to private Key file>"
+#        keyPassword:
+#        vhost: "<Hostname to be used for TLS SNI extension>"
     kafka:
       enable: false
       brokers: "<kafka broker list like xxx.xxx.xxx.xxx:9092,yyy.yyy.yyy.yyy:9092>"
@@ -78,11 +95,10 @@ fluentd:
     tag: "v1.14.4"
   replicas: 1
   forward:
-    host: "kubesphere-logging-system.svc"
     port: 24224
   watchedNamespaces:
     - kube-system
-    - kubesphere-monitoring-system
+    - default
   resources: {}
   # limits:
     # cpu: 100m

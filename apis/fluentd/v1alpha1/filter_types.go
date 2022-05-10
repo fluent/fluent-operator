@@ -34,6 +34,7 @@ type FilterStatus struct {
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
+//+kubebuilder:resource:shortName=fdf
 //+genclient
 
 // Filter is the Schema for the filters API
