@@ -39,7 +39,7 @@ spec:
           mountPath: /var/run/docker.sock
       containers:
       - name: fluent-operator
-        image: kubesphere/fluent-operator:v1.0.0
+        image: kubesphere/fluent-operator:v1.0.1
         env:
           - name: NAMESPACE
             valueFrom:
