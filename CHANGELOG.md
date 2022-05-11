@@ -1,3 +1,18 @@
+## 1.0.1 / 2022-05-10
+
+### ENHANCEMENT
+- Add utils related unit tests  (#251) 
+- Change the original namespace to fluent (#267)
+- Support logstashPrefix to ClusterOutput (#268)
+- Add its shortname for each CRD  (#269)
+
+### BUGFIX
+- Fix the bug of feature request issue will closed by mistake (#257) 
+- Fix crio init container mount path (#260) 
+- Fix version error (#261) 
+- Fix Helm Chart for Fluentd resources settings (#271) 
+- Fix reload error (#277) 
+
 ## 1.0.0 / 2022-03-25
 
 ### Breaking Changes

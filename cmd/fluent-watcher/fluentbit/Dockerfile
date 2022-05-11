@@ -6,7 +6,7 @@ WORKDIR /code
 RUN echo $(ls -al /code)
 RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o /fluent-bit/fluent-bit /code/cmd/fluent-watcher/fluentbit/main.go
 
-FROM fluent/fluent-bit:1.8.11
+FROM fluent/fluent-bit:1.9.3
 LABEL Description="Fluent Bit docker image" Vendor="Fluent" Version="1.0"
 
 COPY conf/fluent-bit.conf conf/parsers.conf /fluent-bit/etc/
