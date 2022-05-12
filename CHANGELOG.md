@@ -1,4 +1,4 @@
-## 1.0.1 / 2022-05-10
+## 1.0.1 / 2022-05-12
 
 ### ENHANCEMENT
 - Add utils related unit tests  (#251) 
@@ -8,6 +8,7 @@
 
 ### BUGFIX
 - Fix the bug of feature request issue will closed by mistake (#257) 
+- Fix crio init container mount path (#260) 
 - Fix version error (#261) 
 - Fix Helm Chart for Fluentd resources settings (#271) 
 - Fix reload error (#277) 
