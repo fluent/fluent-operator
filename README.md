@@ -26,7 +26,6 @@ Once installed, the Fluent Operator provides the following features:
 - **Pluggable deployment components**: Either Fluent Bit or Fluentd can be deployed separately.
 
 ## Table of contents
-
 <!-- TOC -->
 
 - [Fluent Operator](#fluent-operator)
@@ -37,12 +36,12 @@ Once installed, the Fluent Operator provides the following features:
 	- [Get Started](#get-started)
 		- [Prerequisites](#prerequisites)
 		- [Install](#install)
-				- [Deploy Fluent Operator with YAML](#deploy-fluent-operator-with-yaml)
-				- [Deploy Fluent Operator with Helm](#deploy-fluent-operator-with-helm)
+			- [Deploy Fluent Operator with YAML](#deploy-fluent-operator-with-yaml)
+			- [Deploy Fluent Operator with Helm](#deploy-fluent-operator-with-helm)
 		- [Fluent Operator Walkthrough](#fluent-operator-walkthrough)
-		- [Fluent Bit: Collect Kubernetes logs](#fluent-bit-collect-kubernetes-logs)
-				- [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
-				- [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
+		- [Collect Kubernetes logs](#collect-kubernetes-logs)
+			- [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
+			- [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
 		- [Collect auditd logs](#collect-auditd-logs)
 		- [Fluentd](#fluentd-1)
 	- [Monitoring](#monitoring)
@@ -65,15 +64,17 @@ Once installed, the Fluent Operator provides the following features:
 		- [Contact us](#contact-us)
 	- [Videos and blogs](#videos-and-blogs)
 
+<!-- /TOC -->
+
 ## Overview
 
-Although both Fluent Bit and Fluentd are able to collect, process(parse and filter) and then forward log to the final destinations, still they have their own strengh in different aspects.
+Although both Fluent Bit and Fluentd can collect, process(parse and filter) and then forward log to the final destinations, still they have strengths in different aspects.
 
 Fluent Bit is a good choice as a logging agent because of its lightweight and efficiency, while Fluentd is more powerful to perform advanced processing on logs because of its rich plugins.
 
-- Fluent Bit only mode: If you just need to collect log and send logs to the final destinations, all you need is Fluent Bit.
+- Fluent Bit only mode: If you just need to collect logs and send logs to the final destinations, all you need is Fluent Bit.
 - Fluent Bit + Fluentd mode: If you also need to perform some advanced processing on the logs collected or send to more sinks, then you also need Fluentd.
-- Fluentd only mode: If you need to receive logs through network like HTTP or Syslog and then process and send the log to the final sinks, you only need Fluentd.
+- Fluentd only mode: If you need to receive logs through networks like HTTP or Syslog and then process and send the log to the final sinks, you only need Fluentd.
 
 Fluent Operator includes CRDs and controllers for both Fluent Bit and Fluentd which allows you to config your log processing pipelines in the 3 modes mentioned above as you wish.
 
@@ -119,7 +120,7 @@ Kubernetes v1.16.13+ is necessary for running Fluent Operator.
 
 ### Install
 
-##### Deploy Fluent Operator with YAML
+#### Deploy Fluent Operator with YAML
 
 Install the latest stable version
 
@@ -141,7 +142,7 @@ kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/mas
 # kubectl kustomize manifests/setup/ | kubectl apply -f -
 ```
 
-##### Deploy Fluent Operator with Helm
+#### Deploy Fluent Operator with Helm
 
 > Note: For the helm based install, Helm v3.2.1 or higher is needed.
 
@@ -174,7 +175,7 @@ helm install fluent-operator --create-namespace -n fluent https://github.com/flu
 
 For more info on various use cases of Fluent Operator, you can refer to [Fluent-Operator-Walkthrough](https://github.com/kubesphere-sigs/fluent-operator-walkthrough).
 
-### Fluent Bit: Collect Kubernetes logs
+### Collect Kubernetes logs
 
 This guide provisions a logging pipeline including the Fluent Bit DaemonSet and its log input/filter/output configurations to collect Kubernetes logs including container logs and kubelet logs.
 
@@ -182,7 +183,7 @@ This guide provisions a logging pipeline including the Fluent Bit DaemonSet and 
 
 > Note that you need a running Elasticsearch v5+ cluster to receive log data before start. **Remember to adjust [output-elasticsearch.yaml](manifests/logging-stack/output-elasticsearch.yaml) to your own es setup**. Kafka and Fluentd outputs are optional and are turned off by default.
 
-##### Deploy the Kubernetes logging stack with YAML
+#### Deploy the Kubernetes logging stack with YAML
 
 ```shell
 kubectl apply -f manifests/logging-stack
@@ -192,7 +193,7 @@ kubectl apply -f manifests/logging-stack
 # kubectl kustomize manifests/logging-stack/ | kubectl apply -f -
 ```
 
-##### Deploy the Kubernetes logging stack with Helm
+#### Deploy the Kubernetes logging stack with Helm
 
 If your container runtime is `docker`
 
@@ -492,6 +493,6 @@ You are welcome to join us in the Fluent community to polish it together:
 ## Videos and blogs
 
 - [From FluentBit Operator to Fluent Operator: The Long Way to Come - Benjamin Huo](https://www.youtube.com/watch?v=jvMw0yRYW30)
-- [What it Fluent Operator and how do you use it - Henrik Rexed](https://www.youtube.com/watch?v=8I6AnkTkeiI)
+- [What is Fluent Operator and how do you use it - Henrik Rexed](https://www.youtube.com/watch?v=8I6AnkTkeiI)
 - [Under the Hood with Fluent Bit Operator: Kubernetes-native Log Processor - Feynman Zhou & Dhruv Kela](https://youtu.be/jnRFeaP9Uzw)
 - [Quick Start: Learn Fluent Operator in 5 minutes (中文) - Dehao Cheng](https://kubesphere.io/zh/blogs/fluent-operator-logging/)
