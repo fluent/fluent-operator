@@ -9,18 +9,18 @@ This Document documents the types introduced by the fluentbit Operator.
 * [ClusterParser](#clusterparser)
 * [Decorder](#decorder)
 * [FilterItem](#filteritem)
-* [FilterList](#filterlist)
+* [ClusterFilterList](#clusterFilterList)
 * [FilterSpec](#filterspec)
 * [FluentBit](#fluentbit)
-* [FluentBitConfigList](#fluentbitconfiglist)
+* [ClusterFluentBitConfigList](#clusterfluentBitconfiglist)
 * [FluentBitConfigSpec](#fluentbitconfigspec)
 * [FluentBitList](#fluentbitlist)
 * [FluentBitSpec](#fluentbitspec)
-* [InputList](#inputlist)
+* [ClusterInputList](#clusterinputlist)
 * [InputSpec](#inputspec)
-* [OutputList](#outputlist)
+* [ClusterOutputList](#clusteroutputlist)
 * [OutputSpec](#outputspec)
-* [ParserList](#parserlist)
+* [ClusterParserList](#clusterparserlist)
 * [ParserSpec](#parserspec)
 * [Script](#script)
 * [Service](#service)
@@ -145,9 +145,9 @@ FluentBit is the Schema for the fluentbits API
 | status |  | FluentBitStatus |
 
 [Back to TOC](#table-of-contents)
-# FluentBitConfigList
+# ClusterFluentBitConfigList
 
-FluentBitConfigList contains a list of ClusterFluentBitConfig
+ClusterFluentBitConfigList contains a list of ClusterFluentBitConfig
 
 
 | Field | Description | Scheme |
@@ -207,7 +207,7 @@ FluentBitSpec defines the desired state of FluentBit
 | volumesMounts | Pod volumes to mount into the container's filesystem. | []corev1.VolumeMount |
 
 [Back to TOC](#table-of-contents)
-# InputList
+# ClusterInputList
 
 ClusterInputList contains a list of Input
 
@@ -231,9 +231,9 @@ InputSpec defines the desired state of ClusterInput
 | systemd | Systemd defines Systemd Input configuration. | *[input.Systemd](plugins/input/systemd.md) |
 
 [Back to TOC](#table-of-contents)
-# OutputList
+# ClusterOutputList
 
-OutputList contains a list of ClusterOutput
+ClusterOutputList contains a list of ClusterOutput
 
 
 | Field | Description | Scheme |
@@ -267,9 +267,9 @@ OutputSpec defines the desired state of ClusterOutput
 | firehose | Firehose defines Firehose Output configuration. | *[output.Firehose](plugins/output/firehose.md) |
 
 [Back to TOC](#table-of-contents)
-# ParserList
+# ClusterParserList
 
-ParserList contains a list of ClusterParser
+ClusterParserList contains a list of ClusterParser
 
 
 | Field | Description | Scheme |
