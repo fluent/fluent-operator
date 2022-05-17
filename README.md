@@ -1,3 +1,17 @@
+<p align="center">
+<a href="https://github.com/fluent/fluent-operator"><img src="docs/images/fluent-operator-icon.svg" alt="banner" width="150px"></a>
+</p>
+
+<p align="center">
+<b>Facilitate the management of <i>Fluent Bit and Fluentd</i> in Kubernetes</b>
+</p>
+
+<p align=center>
+<a href="https://goreportcard.com/report/github.com/fluent/fluent-operator"><img src="https://goreportcard.com/badge/github.com/fluent/fluent-operator" alt="A+"></a>
+<a href="https://github.com/fluent/fluent-operator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><img src="https://img.shields.io/github/issues/badges/shields/good%20first%20issue" alt="good first"></a>
+<a href="https://twitter.com/intent/follow?screen_name=KubeSphere"><img src="https://img.shields.io/twitter/follow/KubeSphere?style=social" alt="follow on Twitter"></a>
+<a href="https://fluent-all.slack.com/archives/C02642TE9HR"><img src="https://img.shields.io/badge/Slack-600%2B-blueviolet?logo=slack&amp;logoColor=white"></a>
+
 # Fluent Operator
 
 Fluent Operator provides great flexibility in building a logging layer based on Fluent Bit and Fluentd.
@@ -1102,3 +1116,26 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 ### Manifests
 
 Most files under the folder [manifests/setup](manifests/setup) are automatically generated from [config](config). Don't edit them directly, run `make manifests` instead, then replace these files accordingly.
+
+## Community
+
+### About the community
+
+Fluent Operator is sponsored and open-sourced by the [KubeSphere](http://kubesphere.io/) Team and maintained by the Fluent community. 
+
+This project was accepted by the Fluent community as a sub-project in 2021 and is currently a vendor-neutral and community-driven project. 
+
+### Contact us
+
+You are welcome to join us in the Fluent community to polish it together:
+
+- Slack: Create an account in the [Fluent Slack workspace](https://launchpass.com/fluent-all) and then search `#fluent-operator` to join or click [#fluent-operator](https://fluent-all.slack.com/archives/C02642TE9HR) to join if you already have an account
+- Wechat: join the KubeSphere Observability SIG by following the `kubesphere` WeChat subscription
+- Bi-weekly Meeting: https://meeting.tencent.com/dm/mZPB9QKdtX0F (You can find the SIG-Observability meeting schedule [here](https://kubesphere.io/contribution/))
+
+## Videos and blogs
+
+- [From FluentBit Operator to Fluent Operator: The Long Way to Come - Benjamin Huo](https://www.youtube.com/watch?v=jvMw0yRYW30)
+- [What it Fluent Operator and how do you use it - Henrik Rexed](https://www.youtube.com/watch?v=8I6AnkTkeiI)
+- [Under the Hood with Fluent Bit Operator: Kubernetes-native Log Processor - Feynman Zhou & Dhruv Kela](https://youtu.be/jnRFeaP9Uzw)
+- [Quick Start: Learn Fluent Operator in 5 minutes (中文) - Dehao Cheng](https://kubesphere.io/zh/blogs/fluent-operator-logging/)

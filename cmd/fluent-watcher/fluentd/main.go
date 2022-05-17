@@ -265,7 +265,7 @@ func reloadOrStop() {
 
 	// Reloads the configuration file by gracefully re-constructing the data pipeline.
 	// https://docs.fluentd.org/deployment/signals#sigusr2
-	err := cmd.Process.Signal(syscall.SIGUSR2)
+	err := cmd.Process.Signal(syscall.SIGHUP)
 	if err == nil {
 		_ = level.Info(logger).Log("msg", "Gracefully reloaded Fluentd config")
 		return

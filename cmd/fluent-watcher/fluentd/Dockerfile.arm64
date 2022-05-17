@@ -17,7 +17,7 @@ RUN curl -sL -o qemu-6.0.0.balena1-aarch64.tar.gz https://github.com/balena-io/q
 # Fluentd main image
 FROM arm64v8/ruby:2.7-slim-bullseye
 COPY --from=builderqemu /go/qemu-aarch64-static /usr/bin/
-LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.14.4"
+LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.14.6"
 ENV TINI_VERSION=0.18.0
 
 # Do not split this into multiple RUN!
@@ -36,7 +36,7 @@ RUN apt-get update \
  && gem install json -v 2.4.1 \
  && gem install async-http -v 0.54.0 \
  && gem install ext_monitor -v 0.1.2 \
- && gem install fluentd -v 1.14.4 \
+ && gem install fluentd -v 1.14.6 \
  && gem install bigdecimal -v 1.4.4 \
  && gem install resolv -v 0.2.1 \
  && gem install elasticsearch -v 7.13.3 \
