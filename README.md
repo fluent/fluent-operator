@@ -45,7 +45,7 @@ Once installed, the Fluent Operator provides the following features:
 		- [Collect auditd logs](#collect-auditd-logs)
 		- [Fluentd](#fluentd-1)
 	- [Monitoring](#monitoring)
-	- [API Doc](#api-doc)
+	- [Plugins](#plugins)
 		- [Fluent Bit](#fluent-bit-1)
 		- [Fluentd](#fluentd-2)
 	- [Best Practice](#best-practice)
@@ -345,77 +345,15 @@ curl <podIP>:2020 | jq .
 ```
 
 
-## API Doc
+## Plugins 
 
 ### Fluent Bit
 
-The list below shows supported plugins which are based on Fluent Bit v1.7.x+. For more information, please refer to the API docs of each plugin.
-
-- [Input](docs/fluentbit.md#input)
-  - [dummy](docs/plugins/fluentbit/input/dummy.md)
-  - [tail](docs/plugins/fluentbit/input/tail.md)
-  - [systemd](docs/plugins/fluentbit/input/systemd.md)
-- [Parser](docs/fluentbit.md#parser)
-  - [json](docs/plugins/fluentbit/parser/json.md)
-  - [logfmt](docs/plugins/fluentbit/parser/logfmt.md)
-  - [lstv](docs/plugins/fluentbit/parser/lstv.md)
-  - [regex](docs/plugins/fluentbit/parser/regex.md)
-- [Filter](docs/fluentbit.md#filter)
-  - [kubernetes](docs/plugins/fluentbit/filter/kubernetes.md)
-  - [modify](docs/plugins/fluentbit/filter/modify.md)
-  - [nest](docs/plugins/fluentbit/filter/nest.md)
-  - [parser](docs/plugins/fluentbit/filter/parser.md)
-  - [grep](docs/plugins/fluentbit/filter/grep.md)
-  - [record modifier](docs/plugins/fluentbit/filter/recordmodifier.md)
-  - [lua](docs/plugins/fluentbit/filter/lua.md)
-  - [throttle](docs/plugins/fluentbit/filter/throttle.md)
-  - [aws](docs/plugins/fluentbit/filter/aws.md)
-  - [multiline](docs/plugins/fluentbit/filter/multiline.md)
-- [Output](docs/fluentbit.md#output)
-  - [elasticsearch](docs/plugins/fluentbit/output/elasticsearch.md)
-  - [file](docs/plugins/fluentbit/output/file.md)
-  - [forward](docs/plugins/fluentbit/output/forward.md)
-  - [http](docs/plugins/fluentbit/output/http.md)
-  - [kafka](docs/plugins/fluentbit/output/kafka.md)
-  - [null](docs/plugins/fluentbit/output/null.md)
-  - [stdout](docs/plugins/fluentbit/output/stdout.md)
-  - [tcp](docs/plugins/fluentbit/output/tcp.md)
-  - [loki](docs/plugins/fluentbit/output/loki.md)
-  - [syslog](docs/plugins/fluentbit/output/syslog.md)
-  - [datadog](docs/plugins/fluentbit/output/datadog.md)
+[Here](docs/plugins/fluentbit/index.md) you can find supported Fluent Bit plugins.
 
 ### Fluentd
 
-The list below shows supported plugins which are based on Fluentd v1.14.4+. For more information, please refer to the API docs of each plugin.
-
-- Common
-  - [buffer](docs/plugins/fluentd/common/buffer.md)
-  - [format](docs/plugins/fluentd/common/format.md)
-  - [parse](docs/plugins/fluentd/common/parse.md)
-  - [time](docs/plugins/fluentd/common/common.md#time)
-  - [inject](docs/plugins/fluentd/common/common.md#inject)
-  - [security](docs/plugins/fluentd/common/common.md#security)
-  - [user](docs/plugins/fluentd/common/common.md#user)
-  - [transport](docs/plugins/fluentd/common/common.md#transport)
-  - [client](docs/plugins/fluentd/common/common.md#client)
-  - [auth](docs/plugins/fluentd/common/common.md#auth)
-  - [server](docs/plugins/fluentd/common/common.md#server)
-  - [service_discovery](docs/plugins/fluentd/common/common.md#ServiceDiscovery)
-- [Input](docs/fluentd/input/types.md)
-  - [http](docs/plugins/fluentd/input/http.md)
-  - [forward](docs/plugins/fluentd/input/forward.md)
-- [Filter](docs/fluentd/filter/types.md)
-  - [parser](docs/plugins/fluentd/filter/parser.md)
-  - [grep](docs/plugins/fluentd/filter/grep.md)
-  - [record modifier](docs/plugins/fluentd/filter/record_modifier.md)
-  - [stdout](docs/plugins/fluentd/filter/stdout.md)
-- [Output](docs/plugins/fluentd/output/types.md)
-  - [elasticsearch](docs/plugins/fluentd/output/elasticsearch.md)
-  - [forward](docs/plugins/fluentd/output/forward.md)
-  - [http](docs/plugins/fluentd/output/http.md)
-  - [kafka](docs/plugins/fluentd/output/kafka.md)
-  - stdout
-
+[Here](docs/plugins/fluentd/index.md) you can find supported Fluentd plugins.
 
 ## Best Practice
 
