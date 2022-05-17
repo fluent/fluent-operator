@@ -11954,7 +11954,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        image: kubesphere/fluent-operator:v1.0.1
+        image: kubesphere/fluent-operator:v1.0.2
         name: fluent-operator
         resources:
           limits:
