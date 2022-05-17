@@ -3,6 +3,7 @@ VERSION?=$(shell cat VERSION | tr -d " \t\n\r")
 FB_IMG ?= kubesphere/fluent-bit:v1.9.3
 FD_IMG ?= kubesphere/fluentd:v1.14.6
 FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
+FD_IMG_BASE ?= kubesphere/fluentd:v1.14.6-arm64-base
 
 ARCH ?= arm64
 
@@ -111,6 +112,9 @@ build-fb-amd64:
 # Build amd64 Fluentd container image
 build-fd-amd64:
 	docker build -f cmd/fluent-watcher/fluentd/Dockerfile.amd64 . -t ${FD_IMG}
+
+build-fd-arm64-base: prepare-build
+	docker buildx build --push --platform linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.arm64.base . -t ${FD_IMG_BASE}
 
 # Use docker buildx to build arm64 Fluentd container image
 build-fd-arm64: prepare-build
