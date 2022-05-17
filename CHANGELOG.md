@@ -1,7 +1,7 @@
 ## 1.0.2 / 2022-05-17
 
 ### ENHANCEMENT
-- Change kill signal  (#288) 
+- Change reload signal from SIGUSR2 to SIGHUP  (#288) 
 
 ## 1.0.1 / 2022-05-10
 
