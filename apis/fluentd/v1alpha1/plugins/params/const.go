@@ -31,6 +31,7 @@ const (
 	S3Plugin            PluginName = "s3"
 	KafkaPlugin         PluginName = "kafka2"
 	ElasticsearchPlugin PluginName = "elasticsearch"
+	OpensearchPlugin    PluginName = "opensearch"
 	MatchPlugin         PluginName = "match"
 	BufferPlugin        PluginName = "buffer"
 
@@ -59,6 +60,7 @@ const (
 	StdOutputType           OutputType = "stdout"
 	KafkaOutputType         OutputType = "kafka2"
 	ElasticsearchOutputType OutputType = "elasticsearch"
+	OpenSearchOutputType    OutputType = "opensearch"
 	S3OutputType            OutputType = "s3"
 )
 

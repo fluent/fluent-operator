@@ -24,5 +24,7 @@
   - [forward](output/forward.md)
   - [http](output/http.md)
   - [kafka](output/kafka.md)
+  - [opensearch](output/opensearch.md)
   - stdout
+
 
