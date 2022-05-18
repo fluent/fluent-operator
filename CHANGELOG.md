@@ -3,7 +3,7 @@
 ### ENHANCEMENT
 - Change reload signal from SIGUSR2 to SIGHUP  (#288) 
 
-## 1.0.1 / 2022-05-10
+## 1.0.1 / 2022-05-12
 
 ### ENHANCEMENT
 - Add utils related unit tests  (#251) 
