@@ -17,7 +17,7 @@
 - [Filter](filter/types.md)
   - [parser](filter/parser.md)
   - [grep](filter/grep.md)
-  - [record modifier](filter/record_modifier.md)
+  - [record transformer](filter/record_transformer.md)
   - [stdout](filter/stdout.md)
 - [Output](output/types.md)
   - [elasticsearch](output/elasticsearch.md)
