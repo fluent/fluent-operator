@@ -4,7 +4,7 @@
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:
-  name: fluentd-output-es
+  name: fluentd-output-opensearch
   labels:
     output.fluentd.fluent.io/enabled: "true"
 spec:
@@ -14,7 +14,7 @@ spec:
         port: {{ .Values.fluentd.output.opensearch.port }}
         logstashFormat: true
         logstashPrefix: {{ .Values.fluentd.output.opensearch.logstashPrefix }}
-      {{- if .Values.fluentd.output.es.buffer }}
+      {{- if .Values.fluentd.output.opensearch.buffer }}
       buffer:
         type: {{ .Values.fluentd.output.opensearch.buffer.type }}
         path: {{ .Values.fluentd.output.opensearch.buffer.path }}
