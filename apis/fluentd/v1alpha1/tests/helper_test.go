@@ -112,7 +112,7 @@ func Test_ClusterCfgOutput2OpenSearch(t *testing.T) {
 	i := 0
 	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
-		fmt.Println(config)
+		//fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-opensearch.cfg"))).To(Equal(config))
 

@@ -40,7 +40,7 @@ metadata:
     output.fluentd.fluent.io/enabled: "true"
 spec: 
   outputs: 
-  - elasticsearch:
+  - opensearch:
       host: opensearch-logging-data.kubesphere-logging-system.svc
       port: 9200
       logstashFormat: true

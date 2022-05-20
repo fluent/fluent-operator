@@ -9,7 +9,7 @@ metadata:
     output.fluentd.fluent.io/enabled: "true"
 spec:
   outputs:
-    - elasticsearch:
+    - opensearch:
         host: {{ .Values.fluentd.output.opensearch.host }}
         port: {{ .Values.fluentd.output.opensearch.port }}
         logstashFormat: true

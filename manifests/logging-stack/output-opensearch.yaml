@@ -7,7 +7,7 @@ metadata:
     fluentbit.fluent.io/component: logging
 spec:
   matchRegex: (?:kube|service)\.(.*)
-  es:
+  opensearch:
     host: opensearch-logging-data.kubesphere-logging-system.svc
     port: 9200
     generateID: true
