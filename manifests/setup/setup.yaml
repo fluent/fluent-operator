@@ -4161,6 +4161,109 @@ spec:
                       description: The @log_level parameter specifies the plugin-specific
                         logging level
                       type: string
+                    opensearch:
+                      description: out_opensearch plugin
+                      properties:
+                        host:
+                          description: 'The hostname of your OpenSearch node (default:
+                            localhost).'
+                          type: string
+                        hosts:
+                          description: Hosts defines a list of hosts if you want to
+                            connect to more than one OpenSearch nodes
+                          type: string
+                        indexName:
+                          description: IndexName defines the placeholder syntax of
+                            Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section.
+                          type: string
+                        logstashFormat:
+                          description: 'If true, Fluentd uses the conventional index
+                            name format logstash-%Y.%m.%d (default: false). This option
+                            supersedes the index_name option.'
+                          type: boolean
+                        logstashPrefix:
+                          description: 'LogstashPrefix defines the logstash prefix
+                            index name to write events when logstash_format is true
+                            (default: logstash).'
+                          type: string
+                        password:
+                          description: Optional, The login credentials to connect
+                            to OpenSearch
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        path:
+                          description: 'Path defines the REST API endpoint of OpenSearch
+                            to post write requests (default: nil).'
+                          type: string
+                        port:
+                          description: 'The port number of your OpenSearch node (default:
+                            9200).'
+                          format: int32
+                          maximum: 65535
+                          minimum: 1
+                          type: integer
+                        scheme:
+                          description: 'Specify https if your OpenSearch endpoint
+                            supports SSL (default: http).'
+                          type: string
+                        user:
+                          description: Optional, The login credentials to connect
+                            to OpenSearch
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                      type: object
                     s3:
                       description: out_s3 plugin
                       properties:
@@ -11750,6 +11853,109 @@ spec:
                       description: The @log_level parameter specifies the plugin-specific
                         logging level
                       type: string
+                    opensearch:
+                      description: out_opensearch plugin
+                      properties:
+                        host:
+                          description: 'The hostname of your OpenSearch node (default:
+                            localhost).'
+                          type: string
+                        hosts:
+                          description: Hosts defines a list of hosts if you want to
+                            connect to more than one OpenSearch nodes
+                          type: string
+                        indexName:
+                          description: IndexName defines the placeholder syntax of
+                            Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section.
+                          type: string
+                        logstashFormat:
+                          description: 'If true, Fluentd uses the conventional index
+                            name format logstash-%Y.%m.%d (default: false). This option
+                            supersedes the index_name option.'
+                          type: boolean
+                        logstashPrefix:
+                          description: 'LogstashPrefix defines the logstash prefix
+                            index name to write events when logstash_format is true
+                            (default: logstash).'
+                          type: string
+                        password:
+                          description: Optional, The login credentials to connect
+                            to OpenSearch
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        path:
+                          description: 'Path defines the REST API endpoint of OpenSearch
+                            to post write requests (default: nil).'
+                          type: string
+                        port:
+                          description: 'The port number of your OpenSearch node (default:
+                            9200).'
+                          format: int32
+                          maximum: 65535
+                          minimum: 1
+                          type: integer
+                        scheme:
+                          description: 'Specify https if your OpenSearch endpoint
+                            supports SSL (default: http).'
+                          type: string
+                        user:
+                          description: Optional, The login credentials to connect
+                            to OpenSearch
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                      type: object
                     s3:
                       description: out_s3 plugin
                       properties:
