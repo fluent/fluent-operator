@@ -156,7 +156,7 @@ func Test_MixedCfgs2ES(t *testing.T) {
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
-	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ES}
+	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2OpenSearch}
 	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputsForCluster)
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
