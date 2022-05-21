@@ -379,7 +379,6 @@ func init() {
 			ParseIntoObject(FluentdclusterOutput2OpenSearchRaw, &FluentdclusterOutput2OpenSearch)
 			ParseIntoObject(FluentdClusterOutput2kafkaRaw, &FluentdClusterOutput2kafka)
 			ParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
-
 		},
 	)
 }

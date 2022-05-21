@@ -27,4 +27,3 @@
   - stdout
   - [opensearch](output/opensearch.md)
 
-
