@@ -53,7 +53,7 @@ RUN apt-get update \
          fluent-plugin-record-modifier \
          fluent-plugin-multi-format-parser \
          fluent-plugin-aws-elasticsearch-service \
-         gem install fluent-plugin-opensearch \
+         fluent-plugin-opensearch \
  && echo "plugin installed." \
  && wget -O /tmp/jemalloc-4.5.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/4.5.0/jemalloc-4.5.0.tar.bz2 \
  && cd /tmp && tar -xjf jemalloc-4.5.0.tar.bz2 && cd jemalloc-4.5.0/ \
