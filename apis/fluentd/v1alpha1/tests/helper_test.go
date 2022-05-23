@@ -1,7 +1,6 @@
 package cfgrender
 
 import (
-	"fmt"
 	"testing"
 
 	. "github.com/onsi/gomega"
