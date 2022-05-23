@@ -69,6 +69,8 @@ type OutputSpec struct {
 	DataDog *output.DataDog `json:"datadog,omitempty"`
 	// Firehose defines Firehose Output configuration.
 	Fireose *output.Firehose `json:"firehose,omitempty"`
+	// OpenSearch defines OpenSearch Output configuration.
+	OpenSearch *output.OpenSearch `json:"opensearch,omitempty"`
 }
 
 // +kubebuilder:object:root=true

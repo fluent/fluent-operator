@@ -25,6 +25,14 @@ var outputExpected = `[Output]
     tls    On
     tls.verify    true
 [Output]
+    Name    opensearch
+    Match    *
+    Alias    output_opensearch_alias
+    Host    https://example2.com
+    Port    9200
+    Index    my_index
+    Type    my_type
+[Output]
     Name    syslog
     Match    logs.foo.bar
     Alias    output_syslog_alias
@@ -54,12 +62,11 @@ func TestClusterOutputList_Load(t *testing.T) {
 	syslogOut := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
-			Kind:       "Output",
+			Kind:       "ClusterOutput",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "syslog_output0",
-			Namespace: "testnamespace",
-			Labels:    labels,
+			Name:   "syslog_output0",
+			Labels: labels,
 		},
 		Spec: OutputSpec{
 			Alias: "output_syslog_alias",
@@ -88,12 +95,11 @@ func TestClusterOutputList_Load(t *testing.T) {
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
-			Kind:       "Output",
+			Kind:       "ClusterOutput",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "http_output_0",
-			Namespace: "testnamespace",
-			Labels:    labels,
+			Name:   "http_output_0",
+			Labels: labels,
 		},
 		Spec: OutputSpec{
 			Alias: "output_http_alias",
@@ -113,8 +119,29 @@ func TestClusterOutputList_Load(t *testing.T) {
 		},
 	}
 
+	openSearchOutput := ClusterOutput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterOutput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "opensearch_output_0",
+			Labels: labels,
+		},
+		Spec: OutputSpec{
+			Alias: "output_opensearch_alias",
+			Match: "*",
+			OpenSearch: &output.OpenSearch{
+				Host:  "https://example2.com",
+				Port:  ptrInt32(int32(9200)),
+				Index: "my_index",
+				Type:  "my_type",
+			},
+		},
+	}
+
 	outputs := ClusterOutputList{
-		Items: []ClusterOutput{syslogOut, httpOutput},
+		Items: []ClusterOutput{syslogOut, httpOutput, openSearchOutput},
 	}
 
 	i := 0

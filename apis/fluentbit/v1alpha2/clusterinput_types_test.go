@@ -44,12 +44,11 @@ func TestClusterInputList_Load(t *testing.T) {
 	inputObj1 := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
-			Kind:       "Input",
+			Kind:       "ClusterInput",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "input0",
-			Namespace: "testnamespace",
-			Labels:    labels,
+			Name:   "input0",
+			Labels: labels,
 		},
 		Spec: InputSpec{
 			Alias: "input0_alias",
@@ -69,12 +68,11 @@ func TestClusterInputList_Load(t *testing.T) {
 	inputObj2 := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
-			Kind:       "Input",
+			Kind:       "ClusterInput",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "input2",
-			Namespace: "testnamespace",
-			Labels:    labels,
+			Name:   "input2",
+			Labels: labels,
 		},
 		Spec: InputSpec{
 			Alias: "input2_alias",
