@@ -151,16 +151,10 @@ The Fluent Bit section of the Fluent Operator supports different CRI `docker`, `
 
 The default runtime is docker, you can choose other runtimes as follows.
 
-If your container runtime is `containerd`:
+If your container runtime is `containerd` or  `cri-o`, you can set the `containerRuntime` parameter to `containerd` or `crio`. e.g.
 
 ```shell
 helm install fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set containerRuntime=containerd
-```
-
-If your container runtime is `cri-o`:
-
-```shell
-helm install fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set containerRuntime=crio
 ```
 
 Install through the online chart link:
@@ -195,42 +189,16 @@ kubectl apply -f manifests/logging-stack
 
 #### Deploy the Kubernetes logging stack with Helm
 
-If your container runtime is `docker`
+You can also deploy the Kubernetes logging stack with Helm, just need to set the `Kubernetes` parameter to `ture`:
 
 ```shell
 helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker
 ```
 
-If your container runtime is `containerd`
-
-```shell
-helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=containerd
-```
-
-If your container runtime is `cri-o`
-
-```shell
-helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=crio
-```
-
-If you want to install the fluentd plugin, you can execute the following command:
-
-If your container runtime is `docker`
+If you want to deploy  `fluentd`, just need to set the `fluentd.enable` parameter to `ture`.:
 
 ```shell
 helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker,fluentd.enable=true
-```
-
-If your container runtime is `containerd`
-
-```shell
-helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=containerd,fluentd.enable=true
-```
-
-If your container runtime is `cri-o`
-
-```shell
-helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=crio,fluentd.enable=true
 ```
 
 Within a couple of minutes, you should observe an index available:
