@@ -41,6 +41,7 @@ help: ## Display this help.
 
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=charts/fluentbit-operator/crds
 	kubectl kustomize config/crd | sed -e '/creationTimestamp/d' > manifests/setup/fluentbit-operator-crd.yaml
 	kubectl kustomize manifests/setup | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
 
