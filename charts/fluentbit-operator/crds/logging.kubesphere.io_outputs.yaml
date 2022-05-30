@@ -5,6 +5,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
   name: outputs.logging.kubesphere.io
 spec:
   group: logging.kubesphere.io
@@ -39,9 +40,80 @@ spec:
                 description: A user friendly alias name for this output plugin. Used
                   in metrics for distinction of each configured output.
                 type: string
+              datadog:
+                description: DataDog defines DataDog Output configuration.
+                properties:
+                  apikey:
+                    description: Your Datadog API key.
+                    type: string
+                  compress:
+                    description: Compress  the payload in GZIP format. Datadog supports
+                      and recommends setting this to gzip.
+                    type: string
+                  dd_message_key:
+                    description: By default, the plugin searches for the key 'log'
+                      and remap the value to the key 'message'. If the property is
+                      set, the plugin will search the property name key.
+                    type: string
+                  dd_service:
+                    description: The human readable name for your service generating
+                      the logs.
+                    type: string
+                  dd_source:
+                    description: A human readable name for the underlying technology
+                      of your service.
+                    type: string
+                  dd_tags:
+                    description: The tags you want to assign to your logs in Datadog.
+                    type: string
+                  host:
+                    description: Host is the Datadog server where you are sending
+                      your logs.
+                    type: string
+                  include_tag_key:
+                    description: If enabled, a tag is appended to output. The key
+                      name is used tag_key property.
+                    type: boolean
+                  json_date_key:
+                    description: Date key name for output.
+                    type: string
+                  provider:
+                    description: To activate the remapping, specify configuration
+                      flag provider.
+                    type: string
+                  proxy:
+                    description: Specify an HTTP Proxy.
+                    type: string
+                  tag_key:
+                    description: The key name of tag. If include_tag_key is false,
+                      This property is ignored.
+                    type: string
+                  tls:
+                    description: TLS controls whether to use end-to-end security communications
+                      security protocol. Datadog recommends setting this to on.
+                    type: boolean
+                type: object
               es:
                 description: Elasticsearch defines Elasticsearch Output configuration.
                 properties:
+                  awsAuth:
+                    description: Enable AWS Sigv4 Authentication for Amazon ElasticSearch
+                      Service.
+                    type: string
+                  awsExternalID:
+                    description: External ID for the AWS IAM Role specified with aws_role_arn.
+                    type: string
+                  awsRegion:
+                    description: Specify the AWS region for Amazon ElasticSearch Service.
+                    type: string
+                  awsRoleARN:
+                    description: AWS IAM Role to assume to put records to your Amazon
+                      ES cluster.
+                    type: string
+                  awsSTSEndpoint:
+                    description: Specify the custom sts endpoint to be used with STS
+                      API for Amazon ElasticSearch Service.
+                    type: string
                   bufferSize:
                     description: Specify the buffer size used to read the response
                       from the Elasticsearch HTTP service. This option is useful for
@@ -51,6 +123,14 @@ spec:
                       to False, otherwise the value must be according to the Unit
                       Size specification.
                     pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  cloudAuth:
+                    description: Specify the credentials to use to connect to Elastic's
+                      Elasticsearch Service running on Elastic Cloud.
+                    type: string
+                  cloudID:
+                    description: If you are using Elastic's Elasticsearch Service
+                      you can specify the cloud_id of the cluster running.
                     type: string
                   currentTimeIndex:
                     description: Use current time for index generation instead of
@@ -120,6 +200,10 @@ spec:
                             type: object
                         type: object
                     type: object
+                  idKey:
+                    description: If set, _id will be the value of the key from incoming
+                      record and Generate_ID option is ignored.
+                    type: string
                   includeTagKey:
                     description: When enabled, it append the Tag name to the record.
                     type: boolean
@@ -152,11 +236,11 @@ spec:
                       indexing HTTP POST URI.
                     type: string
                   pipeline:
-                    description: Newer versions of Elasticsearch allows to setup filters
-                      called pipelines. This option allows to define which pipeline
-                      the database should use. For performance reasons is strongly
-                      suggested to do parsing and filtering on Fluent Bit side, avoid
-                      pipelines.
+                    description: Newer versions of Elasticsearch allows setting up
+                      filters called pipelines. This option allows defining which
+                      pipeline the database should use. For performance reasons is
+                      strongly suggested parsing and filtering on Fluent Bit side,
+                      avoid pipelines.
                     type: string
                   port:
                     description: TCP port of the target Elasticsearch instance
@@ -168,6 +252,11 @@ spec:
                     description: When enabled, replace field name dots with underscore,
                       required by Elasticsearch 2.0-2.3.
                     type: boolean
+                  suppressTypeName:
+                    description: When enabled, mapping types is removed and Type option
+                      is ignored. Types are deprecated in APIs in v7.0. This options
+                      is for v7.0 or later.
+                    type: string
                   tagKey:
                     description: When Include_Tag_Key is enabled, this property defines
                       the key name for the tag.
@@ -291,6 +380,66 @@ spec:
                   template:
                     description: The format string. Applicable only if format is template.
                     type: string
+                type: object
+              firehose:
+                description: Firehose defines Firehose Output configuration.
+                properties:
+                  autoRetryRequests:
+                    description: Immediately retry failed requests to AWS services
+                      once. This option does not affect the normal Fluent Bit retry
+                      mechanism with backoff. Instead, it enables an immediate retry
+                      with no delay for networking errors, which may help improve
+                      throughput when there are transient/random networking issues.
+                    type: boolean
+                  dataKeys:
+                    description: By default, the whole log record will be sent to
+                      Kinesis. If you specify a key name(s) with this option, then
+                      only those keys and values will be sent to Kinesis. For example,
+                      if you are using the Fluentd Docker log driver, you can specify
+                      data_keys log and only the log message will be sent to Kinesis.
+                      If you specify multiple keys, they should be comma delimited.
+                    type: string
+                  deliveryStream:
+                    description: The name of the Kinesis Firehose Delivery stream
+                      that you want log records sent to.
+                    type: string
+                  endpoint:
+                    description: Specify a custom endpoint for the Kinesis Firehose
+                      API.
+                    type: string
+                  logKey:
+                    description: By default, the whole log record will be sent to
+                      Firehose. If you specify a key name with this option, then only
+                      the value of that key will be sent to Firehose. For example,
+                      if you are using the Fluentd Docker log driver, you can specify
+                      log_key log and only the log message will be sent to Firehose.
+                    type: string
+                  region:
+                    description: The AWS region.
+                    type: string
+                  roleARN:
+                    description: ARN of an IAM role to assume (for cross account access).
+                    type: string
+                  stsEndpoint:
+                    description: Specify a custom endpoint for the STS API; used to
+                      assume your custom role provided with role_arn.
+                    type: string
+                  timeKey:
+                    description: Add the timestamp to the record under this key. By
+                      default, the timestamp from Fluent Bit will not be added to
+                      records sent to Kinesis.
+                    type: string
+                  timeKeyFormat:
+                    description: strftime compliant format string for the timestamp;
+                      for example, %Y-%m-%dT%H *string This option is used with time_key.
+                      You can also use %L for milliseconds and %f for microseconds.
+                      If you are using ECS FireLens, make sure you are running Amazon
+                      ECS Container Agent v1.42.0 or later, otherwise the timestamps
+                      associated with your container logs will only have second precision.
+                    type: string
+                required:
+                - deliveryStream
+                - region
                 type: object
               forward:
                 description: Forward defines Forward Output configuration.
@@ -658,6 +807,10 @@ spec:
                     description: 'Single of multiple list of Kafka Brokers, e.g: 192.168.1.3:9092,
                       192.168.1.4:9092.'
                     type: string
+                  dynamicTopic:
+                    description: adds unknown topics (found in Topic_Key) to Topics.
+                      So in Topics only a default topic needs to be configured
+                    type: boolean
                   format:
                     description: 'Specify data format, options available: json, msgpack.'
                     type: string
@@ -669,6 +822,16 @@ spec:
                       will indicate the message key. If not set nor found in the record,
                       Message_Key will be used (if set).
                     type: string
+                  queueFullRetries:
+                    description: Fluent Bit queues data into rdkafka library, if for
+                      some reason the underlying library cannot flush the records
+                      the queue might fills up blocking new addition of records. The
+                      queue_full_retries option set the number of local retries to
+                      enqueue the data. The default value is 10 times, the interval
+                      between each retry is 1 second. Setting the queue_full_retries
+                      value to 0 set's an unlimited number of retries.
+                    format: int64
+                    type: integer
                   rdkafka:
                     additionalProperties:
                       type: string
@@ -908,6 +1071,272 @@ spec:
               "null":
                 description: Null defines Null Output configuration.
                 type: object
+              opensearch:
+                description: OpenSearch defines OpenSearch Output configuration.
+                properties:
+                  Workers:
+                    description: Enables dedicated thread(s) for this output. Default
+                      value is set since version 1.8.13. For previous versions is
+                      0.
+                    format: int32
+                    type: integer
+                  awsAuth:
+                    description: Enable AWS Sigv4 Authentication for Amazon OpenSearch
+                      Service.
+                    type: string
+                  awsExternalID:
+                    description: External ID for the AWS IAM Role specified with aws_role_arn.
+                    type: string
+                  awsRegion:
+                    description: Specify the AWS region for Amazon OpenSearch Service.
+                    type: string
+                  awsRoleARN:
+                    description: AWS IAM Role to assume to put records to your Amazon
+                      cluster.
+                    type: string
+                  awsSTSEndpoint:
+                    description: Specify the custom sts endpoint to be used with STS
+                      API for Amazon OpenSearch Service.
+                    type: string
+                  bufferSize:
+                    description: Specify the buffer size used to read the response
+                      from the OpenSearch HTTP service. This option is useful for
+                      debugging purposes where is required to read full responses,
+                      note that response size grows depending of the number of records
+                      inserted. To set an unlimited amount of memory set this value
+                      to False, otherwise the value must be according to the Unit
+                      Size specification.
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  currentTimeIndex:
+                    description: Use current time for index generation instead of
+                      message record
+                    type: boolean
+                  generateID:
+                    description: When enabled, generate _id for outgoing records.
+                      This prevents duplicate records when retrying OpenSearch.
+                    type: boolean
+                  host:
+                    description: IP address or hostname of the target OpenSearch instance,
+                      default `127.0.0.1`
+                    type: string
+                  httpPassword:
+                    description: Password for user defined in HTTP_User
+                    properties:
+                      valueFrom:
+                        description: ValueSource represents a source for the value
+                          of a secret.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  httpUser:
+                    description: Optional username credential for access
+                    properties:
+                      valueFrom:
+                        description: ValueSource represents a source for the value
+                          of a secret.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  idKey:
+                    description: If set, _id will be the value of the key from incoming
+                      record and Generate_ID option is ignored.
+                    type: string
+                  includeTagKey:
+                    description: When enabled, it append the Tag name to the record.
+                    type: boolean
+                  index:
+                    description: Index name
+                    type: string
+                  logstashDateFormat:
+                    description: Time format (based on strftime) to generate the second
+                      part of the Index name.
+                    type: string
+                  logstashFormat:
+                    description: 'Enable Logstash format compatibility. This option
+                      takes a boolean value: True/False, On/Off'
+                    type: boolean
+                  logstashPrefix:
+                    description: 'When Logstash_Format is enabled, the Index name
+                      is composed using a prefix and the date, e.g: If Logstash_Prefix
+                      is equals to ''mydata'' your index will become ''mydata-YYYY.MM.DD''.
+                      The last string appended belongs to the date when the data is
+                      being generated.'
+                    type: string
+                  logstashPrefixKey:
+                    description: Prefix keys with this string
+                    type: string
+                  path:
+                    description: OpenSearch accepts new data on HTTP query path "/_bulk".
+                      But it is also possible to serve OpenSearch behind a reverse
+                      proxy on a subpath. This option defines such path on the fluent-bit
+                      side. It simply adds a path prefix in the indexing HTTP POST
+                      URI.
+                    type: string
+                  pipeline:
+                    description: OpenSearch allows to setup filters called pipelines.
+                      This option allows to define which pipeline the database should
+                      use. For performance reasons is strongly suggested to do parsing
+                      and filtering on Fluent Bit side, avoid pipelines.
+                    type: string
+                  port:
+                    description: TCP port of the target OpenSearch instance, default
+                      `9200`
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  replaceDots:
+                    description: When enabled, replace field name dots with underscore,
+                      required by Elasticsearch 2.0-2.3.
+                    type: boolean
+                  suppressTypeName:
+                    description: When enabled, mapping types is removed and Type option
+                      is ignored. Types are deprecated in APIs in v7.0. This options
+                      is for v7.0 or later.
+                    type: boolean
+                  tagKey:
+                    description: When Include_Tag_Key is enabled, this property defines
+                      the key name for the tag.
+                    type: string
+                  timeKey:
+                    description: When Logstash_Format is enabled, each record will
+                      get a new timestamp field. The Time_Key property defines the
+                      name of that field.
+                    type: string
+                  timeKeyFormat:
+                    description: When Logstash_Format is enabled, this property defines
+                      the format of the timestamp.
+                    type: string
+                  timeKeyNanos:
+                    description: When Logstash_Format is enabled, enabling this property
+                      sends nanosecond precision timestamps.
+                    type: boolean
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource represents a source for the value
+                              of a secret.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                  traceError:
+                    description: When enabled print the elasticsearch API calls to
+                      stdout when elasticsearch returns an error
+                    type: boolean
+                  traceOutput:
+                    description: When enabled print the elasticsearch API calls to
+                      stdout (for diag only)
+                    type: boolean
+                  type:
+                    description: Type name
+                    type: string
+                  writeOperation:
+                    description: Operation to use to write in bulk requests.
+                    type: string
+                type: object
+              retry_limit:
+                description: RetryLimit represents configuration for the scheduler
+                  which can be set independently on each output section. This option
+                  allows to disable retries or impose a limit to try N times and then
+                  discard the data after reaching that limit.
+                type: string
               stdout:
                 description: Stdout defines Stdout Output configuration.
                 properties:
