@@ -60,6 +60,8 @@ type FluentBitSpec struct {
 	Volumes []corev1.Volume `json:"volumes,omitempty"`
 	// Pod volumes to mount into the container's filesystem.
 	VolumesMounts []corev1.VolumeMount `json:"volumesMounts,omitempty"`
+	// Annotations to add to each Fluentbit pod.
+	Annotations map[string]string `json:"annotations,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit

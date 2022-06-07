@@ -863,6 +863,11 @@ spec:
                         type: array
                     type: object
                 type: object
+              annotations:
+                additionalProperties:
+                  type: string
+                description: Annotations to add to each Fluentbit pod.
+                type: object
               args:
                 description: Fluent Bit Watcher command line arguments.
                 items:
