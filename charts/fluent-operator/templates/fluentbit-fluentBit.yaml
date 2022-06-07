@@ -30,4 +30,8 @@ spec:
   secrets:
   {{ toYaml .Values.fluentbit.secrets | indent 4 }}
   {{- end }}
+  {{- if .Values.fluentbit.annotations }}
+  annotations:
+  {{ toYaml .Values.fluentbit.annotations | indent 4 }}
+  {{- end }}
 {{- end }}
