@@ -44,13 +44,11 @@ Once installed, the Fluent Operator provides the following features:
 			- [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
 		- [Collect auditd logs](#collect-auditd-logs)
 		- [Fluentd](#fluentd-1)
-	- [Monitoring](#monitoring)
 	- [Plugins](#plugins)
 		- [Fluent Bit](#fluent-bit-1)
 		- [Fluentd](#fluentd-2)
 	- [Best Practice](#best-practice)
 		- [Plugin Grouping](#plugin-grouping)
-		- [Path Convention](#path-convention)
 	- [Custom Parser](#custom-parser)
 	- [Roadmap](#roadmap)
 	- [Development](#development)
@@ -235,83 +233,6 @@ Fluentd acts as a log forward layer that receives logs from Fluent Bit or other 
 
 For more info on various use cases of Fluent Operator Fluentd CRDs, you can refer to [Fluent-Operator-Walkthrough](https://github.com/kubesphere-sigs/fluent-operator-walkthrough#fluent-bit--fluentd-mode).
 
-## Monitoring
-
-Fluent Bit comes with a built-in HTTP Server. According to the official [documentation](https://docs.fluentbit.io/manual/administration/monitoring) of fluentbit You can enable this by enabling the HTTP server from the fluent bit configuration file:
-
-```conf
-[SERVICE]
-    HTTP_Server  On
-    HTTP_Listen  0.0.0.0
-    HTTP_PORT    2020
-```
-
-When you use the fluent-operator, You can enable this from `FluentBitConfig` manifest. Example is below:
-
-```yaml
-apiVersion: fluentbit.fluent.io/v1alpha2
-kind: ClusterFluentBitConfig
-metadata:
-  name: fluent-bit-config
-  labels:
-    app.kubernetes.io/name: fluent-bit
-spec:
-  filterSelector:
-    matchLabels:
-      fluentbit.fluent.io/enabled: 'true'
-  inputSelector:
-    matchLabels:
-      fluentbit.fluent.io/enabled: 'true'
-  outputSelector:
-    matchLabels:
-      fluentbit.fluent.io/enabled: 'true'
-  service:
-    httpListen: 0.0.0.0
-    httpPort: 2020
-    httpServer: true
-    parsersFile: parsers.conf
-
-```
-
-Once HTTP server is enabled, you should be able to get the information:
-
-```bash
-curl <podIP>:2020 | jq .
-
-{
-  "fluent-bit": {
-    "version": "1.8.3",
-    "edition": "Community",
-    "flags": [
-      "FLB_HAVE_PARSER",
-      "FLB_HAVE_RECORD_ACCESSOR",
-      "FLB_HAVE_STREAM_PROCESSOR",
-      "FLB_HAVE_TLS",
-      "FLB_HAVE_OPENSSL",
-      "FLB_HAVE_AWS",
-      "FLB_HAVE_SIGNV4",
-      "FLB_HAVE_SQLDB",
-      "FLB_HAVE_METRICS",
-      "FLB_HAVE_HTTP_SERVER",
-      "FLB_HAVE_SYSTEMD",
-      "FLB_HAVE_FORK",
-      "FLB_HAVE_TIMESPEC_GET",
-      "FLB_HAVE_GMTOFF",
-      "FLB_HAVE_UNIX_SOCKET",
-      "FLB_HAVE_PROXY_GO",
-      "FLB_HAVE_JEMALLOC",
-      "FLB_HAVE_LIBBACKTRACE",
-      "FLB_HAVE_REGEX",
-      "FLB_HAVE_UTF8_ENCODER",
-      "FLB_HAVE_LUAJIT",
-      "FLB_HAVE_C_TLS",
-      "FLB_HAVE_ACCEPT4",
-      "FLB_HAVE_INOTIFY"
-    ]
-  }
-}
-```
-
 
 ## Plugins 
 
@@ -327,27 +248,9 @@ curl <podIP>:2020 | jq .
 
 ### Plugin Grouping
 
-Input, filter, and output plugins are connected by label selectors. For input and output plugins, always create `Input` or `Output` CRs for every plugin. Don't aggregate multiple inputs or outputs into one `Input` or `Output` object, except you have a good reason to do so. Take the demo `logging stack` for example, we have one yaml file for each output.
+For fluenbit,input, filter, and output plugins are connected by label selectors. For input and output plugins, always create `ClusterInput` or `ClusterOutput` CRs for every plugin. Don't aggregate multiple inputs or outputs into one `ClusterInput` or `ClusterOutput` object, except you have a good reason to do so. Take the demo `logging stack` for example, we have one yaml file for each output.
 
-However, for filter plugins, if you want a filter chain, the order of filters matters. You need to organize multiple filters into an array as the demo [logging stack](manifests/logging-stack/filter-kubernetes.yaml) suggests.
-
-### Path Convention
-
-Path to file in Fluent Bit config should be well regulated. Fluent Bit Operator adopts the following convention internally.
-
-|Dir Path|Description|
-|---|---|
-|/fluent-bit/tail|Stores tail related files, eg. file tracking db. Using [fluentbit.spec.positionDB](docs/fluentbit.md#fluentbitspec) will mount a file `pos.db` under this dir by default.|
-|/fluent-bit/secrets/{secret_name}|Stores secrets, eg. TLS files. Specify secrets to mount in [fluentbit.spec.secrets](docs/fluentbit.md#fluentbitspec), then you have access.|
-|/fluent-bit/config|Stores the main config file and user-defined parser config file.|
-
-> Note that ServiceAccount files are mounted at `/var/run/secrets/kubernetes.io/serviceaccount`.
-
-## Custom Parser
-
-To enable parsers, you must set the value of `FluentBitConfig.Spec.Service.ParsersFile` to `parsers.conf`. Your custom parsers will be included into the built-in parser config via `@INCLUDE /fluent-bit/config/parsers.conf`. Note that the parsers.conf contains a few built-in parsers, for example, docker. Read [parsers.conf](https://github.com/kubesphere/fluentbit-operator/blob/master/conf/parsers.conf) for more information.
-
-Check out the demo in the folder `/manifests/regex-parser` for how to use a custom regex parser.
+However, for filter plugins, if you want a filter chain, the order of filters matters. You need to organize multiple filters into an array as the demo [logging stack](manifests/logging-stack/filter-kubernetes.yaml) suggests.For more info on various use cases of Fluent Operator Fluentd CRDs, you can refer to [Fluent-Operator-Walkthrough](https://github.com/kubesphere-sigs/fluent-operator-walkthrough#fluent-bit--fluentd-mode).
 
 ## Roadmap
 
@@ -361,9 +264,9 @@ Check out the demo in the folder `/manifests/regex-parser` for how to use a cust
 
 ### Requirements
 - golang v1.16+.requirement
-- kubectl v1.16.13+.
-- kubebuilder v2.3+ (the project is build with v2.3.2)
-- Access to a Kubernetes cluster v1.16.13+
+- kubectl v1.19.2+.
+- kubebuilder v3.1+ (the project is build with v3.1.0)
+- Access to a Kubernetes cluster v1.19.2+
 
 ### Running
 
