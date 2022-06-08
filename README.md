@@ -49,7 +49,9 @@ Once installed, the Fluent Operator provides the following features:
 		- [Fluentd](#fluentd-2)
 	- [Best Practice](#best-practice)
 		- [Plugin Grouping](#plugin-grouping)
-	- [Custom Parser](#custom-parser)
+		- [Monitoring](#monitoring)
+		- [Custom Parser](#custom-parser)
+		- [Misc](#misc)
 	- [Roadmap](#roadmap)
 	- [Development](#development)
 		- [Requirements](#requirements)
@@ -248,9 +250,19 @@ For more info on various use cases of Fluent Operator Fluentd CRDs, you can refe
 
 ### Plugin Grouping
 
-For fluenbit,input, filter, and output plugins are connected by label selectors. For input and output plugins, always create `ClusterInput` or `ClusterOutput` CRs for every plugin. Don't aggregate multiple inputs or outputs into one `ClusterInput` or `ClusterOutput` object, except you have a good reason to do so. Take the demo `logging stack` for example, we have one yaml file for each output.
+[Here](docs/best-practice/plugin-grouping.md) you can find the plugin group information.
 
-However, for filter plugins, if you want a filter chain, the order of filters matters. You need to organize multiple filters into an array as the demo [logging stack](manifests/logging-stack/filter-kubernetes.yaml) suggests.For more info on various use cases of Fluent Operator Fluentd CRDs, you can refer to [Fluent-Operator-Walkthrough](https://github.com/kubesphere-sigs/fluent-operator-walkthrough#fluent-bit--fluentd-mode).
+### Monitoring
+
+[Here](docs/best-practice/monitoring.md) you can use the  built-in HTTP Server in Fluent Bit.
+
+### Custom Parser
+
+[Here](docs/best-practice/custom-parser.md) you can customize  parser  in Fluent Bit.
+
+### Misc
+
+If you want to learn more about Fluent-Operator, please refer to the [misc](docs/best-practice/misc.md).
 
 ## Roadmap
 

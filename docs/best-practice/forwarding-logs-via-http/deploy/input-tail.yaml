@@ -1,5 +1,5 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
-kind: Input
+kind: ClusterInput
 metadata:
   name: tail
   labels:
