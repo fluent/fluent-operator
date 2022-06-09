@@ -252,10 +252,8 @@ spec:
                                 description: Is true if a key matches regex KEY
                                 type: string
                               keyDoesNotExist:
-                                additionalProperties:
-                                  type: string
                                 description: Is true if KEY does not exist
-                                type: object
+                                type: string
                               keyExists:
                                 description: Is true if KEY exists
                                 type: string
