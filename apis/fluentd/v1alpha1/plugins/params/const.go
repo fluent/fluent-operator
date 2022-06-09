@@ -60,7 +60,7 @@ const (
 	StdOutputType           OutputType = "stdout"
 	KafkaOutputType         OutputType = "kafka2"
 	ElasticsearchOutputType OutputType = "elasticsearch"
-	OpenSearchOutputType    OutputType = "opensearch"
+	OpensearchOutputType    OutputType = "opensearch"
 	S3OutputType            OutputType = "s3"
 )
 

@@ -4165,12 +4165,12 @@ spec:
                       description: out_opensearch plugin
                       properties:
                         host:
-                          description: 'The hostname of your OpenSearch node (default:
+                          description: 'The hostname of your Opensearch node (default:
                             localhost).'
                           type: string
                         hosts:
                           description: Hosts defines a list of hosts if you want to
-                            connect to more than one OpenSearch nodes
+                            connect to more than one Openearch nodes
                           type: string
                         indexName:
                           description: IndexName defines the placeholder syntax of
@@ -4188,7 +4188,7 @@ spec:
                           type: string
                         password:
                           description: Optional, The login credentials to connect
-                            to OpenSearch
+                            to Opensearch
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's
@@ -4218,23 +4218,23 @@ spec:
                               type: object
                           type: object
                         path:
-                          description: 'Path defines the REST API endpoint of OpenSearch
+                          description: 'Path defines the REST API endpoint of Opensearch
                             to post write requests (default: nil).'
                           type: string
                         port:
-                          description: 'The port number of your OpenSearch node (default:
+                          description: 'The port number of your Opensearch node (default:
                             9200).'
                           format: int32
                           maximum: 65535
                           minimum: 1
                           type: integer
                         scheme:
-                          description: 'Specify https if your OpenSearch endpoint
+                          description: 'Specify https if your Opensearch endpoint
                             supports SSL (default: http).'
                           type: string
                         user:
                           description: Optional, The login credentials to connect
-                            to OpenSearch
+                            to Opensearch
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's
@@ -11857,12 +11857,12 @@ spec:
                       description: out_opensearch plugin
                       properties:
                         host:
-                          description: 'The hostname of your OpenSearch node (default:
+                          description: 'The hostname of your Opensearch node (default:
                             localhost).'
                           type: string
                         hosts:
                           description: Hosts defines a list of hosts if you want to
-                            connect to more than one OpenSearch nodes
+                            connect to more than one Openearch nodes
                           type: string
                         indexName:
                           description: IndexName defines the placeholder syntax of
@@ -11880,7 +11880,7 @@ spec:
                           type: string
                         password:
                           description: Optional, The login credentials to connect
-                            to OpenSearch
+                            to Opensearch
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's
@@ -11910,23 +11910,23 @@ spec:
                               type: object
                           type: object
                         path:
-                          description: 'Path defines the REST API endpoint of OpenSearch
+                          description: 'Path defines the REST API endpoint of Opensearch
                             to post write requests (default: nil).'
                           type: string
                         port:
-                          description: 'The port number of your OpenSearch node (default:
+                          description: 'The port number of your Opensearch node (default:
                             9200).'
                           format: int32
                           maximum: 65535
                           minimum: 1
                           type: integer
                         scheme:
-                          description: 'Specify https if your OpenSearch endpoint
+                          description: 'Specify https if your Opensearch endpoint
                             supports SSL (default: http).'
                           type: string
                         user:
                           description: Optional, The login credentials to connect
-                            to OpenSearch
+                            to Opensearch
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's

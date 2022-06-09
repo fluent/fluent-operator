@@ -123,8 +123,8 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 	}
 
 	if o.Opensearch != nil {
-		ps.InsertType(string(params.OpenSearchOutputType))
-		return o.openSearchPlugin(ps, loader)
+		ps.InsertType(string(params.OpensearchOutputType))
+		return o.opensearchPlugin(ps, loader)
 	}
 
 	if o.S3 != nil {
@@ -398,7 +398,7 @@ func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.
 	return parent, nil
 }
 
-func (o *Output) openSearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+func (o *Output) opensearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
 	if o.Opensearch.Host != nil {
 		parent.InsertPairs("host", fmt.Sprint(*o.Opensearch.Host))
 	}
