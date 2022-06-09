@@ -1,3 +1,17 @@
+## 1.0.2 / 2022-06-09
+
+### Features
+- Add OpenSearch plugin for Fluent Bit (#298)
+- Support custom annotations (#313)
+- Add OpenSearch plugin for Fluentd (#324)
+- Add helm & docs for OpenSearch plugin (#329)
+
+### ENHANCEMENT
+- Move some docs to fluent operator walkthrough (#290) 
+- Docs refactoring (#291 #292 #293 #303 #314)
+- Update go version (#316)
+- Use a single systemd input plugin for various components (#323)
+
 ## 1.0.2 / 2022-05-17
 
 ### ENHANCEMENT
