@@ -23,11 +23,7 @@ func TestFilter_Modify_Params(t *testing.T) {
 				},
 			},
 			{
-				KeyDoesNotExist: map[string]string{
-					"kdn1": "kdnv1",
-					"kdn0": "kdnv0",
-					"kdn2": "kdnv2",
-				},
+				KeyDoesNotExist: "kdn1",
 			},
 		},
 		Rules: []Rule{
@@ -56,9 +52,7 @@ func TestFilter_Modify_Params(t *testing.T) {
 	expected.Insert("Condition", "Key_value_equals    kve0    kvev0")
 	expected.Insert("Condition", "Key_value_equals    kve1    kvev1")
 	expected.Insert("Condition", "Key_value_equals    kve2    kvev2")
-	expected.Insert("Condition", "Key_does_not_exist    kdn0    kdnv0")
-	expected.Insert("Condition", "Key_does_not_exist    kdn1    kdnv1")
-	expected.Insert("Condition", "Key_does_not_exist    kdn2    kdnv2")
+	expected.Insert("Condition", "Key_does_not_exist    kdn1")
 	expected.Insert("Set", "app    foo")
 	expected.Insert("Set", "customer    cus1")
 	expected.Insert("Set", "sk0    skv0")
