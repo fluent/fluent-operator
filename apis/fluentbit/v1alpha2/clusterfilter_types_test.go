@@ -14,7 +14,9 @@ var filtersExpected = `[Filter]
     Condition    Key_value_equals    kve0    kvev0
     Condition    Key_value_equals    kve1    kvev1
     Condition    Key_value_equals    kve2    kvev2
-    Condition    Key_does_not_exist    kdn1
+    Condition    Key_does_not_exist    kdn0    kdnv0
+    Condition    Key_does_not_exist    kdn1    kdnv1
+    Condition    Key_does_not_exist    kdn2    kdnv2
     Set    app    foo
     Set    customer    cus1
     Set    sk0    skv0
@@ -72,7 +74,11 @@ func TestClusterFilterList_Load(t *testing.T) {
 								},
 							},
 							{
-								KeyDoesNotExist: "kdn1",
+								KeyDoesNotExist: map[string]string{
+									"kdn1": "kdnv1",
+									"kdn0": "kdnv0",
+									"kdn2": "kdnv2",
+								},
 							},
 						},
 						Rules: []filter.Rule{

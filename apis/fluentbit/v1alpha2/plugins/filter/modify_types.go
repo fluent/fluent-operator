@@ -25,7 +25,7 @@ type Condition struct {
 	// Is true if KEY exists
 	KeyExists string `json:"keyExists,omitempty"`
 	// Is true if KEY does not exist
-	KeyDoesNotExist string `json:"keyDoesNotExist,omitempty"`
+	KeyDoesNotExist map[string]string `json:"keyDoesNotExist,omitempty"`
 	// Is true if a key matches regex KEY
 	AKeyMatches string `json:"aKeyMatches,omitempty"`
 	// Is true if no key matches regex KEY
@@ -80,9 +80,9 @@ func (mo *Modify) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		if c.KeyExists != "" {
 			kvs.Insert("Condition", fmt.Sprintf("Key_exists    %s", c.KeyExists))
 		}
-		if c.KeyDoesNotExist != "" {
-			kvs.Insert("Condition", fmt.Sprintf("Key_does_not_exist    %s", c.KeyDoesNotExist))
-		}
+		kvs.InsertStringMap(c.KeyDoesNotExist, func(k, v string) (string, string) {
+			return "Condition", fmt.Sprintf("Key_does_not_exist    %s    %s", k, v)
+		})
 		if c.AKeyMatches != "" {
 			kvs.Insert("Condition", fmt.Sprintf("A_key_matches    %s", c.AKeyMatches))
 		}
