@@ -5,8 +5,7 @@ resources:
 - fluentbit-fluentBit.yaml
 - fluentbitconfig-fluentBitConfig.yaml
 - input-tail.yaml
-- input-systemd-docker.yaml
-- input-systemd-kubelet.yaml
+- input-systemd.yaml
 - filter-kubernetes.yaml
 - filter-systemd.yaml
 - output-elasticsearch.yaml

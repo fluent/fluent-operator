@@ -8,10 +8,11 @@ metadata:
     fluentbit.fluent.io/component: logging
 spec:
   systemd:
-    tag: service.{{ .Values.containerRuntime }}
+    tag: service.*
     path: /var/log/journal
-    db: /fluent-bit/tail/docker.db
+    db: /fluent-bit/tail/systemd.db
     dbSync: Normal
     systemdFilter:
       - _SYSTEMD_UNIT={{ .Values.containerRuntime }}.service
+      - _SYSTEMD_UNIT=kubelet.service
 {{- end }}
