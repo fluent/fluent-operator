@@ -11,11 +11,12 @@ OutputCommon defines the common parameters for output plugin
 Output defines all available output plugins and their parameters
 
 
-| Field | Description | Scheme |
-| ----- | ----------- | ------ |
-| forward | out_forward plugin | *Forward |
-| http | out_http plugin | *Http |
+| Field         | Description | Scheme |
+|---------------| ----------- | ------ |
+| forward       | out_forward plugin | *Forward |
+| http          | out_http plugin | *Http |
 | elasticsearch | out_es plugin | *Elasticsearch |
-| kafka | out_kafka plugin | *Kafka2 |
-| s3 | out_s3 plugin | *S3 |
-| stdout | out_stdout plugin | *Stdout |
+| kafka         | out_kafka plugin | *Kafka2 |
+| s3            | out_s3 plugin | *S3 |
+| stdout        | out_stdout plugin | *Stdout |
+| opensearch    |out_opensearch_plugin| *Opensearch|

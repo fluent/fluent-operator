@@ -31,6 +31,8 @@ type Output struct {
 	Http *Http `json:"http,omitempty"`
 	// out_es plugin
 	Elasticsearch *Elasticsearch `json:"elasticsearch,omitempty"`
+	// out_opensearch plugin
+	Opensearch *Opensearch `json:"opensearch,omitempty"`
 	// out_kafka plugin
 	Kafka *Kafka2 `json:"kafka,omitempty"`
 	// out_s3 plugin
@@ -118,6 +120,11 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 	if o.Elasticsearch != nil {
 		ps.InsertType(string(params.ElasticsearchOutputType))
 		return o.elasticsearchPlugin(ps, loader)
+	}
+
+	if o.Opensearch != nil {
+		ps.InsertType(string(params.OpensearchOutputType))
+		return o.opensearchPlugin(ps, loader)
 	}
 
 	if o.S3 != nil {
@@ -386,6 +393,58 @@ func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.
 
 	if o.Elasticsearch.LogstashPrefix != nil {
 		parent.InsertPairs("logstash_prefix", fmt.Sprint(*o.Elasticsearch.LogstashPrefix))
+	}
+
+	return parent, nil
+}
+
+func (o *Output) opensearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+	if o.Opensearch.Host != nil {
+		parent.InsertPairs("host", fmt.Sprint(*o.Opensearch.Host))
+	}
+
+	if o.Opensearch.Port != nil {
+		parent.InsertPairs("port", fmt.Sprint(*o.Opensearch.Port))
+	}
+
+	if o.Opensearch.Hosts != nil {
+		parent.InsertPairs("hosts", fmt.Sprint(*o.Opensearch.Hosts))
+	}
+
+	if o.Opensearch.User != nil {
+		user, err := loader.LoadSecret(*o.Opensearch.User)
+		if err != nil {
+			return nil, err
+		}
+		parent.InsertPairs("user", user)
+	}
+
+	if o.Opensearch.Password != nil {
+		pwd, err := loader.LoadSecret(*o.Opensearch.Password)
+		if err != nil {
+			return nil, err
+		}
+		parent.InsertPairs("password", pwd)
+	}
+
+	if o.Opensearch.Scheme != nil {
+		parent.InsertPairs("scheme", fmt.Sprint(*o.Opensearch.Scheme))
+	}
+
+	if o.Opensearch.Path != nil {
+		parent.InsertPairs("path", fmt.Sprint(*o.Opensearch.Path))
+	}
+
+	if o.Opensearch.IndexName != nil {
+		parent.InsertPairs("index_name", fmt.Sprint(*o.Opensearch.IndexName))
+	}
+
+	if o.Opensearch.LogstashFormat != nil {
+		parent.InsertPairs("logstash_format", fmt.Sprint(*o.Opensearch.LogstashFormat))
+	}
+
+	if o.Opensearch.LogstashPrefix != nil {
+		parent.InsertPairs("logstash_prefix", fmt.Sprint(*o.Opensearch.LogstashPrefix))
 	}
 
 	return parent, nil

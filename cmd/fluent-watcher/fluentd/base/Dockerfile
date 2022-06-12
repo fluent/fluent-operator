@@ -39,6 +39,7 @@ RUN apk update \
          fluent-plugin-record-modifier \
          fluent-plugin-multi-format-parser \
          fluent-plugin-aws-elasticsearch-service \
+         fluent-plugin-opensearch \
  && apk del .build-deps \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem /usr/lib/ruby/gems/2.*/gems/fluentd-*/test
 
