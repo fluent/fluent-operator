@@ -54,12 +54,11 @@ func TestClusterFilterList_Load(t *testing.T) {
 	filterObj1 := &ClusterFilter{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
-			Kind:       "Filter",
+			Kind:       "ClusterFilter",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "filter0",
-			Namespace: "testnamespace",
-			Labels:    labels,
+			Name:   "filter0",
+			Labels: labels,
 		},
 		Spec: FilterSpec{
 			Match: "logs.foo.bar",
@@ -110,12 +109,11 @@ func TestClusterFilterList_Load(t *testing.T) {
 	filterObj2 := &ClusterFilter{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
-			Kind:       "Filter",
+			Kind:       "ClusterFilter",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "filter2",
-			Namespace: "testnamespace",
-			Labels:    labels,
+			Name:   "filter2",
+			Labels: labels,
 		},
 		Spec: FilterSpec{
 			Match: "logs.foo.bar",

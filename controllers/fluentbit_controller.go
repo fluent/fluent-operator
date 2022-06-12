@@ -145,6 +145,7 @@ func (r *FluentBitReconciler) mutate(ds *appsv1.DaemonSet, fb fluentbitv1alpha2.
 
 	return func() error {
 		ds.Labels = expected.Labels
+		ds.Annotations = expected.Annotations
 		ds.Spec = expected.Spec
 		ds.SetOwnerReferences(nil)
 		if err := ctrl.SetControllerReference(&fb, ds, r.Scheme); err != nil {

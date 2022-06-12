@@ -1,5 +1,5 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
-kind: Output
+kind: ClusterOutput
 metadata:
   name: http
   labels:

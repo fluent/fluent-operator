@@ -24,6 +24,10 @@ This Document documents the types introduced by the fluentbit Operator.
 * [ParserSpec](#parserspec)
 * [Script](#script)
 * [Service](#service)
+* [Monitoring](#monitoring)
+* [Path Convention](#path Convention)
+* [Custom Parser](#custom Parser)
+
 # ClusterFilter
 
 ClusterFilter defines a cluster-level Filter configuration.

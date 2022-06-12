@@ -42,6 +42,9 @@ fluentbit:
     requests:
       cpu: 10m
       memory: 25Mi
+  # Specify custom annotations to be added to each FluentBit pod.
+  annotations: {}
+    # prometheus.io/scrape: "true"
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##

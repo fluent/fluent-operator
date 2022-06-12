@@ -23,9 +23,10 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      fb.Name,
-					Namespace: fb.Namespace,
-					Labels:    fb.Labels,
+					Name:        fb.Name,
+					Namespace:   fb.Namespace,
+					Labels:      fb.Labels,
+					Annotations: fb.Spec.Annotations,
 				},
 				Spec: corev1.PodSpec{
 					ServiceAccountName: fb.Name,
