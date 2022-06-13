@@ -1,0 +1,24 @@
+{{- if .Values.Kubernetes -}}
+{{- if .Values.fluentd.enable -}}
+{{- if .Values.fluentd.output.opensearch.enable -}}
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-opensearch
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec:
+  outputs:
+    - opensearch:
+        host: {{ .Values.fluentd.output.opensearch.host }}
+        port: {{ .Values.fluentd.output.opensearch.port }}
+        logstashFormat: true
+        logstashPrefix: {{ .Values.fluentd.output.opensearch.logstashPrefix }}
+      {{- if .Values.fluentd.output.opensearch.buffer }}
+      buffer:
+        type: {{ .Values.fluentd.output.opensearch.buffer.type }}
+        path: {{ .Values.fluentd.output.opensearch.buffer.path }}
+      {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
