@@ -24,18 +24,13 @@ Thirdly, set up the fluentbit pipeline.
 
 ```shell
 kubectl create cm fluent-bit-lua -n kubesphere-logging-system --from-file=config/scripts/systemd.lua
-kubectl apply -f manifests/logging-stack/input-systemd-kubelet.yaml
+kubectl apply -f manifests/logging-stack/input-systemd.yaml
 kubectl apply -f manifests/logging-stack/filter-systemd.yaml
 kubectl apply -f manifests/logging-stack/output-elasticsearch.yaml
 ```
 
 > This pipeline will send the logs to elasticsearch, it needed a elasticsearch cluster.
 
-> If you want to collect the docker log, you can add the docker input.
-
-```shell
-kubectl apply -f manifests/logging-stack/input-systemd-docker.yaml
-```
 
 > If you want to collect other service logs, such as containerd, you can add a input like the docker input, 
 > and modify the systemdFilter.
