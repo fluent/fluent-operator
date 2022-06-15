@@ -1,4 +1,4 @@
-## 1.0.2 / 2022-06-09
+## 1.1.0 / 2022-06-15
 
 ### Features
 - Add OpenSearch plugin for Fluent Bit (#298)
