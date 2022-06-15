@@ -1,5 +1,6 @@
-name: Feature request
-description: Suggest an idea for this project
+name: "Request Help"
+description: Stuck? Ask for help!
+title: "help request: "
 body:
   - type: markdown
     attributes:
@@ -10,26 +11,27 @@ body:
         
         - Check [CONTRIBUTING guideline](https://github.com/fluent/fluent-operator/blob/master/CONTRIBUTING.md) first and here is the list to help us investigate the problem.
         - Search the [open issues](https://github.com/fluent/fluent-operator/issues) and [discussion forum](https://github.com/fluent/fluent-operator/discussions) to avoid duplicating the issue.
+
   - type: textarea
     id: description
     attributes:
-      label: Is your feature request related to a problem? Please describe.
-      description: |
-        A clear and concise description of what the problem is.
-        Ex. I'm always frustrated when [...]
+      label: Description
+      description: Describe the issue you are facing and what you need help with.
     validations:
       required: true
-  - type: textarea
-    id: solution
+
+  - type: input
+    id: how-to-install
     attributes:
-      label: Describe the solution you'd like
-      description: A clear and concise description of what you want to happen.
+      label: How did you install fluent operator?
+      description: In some cases, this is very important.
     validations:
-      required: true
+      required: false
+
   - type: textarea
     id: addtional-context
     attributes:
       label: Additional context
-      description: Add any other context or screenshots about the feature request here.
+      description: Add any other context about the problem here.
     validations:
       required: false
