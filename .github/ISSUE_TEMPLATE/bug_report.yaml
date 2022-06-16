@@ -1,10 +1,18 @@
 name: Bug Report
 description: Create a report with a procedure for reproducing the bug
+title: "bug: "
 body:
   - type: markdown
     attributes:
       value: |
-        Check [CONTRIBUTING guideline](https://github.com/fluent/fluent-operator/blob/master/CONTRIBUTING.md) first and here is the list to help us investigate the problem.
+        Thank you for taking the time to report this bug!
+
+        _The more information you share, the faster we can identify and fix the bug._
+
+        Prior to opening the issue, please make sure that you:
+        
+        - Check [CONTRIBUTING guideline](https://github.com/fluent/fluent-operator/blob/master/CONTRIBUTING.md) first and here is the list to help us investigate the problem.
+        - Search the [open issues](https://github.com/fluent/fluent-operator/issues) and [discussion forum](https://github.com/fluent/fluent-operator/discussions) to avoid duplicating the issue.
   - type: textarea
     id: description
     attributes:
@@ -52,21 +60,6 @@ body:
       description: In some cases, this is very important.
     validations:
       required: false
-  - type: textarea
-    id: what-happened
-    attributes:
-      label: What happened?
-      description: Also tell us, what did you expect to happen?
-    validations:
-      required: false
-  - type: textarea
-    id: logs
-    attributes:
-      label: Your Error Log
-      description: Write your ALL error log here
-      render: shell
-    validations:
-      required: true
   - type: textarea
     id: addtional-context
     attributes:
