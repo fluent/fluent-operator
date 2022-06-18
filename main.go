@@ -38,6 +38,7 @@ import (
 	fluentbitv1alpha2 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2"
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1"
 
+	fluentbitv1alpha3 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha3"
 	"github.com/fluent/fluent-operator/controllers"
 	//+kubebuilder:scaffold:imports
 )
@@ -52,6 +53,7 @@ func init() {
 
 	utilruntime.Must(fluentbitv1alpha2.AddToScheme(scheme))
 	utilruntime.Must(fluentdv1alpha1.AddToScheme(scheme))
+	utilruntime.Must(fluentbitv1alpha3.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -122,6 +124,10 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "FluentBit")
 		os.Exit(1)
 	}
+	if err = (&fluentbitv1alpha2.ClusterFilter{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "ClusterFilter")
+		os.Exit(1)
+	}
 	//+kubebuilder:scaffold:builder
 
 	if err = (&controllers.FluentdConfigReconciler{
@@ -139,6 +145,10 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Fluentd")
+		os.Exit(1)
+	}
+	if err = (&fluentbitv1alpha2.ClusterFilter{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "ClusterFilter")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

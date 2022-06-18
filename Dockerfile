@@ -10,7 +10,7 @@ COPY go.sum go.sum
 RUN go mod download
 
 # Copy the go source
-COPY cmd/fluent-manager/main.go main.go
+COPY main.go main.go
 COPY apis apis/
 COPY controllers controllers/
 COPY pkg pkg/
