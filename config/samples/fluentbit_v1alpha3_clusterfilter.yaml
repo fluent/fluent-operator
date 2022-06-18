@@ -1,0 +1,6 @@
+apiVersion: fluentbit.fluent.io/v1alpha3
+kind: ClusterFilter
+metadata:
+  name: clusterfilter-sample
+spec:
+  # TODO(user): Add fields here

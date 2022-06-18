@@ -15,6 +15,7 @@
 # - bases/fluentd.fluent.io_filters.yaml
 # - bases/fluentd.fluent.io_outputs.yaml
 # - bases/fluentd.fluent.io_clusteroutputs.yaml
+- bases/fluentbit.fluent.io_clusterfilters.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
 # patchesStrategicMerge:
@@ -33,6 +34,7 @@
 # - patches/webhook_in_clusteroutputs.yaml
 # - patches/webhook_in_filters_fluentd.yaml
 # - patches/webhook_in_outputs_fluentd.yaml
+#- patches/webhook_in_clusterfilters.yaml
 #+kubebuilder:scaffold:crdkustomizewebhookpatch
 
 # [CERTMANAGER] To enable webhook, uncomment all the sections with [CERTMANAGER] prefix.

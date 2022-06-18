@@ -111,4 +111,20 @@ resources:
   kind: Output
   path: github.com/fluent/fluent-operator/apis/fluentd/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: fluent.io
+  group: fluentbit
+  kind: ClusterFilter
+  path: github.com/fluent/fluent-operator/apis/fluentbit/v1alpha3
+  version: v1alpha3
+- domain: fluent.io
+  group: fluentbit
+  kind: ClusterFilter
+  path: github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2
+  version: v1alpha2
+  webhooks:
+    conversion: true
+    webhookVersion: v1
 version: "3"

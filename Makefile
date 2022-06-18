@@ -70,7 +70,7 @@ test: manifests generate fmt vet ## Run tests.
 ##@ Build
 
 binary:
-	go build -o bin/fb-manager cmd/fluent-manager/main.go
+	go build -o bin/fb-manager main.go
 	go build -o bin/fb-watcher cmd/fluent-watcher/fluentbit/main.go
 	go build -o bin/fd-watcher cmd/fluent-watcher/fluentd/main.go
 
@@ -83,16 +83,16 @@ verify-codegen:
 	chmod a+x ./hack/verify-codegen.sh && ./hack/verify-codegen.sh
 
 build: generate fmt vet ## Build manager binary.
-	go build -o bin/fluent-manager cmd/fluent-manager/main.go
+	go build -o bin/fluent-manager main.go
 	go build -o bin/fb-watcher cmd/fluent-watcher/fluentbit/main.go
 	go build -o bin/fd-watcher cmd/fluent-watcher/fluentd/main.go
 
 run: manifests generate fmt vet ## Run a controller from your host.
-	go run cmd/fluent-manager/main.go
+	go run main.go
 
 # Build amd64/arm64 Fluent Operator container image
 build-op:
-	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
+	docker buildx build --push --platform linux/amd64,linux/arm64 -f Dockerfile . -t ${FO_IMG}
 
 # Build amd64/arm64 Fluent Bit container image
 build-fb: prepare-build
@@ -103,7 +103,7 @@ build-amd64: build-op-amd64 build-fb-amd64 build-fd-amd64
 
 # Build amd64 Fluent Operator container image
 build-op-amd64:
-	docker build -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
+	docker build -f Dockerfile . -t ${FO_IMG}
 
 # Build amd64 Fluent Bit container image
 build-fb-amd64:
