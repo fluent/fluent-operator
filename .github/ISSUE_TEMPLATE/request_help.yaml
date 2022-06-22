@@ -15,12 +15,12 @@ body:
   - type: textarea
     id: description
     attributes:
-      label: Description
+      label: Describe the issue
       description: Describe the issue you are facing and what you need help with.
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: how-to-install
     attributes:
       label: How did you install fluent operator?
