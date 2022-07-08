@@ -71,6 +71,8 @@ type OutputSpec struct {
 	Fireose *output.Firehose `json:"firehose,omitempty"`
 	// OpenSearch defines OpenSearch Output configuration.
 	OpenSearch *output.OpenSearch `json:"opensearch,omitempty"`
+	// OpenTelemetry defines OpenTelemetry Output configuration.
+	OpenTelemetry *output.OpenTelemetry `json:"opentelemetry,omitempty"`
 }
 
 // +kubebuilder:object:root=true

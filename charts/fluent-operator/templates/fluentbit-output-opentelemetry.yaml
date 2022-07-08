@@ -1,0 +1,15 @@
+{{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.output.opentelemetry -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-opentelemetry
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  matchRegex: (?:kube|service)\.(.*)
+  opentelemetry:
+{{ toYaml .Values.fluentbit.output.opentelemetry | indent 4}}
+{{- end }}
+{{- end }}
