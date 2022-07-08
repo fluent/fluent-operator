@@ -30,6 +30,14 @@ spec:
   secrets:
   {{ toYaml .Values.fluentbit.secrets | indent 4 }}
   {{- end }}
+  { { - if .Values.fluentbit.volumes } }
+  volumes:
+  { { toYaml .Values.fluentbit.volumes | indent 4 } }
+  { { - end } }
+  { { - if .Values.fluentbit.volumesMounts } }
+  volumesMounts:
+  { { toYaml .Values.fluentbit.volumesMounts | indent 4 } }
+  { { - end } }
   {{- if .Values.fluentbit.annotations }}
   annotations:
   {{ toYaml .Values.fluentbit.annotations | indent 4 }}

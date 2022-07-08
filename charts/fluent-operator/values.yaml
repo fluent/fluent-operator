@@ -51,6 +51,10 @@ fluentbit:
   imagePullSecrets: [ ]
   # - name: "image-pull-secret"
   secrets: []
+  # List of volumes that can be mounted by containers belonging to the pod.
+  volumes: []
+  # Pod volumes to mount into the container's filesystem.
+  volumesMounts: []
   #Set a limit of memory that Tail plugin can use when appending data to the Engine.
   #If the limit is reach, it will be paused; when the data is flushed it resumes.
   #if the inbound traffic is less than 2.4Mbps, setting memBufLimit to 5MB is enough

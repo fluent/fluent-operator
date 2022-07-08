@@ -61,6 +61,31 @@ spec:
                       plugin.
                     type: string
                 type: object
+              nodeExporterMetrics:
+                description: NodeExporterMetrics defines Node Exporter Metrics Input
+                  configuration.
+                properties:
+                  path:
+                    properties:
+                      procfs:
+                        description: The mount point used to collect process information
+                          and metrics.
+                        type: string
+                      sysfs:
+                        description: The path in the filesystem used to collect system
+                          metrics.
+                        type: string
+                    type: object
+                  scrapeInterval:
+                    description: The rate at which metrics are collected from the
+                      host operating system, default is 5 seconds.
+                    format: int32
+                    type: integer
+                  tag:
+                    description: Tag name associated to all records comming from this
+                      plugin.
+                    type: string
+                type: object
               systemd:
                 description: Systemd defines Systemd Input configuration.
                 properties:
