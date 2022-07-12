@@ -535,7 +535,7 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 		if err != nil {
 			return nil
 		}
-		parent.InsertPairs("tenant_id", id)
+		parent.InsertPairs("tenantID", id)
 	}
 	if o.Loki.Labels != nil && len(o.Loki.Labels) > 0 {
 		parent.InsertPairs("labels", utils.ConcatString(o.Loki.Labels, ","))

@@ -197,6 +197,20 @@ spec:
       useEventTime: true
       topicKey: kubernetes_ns
 `
+	FluentdClusterOutput2Loki    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutput2LokiRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-loki
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - loki:
+      host: loki-logging-data.kubesphere-logging-system.svc
+      port: 3100
+`
 	FluentdClusterOutputLogOperator    fluentdv1alpha1.ClusterOutput
 	FluentdClusterOutputLogOperatorRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -378,6 +392,7 @@ func init() {
 			ParseIntoObject(FluentdclusterOutput2ESRaw, &FluentdclusterOutput2ES)
 			ParseIntoObject(FluentdclusterOutput2OpenSearchRaw, &FluentdclusterOutput2OpenSearch)
 			ParseIntoObject(FluentdClusterOutput2kafkaRaw, &FluentdClusterOutput2kafka)
+			ParseIntoObject(FluentdClusterOutput2LokiRaw, &FluentdClusterOutput2Loki)
 			ParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
 		},
 	)
