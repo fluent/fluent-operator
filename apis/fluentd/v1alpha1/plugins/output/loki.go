@@ -2,8 +2,6 @@ package output
 
 import "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
 
-// +kubebuilder:object:generate:=true
-
 // The loki output plugin, allows to ingest your records into a Loki service.
 type Loki struct {
 	// Loki hostname or IP address.

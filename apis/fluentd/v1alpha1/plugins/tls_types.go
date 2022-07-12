@@ -4,9 +4,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-// +kubebuilder:object:generate:=true
-
-// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
+// Fluentd provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
 type TLS struct {
 	// Force certificate validation
 	Verify *bool `json:"verify,omitempty"`
