@@ -40,6 +40,7 @@ RUN apk update \
          fluent-plugin-multi-format-parser \
          fluent-plugin-aws-elasticsearch-service \
          fluent-plugin-opensearch \
+         fluent-plugin-grafana-loki \
  && apk del .build-deps \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem /usr/lib/ruby/gems/2.*/gems/fluentd-*/test
 
