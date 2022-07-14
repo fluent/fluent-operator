@@ -62,6 +62,7 @@ const (
 	ElasticsearchOutputType OutputType = "elasticsearch"
 	OpensearchOutputType    OutputType = "opensearch"
 	S3OutputType            OutputType = "s3"
+	LokiOutputType          OutputType = "loki"
 )
 
 var (

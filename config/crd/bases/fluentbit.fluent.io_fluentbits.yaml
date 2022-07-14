@@ -2332,7 +2332,7 @@ spec:
                   type: string
                 type: array
               securityContext:
-                description: Securitycontext holds pod-level security attributes and
+                description: SecurityContext holds pod-level security attributes and
                   common container settings.
                 properties:
                   fsGroup:

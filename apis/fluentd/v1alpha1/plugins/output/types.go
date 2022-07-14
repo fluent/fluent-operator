@@ -7,6 +7,7 @@ import (
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
+	"github.com/fluent/fluent-operator/pkg/utils"
 )
 
 // OutputCommon defines the common parameters for output plugin
@@ -39,6 +40,8 @@ type Output struct {
 	S3 *S3 `json:"s3,omitempty"`
 	// out_stdout plugin
 	Stdout *Stdout `json:"stdout,omitempty"`
+	// out_loki plugin
+	Loki *Loki `json:"loki,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -130,6 +133,11 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 	if o.S3 != nil {
 		ps.InsertType(string(params.S3OutputType))
 		return o.s3Plugin(ps, loader), nil
+	}
+
+	if o.Loki != nil {
+		ps.InsertType(string(params.LokiOutputType))
+		return o.lokiPlugin(ps, loader), nil
 	}
 
 	// if nothing defined, supposed it is a out_stdout plugin
@@ -497,6 +505,81 @@ func (o *Output) s3Plugin(parent *params.PluginStore, loader plugins.SecretLoade
 	}
 	if o.S3.SslVerifyPeer != nil {
 		parent.InsertPairs("ssl_verify_peer", fmt.Sprint(*o.S3.SslVerifyPeer))
+	}
+	return parent
+}
+
+func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+	if o.Loki.Host != nil {
+		parent.InsertPairs("host", fmt.Sprint(*o.Loki.Host))
+	}
+	if o.Loki.Port != nil {
+		parent.InsertPairs("port", fmt.Sprint(*o.Loki.Port))
+	}
+	if o.Loki.HTTPUser != nil {
+		u, err := loader.LoadSecret(*o.Loki.HTTPUser)
+		if err != nil {
+			return nil
+		}
+		parent.InsertPairs("http_user", u)
+	}
+	if o.Loki.HTTPPasswd != nil {
+		passwd, err := loader.LoadSecret(*o.Loki.HTTPPasswd)
+		if err != nil {
+			return nil
+		}
+		parent.InsertPairs("http_passwd", passwd)
+	}
+	if o.Loki.TenantID != nil {
+		id, err := loader.LoadSecret(*o.Loki.TenantID)
+		if err != nil {
+			return nil
+		}
+		parent.InsertPairs("tenantID", id)
+	}
+	if o.Loki.Labels != nil && len(o.Loki.Labels) > 0 {
+		parent.InsertPairs("labels", utils.ConcatString(o.Loki.Labels, ","))
+	}
+	if o.Loki.LabelKeys != nil && len(o.Loki.LabelKeys) > 0 {
+		parent.InsertPairs("labels", utils.ConcatString(o.Loki.LabelKeys, ","))
+	}
+	if o.Loki.LineFormat != "" {
+		parent.InsertPairs("line_format", o.Loki.LineFormat)
+	}
+	if o.Loki.AutoKubernetesLabels != "" {
+		parent.InsertPairs("line_format", o.Loki.AutoKubernetesLabels)
+	}
+	if o.Loki.TLS != nil {
+		t := o.Loki.TLS
+		parent.InsertPairs("tls", "ON")
+		if t.Verify != nil {
+			parent.InsertPairs("tls.verify", fmt.Sprint(*t.Verify))
+		}
+		if t.Debug != nil {
+			parent.InsertPairs("tls.debug", fmt.Sprint(*t.Debug))
+		}
+		if t.CAFile != "" {
+			parent.InsertPairs("tls.ca_file", t.CAFile)
+		}
+		if t.CAPath != "" {
+			parent.InsertPairs("tls.ca_path", t.CAPath)
+		}
+		if t.CRTFile != "" {
+			parent.InsertPairs("tls.crt_file", t.CRTFile)
+		}
+		if t.KeyFile != "" {
+			parent.InsertPairs("tls.key_file", t.KeyFile)
+		}
+		if t.KeyPassword != nil {
+			pwd, err := loader.LoadSecret(*t.KeyPassword)
+			if err != nil {
+				return nil
+			}
+			parent.InsertPairs("tls.key_passwd", pwd)
+		}
+		if t.Vhost != "" {
+			parent.InsertPairs("tls.vhost", t.Vhost)
+		}
 	}
 	return parent
 }

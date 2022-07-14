@@ -1134,6 +1134,213 @@ spec:
                       description: The @log_level parameter specifies the plugin-specific
                         logging level
                       type: string
+                    loki:
+                      description: out_loki plugin
+                      properties:
+                        autoKubernetesLabels:
+                          description: If set to true, it will add all Kubernetes
+                            labels to the Stream labels.
+                          enum:
+                          - "on"
+                          - "off"
+                          type: string
+                        host:
+                          description: Loki hostname or IP address.
+                          type: string
+                        httpPassword:
+                          description: Password for user defined in HTTP_User Set
+                            HTTP basic authentication password
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        httpUser:
+                          description: Set HTTP basic authentication user name.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        labelKeys:
+                          description: Optional list of record keys that will be placed
+                            as stream labels. This configuration property is for records
+                            key only.
+                          items:
+                            type: string
+                          type: array
+                        labels:
+                          description: Stream labels for API request. It can be multiple
+                            comma separated of strings specifying  key=value pairs.
+                            In addition to fixed parameters, it also allows to add
+                            custom record keys (similar to label_keys property).
+                          items:
+                            type: string
+                          type: array
+                        lineFormat:
+                          description: Format to use when flattening the record to
+                            a log line. Valid values are json or key_value. If set
+                            to json,  the log line sent to Loki will be the Fluent
+                            Bit record dumped as JSON. If set to key_value, the log
+                            line will be each item in the record concatenated together
+                            (separated by a single space) in the format.
+                          enum:
+                          - json
+                          - key_value
+                          type: string
+                        port:
+                          description: Loki TCP port
+                          format: int32
+                          maximum: 65535
+                          minimum: 1
+                          type: integer
+                        tenantID:
+                          description: Tenant ID used by default to push logs to Loki.
+                            If omitted or empty it assumes Loki is running in single-tenant
+                            mode and no X-Scope-OrgID header is sent.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        tls:
+                          description: Fluent Bit provides integrated support for
+                            Transport Layer Security (TLS) and it predecessor Secure
+                            Sockets Layer (SSL) respectively.
+                          properties:
+                            caFile:
+                              description: Absolute path to CA certificate file
+                              type: string
+                            caPath:
+                              description: Absolute path to scan for certificate files
+                              type: string
+                            crtFile:
+                              description: Absolute path to Certificate file
+                              type: string
+                            debug:
+                              description: 'Set TLS debug verbosity level. It accept
+                                the following values: 0 (No debug), 1 (Error), 2 (State
+                                change), 3 (Informational) and 4 Verbose'
+                              enum:
+                              - 0
+                              - 1
+                              - 2
+                              - 3
+                              - 4
+                              format: int32
+                              type: integer
+                            keyFile:
+                              description: Absolute path to private Key file
+                              type: string
+                            keyPassword:
+                              description: Optional password for tls.key_file file
+                              properties:
+                                valueFrom:
+                                  description: ValueSource defines how to find a value's
+                                    key.
+                                  properties:
+                                    secretKeyRef:
+                                      description: Selects a key of a secret in the
+                                        pod's namespace
+                                      properties:
+                                        key:
+                                          description: The key of the secret to select
+                                            from.  Must be a valid secret key.
+                                          type: string
+                                        name:
+                                          description: 'Name of the referent. More
+                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                            TODO: Add other useful fields. apiVersion,
+                                            kind, uid?'
+                                          type: string
+                                        optional:
+                                          description: Specify whether the Secret
+                                            or its key must be defined
+                                          type: boolean
+                                      required:
+                                      - key
+                                      type: object
+                                  type: object
+                              type: object
+                            verify:
+                              description: Force certificate validation
+                              type: boolean
+                            vhost:
+                              description: Hostname to be used for TLS SNI extension
+                              type: string
+                          type: object
+                      required:
+                      - host
+                      type: object
                     opensearch:
                       description: out_opensearch plugin
                       properties:
