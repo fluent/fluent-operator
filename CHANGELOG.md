@@ -1,3 +1,6 @@
+## 0.14.0 / 2022-7-18
+- [FEATURE] Fluentbit integrate OpenSearch plugin in fluentbit-operator #307
+
 ## 0.13.0 / 2022-3-14
 - [FEATURE] Add priority class to Fluent Bit type #146
 - [FEATURE] Add support for Fluent Bit RetryLimit in outputs #148
