@@ -26,4 +26,4 @@
   - [kafka](output/kafka.md)
   - [opensearch](output/opensearch.md)
   - [stdout](output/stdout.md)
-
+  - [loki](output/loki.md)

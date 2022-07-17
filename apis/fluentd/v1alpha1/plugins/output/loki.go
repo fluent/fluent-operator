@@ -25,7 +25,7 @@ type Loki struct {
 	// This configuration property is for records key only.
 	LabelKeys []string `json:"labelKeys,omitempty"`
 	// Format to use when flattening the record to a log line. Valid values are json or key_value.
-	// If set to json,  the log line sent to Loki will be the Fluent Bit record dumped as JSON.
+	// If set to json,  the log line sent to Loki will be the Fluentd record dumped as JSON.
 	// If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
 	// +kubebuilder:validation:Enum:=json;key_value
 	LineFormat string `json:"lineFormat,omitempty"`
