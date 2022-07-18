@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 operator:
   image: "kubesphere/fluentbit-operator"
-  tag: "latest"
+  tag: "v0.14.0"
   initcontainer:
     image: "docker"
     tag: "19.03"
