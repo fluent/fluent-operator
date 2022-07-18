@@ -1473,6 +1473,31 @@ spec:
                       plugin.
                     type: string
                 type: object
+              nodeExporterMetrics:
+                description: NodeExporterMetrics defines Node Exporter Metrics Input
+                  configuration.
+                properties:
+                  path:
+                    properties:
+                      procfs:
+                        description: The mount point used to collect process information
+                          and metrics.
+                        type: string
+                      sysfs:
+                        description: The path in the filesystem used to collect system
+                          metrics.
+                        type: string
+                    type: object
+                  scrapeInterval:
+                    description: The rate at which metrics are collected from the
+                      host operating system, default is 5 seconds.
+                    format: int32
+                    type: integer
+                  tag:
+                    description: Tag name associated to all records comming from this
+                      plugin.
+                    type: string
+                type: object
               systemd:
                 description: Systemd defines Systemd Input configuration.
                 properties:
@@ -3020,6 +3045,168 @@ spec:
                     type: string
                   writeOperation:
                     description: Operation to use to write in bulk requests.
+                    type: string
+                type: object
+              opentelemetry:
+                description: OpenTelemetry defines OpenTelemetry Output configuration.
+                properties:
+                  addLabel:
+                    additionalProperties:
+                      type: string
+                    description: This allows you to add custom labels to all metrics
+                      exposed through the OpenTelemetry exporter. You may have multiple
+                      of these fields.
+                    type: object
+                  header:
+                    additionalProperties:
+                      type: string
+                    description: Add a HTTP header key/value pair. Multiple headers
+                      can be set.
+                    type: object
+                  host:
+                    description: IP address or hostname of the target HTTP Server,
+                      default `127.0.0.1`
+                    type: string
+                  httpPassword:
+                    description: Password for user defined in HTTP_User
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  httpUser:
+                    description: Optional username credential for access
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  logResponsePayload:
+                    description: Log the response payload within the Fluent Bit log.
+                    type: boolean
+                  port:
+                    description: TCP port of the target OpenSearch instance, default
+                      `80`
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  proxy:
+                    description: Specify an HTTP Proxy. The expected format of this
+                      value is http://HOST:PORT. Note that HTTPS is not currently
+                      supported. It is recommended not to set this and to configure
+                      the HTTP proxy environment variables instead as they support
+                      both HTTP and HTTPS.
+                    type: string
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                  uri:
+                    description: 'Specify an optional HTTP URI for the target web
+                      server, e.g: /something'
                     type: string
                 type: object
               retry_limit:

@@ -41,6 +41,8 @@ type InputSpec struct {
 	Tail *input.Tail `json:"tail,omitempty"`
 	// Systemd defines Systemd Input configuration.
 	Systemd *input.Systemd `json:"systemd,omitempty"`
+	// NodeExporterMetrics defines Node Exporter Metrics Input configuration.
+	NodeExporterMetrics *input.NodeExporterMetrics `json:"nodeExporterMetrics,omitempty"`
 }
 
 // +kubebuilder:object:root=true
