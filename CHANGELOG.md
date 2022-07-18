@@ -1,3 +1,22 @@
+## 0.14.0 / 2022-7-18
+- [FEATURE] Fluentbit integrate OpenSearch plugin in fluentbit-operator #307
+
+## 0.13.0 / 2022-3-14
+- [FEATURE] Add priority class to Fluent Bit type #146
+- [FEATURE] Add support for Fluent Bit RetryLimit in outputs #148
+- [FEATURE] Add Fluent Bit Datadog output. #149
+- [FEATURE] Add main workflow actions. #152
+- [FEATURE] Add support for rewrite tag. #155
+- [FEATURE] Add aws filter plugin. #173
+- [FEATURE] Add multiline filter plugin. #176
+- [FEATURE] Add Firehose plugin support. #178
+- [FEATURE] Add volume crd. #186
+- [ENHANCEMENT] Upgrade layout from Kubebuilder v2 to Kubebuilder v3.1. #147
+- [ENHANCEMENT] Set the crictl path to a variable #181
+- [ENHANCEMENT] Improved Fluent Bit kafka plugin #182
+- [BUGFIX] Fix the incorrect keys of the Fluent Bit es output plugin #160
+- [BUGFIX] Fix the incorrect key of the Fluent Bit es parser plugin #164
+
 ## 0.12.0 / 2021-09-07
 
 - [FEATURE] Add support for collecting contained and cri-o service log. #142
