@@ -14,27 +14,36 @@ This plugin is currently only supported on Linux based operating systems
 | path.procfs    | The mount point used to collect process information and metrics, default is `/proc/`. | string |
 | path.sysfs     | The path in the filesystem used to collect system metrics, default is `/sys/`.        | string |
 
+The node exporter metrics input plugin will collect host node's metrics from specific host paths, so you should mount those host paths to fluentbit container paths. For example:
 
-Important Note: The input plugin of node exporter metrics will collect system / host level metrics from specified path,
-so we should mount those hostpath to containers. For example, This plugin will mount `/proc/` to collect process information and metrics 
-and `/sys/` to collect system metrics by default if we don't specify path, thus we can add it to `values.yaml` in charts, like:
+- Host node's `/proc/` should be mounted to container's `/host/proc` to collect process information and metrics.
+- Host node's `/sys/` should be mounted to container's `/host/sys` to collect system metrics.
+
+To do this, you'll need to uncomment the following content in helm chart's `values.yaml`:
 
 ```yaml
 fluentbit:
   volumes:
-    - name: node-exporter-metrics-proc
+    - name: hostProc
       hostPath:
         path: /proc/
-    - name: node-exporter-metrics-sys
+    - name: hostSys
       hostPath:
         path: /sys/
   volumesMounts:
     - mountPath: /host/sys
       mountPropagation: HostToContainer
-      name: node-exporter-metrics-proc
+      name: hostSys 
       readOnly: true
     - mountPath: /host/proc
       mountPropagation: HostToContainer
-      name: node-exporter-metrics-sys
+      name: hostProc 
       readOnly: true
+  input:
+    nodeExporterMetrics:
+      tag: node_metrics
+      scrapeInterval: 15s
+      path:
+        procfs: /host/proc
+        sysfs: /host/sys
 ```
