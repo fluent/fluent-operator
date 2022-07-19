@@ -55,6 +55,25 @@ fluentbit:
   volumes: []
   # Pod volumes to mount into the container's filesystem.
   volumesMounts: []
+
+  # Remove the above empty volumes and volumesMounts, and then set volumes and volumesMounts as below if you want to collect node exporter metrics 
+# volumes:
+#   - name: hostProc
+#     hostPath:
+#       path: /proc/
+#   - name: hostSys
+#     hostPath:
+#       path: /sys/
+# volumesMounts:
+#   - mountPath: /host/sys
+#     mountPropagation: HostToContainer
+#     name: hostSys 
+#     readOnly: true
+#   - mountPath: /host/proc
+#     mountPropagation: HostToContainer
+#     name: hostProc 
+#     readOnly: true
+
   #Set a limit of memory that Tail plugin can use when appending data to the Engine.
   #If the limit is reach, it will be paused; when the data is flushed it resumes.
   #if the inbound traffic is less than 2.4Mbps, setting memBufLimit to 5MB is enough
@@ -63,6 +82,14 @@ fluentbit:
   input:
     tail:
       memBufLimit: 5MB
+    # uncomment below nodeExporterMetrics section if you want to collect node exporter metrics 
+#   nodeExporterMetrics:
+#     tag: node_metrics
+#     scrapeInterval: 15s
+#     path:
+#       procfs: /host/proc
+#       sysfs: /host/sys
+
   #Configure the output plugin parameter in FluentBit.
   #You can set enable to true to output logs to the specified location.
   output:
