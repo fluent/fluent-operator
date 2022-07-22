@@ -2,6 +2,7 @@
   - [dummy](clusterinput/dummy.md)
   - [tail](clusterinput/tail.md)
   - [systemd](clusterinput/systemd.md)
+  - [node exporter metrics](clusterinput/node-exporter-metrics.md)
 - [ClusterParser](../../fluentbit.md#ClusterParser)
   - [json](clusterparser/json.md)
   - [logfmt](clusterparser/logfmt.md)
@@ -30,4 +31,7 @@
   - [loki](clusteroutput/loki.md)
   - [syslog](clusteroutput/syslog.md)
   - [datadog](clusteroutput/datadog.md)
+  - [firehose](clusteroutput/firehose.md)
+  - [opensearch](clusteroutput/opensearch.md)
+  - [opentelemetry](clusteroutput/opentelemetry.md)
 
