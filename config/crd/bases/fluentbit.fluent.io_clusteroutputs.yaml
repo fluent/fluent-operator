@@ -1488,6 +1488,171 @@ spec:
                       server, e.g: /something'
                     type: string
                 type: object
+              prometheusRemoteWrite:
+                description: PrometheusRemoteWrite_types defines Prometheus Remote
+                  Write configuration.
+                properties:
+                  addLabels:
+                    description: This allows you to add custom labels to all metrics
+                      exposed through the prometheus exporter. You may have multiple
+                      of these fields
+                    items:
+                      type: string
+                    type: array
+                  headers:
+                    additionalProperties:
+                      type: string
+                    description: Add a HTTP header key/value pair. Multiple headers
+                      can be set.
+                    type: object
+                  host:
+                    description: 'IP address or hostname of the target HTTP Server,
+                      default: 127.0.0.1'
+                    type: string
+                  httpPassword:
+                    description: Basic Auth Password. Requires HTTP_user to be se
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  httpUser:
+                    description: Basic Auth Username
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  logResponsePayload:
+                    description: 'Log the response payload within the Fluent Bit log,default:
+                      false'
+                    type: boolean
+                  match:
+                    description: to do ?
+                    type: string
+                  port:
+                    description: TCP port of the target HTTP Serveri, default:80
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  proxy:
+                    description: Specify an HTTP Proxy. The expected format of this
+                      value is http://HOST:PORT.
+                    type: string
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                  uri:
+                    description: 'Specify an optional HTTP URI for the target web
+                      server, e.g: /something ,default: /'
+                    type: string
+                required:
+                - host
+                type: object
               retry_limit:
                 description: RetryLimit represents configuration for the scheduler
                   which can be set independently on each output section. This option
