@@ -38,7 +38,9 @@ func (p *PrometheusScrapeMetrics) Params(_ plugins.SecretLoader) (*params.KVs, e
 	if p.Tag != "" {
 		kvs.Insert("tag", p.Tag)
 	}
-	if p.Host != "" {
+	if p.Host == "" || p.Host == "localhost" || p.Host == "127.0.0.1" {
+		kvs.Insert("host", "${HOST_IP}")
+	} else {
 		kvs.Insert("host", p.Host)
 	}
 	if p.Port != nil {
