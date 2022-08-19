@@ -5,6 +5,7 @@ import (
 
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
+	"strings"
 )
 
 // +kubebuilder:object:generate:=true
@@ -39,6 +40,8 @@ func (p *PrometheusScrapeMetrics) Params(_ plugins.SecretLoader) (*params.KVs, e
 		kvs.Insert("tag", p.Tag)
 	}
 	if p.Host == "" || p.Host == "localhost" || p.Host == "127.0.0.1" {
+		kvs.Insert("host", "${HOST_IP}")
+	} else if strings.ToLower(p.Host) == "host" || strings.ToLower(p.Host) == "hostnode" {
 		kvs.Insert("host", "${HOST_IP}")
 	} else {
 		kvs.Insert("host", p.Host)
