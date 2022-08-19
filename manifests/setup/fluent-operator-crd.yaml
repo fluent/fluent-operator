@@ -3316,9 +3316,6 @@ spec:
                     description: 'Log the response payload within the Fluent Bit log,default:
                       false'
                     type: boolean
-                  match:
-                    description: to do ?
-                    type: string
                   port:
                     description: TCP port of the target HTTP Serveri, default:80
                     format: int32

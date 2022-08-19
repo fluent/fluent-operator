@@ -34,9 +34,6 @@ type PrometheusRemoteWrite struct {
 	//This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields
 	AddLabels []string `json:"addLabels,omitempty"`
 
-	//to do ?
-	Match string `json:"match,omitempty"`
-
 	*plugins.TLS `json:"tls,omitempty"`
 }
 
@@ -84,9 +81,6 @@ func (p *PrometheusRemoteWrite) Params(sl plugins.SecretLoader) (*params.KVs, er
 	}
 	if p.AddLabels != nil && len(p.AddLabels) > 0 {
 		kvs.Insert("add_label", utils.ConcatString(p.AddLabels, ","))
-	}
-	if p.Match != "" {
-		kvs.Insert("match", p.Match)
 	}
 	if p.TLS != nil {
 		tls, err := p.TLS.Params(sl)
