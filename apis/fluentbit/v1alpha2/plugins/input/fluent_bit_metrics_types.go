@@ -1,0 +1,37 @@
+package input
+
+import (
+	"fmt"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
+)
+
+// +kubebuilder:object:generate:=true
+
+type FluentbitMetrics struct {
+	Tag string `json:"tag,omitempty"`
+
+	// The rate at which metrics are collected from the host operating system. default is 2 seconds.
+	ScrapeInterval int32 `json:"scrapeInterval,omitempty"`
+
+	// Scrape metrics upon start, useful to avoid waiting for 'scrape_interval' for the first round of metrics.
+	ScrapeOnStart *bool `json:"scrapeOnStart,omitempty"`
+}
+
+func (_ *FluentbitMetrics) Name() string {
+	return "fluentbit_metrics"
+}
+
+func (f *FluentbitMetrics) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+	kvs := params.NewKVs()
+	if f.Tag != "" {
+		kvs.Insert("tag", f.Tag)
+	}
+	if f.ScrapeInterval != 0 {
+		kvs.Insert("scrape_interval", fmt.Sprint(f.ScrapeInterval))
+	}
+	if f.ScrapeOnStart != nil {
+		kvs.Insert("scrape_on_start", fmt.Sprint(*f.ScrapeOnStart))
+	}
+	return kvs, nil
+}

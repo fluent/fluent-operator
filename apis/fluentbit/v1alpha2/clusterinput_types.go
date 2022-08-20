@@ -43,6 +43,8 @@ type InputSpec struct {
 	Systemd *input.Systemd `json:"systemd,omitempty"`
 	// NodeExporterMetrics defines Node Exporter Metrics Input configuration.
 	NodeExporterMetrics *input.NodeExporterMetrics `json:"nodeExporterMetrics,omitempty"`
+	// FluentbitMetrics defines Fluent Bit Metrics Input configuration.
+	FluentbitMetrics *input.FluentbitMetrics `json:"fluentbitMetrics,omitempty"`
 }
 
 // +kubebuilder:object:root=true
