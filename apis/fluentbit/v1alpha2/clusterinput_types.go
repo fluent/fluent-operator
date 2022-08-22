@@ -43,6 +43,8 @@ type InputSpec struct {
 	Systemd *input.Systemd `json:"systemd,omitempty"`
 	// NodeExporterMetrics defines Node Exporter Metrics Input configuration.
 	NodeExporterMetrics *input.NodeExporterMetrics `json:"nodeExporterMetrics,omitempty"`
+	// PrometheusScrapeMetrics  defines Prometheus Scrape Metrics Input configuration.
+	PrometheusScrapeMetrics *input.PrometheusScrapeMetrics `json:"prometheusScrapeMetrics,omitempty"`
 }
 
 // +kubebuilder:object:root=true

@@ -73,6 +73,8 @@ type OutputSpec struct {
 	OpenSearch *output.OpenSearch `json:"opensearch,omitempty"`
 	// OpenTelemetry defines OpenTelemetry Output configuration.
 	OpenTelemetry *output.OpenTelemetry `json:"opentelemetry,omitempty"`
+	// PrometheusRemoteWrite_types defines Prometheus Remote Write configuration.
+	PrometheusRemoteWrite *output.PrometheusRemoteWrite `json:"prometheusRemoteWrite,omitempty"`
 }
 
 // +kubebuilder:object:root=true
