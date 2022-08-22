@@ -46,6 +46,9 @@ spec:
                           description: The account ID for current EC2 instance.Default
                             is false.
                           type: boolean
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         amiID:
                           description: The EC2 instance image id.Default is false.
                           type: boolean
@@ -81,6 +84,9 @@ spec:
                     grep:
                       description: Grep defines Grep Filter configuration.
                       properties:
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         exclude:
                           description: 'Exclude records which field matches the regular
                             expression. Value Format: FIELD REGEX'
@@ -93,6 +99,9 @@ spec:
                     kubernetes:
                       description: Kubernetes defines Kubernetes Filter configuration.
                       properties:
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         annotations:
                           description: Include Kubernetes resource annotations in
                             the extra metadata.
@@ -191,6 +200,9 @@ spec:
                     lua:
                       description: Lua defines Lua Filter configuration.
                       properties:
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         call:
                           description: Lua function name that will be triggered to
                             do filtering. It's assumed that the function is declared
@@ -242,6 +254,9 @@ spec:
                     modify:
                       description: Modify defines Modify Filter configuration.
                       properties:
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         conditions:
                           description: All conditions have to be true for the rules
                             to be applied.
@@ -366,6 +381,9 @@ spec:
                     multiline:
                       description: Multiline defines a Multiline configuration.
                       properties:
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         keyContent:
                           description: Key name that holds the content to process.
                             Note that a Multiline Parser definition can already specify
@@ -386,6 +404,9 @@ spec:
                       properties:
                         addPrefix:
                           description: Prefix affected keys with this string
+                          type: string
+                        alias:
+                          description: Alias for plugin
                           type: string
                         nestUnder:
                           description: Nest records matching the Wildcard under this
@@ -414,6 +435,9 @@ spec:
                     parser:
                       description: Parser defines Parser Filter configuration.
                       properties:
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         keyName:
                           description: Specify field name in record to parse.
                           type: string
@@ -437,6 +461,9 @@ spec:
                     recordModifier:
                       description: RecordModifier defines Record Modifier Filter configuration.
                       properties:
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         records:
                           description: Append fields. This parameter needs key and
                             value pair.
@@ -457,6 +484,9 @@ spec:
                     rewriteTag:
                       description: RewriteTag defines a RewriteTag configuration.
                       properties:
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         emitterName:
                           description: When the filter emits a record under the new
                             Tag, there is an internal emitter plugin that takes care
@@ -475,6 +505,9 @@ spec:
                     throttle:
                       description: Throttle defines a Throttle configuration.
                       properties:
+                        alias:
+                          description: Alias for plugin
+                          type: string
                         interval:
                           description: Interval is the time interval expressed in
                             "sleep" format. e.g. 3s, 1.5m, 0.5h, etc.
@@ -4698,9 +4731,9 @@ spec:
                         lineFormat:
                           description: Format to use when flattening the record to
                             a log line. Valid values are json or key_value. If set
-                            to json,  the log line sent to Loki will be the Fluent
-                            Bit record dumped as JSON. If set to key_value, the log
-                            line will be each item in the record concatenated together
+                            to json,  the log line sent to Loki will be the Fluentd
+                            record dumped as JSON. If set to key_value, the log line
+                            will be each item in the record concatenated together
                             (separated by a single space) in the format.
                           enum:
                           - json
@@ -4745,9 +4778,9 @@ spec:
                               type: object
                           type: object
                         tls:
-                          description: Fluent Bit provides integrated support for
-                            Transport Layer Security (TLS) and it predecessor Secure
-                            Sockets Layer (SSL) respectively.
+                          description: Fluentd provides integrated support for Transport
+                            Layer Security (TLS) and it predecessor Secure Sockets
+                            Layer (SSL) respectively.
                           properties:
                             caFile:
                               description: Absolute path to CA certificate file
@@ -12746,9 +12779,9 @@ spec:
                         lineFormat:
                           description: Format to use when flattening the record to
                             a log line. Valid values are json or key_value. If set
-                            to json,  the log line sent to Loki will be the Fluent
-                            Bit record dumped as JSON. If set to key_value, the log
-                            line will be each item in the record concatenated together
+                            to json,  the log line sent to Loki will be the Fluentd
+                            record dumped as JSON. If set to key_value, the log line
+                            will be each item in the record concatenated together
                             (separated by a single space) in the format.
                           enum:
                           - json
@@ -12793,9 +12826,9 @@ spec:
                               type: object
                           type: object
                         tls:
-                          description: Fluent Bit provides integrated support for
-                            Transport Layer Security (TLS) and it predecessor Secure
-                            Sockets Layer (SSL) respectively.
+                          description: Fluentd provides integrated support for Transport
+                            Layer Security (TLS) and it predecessor Secure Sockets
+                            Layer (SSL) respectively.
                           properties:
                             caFile:
                               description: Absolute path to CA certificate file

@@ -11,6 +11,8 @@ import (
 
 // The AWS Filter Enriches logs with AWS Metadata. Currently the plugin adds the EC2 instance ID and availability zone to log records.
 type AWS struct {
+	// Common configuration for plugins
+	plugins.CommonParams `json:",inline,omitempty"`
 	// Specify which version of the instance metadata service to use. Valid values are 'v1' or 'v2'.
 	// +kubebuilder:validation:Enum:=v1;v2
 	ImdsVersion string `json:"imdsVersion,omitempty"`
@@ -37,7 +39,10 @@ func (_ *AWS) Name() string {
 }
 
 func (a *AWS) Params(_ plugins.SecretLoader) (*params.KVs, error) {
-	kvs := params.NewKVs()
+	kvs, err := a.ParseCommonParams(nil)
+	if err != nil {
+		return nil, err
+	}
 	if a.ImdsVersion != "" {
 		kvs.Insert("imds_version", a.ImdsVersion)
 	}

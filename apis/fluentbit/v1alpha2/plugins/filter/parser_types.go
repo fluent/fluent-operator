@@ -12,6 +12,8 @@ import (
 
 // The Parser Filter plugin allows to parse field in event records.
 type Parser struct {
+	// Common configuration for plugins
+	plugins.CommonParams `json:",inline,omitempty"`
 	// Specify field name in record to parse.
 	KeyName string `json:"keyName,omitempty"`
 	// Specify the parser name to interpret the field.
@@ -32,7 +34,10 @@ func (_ *Parser) Name() string {
 }
 
 func (p *Parser) Params(_ plugins.SecretLoader) (*params.KVs, error) {
-	kvs := params.NewKVs()
+	kvs, err := p.ParseCommonParams(nil)
+	if err != nil {
+		return nil, err
+	}
 	if p.KeyName != "" {
 		kvs.Insert("Key_Name", p.KeyName)
 	}

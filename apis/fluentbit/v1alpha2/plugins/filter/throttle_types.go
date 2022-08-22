@@ -11,6 +11,8 @@ import (
 
 // Throttle filter allows you to set the average rate of messages per internal, based on leaky bucket and sliding window algorithm.
 type Throttle struct {
+	//Common configuration for plugins
+	plugins.CommonParams `json:",inline,omitempty"`
 	// Rate is the amount of messages for the time.
 	Rate *int64 `json:"rate,omitempty"`
 	// Window is the amount of intervals to calculate average over.
@@ -29,7 +31,10 @@ func (*Throttle) Name() string {
 
 // Params represents the config options for the filter plugin.
 func (k *Throttle) Params(_ plugins.SecretLoader) (*params.KVs, error) {
-	kvs := params.NewKVs()
+	kvs, err := k.ParseCommonParams(nil)
+	if err != nil {
+		return nil, err
+	}
 	if k.Rate != nil {
 		kvs.Insert("Rate", fmt.Sprint(*k.Rate))
 	}

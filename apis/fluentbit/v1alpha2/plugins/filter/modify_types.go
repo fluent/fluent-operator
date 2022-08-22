@@ -11,6 +11,8 @@ import (
 
 // The Modify Filter plugin allows you to change records using rules and conditions.
 type Modify struct {
+	// Common configuration for plugins
+	plugins.CommonParams `json:",inline,omitempty"`
 	// All conditions have to be true for the rules to be applied.
 	Conditions []Condition `json:"conditions,omitempty"`
 	// Rules are applied in the order they appear,
@@ -75,7 +77,11 @@ func (*Modify) Name() string {
 }
 
 func (mo *Modify) Params(_ plugins.SecretLoader) (*params.KVs, error) {
-	kvs := params.NewKVs()
+
+	kvs, err := mo.ParseCommonParams(nil)
+	if err != nil {
+		return nil, err
+	}
 	for _, c := range mo.Conditions {
 		if c.KeyExists != "" {
 			kvs.Insert("Condition", fmt.Sprintf("Key_exists    %s", c.KeyExists))

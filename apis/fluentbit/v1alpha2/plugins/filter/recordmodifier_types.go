@@ -10,6 +10,8 @@ import (
 // The Record Modifier Filter plugin allows to append fields or to exclude specific fields.
 // RemoveKeys and WhitelistKeys are exclusive.
 type RecordModifier struct {
+	//Common configuration for plugins
+	plugins.CommonParams `json:",inline,omitempty"`
 	// Append fields. This parameter needs key and value pair.
 	Records []string `json:"records,omitempty"`
 	// If the key is matched, that field is removed.
@@ -23,7 +25,10 @@ func (_ *RecordModifier) Name() string {
 }
 
 func (rm *RecordModifier) Params(_ plugins.SecretLoader) (*params.KVs, error) {
-	kvs := params.NewKVs()
+	kvs, err := rm.ParseCommonParams(nil)
+	if err != nil {
+		return nil, err
+	}
 	for _, record := range rm.Records {
 		kvs.Insert("Record", record)
 	}
