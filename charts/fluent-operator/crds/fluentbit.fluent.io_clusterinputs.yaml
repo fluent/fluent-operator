@@ -86,6 +86,34 @@ spec:
                       plugin.
                     type: string
                 type: object
+              prometheusScrapeMetrics:
+                description: PrometheusScrapeMetrics  defines Prometheus Scrape Metrics
+                  Input configuration.
+                properties:
+                  host:
+                    description: The host of the prometheus metric endpoint that you
+                      want to scrape
+                    type: string
+                  metricsPath:
+                    description: 'The metrics URI endpoint, that must start with a
+                      forward slash, deflaut: /metrics'
+                    type: string
+                  port:
+                    description: The port of the promethes metric endpoint that you
+                      want to scrape
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  scrapeInterval:
+                    description: 'The interval to scrape metrics, default: 10s'
+                    format: int32
+                    type: integer
+                  tag:
+                    description: Tag name associated to all records comming from this
+                      plugin
+                    type: string
+                type: object
               systemd:
                 description: Systemd defines Systemd Input configuration.
                 properties:

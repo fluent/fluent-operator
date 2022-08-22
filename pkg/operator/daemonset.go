@@ -87,6 +87,14 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 										},
 									},
 								},
+								{
+									Name: "HOST_IP",
+									ValueFrom: &corev1.EnvVarSource{
+										FieldRef: &corev1.ObjectFieldSelector{
+											FieldPath: "status.hostIP",
+										},
+									},
+								},
 							},
 							VolumeMounts: []corev1.VolumeMount{
 								{
