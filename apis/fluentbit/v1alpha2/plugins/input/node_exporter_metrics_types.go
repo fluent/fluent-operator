@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -14,7 +12,7 @@ type NodeExporterMetrics struct {
 	// Tag name associated to all records comming from this plugin.
 	Tag string `json:"tag,omitempty"`
 	// The rate at which metrics are collected from the host operating system, default is 5 seconds.
-	ScrapeInterval *int32 `json:"scrapeInterval,omitempty"`
+	ScrapeInterval string `json:"scrapeInterval,omitempty"`
 	Path           *Path  `json:"path,omitempty"`
 }
 
@@ -35,8 +33,8 @@ func (d *NodeExporterMetrics) Params(_ plugins.SecretLoader) (*params.KVs, error
 	if d.Tag != "" {
 		kvs.Insert("Tag", d.Tag)
 	}
-	if d.ScrapeInterval != nil {
-		kvs.Insert("scrape_interval", fmt.Sprint(*d.ScrapeInterval))
+	if d.ScrapeInterval != "" {
+		kvs.Insert("scrape_interval", d.ScrapeInterval)
 	}
 	if d.Path != nil {
 		if d.Path.Procfs != "" {

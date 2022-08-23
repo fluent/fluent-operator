@@ -1491,8 +1491,7 @@ spec:
                   scrapeInterval:
                     description: The rate at which metrics are collected from the
                       host operating system, default is 5 seconds.
-                    format: int32
-                    type: integer
+                    type: string
                   tag:
                     description: Tag name associated to all records comming from this
                       plugin.
