@@ -107,8 +107,7 @@ spec:
                     type: integer
                   scrapeInterval:
                     description: 'The interval to scrape metrics, default: 10s'
-                    format: int32
-                    type: integer
+                    type: string
                   tag:
                     description: Tag name associated to all records comming from this
                       plugin

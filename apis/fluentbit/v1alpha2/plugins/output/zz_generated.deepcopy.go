@@ -565,8 +565,15 @@ func (in *PrometheusRemoteWrite) DeepCopyInto(out *PrometheusRemoteWrite) {
 	}
 	if in.AddLabels != nil {
 		in, out := &in.AddLabels, &out.AddLabels
-		*out = make([]string, len(*in))
-		copy(*out, *in)
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
+	if in.Workers != nil {
+		in, out := &in.Workers, &out.Workers
+		*out = new(int32)
+		**out = **in
 	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS

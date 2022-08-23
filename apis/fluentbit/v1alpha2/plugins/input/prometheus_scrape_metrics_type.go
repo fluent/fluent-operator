@@ -3,9 +3,10 @@ package input
 import (
 	"fmt"
 
+	"strings"
+
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
-	"strings"
 )
 
 // +kubebuilder:object:generate:=true
@@ -24,13 +25,13 @@ type PrometheusScrapeMetrics struct {
 	// +kubebuilder:validation:Maximum:=65535
 	Port *int32 `json:"port,omitempty"`
 	// The interval to scrape metrics, default: 10s
-	ScrapeInterval *int32 `json:"scrapeInterval,omitempty"`
+	ScrapeInterval string `json:"scrapeInterval,omitempty"`
 	// The metrics URI endpoint, that must start with a forward slash, deflaut: /metrics
 	MetricsPath string `json:"metricsPath,omitempty"`
 }
 
 func (_ *PrometheusScrapeMetrics) Name() string {
-	return "prometheus_scrape_metrics"
+	return "prometheus_scrape"
 }
 
 // Params implement Section() method
@@ -48,8 +49,8 @@ func (p *PrometheusScrapeMetrics) Params(_ plugins.SecretLoader) (*params.KVs, e
 	if p.Port != nil {
 		kvs.Insert("port", fmt.Sprint(*p.Port))
 	}
-	if p.ScrapeInterval != nil {
-		kvs.Insert("scrape_interval", fmt.Sprint(*p.ScrapeInterval))
+	if p.ScrapeInterval != "" {
+		kvs.Insert("scrape_interval", p.ScrapeInterval)
 	}
 	if p.MetricsPath != "" {
 		kvs.Insert("metrics_path", p.MetricsPath)
