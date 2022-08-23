@@ -128,7 +128,7 @@ func TestClusterInputFluentbitMetrics(t *testing.T) {
 			Alias: "metrics_alias",
 			FluentbitMetrics: &input.FluentbitMetrics{
 				Tag:            "internal_metrics",
-				ScrapeInterval: ptrInt32(3),
+				ScrapeInterval: "3",
 				ScrapeOnStart:  ptrBool(true),
 			},
 		},

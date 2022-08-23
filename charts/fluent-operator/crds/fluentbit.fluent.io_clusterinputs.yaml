@@ -67,8 +67,7 @@ spec:
                   scrapeInterval:
                     description: The rate at which metrics are collected from the
                       host operating system. default is 2 seconds.
-                    format: int32
-                    type: integer
+                    type: string
                   scrapeOnStart:
                     description: Scrape metrics upon start, useful to avoid waiting
                       for 'scrape_interval' for the first round of metrics.
