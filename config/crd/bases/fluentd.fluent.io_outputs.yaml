@@ -1226,9 +1226,9 @@ spec:
                         lineFormat:
                           description: Format to use when flattening the record to
                             a log line. Valid values are json or key_value. If set
-                            to json,  the log line sent to Loki will be the Fluent
-                            Bit record dumped as JSON. If set to key_value, the log
-                            line will be each item in the record concatenated together
+                            to json,  the log line sent to Loki will be the Fluentd
+                            record dumped as JSON. If set to key_value, the log line
+                            will be each item in the record concatenated together
                             (separated by a single space) in the format.
                           enum:
                           - json
@@ -1273,9 +1273,9 @@ spec:
                               type: object
                           type: object
                         tls:
-                          description: Fluent Bit provides integrated support for
-                            Transport Layer Security (TLS) and it predecessor Secure
-                            Sockets Layer (SSL) respectively.
+                          description: Fluentd provides integrated support for Transport
+                            Layer Security (TLS) and it predecessor Secure Sockets
+                            Layer (SSL) respectively.
                           properties:
                             caFile:
                               description: Absolute path to CA certificate file
