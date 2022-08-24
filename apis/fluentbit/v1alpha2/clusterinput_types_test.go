@@ -1,11 +1,12 @@
 package v1alpha2
 
 import (
+	"testing"
+
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/input"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
 )
 
 var inputExpected = `[Input]
@@ -26,6 +27,14 @@ var inputExpected = `[Input]
     Tag    logs.foo.bar
     Rate    3
     Samples    5
+[Input]
+    Name    prometheus_scrape
+    Alias    input3_alias
+    tag    logs.foo.bar
+    host    https://example3.com
+    port    433
+    scrape_interval    10s
+    metrics_path    /metrics
 `
 
 func TestClusterInputList_Load(t *testing.T) {
@@ -43,6 +52,7 @@ func TestClusterInputList_Load(t *testing.T) {
 
 	inputObj1 := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
+
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
 			Kind:       "ClusterInput",
 		},
@@ -83,9 +93,29 @@ func TestClusterInputList_Load(t *testing.T) {
 			},
 		},
 	}
+	inputObj3 := &ClusterInput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterInput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "input3",
+			Labels: labels,
+		},
+		Spec: InputSpec{
+			Alias: "input3_alias",
+			PrometheusScrapeMetrics: &input.PrometheusScrapeMetrics{
+				Tag:            "logs.foo.bar",
+				Host:           "https://example3.com",
+				Port:           ptrInt32(int32(433)),
+				ScrapeInterval: "10s",
+				MetricsPath:    "/metrics",
+			},
+		},
+	}
 
 	inputs := ClusterInputList{
-		Items: []ClusterInput{*inputObj1, *inputObj2},
+		Items: []ClusterInput{*inputObj1, *inputObj2, *inputObj3},
 	}
 
 	i := 0
