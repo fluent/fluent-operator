@@ -127,3 +127,61 @@ func TestClusterInputList_Load(t *testing.T) {
 		i++
 	}
 }
+
+var fluentInputExpected = `[Input]
+    Name    fluentbit_metrics
+    Alias    metrics_alias
+    Tag    internal_metrics
+    scrape_interval    3
+    scrape_on_start    true
+`
+
+func TestClusterInputFluentbitMetrics(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	sl := plugins.NewSecretLoader(nil, "testnamespace", nil)
+
+	labels := map[string]string{
+		"label0": "lv0",
+		"label1": "lv1",
+		"label3": "lval3",
+		"lbl2":   "lval2",
+		"lbl1":   "lvl1",
+	}
+
+	inputObj := &ClusterInput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterInput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "input0",
+			Labels: labels,
+		},
+		Spec: InputSpec{
+			Alias: "metrics_alias",
+			FluentbitMetrics: &input.FluentbitMetrics{
+				Tag:            "internal_metrics",
+				ScrapeInterval: "3",
+				ScrapeOnStart:  ptrBool(true),
+			},
+		},
+	}
+
+	inputs := ClusterInputList{
+		Items: []ClusterInput{*inputObj},
+	}
+
+	i := 0
+	for i < 5 {
+		clusterInputs, err := inputs.Load(sl)
+		g.Expect(err).NotTo(HaveOccurred())
+		g.Expect(clusterInputs).To(Equal(fluentInputExpected))
+		i++
+	}
+	//clusterInputs, err := inputs.Load(sl)
+	//t.Log(clusterInputs)
+	//t.Log(fluentInputExpected)
+	//g.Expect(err).NotTo(HaveOccurred())
+	//g.Expect(clusterInputs).To(Equal(fluentInputExpected))
+}
