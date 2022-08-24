@@ -127,3 +127,57 @@ func TestClusterInputList_Load(t *testing.T) {
 		i++
 	}
 }
+
+var fluentbitExpected = `[Input]
+    Name    fluentbit_metrics
+    Alias    input0_alias
+    Tag    logs.foo.bar
+    scrape_interval    2
+    scrape_on_start    true
+`
+
+func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	sl := plugins.NewSecretLoader(nil, "testnamespace", nil)
+
+	labels := map[string]string{
+		"label0": "lv0",
+		"label1": "lv1",
+		"label3": "lval3",
+		"lbl2":   "lval2",
+		"lbl1":   "lvl1",
+	}
+
+	inputObj1 := &ClusterInput{
+		TypeMeta: metav1.TypeMeta{
+
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterInput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "input0",
+			Labels: labels,
+		},
+		Spec: InputSpec{
+			Alias: "input0_alias",
+			FluentBitMetrics: &input.FluentbitMetrics{
+				Tag:            "logs.foo.bar",
+				ScrapeInterval: "2",
+				ScrapeOnStart:  ptrBool(true),
+			},
+		},
+	}
+
+	inputs := ClusterInputList{
+		Items: []ClusterInput{*inputObj1},
+	}
+
+	i := 0
+	for i < 5 {
+		clusterInputs, err := inputs.Load(sl)
+		g.Expect(err).NotTo(HaveOccurred())
+		g.Expect(clusterInputs).To(Equal(fluentbitExpected))
+		i++
+	}
+}

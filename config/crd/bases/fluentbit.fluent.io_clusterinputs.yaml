@@ -61,6 +61,20 @@ spec:
                       plugin.
                     type: string
                 type: object
+              fluentBitMetrics:
+                description: FluentBitMetrics defines Fluent Bit Metrics Input configuration.
+                properties:
+                  scrapeInterval:
+                    description: The rate at which metrics are collected from the
+                      host operating system. default is 2 seconds.
+                    type: string
+                  scrapeOnStart:
+                    description: Scrape metrics upon start, useful to avoid waiting
+                      for 'scrape_interval' for the first round of metrics.
+                    type: boolean
+                  tag:
+                    type: string
+                type: object
               nodeExporterMetrics:
                 description: NodeExporterMetrics defines Node Exporter Metrics Input
                   configuration.

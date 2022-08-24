@@ -45,6 +45,8 @@ type InputSpec struct {
 	NodeExporterMetrics *input.NodeExporterMetrics `json:"nodeExporterMetrics,omitempty"`
 	// PrometheusScrapeMetrics  defines Prometheus Scrape Metrics Input configuration.
 	PrometheusScrapeMetrics *input.PrometheusScrapeMetrics `json:"prometheusScrapeMetrics,omitempty"`
+	// FluentBitMetrics defines Fluent Bit Metrics Input configuration.
+	FluentBitMetrics *input.FluentbitMetrics `json:"fluentBitMetrics,omitempty"`
 }
 
 // +kubebuilder:object:root=true
