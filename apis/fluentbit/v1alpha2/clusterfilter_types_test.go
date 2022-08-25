@@ -36,6 +36,13 @@ var filtersExpected = `[Filter]
     Kube_CA_Path    /root/.kube/crt
     Labels    true
     Annotations    true
+[Filter]
+    Name    throttle
+    Match    *
+    Alias    throttle.application-xy
+    Rate    200
+    Window    300
+    Interval    1s
 `
 
 func TestClusterFilterList_Load(t *testing.T) {
@@ -131,9 +138,33 @@ func TestClusterFilterList_Load(t *testing.T) {
 			},
 		},
 	}
-
+	filterObj3 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "filter3",
+			Labels: labels,
+		},
+		Spec: FilterSpec{
+			Match: "*",
+			FilterItems: []FilterItem{
+				{
+					Throttle: &filter.Throttle{
+						CommonParams: plugins.CommonParams{
+							Alias: "throttle.application-xy",
+						},
+						Rate:     ptrInt64(200),
+						Window:   ptrInt64(300),
+						Interval: "1s",
+					},
+				},
+			},
+		},
+	}
 	filters := ClusterFilterList{
-		Items: []ClusterFilter{*filterObj1, *filterObj2},
+		Items: []ClusterFilter{*filterObj1, *filterObj2, *filterObj3},
 	}
 
 	i := 0

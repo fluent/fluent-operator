@@ -9,6 +9,7 @@ import (
 
 // The Grep Filter plugin allows to match or exclude specific records based in regular expression patterns.
 type Grep struct {
+	plugins.CommonParams `json:",inline"`
 	// Keep records which field matches the regular expression.
 	// Value Format: FIELD REGEX
 	Regex string `json:"regex,omitempty"`
@@ -21,8 +22,11 @@ func (_ *Grep) Name() string {
 	return "grep"
 }
 
-func (g *Grep) Params(_ plugins.SecretLoader) (*params.KVs, error) {
-	kvs := params.NewKVs()
+func (g *Grep) Params(sl plugins.SecretLoader) (*params.KVs, error) {
+	kvs, err := g.ParseParams(sl)
+	if err != nil {
+		return nil, err
+	}
 	if g.Regex != "" {
 		kvs.Insert("Regex", g.Regex)
 	}
