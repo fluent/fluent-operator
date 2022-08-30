@@ -3,8 +3,6 @@ package input
 import (
 	"fmt"
 
-	"strings"
-
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -40,10 +38,7 @@ func (p *PrometheusScrapeMetrics) Params(_ plugins.SecretLoader) (*params.KVs, e
 	if p.Tag != "" {
 		kvs.Insert("tag", p.Tag)
 	}
-	host := strings.ToLower(p.Host)
-	if host == "" || host == "localhost" || host == "127.0.0.1" || host == "host" {
-		kvs.Insert("host", "${HOST_IP}")
-	} else {
+	if p.Host != "" {
 		kvs.Insert("host", p.Host)
 	}
 	if p.Port != nil {
