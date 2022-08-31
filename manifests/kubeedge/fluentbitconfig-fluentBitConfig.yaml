@@ -10,6 +10,7 @@ spec:
   inputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
+      node-role.kubernetes.io/edge: "true"
   filterSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
