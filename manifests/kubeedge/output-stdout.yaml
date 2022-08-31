@@ -1,0 +1,11 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  name: stdout
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    node-role.kubernetes.io/edge: "true"
+spec:
+  matchRegex: (?:kubeedge|service)\.(.*)
+  stdout:
+      format: msgpack
