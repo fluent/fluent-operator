@@ -1,7 +1,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
-  name: prometheus-scrape-edge
+  name: prometheus-scrape-metrics-edge
   labels:
     fluentbit.fluent.io/enabled: "true"
     node-role.kubernetes.io/edge: "true"

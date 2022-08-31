@@ -12,5 +12,5 @@ spec:
     port: <cloud-prometheus-service-port>
     uri: /api/v1/write
     addLabels : 
-      app : fluent-bit
+      app : fluentbit
       job : kubeedge
