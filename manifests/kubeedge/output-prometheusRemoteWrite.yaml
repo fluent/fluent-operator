@@ -6,7 +6,7 @@ metadata:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging
 spec:
-  matchRegex: (?:kube|service)\.(.*)
+  matchRegex: (?:kubeedge|service)\.(.*)
   prometheusRemoteWrite:
     host: 172.31.73.196
     port: <cloud-prometheus-service-port>
