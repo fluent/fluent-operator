@@ -1,0 +1,14 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterInput
+metadata:
+  name: prometheus-scrape
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  prometheusScrapeMetrics:
+    tag: kube.*
+    host: 127.0.0.1
+    port: 10350
+    scrapeInterval: 10s
+    metricsPath : /metrics/cadvisor 
