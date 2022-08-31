@@ -1,0 +1,46 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: FluentBit
+metadata:
+  name: fluentbit-edge
+  namespace: fluent
+  labels:
+    app.kubernetes.io/name: fluent-bit
+spec:
+  image: kubesphere/fluent-bit:v1.9.4
+  positionDB:
+    hostPath:
+      path: /var/lib/fluent-bit/
+  resources:
+    requests:
+      cpu: 10m
+      memory: 25Mi
+    limits:
+      cpu: 500m
+      memory: 200Mi
+  fluentBitConfigName: fluent-bit-config-edge
+  tolerations:
+    - operator: Exists
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: Exists
+  hostNetwork : true
+  volumes:
+    - name: host-proc
+      hostPath:
+        path: /proc/
+    - name: host-sys
+      hostPath:
+        path: /sys/
+  volumesMounts:
+    - mountPath: /host/sys
+      mountPropagation: HostToContainer
+      name: host-sys 
+      readOnly: true
+    - mountPath: /host/proc
+      mountPropagation: HostToContainer
+      name: host-proc 
+      readOnly: true

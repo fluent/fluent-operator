@@ -879,6 +879,11 @@ spec:
               fluentBitConfigName:
                 description: Fluentbitconfig object associated with this Fluentbit
                 type: string
+              hostNetwork:
+                description: Host networking is requested for this pod. Use the host's
+                  network namespace. If this option is set, the ports that will be
+                  used must be specified. Default to false.
+                type: boolean
               image:
                 description: Fluent Bit image.
                 type: string
