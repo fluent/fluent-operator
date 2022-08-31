@@ -9,7 +9,7 @@ spec:
   matchRegex: (?:kube|service)\.(.*)
   prometheusRemoteWrite:
     host: 172.31.73.196
-    port: 32310
+    port: <cloud-prometheus-service-port>
     uri: /api/v1/write
     addLabels : 
       app : fluent-bit
