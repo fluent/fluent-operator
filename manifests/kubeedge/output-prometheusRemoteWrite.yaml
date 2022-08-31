@@ -8,7 +8,7 @@ metadata:
 spec:
   matchRegex: (?:kubeedge|service)\.(.*)
   prometheusRemoteWrite:
-    host: 172.31.73.196
+    host: <cloud-prometheus-service-host>
     port: <cloud-prometheus-service-port>
     uri: /api/v1/write
     addLabels : 
