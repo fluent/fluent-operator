@@ -17,7 +17,7 @@ spec:
     limits:
       cpu: 500m
       memory: 200Mi
-  fluentBitConfigName: fluent-bit-config
+  fluentBitConfigName: fluent-bit-config-edge
   tolerations:
     - operator: Exists
   affinity:
