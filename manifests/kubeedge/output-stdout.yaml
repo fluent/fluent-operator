@@ -4,7 +4,7 @@ metadata:
   name: stdout
   labels:
     fluentbit.fluent.io/enabled: "true"
-    fluentbit.fluent.io/component: logging
+    node-role.kubernetes.io/edge: "true"
 spec:
   matchRegex: (?:kubeedge|service)\.(.*)
   stdout:
