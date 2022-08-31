@@ -1,7 +1,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
-  name: prometheus-remote-write
+  name: prometheus-remote-write-edge
   labels:
     fluentbit.fluent.io/enabled: "true"
     node-role.kubernetes.io/edge: "true"
@@ -13,4 +13,4 @@ spec:
     uri: /api/v1/write
     addLabels : 
       app : fluent-bit
-      color : blue
+      job : kubeedge
