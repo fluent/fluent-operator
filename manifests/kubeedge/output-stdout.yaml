@@ -6,6 +6,6 @@ metadata:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging
 spec:
-  matchRegex: (?:kube|service)\.(.*)
+  matchRegex: (?:kubeedge|service)\.(.*)
   stdout:
       format: msgpack
