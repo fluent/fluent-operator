@@ -10,5 +10,5 @@ spec:
     tag: kube.*
     host: 127.0.0.1
     port: 10350
-    scrapeInterval: 10s
+    scrapeInterval: 30s
     metricsPath : /metrics/cadvisor 
