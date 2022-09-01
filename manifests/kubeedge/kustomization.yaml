@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- fluentbit-fluentbit-edge.yaml
+- fluentbitconfig-fluentbitconfig-edge.yaml
+- input-node-exporter-metrics-edge.yaml
+- input-prometheus-scrape-metrics-edge.yaml
+- output-stdout-edge.yaml
+- output-prometheus-remote-write-edge.yaml
+
+# Change to the namespace you want such as: 
+# namespace: fluent
