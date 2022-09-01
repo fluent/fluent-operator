@@ -13,7 +13,7 @@ import (
 
 // The Lua Filter allows you to modify the incoming records using custom Lua Scripts.
 type Lua struct {
-
+	plugins.CommonParams `json:",inline"`
 	// Path to the Lua script that will be used.
 	Script v1.ConfigMapKeySelector `json:"script"`
 	// Lua function name that will be triggered to do filtering.
@@ -40,7 +40,10 @@ func (l *Lua) Name() string {
 
 func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-
+	err := l.AddCommonParams(kvs)
+	if err != nil {
+		return kvs, err
+	}
 	kvs.Insert("script", "/fluent-bit/config/"+l.Script.Key)
 	kvs.Insert("call", l.Call)
 

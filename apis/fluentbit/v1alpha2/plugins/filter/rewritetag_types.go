@@ -10,6 +10,7 @@ import (
 // RewriteTag define a `rewrite_tag` filter, allows to re-emit a record under a new Tag.
 // Once a record has been re-emitted, the original record can be preserved or discarded.
 type RewriteTag struct {
+	plugins.CommonParams `json:",inline"`
 	// Defines the matching criteria and the format of the Tag for the matching record.
 	// The Rule format have four components: KEY REGEX NEW_TAG KEEP.
 	Rules []string `json:"rules,omitempty"`
@@ -25,6 +26,10 @@ func (_ *RewriteTag) Name() string {
 
 func (r *RewriteTag) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
+	err := r.AddCommonParams(kvs)
+	if err != nil {
+		return kvs, err
+	}
 	for _, rule := range r.Rules {
 		kvs.Insert("Rule", rule)
 	}
