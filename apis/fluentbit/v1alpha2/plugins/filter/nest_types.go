@@ -9,6 +9,7 @@ import (
 
 // The Nest Filter plugin allows you to operate on or with nested data. Its modes of operation are
 type Nest struct {
+	plugins.CommonParams `json:",inline"`
 	// Select the operation nest or lift
 	// +kubebuilder:validation:Enum:=nest;lift
 	Operation string `json:"operation,omitempty"`
@@ -30,6 +31,10 @@ func (_ *Nest) Name() string {
 
 func (n *Nest) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
+	err := n.AddCommonParams(kvs)
+	if err != nil {
+		return kvs, err
+	}
 	if n.Operation != "" {
 		kvs.Insert("Operation", n.Operation)
 	}
