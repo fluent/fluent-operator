@@ -13,4 +13,5 @@ spec:
     uri: /api/v1/write
     addLabels : 
       app : fluentbit
+      node: ${NODE_NAME}
       job : kubeedge
