@@ -11,6 +11,7 @@ import (
 
 // Kubernetes filter allows to enrich your log files with Kubernetes metadata.
 type Kubernetes struct {
+	plugins.CommonParams `json:",inline"`
 	// Set the buffer size for HTTP client when reading responses from Kubernetes API server.
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferSize string `json:"bufferSize,omitempty"`
@@ -72,6 +73,10 @@ func (_ *Kubernetes) Name() string {
 
 func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
+	err := k.AddCommonParams(kvs)
+	if err != nil {
+		return kvs, err
+	}
 	if k.BufferSize != "" {
 		kvs.Insert("Buffer_Size", k.BufferSize)
 	}

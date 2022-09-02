@@ -9,6 +9,7 @@ import (
 
 // The Multiline Filter helps to concatenate messages that originally belong to one context but were split across multiple records or log lines.
 type Multiline struct {
+	plugins.CommonParams `json:",inline"`
 	// The Inline struct helps to concatenate messages that originally belong to one context but were split across multiple records or log lines.
 	*Multi `json:",inline"`
 }
@@ -28,6 +29,10 @@ func (_ *Multiline) Name() string {
 
 func (m *Multiline) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
+	err := m.AddCommonParams(kvs)
+	if err != nil {
+		return kvs, err
+	}
 	if m.Multi != nil {
 		if m.Multi.Parser != "" {
 			kvs.Insert("multiline.parser", m.Multi.Parser)
