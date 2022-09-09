@@ -8,6 +8,7 @@ resources:
 - fluentbit.fluent.io_clusterfilters.yaml
 - fluentbit.fluent.io_clusteroutputs.yaml
 - fluentbit.fluent.io_clusterparsers.yaml
+- fluentbit.fluent.io_clustercustomplugins.yaml
 - fluentd.fluent.io_fluentds.yaml
 - fluentd.fluent.io_clusterfluentdconfigs.yaml
 - fluentd.fluent.io_fluentdconfigs.yaml

@@ -27,6 +27,10 @@ type FakeFluentbitV1alpha2 struct {
 	*testing.Fake
 }
 
+func (c *FakeFluentbitV1alpha2) ClusterCustomPlugins() v1alpha2.ClusterCustomPluginInterface {
+	return &FakeClusterCustomPlugins{c}
+}
+
 func (c *FakeFluentbitV1alpha2) ClusterFilters() v1alpha2.ClusterFilterInterface {
 	return &FakeClusterFilters{c}
 }

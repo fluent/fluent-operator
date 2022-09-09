@@ -51,6 +51,7 @@ rules:
       - clusterinputs
       - clusteroutputs
       - clusterparsers
+      - clustercustomplugins
     verbs:
       - create
       - delete

@@ -25,6 +25,7 @@ import (
 
 type FluentbitV1alpha2Interface interface {
 	RESTClient() rest.Interface
+	ClusterCustomPluginsGetter
 	ClusterFiltersGetter
 	ClusterFluentBitConfigsGetter
 	ClusterInputsGetter
@@ -36,6 +37,10 @@ type FluentbitV1alpha2Interface interface {
 // FluentbitV1alpha2Client is used to interact with features provided by the fluentbit.fluent.io group.
 type FluentbitV1alpha2Client struct {
 	restClient rest.Interface
+}
+
+func (c *FluentbitV1alpha2Client) ClusterCustomPlugins() ClusterCustomPluginInterface {
+	return newClusterCustomPlugins(c)
 }
 
 func (c *FluentbitV1alpha2Client) ClusterFilters() ClusterFilterInterface {

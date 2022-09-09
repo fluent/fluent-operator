@@ -286,10 +286,11 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		}},
 	}
 
+	var customPlugins ClusterCustomPluginList
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < 5 {
-		config, err := cfg.RenderMainConfig(sl, inputs, filters, outputs)
+		config, err := cfg.RenderMainConfig(sl, inputs, filters, outputs, customPlugins)
 		g.Expect(err).NotTo(HaveOccurred())
 		g.Expect(config).To(Equal(expected))
 

@@ -44,7 +44,7 @@ type FluentBitConfigReconciler struct {
 }
 
 //+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterfluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs;clusterparsers,verbs=list
+//+kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs;clusterparsers;clustercustomplugins,verbs=list
 //+kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
@@ -66,7 +66,6 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 		return ctrl.Result{}, err
 	}
-
 	for _, cfg := range cfgs.Items {
 		// List all inputs matching the label selector.
 		var inputs fluentbitv1alpha2.ClusterInputList
@@ -113,12 +112,22 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		} else {
 			ns = os.Getenv("NAMESPACE")
 		}
-		// Inject config data into Secret
-		sl := plugins.NewSecretLoader(r.Client, ns, r.Log)
-		mainAppCfg, err := cfg.RenderMainConfig(sl, inputs, filters, outputs)
+		// List all custom plugin matching the label selector
+		var customPlugins fluentbitv1alpha2.ClusterCustomPluginList
+		selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.CustomPluginSelector)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
+		if err = r.List(ctx, &customPlugins, client.MatchingLabelsSelector{Selector: selector}); err != nil {
+			return ctrl.Result{}, err
+		}
+		// Inject config data into Secret
+		sl := plugins.NewSecretLoader(r.Client, ns, r.Log)
+		mainAppCfg, err := cfg.RenderMainConfig(sl, inputs, filters, outputs, customPlugins)
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		r.Log.Info("Rendered main config", "config", mainAppCfg)
 		parserCfg, err := cfg.RenderParserConfig(sl, parsers)
 		if err != nil {
 			return ctrl.Result{}, err
@@ -189,5 +198,6 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterFilter{}}, &handler.EnqueueRequestForObject{}).
 		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterOutput{}}, &handler.EnqueueRequestForObject{}).
 		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterParser{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterCustomPlugin{}}, &handler.EnqueueRequestForObject{}).
 		Complete(r)
 }

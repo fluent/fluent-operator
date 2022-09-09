@@ -41,6 +41,8 @@ type FluentBitConfigSpec struct {
 	OutputSelector metav1.LabelSelector `json:"outputSelector,omitempty"`
 	// Select parser plugins
 	ParserSelector metav1.LabelSelector `json:"parserSelector,omitempty"`
+	// Select custom plugin
+	CustomPluginSelector metav1.LabelSelector `json:"customPluginSelector,omitempty"`
 	//If namespace is defined, then the configmap and secret for fluent-bit is in this namespace.
 	//If it is not defined, it is in the namespace of the fluentd-operator
 	Namespace *string `json:"namespace,omitempty"`
@@ -129,7 +131,7 @@ func (s *Service) Params() *params.KVs {
 	return m
 }
 
-func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList, outputs ClusterOutputList) (string, error) {
+func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList, outputs ClusterOutputList, customPlugins ClusterCustomPluginList) (string, error) {
 	var buf bytes.Buffer
 
 	// The Service defines the global behaviour of the Fluent Bit engine.
@@ -152,7 +154,11 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 	if err != nil {
 		return "", err
 	}
-	if inputSections != "" && outputSections == "" {
+
+	hasOutput := customPlugins.hasOutput()
+	customConfig, err := customPlugins.Load(sl)
+
+	if inputSections != "" && outputSections == "" && !hasOutput {
 		outputSections = `[Output]
     Name    null
     Match   *`
@@ -161,6 +167,7 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 	buf.WriteString(inputSections)
 	buf.WriteString(filterSections)
 	buf.WriteString(outputSections)
+	buf.WriteString(customConfig)
 
 	return buf.String(), nil
 }

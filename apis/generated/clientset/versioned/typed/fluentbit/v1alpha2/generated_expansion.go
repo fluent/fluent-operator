@@ -17,6 +17,8 @@ limitations under the License.
 
 package v1alpha2
 
+type ClusterCustomPluginExpansion interface{}
+
 type ClusterFilterExpansion interface{}
 
 type ClusterFluentBitConfigExpansion interface{}
