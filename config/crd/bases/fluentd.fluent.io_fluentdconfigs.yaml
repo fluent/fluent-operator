@@ -178,6 +178,9 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+              nonKubernetesFormat:
+                description: non-kubernetes format
+                type: boolean
               outputSelector:
                 description: Select namespaced output plugins
                 properties:

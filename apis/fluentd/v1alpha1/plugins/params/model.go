@@ -38,6 +38,10 @@ func (ps *PluginStore) InsertType(value string) {
 	ps.InsertPairs("@type", value)
 }
 
+func (ps *PluginStore) InsertDefaulRoute(value string) {
+	ps.InsertPairs("default_route", value)
+}
+
 // SetIgnorePath will ignore the buffer path.
 func (ps *PluginStore) SetIgnorePath() {
 	ps.IgnorePath = true

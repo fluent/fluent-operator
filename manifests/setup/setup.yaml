@@ -1394,6 +1394,9 @@ spec:
                 - record
                 - batch
                 type: string
+              nonkubernetesFormat:
+                description: Whether to receive logs in non-Kubernetes format
+                type: boolean
               stickyTags:
                 description: Sticky tags will match only one record from an event
                   stream. The same tag will be treated the same way. will make no
@@ -9946,6 +9949,9 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+              nonKubernetesFormat:
+                description: non-kubernetes format
+                type: boolean
               outputSelector:
                 description: Select namespaced output plugins
                 properties:

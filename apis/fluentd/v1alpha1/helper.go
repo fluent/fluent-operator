@@ -23,6 +23,7 @@ type Renderer interface {
 	GetWatchedNamespaces() []string
 	GetWatchedContainers() []string
 	GetWatchedHosts() []string
+	GetNonKubernetesFormat() bool
 }
 
 // +kubebuilder:object:generate=false
@@ -87,11 +88,15 @@ func (pgr *PluginResources) BuildCfgRouter(cfg Renderer) (*fluentdRouter.Route, 
 		},
 	}
 
+	nonKubernetesFormat := cfg.GetNonKubernetesFormat()
+
 	cfgRoute, err := fluentdRouter.NewRoute(cfg.GetCfgId(), cfg.GetNamespace(), cfg.GetName(), matches)
 	if err != nil {
 		return nil, err
 	}
-
+	if nonKubernetesFormat == true {
+		pgr.MainRouterPlugins.InsertDefaulRoute(fmt.Sprint(*cfgRoute.Label))
+	}
 	// Each fluentd config has its own route plugin
 	routePluginStore, err := cfgRoute.NewRoutePlugin()
 	if err != nil {

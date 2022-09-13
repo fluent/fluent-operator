@@ -32,6 +32,7 @@ type LabelRouter struct {
 
 // Each fluentd config instance will create a route pluginstore.
 func (r *Route) NewRoutePlugin() (*params.PluginStore, error) {
+
 	ps := params.NewPluginStore("route")
 	childs := make([]*params.PluginStore, 0)
 

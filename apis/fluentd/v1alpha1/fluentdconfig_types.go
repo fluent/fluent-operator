@@ -45,6 +45,8 @@ type FluentdConfigSpec struct {
 	ClusterFilterSelector *metav1.LabelSelector `json:"clusterFilterSelector,omitempty"`
 	// Select cluster output plugins
 	ClusterOutputSelector *metav1.LabelSelector `json:"clusterOutputSelector,omitempty"`
+	// non-kubernetes format
+	NonKubernetesFormat bool `json:"nonKubernetesFormat,omitempty"`
 }
 
 // FluentdConfigStatus defines the observed state of FluentdConfig
@@ -108,4 +110,8 @@ func (cfg *FluentdConfig) GetWatchedContainers() []string {
 
 func (cfg *FluentdConfig) GetWatchedHosts() []string {
 	return cfg.Spec.WatchedHosts
+}
+
+func (cfg *FluentdConfig) GetNonKubernetesFormat() bool {
+	return cfg.Spec.NonKubernetesFormat
 }
