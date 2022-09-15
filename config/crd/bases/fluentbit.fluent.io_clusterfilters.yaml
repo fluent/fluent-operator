@@ -84,6 +84,12 @@ spec:
                             is false.
                           type: boolean
                       type: object
+                    customPlugin:
+                      description: CustomPlugin defines a Custom plugin configuration.
+                      properties:
+                        config:
+                          type: string
+                      type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
                       properties:

@@ -25,6 +25,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/custom"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/output"
 )
 
@@ -75,6 +76,8 @@ type OutputSpec struct {
 	OpenTelemetry *output.OpenTelemetry `json:"opentelemetry,omitempty"`
 	// PrometheusRemoteWrite_types defines Prometheus Remote Write configuration.
 	PrometheusRemoteWrite *output.PrometheusRemoteWrite `json:"prometheusRemoteWrite,omitempty"`
+	// CustomPlugin defines Custom Output configuration.
+	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -119,7 +122,9 @@ func (list ClusterOutputList) Load(sl plugins.SecretLoader) (string, error) {
 			}
 
 			buf.WriteString("[Output]\n")
-			buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+			if p.Name() != "" {
+				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+			}
 			if item.Spec.Match != "" {
 				buf.WriteString(fmt.Sprintf("    Match    %s\n", item.Spec.Match))
 			}

@@ -52,6 +52,7 @@ Once installed, the Fluent Operator provides the following features:
 		- [Monitoring](#monitoring)
 		- [Custom Parser](#custom-parser)
 		- [Misc](#misc)
+        - [Custom Plugin](#custom-plugin)
 	- [Roadmap](#roadmap)
 	- [Development](#development)
 		- [Requirements](#requirements)
@@ -263,6 +264,9 @@ For more info on various use cases of Fluent Operator Fluentd CRDs, you can refe
 ### Misc
 
 If you want to learn more about Fluent-Operator, please refer to the [misc](docs/best-practice/misc.md).
+
+### Custom Plugin
+[Here](docs/best-practice/custom-plugin.md) you can learn how to use custom plugin in Fluent Bit.
 
 ## Roadmap
 

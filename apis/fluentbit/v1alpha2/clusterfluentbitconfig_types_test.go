@@ -3,12 +3,14 @@ package v1alpha2
 import (
 	"testing"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/custom"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/filter"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/input"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/output"
 	. "github.com/onsi/gomega"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 var expected = `[Service]
@@ -65,6 +67,16 @@ var expected = `[Service]
     json_date_format    iso8601
     tls    On
     tls.verify    true
+[Output]
+    Name    kafka
+    Topics    fluentbit
+    Match    *
+    Brokers    192.168.100.32:9092
+    rdkafka.debug    All
+    rdkafka.request.required.acks    1
+    rdkafka.log.connection.close    false
+    rdkafka.log_level    7
+    rdkafka.metadata.broker.list    192.168.100.32:9092
 [Output]
     Name    opensearch
     Match    *
@@ -271,8 +283,24 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		},
 	}
 
+	kafkaOutput := ClusterOutput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterOutput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "kafka_output",
+			Labels: labels,
+		},
+		Spec: OutputSpec{
+			CustomPlugin: &custom.CustomPlugin{
+				Config: "    Name    kafka\n    Topics    fluentbit\n    Match    *\n    Brokers    192.168.100.32:9092\n    rdkafka.debug    All\n    rdkafka.request.required.acks    1\n    rdkafka.log.connection.close    false\n    rdkafka.log_level    7\n    rdkafka.metadata.broker.list    192.168.100.32:9092",
+			},
+		},
+	}
+
 	outputs := ClusterOutputList{
-		Items: []ClusterOutput{syslogOut, httpOutput, openSearchOutput},
+		Items: []ClusterOutput{syslogOut, httpOutput, openSearchOutput, kafkaOutput},
 	}
 
 	cfg := ClusterFluentBitConfig{
