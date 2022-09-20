@@ -9,8 +9,9 @@ import (
 type kvTransformFunc func(string, string) (string, string)
 
 type KVs struct {
-	keys   []string
-	values []string
+	keys    []string
+	values  []string
+	Content string
 }
 
 func NewKVs() *KVs {
@@ -52,6 +53,10 @@ func (kvs *KVs) Merge(tail *KVs) {
 func (kvs *KVs) String() string {
 	if kvs == nil {
 		return ""
+	}
+
+	if kvs.Content != "" {
+		return kvs.Content
 	}
 
 	var buf bytes.Buffer

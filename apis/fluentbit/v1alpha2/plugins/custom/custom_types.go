@@ -1,7 +1,7 @@
 package custom
 
 import (
-	"errors"
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -22,16 +22,17 @@ func (c *CustomPlugin) Name() string {
 
 func (a *CustomPlugin) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	splits := strings.Split(a.Config, "\n")
-	for _, i := range splits {
-		if len(i) == 0 {
-			continue
-		}
-		fields := strings.Fields(i)
-		if len(fields) < 2 {
-			return nil, errors.New(fmt.Sprintf("invalid plugin config: %s", i))
-		}
-		kvs.Insert(fields[0], strings.Join(fields[1:], " "))
-	}
+	kvs.Content = indentation(a.Config)
 	return kvs, nil
+}
+
+func indentation(str string) string {
+	splits := strings.Split(str, "\n")
+	var buf bytes.Buffer
+	for _, i := range splits {
+		if i != "" {
+			buf.WriteString(fmt.Sprintf("    %s\n", strings.TrimSpace(i)))
+		}
+	}
+	return buf.String()
 }
