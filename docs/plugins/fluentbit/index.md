@@ -4,6 +4,7 @@
   - [systemd](clusterinput/systemd.md)
   - [node exporter metrics](clusterinput/node-exporter-metrics.md)
   - [fluentbit metrics](clusterinput/fluentbit-metrics.md)
+  - [prometheus scrape metrics](clusterinput/prometheus-scrape-metrics.md)
 - [ClusterParser](../../fluentbit.md#ClusterParser)
   - [json](clusterparser/json.md)
   - [logfmt](clusterparser/logfmt.md)
@@ -35,4 +36,5 @@
   - [firehose](clusteroutput/firehose.md)
   - [opensearch](clusteroutput/opensearch.md)
   - [opentelemetry](clusteroutput/opentelemetry.md)
+  - [prometheus remote write](clusteroutput/prometheus-remote-write.md)
 

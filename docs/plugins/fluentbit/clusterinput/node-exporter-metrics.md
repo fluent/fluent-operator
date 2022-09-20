@@ -10,7 +10,7 @@ This plugin is currently only supported on Linux based operating systems
 | Field          | Description                                                                           | Scheme |
 |----------------|---------------------------------------------------------------------------------------|--------|
 | tag            | Tag name associated to all records comming from this plugin.                          | string |
-| scrapeInterval | The rate at which metrics are collected from the host operating system.               | *int32 |
+| scrapeInterval | The rate at which metrics are collected from the host operating system.               | string |
 | path.procfs    | The mount point used to collect process information and metrics, default is `/proc/`. | string |
 | path.sysfs     | The path in the filesystem used to collect system metrics, default is `/sys/`.        | string |
 
