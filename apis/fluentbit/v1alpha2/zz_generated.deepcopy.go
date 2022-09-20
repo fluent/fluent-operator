@@ -720,6 +720,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.OpenSearch)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Splunk != nil {
+		in, out := &in.Splunk, &out.Splunk
+		*out = new(output.Splunk)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.OpenTelemetry != nil {
 		in, out := &in.OpenTelemetry, &out.OpenTelemetry
 		*out = new(output.OpenTelemetry)
