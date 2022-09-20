@@ -81,6 +81,12 @@ spec:
                             is false.
                           type: boolean
                       type: object
+                    customPlugin:
+                      description: CustomPlugin defines a Custom plugin configuration.
+                      properties:
+                        config:
+                          type: string
+                      type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
                       properties:
@@ -1487,6 +1493,12 @@ spec:
                 description: A user friendly alias name for this input plugin. Used
                   in metrics for distinction of each configured input.
                 type: string
+              customPlugin:
+                description: CustomPlugin defines Custom Input configuration.
+                properties:
+                  config:
+                    type: string
+                type: object
               dummy:
                 description: Dummy defines Dummy Input configuration.
                 properties:
@@ -1836,6 +1848,12 @@ spec:
                 description: A user friendly alias name for this output plugin. Used
                   in metrics for distinction of each configured output.
                 type: string
+              customPlugin:
+                description: CustomPlugin defines Custom Output configuration.
+                properties:
+                  config:
+                    type: string
+                type: object
               datadog:
                 description: DataDog defines DataDog Output configuration.
                 properties:

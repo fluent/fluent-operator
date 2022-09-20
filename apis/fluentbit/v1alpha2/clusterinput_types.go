@@ -22,9 +22,11 @@ import (
 	"reflect"
 	"sort"
 
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/input"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/custom"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/input"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -47,6 +49,8 @@ type InputSpec struct {
 	PrometheusScrapeMetrics *input.PrometheusScrapeMetrics `json:"prometheusScrapeMetrics,omitempty"`
 	// FluentBitMetrics defines Fluent Bit Metrics Input configuration.
 	FluentBitMetrics *input.FluentbitMetrics `json:"fluentBitMetrics,omitempty"`
+	// CustomPlugin defines Custom Input configuration.
+	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -91,7 +95,9 @@ func (list ClusterInputList) Load(sl plugins.SecretLoader) (string, error) {
 			}
 
 			buf.WriteString("[Input]\n")
-			buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+			if p.Name() != "" {
+				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+			}
 			if item.Spec.Alias != "" {
 				buf.WriteString(fmt.Sprintf("    Alias    %s\n", item.Spec.Alias))
 			}

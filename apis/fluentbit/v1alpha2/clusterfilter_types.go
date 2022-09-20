@@ -25,6 +25,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/custom"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/filter"
 )
 
@@ -66,6 +67,8 @@ type FilterItem struct {
 	AWS *filter.AWS `json:"aws,omitempty"`
 	//Multiline defines a Multiline configuration.
 	Multiline *filter.Multiline `json:"multiline,omitempty"`
+	//CustomPlugin defines a Custom plugin configuration.
+	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -111,7 +114,9 @@ func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 			}
 
 			buf.WriteString("[Filter]\n")
-			buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+			if p.Name() != "" {
+				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+			}
 			if item.Spec.Match != "" {
 				buf.WriteString(fmt.Sprintf("    Match    %s\n", item.Spec.Match))
 			}

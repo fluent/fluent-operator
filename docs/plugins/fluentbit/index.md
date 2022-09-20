@@ -3,6 +3,7 @@
   - [tail](clusterinput/tail.md)
   - [systemd](clusterinput/systemd.md)
   - [node exporter metrics](clusterinput/node-exporter-metrics.md)
+  - [fluentbit metrics](clusterinput/fluentbit-metrics.md)
 - [ClusterParser](../../fluentbit.md#ClusterParser)
   - [json](clusterparser/json.md)
   - [logfmt](clusterparser/logfmt.md)

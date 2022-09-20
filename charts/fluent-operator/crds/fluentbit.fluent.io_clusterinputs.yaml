@@ -42,6 +42,12 @@ spec:
                 description: A user friendly alias name for this input plugin. Used
                   in metrics for distinction of each configured input.
                 type: string
+              customPlugin:
+                description: CustomPlugin defines Custom Input configuration.
+                properties:
+                  config:
+                    type: string
+                type: object
               dummy:
                 description: Dummy defines Dummy Input configuration.
                 properties:

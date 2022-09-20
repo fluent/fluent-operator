@@ -3,31 +3,27 @@ This Document documents the types introduced by the fluentbit Operator.
 > Note this document is generated from code comments. When contributing a change to this document please do so by changing the code comments.
 ## Table of Contents
 * [ClusterFilter](#clusterfilter)
+* [ClusterFilterList](#clusterfilterlist)
 * [ClusterFluentBitConfig](#clusterfluentbitconfig)
+* [ClusterFluentBitConfigList](#clusterfluentbitconfiglist)
 * [ClusterInput](#clusterinput)
+* [ClusterInputList](#clusterinputlist)
 * [ClusterOutput](#clusteroutput)
+* [ClusterOutputList](#clusteroutputlist)
 * [ClusterParser](#clusterparser)
+* [ClusterParserList](#clusterparserlist)
 * [Decorder](#decorder)
 * [FilterItem](#filteritem)
-* [ClusterFilterList](#clusterFilterList)
 * [FilterSpec](#filterspec)
 * [FluentBit](#fluentbit)
-* [ClusterFluentBitConfigList](#clusterfluentBitconfiglist)
 * [FluentBitConfigSpec](#fluentbitconfigspec)
 * [FluentBitList](#fluentbitlist)
 * [FluentBitSpec](#fluentbitspec)
-* [ClusterInputList](#clusterinputlist)
 * [InputSpec](#inputspec)
-* [ClusterOutputList](#clusteroutputlist)
 * [OutputSpec](#outputspec)
-* [ClusterParserList](#clusterparserlist)
 * [ParserSpec](#parserspec)
 * [Script](#script)
 * [Service](#service)
-* [Monitoring](#monitoring)
-* [Path Convention](#path Convention)
-* [Custom Parser](#custom Parser)
-
 # ClusterFilter
 
 ClusterFilter defines a cluster-level Filter configuration.
@@ -37,6 +33,17 @@ ClusterFilter defines a cluster-level Filter configuration.
 | ----- | ----------- | ------ |
 | metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
 | spec | Specification of desired Filter configuration. | FilterSpec |
+
+[Back to TOC](#table-of-contents)
+# ClusterFilterList
+
+ClusterFilterList contains a list of ClusterFilter
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []ClusterFilter |
 
 [Back to TOC](#table-of-contents)
 # ClusterFluentBitConfig
@@ -50,6 +57,17 @@ ClusterFluentBitConfig is the Schema for the cluster-level fluentbitconfigs API
 | spec |  | FluentBitConfigSpec |
 
 [Back to TOC](#table-of-contents)
+# ClusterFluentBitConfigList
+
+ClusterFluentBitConfigList contains a list of ClusterFluentBitConfig
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []ClusterFluentBitConfig |
+
+[Back to TOC](#table-of-contents)
 # ClusterInput
 
 ClusterInput is the Schema for the inputs API
@@ -59,6 +77,17 @@ ClusterInput is the Schema for the inputs API
 | ----- | ----------- | ------ |
 | metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
 | spec |  | InputSpec |
+
+[Back to TOC](#table-of-contents)
+# ClusterInputList
+
+ClusterInputList contains a list of ClusterInput
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []ClusterInput |
 
 [Back to TOC](#table-of-contents)
 # ClusterOutput
@@ -72,6 +101,17 @@ ClusterOutput is the Schema for the cluster-level outputs API
 | spec |  | OutputSpec |
 
 [Back to TOC](#table-of-contents)
+# ClusterOutputList
+
+ClusterOutputList contains a list of ClusterOutput
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []ClusterOutput |
+
+[Back to TOC](#table-of-contents)
 # ClusterParser
 
 ClusterParser is the Schema for the cluster-level parsers API
@@ -81,6 +121,17 @@ ClusterParser is the Schema for the cluster-level parsers API
 | ----- | ----------- | ------ |
 | metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
 | spec |  | ParserSpec |
+
+[Back to TOC](#table-of-contents)
+# ClusterParserList
+
+ClusterParserList contains a list of ClusterParser
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []ClusterParser |
 
 [Back to TOC](#table-of-contents)
 # Decorder
@@ -112,17 +163,7 @@ ClusterParser is the Schema for the cluster-level parsers API
 | rewriteTag | RewriteTag defines a RewriteTag configuration. | *[filter.RewriteTag](plugins/filter/rewritetag.md) |
 | aws | Aws defines a Aws configuration. | *[filter.AWS](plugins/filter/aws.md) |
 | multiline | Multiline defines a Multiline configuration. | *[filter.Multiline](plugins/filter/multiline.md) |
-
-[Back to TOC](#table-of-contents)
-# FilterList
-
-FilterList contains a list of ClusterFilter
-
-
-| Field | Description | Scheme |
-| ----- | ----------- | ------ |
-| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
-| items |  | []ClusterFilter |
+| customPlugin | CustomPlugin defines a Custom plugin configuration. | *custom.CustomPlugin |
 
 [Back to TOC](#table-of-contents)
 # FilterSpec
@@ -147,17 +188,6 @@ FluentBit is the Schema for the fluentbits API
 | metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
 | spec |  | FluentBitSpec |
 | status |  | FluentBitStatus |
-
-[Back to TOC](#table-of-contents)
-# ClusterFluentBitConfigList
-
-ClusterFluentBitConfigList contains a list of ClusterFluentBitConfig
-
-
-| Field | Description | Scheme |
-| ----- | ----------- | ------ |
-| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
-| items |  | []ClusterFluentBitConfig |
 
 [Back to TOC](#table-of-contents)
 # FluentBitConfigSpec
@@ -209,17 +239,9 @@ FluentBitSpec defines the desired state of FluentBit
 | priorityClassName | PriorityClassName represents the pod's priority class. | string |
 | volumes | List of volumes that can be mounted by containers belonging to the pod. | []corev1.Volume |
 | volumesMounts | Pod volumes to mount into the container's filesystem. | []corev1.VolumeMount |
-
-[Back to TOC](#table-of-contents)
-# ClusterInputList
-
-ClusterInputList contains a list of Input
-
-
-| Field | Description | Scheme |
-| ----- | ----------- | ------ |
-| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
-| items |  | []ClusterInput |
+| annotations | Annotations to add to each Fluentbit pod. | map[string]string |
+| securityContext | SecurityContext holds pod-level security attributes and common container settings. | *corev1.PodSecurityContext |
+| hostNetwork | Host networking is requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false. | bool |
 
 [Back to TOC](#table-of-contents)
 # InputSpec
@@ -233,17 +255,10 @@ InputSpec defines the desired state of ClusterInput
 | dummy | Dummy defines Dummy Input configuration. | *[input.Dummy](plugins/input/dummy.md) |
 | tail | Tail defines Tail Input configuration. | *[input.Tail](plugins/input/tail.md) |
 | systemd | Systemd defines Systemd Input configuration. | *[input.Systemd](plugins/input/systemd.md) |
-
-[Back to TOC](#table-of-contents)
-# ClusterOutputList
-
-ClusterOutputList contains a list of ClusterOutput
-
-
-| Field | Description | Scheme |
-| ----- | ----------- | ------ |
-| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
-| items |  | []ClusterOutput |
+| nodeExporterMetrics | NodeExporterMetrics defines Node Exporter Metrics Input configuration. | *[input.NodeExporterMetrics](plugins/input/nodeexportermetrics.md) |
+| prometheusScrapeMetrics | PrometheusScrapeMetrics  defines Prometheus Scrape Metrics Input configuration. | *[input.PrometheusScrapeMetrics](plugins/input/prometheusscrapemetrics.md) |
+| fluentBitMetrics | FluentBitMetrics defines Fluent Bit Metrics Input configuration. | *[input.FluentbitMetrics](plugins/input/fluentbitmetrics.md) |
+| customPlugin | CustomPlugin defines Custom Input configuration. | *custom.CustomPlugin |
 
 [Back to TOC](#table-of-contents)
 # OutputSpec
@@ -269,17 +284,10 @@ OutputSpec defines the desired state of ClusterOutput
 | syslog | Syslog defines Syslog Output configuration. | *[output.Syslog](plugins/output/syslog.md) |
 | datadog | DataDog defines DataDog Output configuration. | *[output.DataDog](plugins/output/datadog.md) |
 | firehose | Firehose defines Firehose Output configuration. | *[output.Firehose](plugins/output/firehose.md) |
-
-[Back to TOC](#table-of-contents)
-# ClusterParserList
-
-ClusterParserList contains a list of ClusterParser
-
-
-| Field | Description | Scheme |
-| ----- | ----------- | ------ |
-| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
-| items |  | []ClusterParser |
+| opensearch | OpenSearch defines OpenSearch Output configuration. | *[output.OpenSearch](plugins/output/opensearch.md) |
+| opentelemetry | OpenTelemetry defines OpenTelemetry Output configuration. | *[output.OpenTelemetry](plugins/output/opentelemetry.md) |
+| prometheusRemoteWrite | PrometheusRemoteWrite_types defines Prometheus Remote Write configuration. | *[output.PrometheusRemoteWrite](plugins/output/prometheusremotewrite.md) |
+| customPlugin | CustomPlugin defines Custom Output configuration. | *custom.CustomPlugin |
 
 [Back to TOC](#table-of-contents)
 # ParserSpec
