@@ -227,22 +227,6 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 	globalCfgLabels map[string]bool) error {
 
 	for _, cfg := range clustercfgs.Items {
-		// If the field watchedNamespaces is empty, all namesapces will be watched.
-		watchedNamespaces := cfg.GetWatchedNamespaces()
-
-		if len(watchedNamespaces) == 0 {
-			var namespaceList corev1.NamespaceList
-			if err := r.List(ctx, &namespaceList); err != nil {
-				return err
-			}
-
-			for _, item := range namespaceList.Items {
-				watchedNamespaces = append(watchedNamespaces, item.Name)
-			}
-
-			// Don't patch the CR, or it would requeue.
-			cfg.Spec.WatchedNamespaces = watchedNamespaces
-		}
 
 		// Build the inner router for this cfg.
 		// Each cfg is a workflow.
