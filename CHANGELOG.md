@@ -1,3 +1,30 @@
+## 1.5.0 / 2022-09-24
+
+### Features
+- Accomodate securityContext (#344)
+- Support OpenTelemetry and Node Exporter Metrics plugins (#345)
+- Support fluentd loki output (#346)
+- Support prometheus scrape metrics input plugin and add the PrometheusRemoteWrite output plugin (#362)
+- Support fluentbit metrics input plugin (#366)
+- Add alias for filter (#370)
+- Support customplugin (#377)
+- Receive non-kubernetes format log (#382)
+
+### ENHANCEMENT
+- Simplify the step of issue report (#334)
+- Add fluentd loki output documentation (#349)
+- Add guide for node exporter metrics plugin (#353)
+- Docs: update the index of plugins for fluent-bit (#354)
+- Add release drafter (#379)
+- Perf: optimize code (#380)
+- Add documents for prometheus-scrape-metrics input plugin and prometheus-remote-write output plugin (#381)
+
+### BUGFIX 
+- Fix the bug of feature request issue will be closed by mistake. (#341) 
+- Correct invalid links (#347)
+- Fix: Fluent-bit supports the hostNetwork configuration of pod (#369)
+- Fix: Add node label to the configuration YAML file for prometheusremoteWrite (#372)
+
 ## 1.1.0 / 2022-06-15
 
 ### Features
