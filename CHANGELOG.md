@@ -8,7 +8,7 @@
 - Add Prometheus scrape metrics input plugin (#362)
 - Add Prometheus remote write output plugin (#362)
 - Add Fluent Bit metrics input plugin (#366)
-- Add alias for filter (#370)
+- Add alias for the filter plugin (#370)
 - Support customplugin (#377)
 - Receive non-kubernetes format log (#382)
 
