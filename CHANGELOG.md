@@ -21,6 +21,7 @@
 - Docs: update the index of the Fluent Bit plugins (#354)
 - Add release drafter (#379)
 - Add docs for the Prometheus scrape metrics input plugin and the Prometheus remote write output plugin (#381)
+- Upgrade fluentbit to v1.9.8 (#384)
 
 ### BUGFIX 
 - Fix the bug of feature request issue will be closed by mistake. (#341) 
