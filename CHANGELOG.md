@@ -23,7 +23,6 @@
 ### BUGFIX 
 - Fix the bug of feature request issue will be closed by mistake. (#341) 
 - Correct invalid links (#347)
-- Fix: Add node label to the configuration YAML file for prometheusremoteWrite (#372)
 
 ## 1.1.0 / 2022-06-15
 
