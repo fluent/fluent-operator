@@ -10,7 +10,8 @@
 - Add Fluent Bit metrics input plugin (#366)
 - Add alias for the filter plugin (#370)
 - Support custom plugins (#377, #380)
-- Receive non-kubernetes format log (#382)
+- Support receiving Non-K8s format log by Fluentd (#382)
+- Add HostNetwork support for the Fluent Bit DaemonSet (#369)
 
 ### ENHANCEMENT
 - Simplify the step of issue report (#334)
