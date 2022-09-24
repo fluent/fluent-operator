@@ -18,7 +18,6 @@
 - Add guide for node exporter metrics plugin (#353)
 - Docs: update the index of plugins for fluent-bit (#354)
 - Add release drafter (#379)
-- Perf: optimize code (#380)
 - Add documents for prometheus-scrape-metrics input plugin and prometheus-remote-write output plugin (#381)
 
 ### BUGFIX 
