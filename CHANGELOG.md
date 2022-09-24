@@ -2,7 +2,8 @@
 
 ### Features
 - Add SecurityContext to FluentBit CRD (#344)
-- Support OpenTelemetry and Node Exporter Metrics plugins (#345)
+- Add OpenTelemetry output plugin (#345)
+- Add Node Exporter Metrics input plugin (#345)
 - Support fluentd loki output (#346)
 - Support prometheus scrape metrics input plugin and add the PrometheusRemoteWrite output plugin (#362)
 - Support fluentbit metrics input plugin (#366)
