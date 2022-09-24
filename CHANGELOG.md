@@ -7,7 +7,7 @@
 - Add Fluentd Loki output plugin (#346)
 - Add Prometheus scrape metrics input plugin (#362)
 - Add Prometheus remote write output plugin (#362)
-- Support fluentbit metrics input plugin (#366)
+- Add Fluent Bit metrics input plugin (#366)
 - Add alias for filter (#370)
 - Support customplugin (#377)
 - Receive non-kubernetes format log (#382)
