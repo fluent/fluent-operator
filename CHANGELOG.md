@@ -1,3 +1,31 @@
+## 1.5.0 / 2022-09-24
+
+### Features
+- Add SecurityContext to FluentBit CRD (#344)
+- Add OpenTelemetry output plugin (#345)
+- Add Node Exporter Metrics input plugin (#345)
+- Add Fluentd Loki output plugin (#346)
+- Add Prometheus scrape metrics input plugin (#362)
+- Add Prometheus remote write output plugin (#362)
+- Add Fluent Bit metrics input plugin (#366)
+- Add alias for the filter plugin (#370)
+- Support custom plugins (#377, #380)
+- Support receiving Non-K8s format log by Fluentd (#382)
+- Add HostNetwork support for the Fluent Bit DaemonSet (#369)
+
+### ENHANCEMENT
+- Add node label to the Prometheus remote write metrics(#372)
+- Simplify the steps of the issue report (#334)
+- Add Fluentd Loki output plugin docs (#349)
+- Add guide for node exporter metrics plugin (#353)
+- Docs: update the index of the Fluent Bit plugins (#354)
+- Add release drafter (#379)
+- Add docs for the Prometheus scrape metrics input plugin and the Prometheus remote write output plugin (#381)
+
+### BUGFIX 
+- Fix the bug of feature request issue will be closed by mistake. (#341) 
+- Correct invalid links (#347)
+
 ## 1.1.0 / 2022-06-15
 
 ### Features
