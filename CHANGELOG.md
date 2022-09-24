@@ -16,7 +16,7 @@
 ### ENHANCEMENT
 - Add node label to the Prometheus remote write metrics(#372)
 - Simplify the steps of the issue report (#334)
-- Add fluentd loki output documentation (#349)
+- Add Fluentd Loki output plugin docs (#349)
 - Add guide for node exporter metrics plugin (#353)
 - Docs: update the index of the Fluent Bit plugins (#354)
 - Add release drafter (#379)
