@@ -18,7 +18,7 @@
 - Add guide for node exporter metrics plugin (#353)
 - Docs: update the index of the Fluent Bit plugins (#354)
 - Add release drafter (#379)
-- Add documents for prometheus-scrape-metrics input plugin and prometheus-remote-write output plugin (#381)
+- Add docs for the Prometheus scrape metrics input plugin and the Prometheus remote write output plugin (#381)
 
 ### BUGFIX 
 - Fix the bug of feature request issue will be closed by mistake. (#341) 
