@@ -11,7 +11,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-//Secret defines the key of a value.
+// Secret defines the key of a value.
 type Secret struct {
 	ValueFrom ValueSource `json:"valueFrom,omitempty"`
 }

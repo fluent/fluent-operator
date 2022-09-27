@@ -116,7 +116,7 @@ func (c *FakeFluentds) UpdateStatus(ctx context.Context, fluentd *v1alpha1.Fluen
 // Delete takes name of the fluentd and deletes it. Returns an error if one occurs.
 func (c *FakeFluentds) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(fluentdsResource, c.ns, name), &v1alpha1.Fluentd{})
+		Invokes(testing.NewDeleteActionWithOptions(fluentdsResource, c.ns, name, opts), &v1alpha1.Fluentd{})
 
 	return err
 }

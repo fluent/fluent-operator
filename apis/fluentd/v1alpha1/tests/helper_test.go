@@ -1,6 +1,7 @@
 package cfgrender
 
 import (
+	"github.com/go-logr/logr"
 	"testing"
 
 	. "github.com/onsi/gomega"
@@ -16,7 +17,7 @@ const (
 
 func Test_Cfg2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -42,7 +43,7 @@ func Test_Cfg2ES(t *testing.T) {
 
 func Test_ClusterCfgOutput2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -69,7 +70,7 @@ func Test_ClusterCfgOutput2ES(t *testing.T) {
 
 func Test_Cfg2OpenSearch(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -94,7 +95,7 @@ func Test_Cfg2OpenSearch(t *testing.T) {
 
 func Test_ClusterCfgOutput2OpenSearch(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -121,7 +122,7 @@ func Test_ClusterCfgOutput2OpenSearch(t *testing.T) {
 
 func Test_ClusterCfgOutput2Kafka(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -148,7 +149,7 @@ func Test_ClusterCfgOutput2Kafka(t *testing.T) {
 
 func Test_ClusterCfgOutput2Loki(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -175,7 +176,7 @@ func Test_ClusterCfgOutput2Loki(t *testing.T) {
 
 func Test_MixedCfgs2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -207,7 +208,7 @@ func Test_MixedCfgs2ES(t *testing.T) {
 
 func Test_MixedCfgs2OpenSearch(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -239,7 +240,7 @@ func Test_MixedCfgs2OpenSearch(t *testing.T) {
 
 func Test_MixedCfgs2MultiTenant(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -276,7 +277,7 @@ func Test_MixedCfgs2MultiTenant(t *testing.T) {
 
 func Test_OutputWithBuffer(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -303,7 +304,7 @@ func Test_OutputWithBuffer(t *testing.T) {
 
 func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, "testnamespace", nil)
+	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
 
 	labels := map[string]string{
 		"label0": "lv0",

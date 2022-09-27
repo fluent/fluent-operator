@@ -98,7 +98,7 @@ func (c *FakeClusterFluentBitConfigs) Update(ctx context.Context, clusterFluentB
 // Delete takes name of the clusterFluentBitConfig and deletes it. Returns an error if one occurs.
 func (c *FakeClusterFluentBitConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(clusterfluentbitconfigsResource, name), &v1alpha2.ClusterFluentBitConfig{})
+		Invokes(testing.NewRootDeleteActionWithOptions(clusterfluentbitconfigsResource, name, opts), &v1alpha2.ClusterFluentBitConfig{})
 	return err
 }
 

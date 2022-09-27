@@ -98,7 +98,7 @@ func (c *FakeClusterOutputs) Update(ctx context.Context, clusterOutput *v1alpha2
 // Delete takes name of the clusterOutput and deletes it. Returns an error if one occurs.
 func (c *FakeClusterOutputs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(clusteroutputsResource, name), &v1alpha2.ClusterOutput{})
+		Invokes(testing.NewRootDeleteActionWithOptions(clusteroutputsResource, name, opts), &v1alpha2.ClusterOutput{})
 	return err
 }
 

@@ -1,6 +1,7 @@
 package v1alpha2
 
 import (
+	"github.com/go-logr/logr"
 	"testing"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -102,7 +103,7 @@ var expected = `[Service]
 func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	sl := plugins.NewSecretLoader(nil, "testnamespace", nil)
+	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
 
 	disableInotifyWatcher := ptrBool(true)
 
