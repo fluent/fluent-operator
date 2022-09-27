@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/go-kit/kit v0.9.0
-	github.com/go-logr/logr v0.4.0
+	github.com/go-logr/logr v1.2.0
 	github.com/go-openapi/errors v0.19.2
 	github.com/joho/godotenv v1.3.0
 	github.com/oklog/run v1.1.0
@@ -14,7 +14,7 @@ require (
 	k8s.io/api v0.21.3
 	k8s.io/apimachinery v0.21.3
 	k8s.io/client-go v0.21.3
-	k8s.io/klog/v2 v2.8.0
+	k8s.io/klog/v2 v2.80.1
 	sigs.k8s.io/controller-runtime v0.9.6
 	sigs.k8s.io/yaml v1.3.0
 )
