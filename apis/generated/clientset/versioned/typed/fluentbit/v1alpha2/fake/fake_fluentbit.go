@@ -116,7 +116,7 @@ func (c *FakeFluentBits) UpdateStatus(ctx context.Context, fluentBit *v1alpha2.F
 // Delete takes name of the fluentBit and deletes it. Returns an error if one occurs.
 func (c *FakeFluentBits) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(fluentbitsResource, c.ns, name), &v1alpha2.FluentBit{})
+		Invokes(testing.NewDeleteActionWithOptions(fluentbitsResource, c.ns, name, opts), &v1alpha2.FluentBit{})
 
 	return err
 }

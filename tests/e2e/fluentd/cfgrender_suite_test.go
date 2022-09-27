@@ -18,7 +18,7 @@ import (
 
 var k8sClient client.Client
 
-//Function to run the Ginkgo Test
+// Function to run the Ginkgo Test
 func TestCompareFluentdMainAppConfig(t *testing.T) {
 	RegisterFailHandler(Fail)
 

@@ -98,7 +98,7 @@ func (c *FakeClusterInputs) Update(ctx context.Context, clusterInput *v1alpha2.C
 // Delete takes name of the clusterInput and deletes it. Returns an error if one occurs.
 func (c *FakeClusterInputs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(clusterinputsResource, name), &v1alpha2.ClusterInput{})
+		Invokes(testing.NewRootDeleteActionWithOptions(clusterinputsResource, name, opts), &v1alpha2.ClusterInput{})
 	return err
 }
 

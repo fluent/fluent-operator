@@ -109,7 +109,7 @@ func (c *FakeClusterFluentdConfigs) UpdateStatus(ctx context.Context, clusterFlu
 // Delete takes name of the clusterFluentdConfig and deletes it. Returns an error if one occurs.
 func (c *FakeClusterFluentdConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(clusterfluentdconfigsResource, name), &v1alpha1.ClusterFluentdConfig{})
+		Invokes(testing.NewRootDeleteActionWithOptions(clusterfluentdconfigsResource, name, opts), &v1alpha1.ClusterFluentdConfig{})
 	return err
 }
 

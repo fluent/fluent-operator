@@ -116,7 +116,7 @@ func (c *FakeFilters) UpdateStatus(ctx context.Context, filter *v1alpha1.Filter,
 // Delete takes name of the filter and deletes it. Returns an error if one occurs.
 func (c *FakeFilters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(filtersResource, c.ns, name), &v1alpha1.Filter{})
+		Invokes(testing.NewDeleteActionWithOptions(filtersResource, c.ns, name, opts), &v1alpha1.Filter{})
 
 	return err
 }
