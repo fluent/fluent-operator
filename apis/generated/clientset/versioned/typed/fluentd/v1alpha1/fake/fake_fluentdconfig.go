@@ -116,7 +116,7 @@ func (c *FakeFluentdConfigs) UpdateStatus(ctx context.Context, fluentdConfig *v1
 // Delete takes name of the fluentdConfig and deletes it. Returns an error if one occurs.
 func (c *FakeFluentdConfigs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(fluentdconfigsResource, c.ns, name), &v1alpha1.FluentdConfig{})
+		Invokes(testing.NewDeleteActionWithOptions(fluentdconfigsResource, c.ns, name, opts), &v1alpha1.FluentdConfig{})
 
 	return err
 }

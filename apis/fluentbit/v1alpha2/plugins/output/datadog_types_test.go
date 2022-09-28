@@ -1,6 +1,7 @@
 package output
 
 import (
+	"github.com/go-logr/logr"
 	"testing"
 
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
@@ -11,7 +12,7 @@ import (
 func TestOutput_DataDog_Params(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	sl := plugins.NewSecretLoader(nil, "test namespace", nil)
+	sl := plugins.NewSecretLoader(nil, "test namespace", logr.Logger{})
 
 	dd := DataDog{
 		Host:          "http-intake.logs.datadoghq.com",
