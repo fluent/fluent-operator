@@ -33,11 +33,11 @@ jobs:
       GO111MODULE: "on"
     steps:
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -71,11 +71,11 @@ jobs:
       GO111MODULE: "on"
     steps:
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -102,11 +102,11 @@ jobs:
       GO111MODULE: "on"
     steps:
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -118,7 +118,7 @@ jobs:
           curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.4/bin/linux/amd64/kubectl && sudo install kubectl /usr/local/bin/kubectl
 
       - name: Install Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v3
         with:
           version: v3.6.3
 
@@ -136,11 +136,11 @@ jobs:
     name: Binary build
     steps:
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19
           
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -159,11 +159,11 @@ jobs:
   #   name: Docker amd64 build
   #   steps:
   #     - name: Install Go
-  #       uses: actions/setup-go@v2
+  #       uses: actions/setup-go@v3
   #       with:
   #         go-version: 1.16.x
 
-  #     - uses: actions/cache@v2
+  #     - uses: actions/cache@v3
   #       with:
   #         path: ~/go/pkg/mod
   #         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}

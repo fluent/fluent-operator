@@ -12,7 +12,7 @@ operator:
     tag: "19.03"
   container:
     repository: "kubesphere/fluent-operator"
-    tag: "v1.5.0"
+    tag: "v1.5.1"
     # FluentBit operator resources. Usually user needn't to adjust these.
   resources:
     limits:
@@ -32,7 +32,7 @@ operator:
 fluentbit:
   image:
     repository: "kubesphere/fluent-bit"
-    tag: "v1.9.8"
+    tag: "v1.9.9"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   #You can adjust it based on the log volume.
   resources:

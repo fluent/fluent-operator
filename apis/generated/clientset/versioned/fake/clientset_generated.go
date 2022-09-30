@@ -75,7 +75,10 @@ func (c *Clientset) Tracker() testing.ObjectTracker {
 	return c.tracker
 }
 
-var _ clientset.Interface = &Clientset{}
+var (
+	_ clientset.Interface = &Clientset{}
+	_ testing.FakeClient  = &Clientset{}
+)
 
 // FluentbitV1alpha2 retrieves the FluentbitV1alpha2Client
 func (c *Clientset) FluentbitV1alpha2() fluentbitv1alpha2.FluentbitV1alpha2Interface {

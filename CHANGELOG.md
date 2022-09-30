@@ -1,3 +1,21 @@
+## 1.5.1 / 2022-09-30
+
+### ENHANCEMENT
+- Add Dependabot (#386)
+- Bump azure/setup-helm from 1 to 3 (#387)
+- Bump alpine from 3.13 to 3.16.2 in /cmd/fluent-watcher/fluentd/base (#388)
+- Bump golang from 1.17.10-alpine3.16 to 1.19.1-alpine3.16 in /cmd/fluent-manager (#389) 
+- Bump docker/setup-buildx-action from 1 to 2 (#390)
+- Bump docker/login-action from 1 to 2 (#391) 
+- Bump golang from 1.14 to 1.19.1 in /docs/best-practice/forwarding-logs-via-http (#392) 
+- Bump actions/setup-go from 2 to 3 (#393)
+- Bump actions/cache from 2 to 3 (#394)
+- Bump sigs.k8s.io/yaml from 1.2.0 to 1.3.0 (#396)
+- update go mod (#402) 
+- Upgrade fluentbit to v1.9.9 (#403)
+- Upgrade go version (#405)
+- Upgrade golang image version (#406)
+
 ## 1.5.0 / 2022-09-24
 
 ### Features

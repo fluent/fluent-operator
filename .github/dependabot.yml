@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "docker"
+    directory: "/cmd/fluent-manager"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "docker"
+    directory: "/cmd/fluent-watcher/fluent-bit"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "docker"
+    directory: "/cmd/fluent-watcher/fluentd/base"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "docker"
+    directory: "/docs/best-practice/forwarding-logs-via-http"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+

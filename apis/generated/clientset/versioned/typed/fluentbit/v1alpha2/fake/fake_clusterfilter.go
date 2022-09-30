@@ -98,7 +98,7 @@ func (c *FakeClusterFilters) Update(ctx context.Context, clusterFilter *v1alpha2
 // Delete takes name of the clusterFilter and deletes it. Returns an error if one occurs.
 func (c *FakeClusterFilters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(clusterfiltersResource, name), &v1alpha2.ClusterFilter{})
+		Invokes(testing.NewRootDeleteActionWithOptions(clusterfiltersResource, name, opts), &v1alpha2.ClusterFilter{})
 	return err
 }
 
