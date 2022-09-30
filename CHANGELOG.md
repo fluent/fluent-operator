@@ -13,6 +13,8 @@
 - Bump sigs.k8s.io/yaml from 1.2.0 to 1.3.0 (#396)
 - update go mod (#402) 
 - Upgrade fluentbit to v1.9.9 (#403)
+- Upgrade go version (#405)
+- Upgrade golang image version (#406)
 
 ## 1.5.0 / 2022-09-24
 
