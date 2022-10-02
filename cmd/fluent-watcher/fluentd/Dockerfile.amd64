@@ -5,7 +5,7 @@ RUN mkdir -p /code
 COPY . /code/
 WORKDIR /code
 RUN echo $(ls -al /code)
-RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
+RUN CGO_ENABLED=0 go build -buildmode=pie -trimpath -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
 
 # Fluentd main image
 FROM alpine:3.13
