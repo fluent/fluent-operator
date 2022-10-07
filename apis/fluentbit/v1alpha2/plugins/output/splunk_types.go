@@ -13,20 +13,13 @@ import (
 type Splunk struct {
 	// IP address or hostname of the target OpenSearch instance, default `127.0.0.1`
 	Host string `json:"host,omitempty"`
-	// TCP port of the target OpenSearch instance, default `9200`
+	// TCP port of the target Splunk instance, default `8088`
 	// +kubebuilder:validation:Minimum:=1
 	// +kubebuilder:validation:Maximum:=65535
 	Port *int32 `json:"port,omitempty"`
-	// *@TODO* OpenSearch accepts new data on HTTP query path "/_bulk".
-	// But it is also possible to serve OpenSearch behind a reverse proxy on a subpath.
-	// This option defines such path on the fluent-bit side.
-	// It simply adds a path prefix in the indexing HTTP POST URI.
+	// Specify the Authentication Token for the HTTP Event Collector interface.
 	SplunkToken string `json:"splunk_token,omitempty"`
-	// Specify the buffer size used to read the response from the OpenSearch HTTP service.
-	// This option is useful for debugging purposes where is required to read full responses,
-	// note that response size grows depending of the number of records inserted.
-	// To set an unlimited amount of memory set this value to False,
-	// otherwise the value must be according to the Unit Size specification.
+	//Buffer size used to receive Splunk HTTP responses: Default `2M`
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferSize string `json:"bufferSize,omitempty"`
 	// Set payload compression mechanism. The only available option is gzip.
@@ -41,7 +34,7 @@ type Splunk struct {
 	// If the HTTP server response code is 400 (bad request) and this flag is enabled, it will print the full HTTP request
 	// and response to the stdout interface. This feature is available for debugging purposes.
 	HTTPDebugBadRequest bool `json:"httpDebugBadRequest,omitempty"`
-	//When enabled, the record keys and values are set in the top level of the map instead of under the event key. Refer to
+	// When enabled, the record keys and values are set in the top level of the map instead of under the event key. Refer to
 	// the Sending Raw Events section from the docs for more details to make this option work properly.
 	SplunkSendRaw bool `json:"splunkSendRaw,omitempty"`
 	//Specify the key name that will be used to send a single value as part of the record.
@@ -64,9 +57,8 @@ type Splunk struct {
 	// record_accessor_pattern.
 	EventField string `json:"eventField,omitempty"`
 
-	// Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0.
-	Workers *int32 `json:"Workers,omitempty"`
-	//@todo check if below code is neccessary
+	// Enables dedicated thread(s) for this output. Default value `2` is set since version 1.8.13. For previous versions is 0.
+	Workers      *int32 `json:"Workers,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
 }
 
