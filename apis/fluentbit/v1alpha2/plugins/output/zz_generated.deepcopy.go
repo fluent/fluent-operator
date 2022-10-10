@@ -610,6 +610,16 @@ func (in *Splunk) DeepCopyInto(out *Splunk) {
 		*out = new(plugins.Secret)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.HTTPDebugBadRequest != nil {
+		in, out := &in.HTTPDebugBadRequest, &out.HTTPDebugBadRequest
+		*out = new(bool)
+		**out = **in
+	}
+	if in.SplunkSendRaw != nil {
+		in, out := &in.SplunkSendRaw, &out.SplunkSendRaw
+		*out = new(bool)
+		**out = **in
+	}
 	if in.Workers != nil {
 		in, out := &in.Workers, &out.Workers
 		*out = new(int32)

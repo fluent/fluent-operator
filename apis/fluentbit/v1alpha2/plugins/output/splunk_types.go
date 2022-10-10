@@ -18,7 +18,7 @@ type Splunk struct {
 	// +kubebuilder:validation:Maximum:=65535
 	Port *int32 `json:"port,omitempty"`
 	// Specify the Authentication Token for the HTTP Event Collector interface.
-	SplunkToken string `json:"splunk_token,omitempty"`
+	SplunkToken string `json:"splunkToken,omitempty"`
 	//Buffer size used to receive Splunk HTTP responses: Default `2M`
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferSize string `json:"bufferSize,omitempty"`
@@ -33,10 +33,10 @@ type Splunk struct {
 	HTTPPasswd *plugins.Secret `json:"httpPassword,omitempty"`
 	// If the HTTP server response code is 400 (bad request) and this flag is enabled, it will print the full HTTP request
 	// and response to the stdout interface. This feature is available for debugging purposes.
-	HTTPDebugBadRequest bool `json:"httpDebugBadRequest,omitempty"`
+	HTTPDebugBadRequest *bool `json:"httpDebugBadRequest,omitempty"`
 	// When enabled, the record keys and values are set in the top level of the map instead of under the event key. Refer to
-	// the Sending Raw Events section from the docs for more details to make this option work properly.
-	SplunkSendRaw bool `json:"splunkSendRaw,omitempty"`
+	// the Sending Raw Events section from the docs more details to make this option work properly.
+	SplunkSendRaw *bool `json:"splunkSendRaw,omitempty"`
 	//Specify the key name that will be used to send a single value as part of the record.
 	EventKey string `json:"eventKey,omitempty"`
 	//Specify the key name that contains the host value. This option allows a record accessors pattern.
@@ -71,60 +71,56 @@ func (_ *Splunk) Name() string {
 func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 	if o.Host != "" {
-		kvs.Insert("Host", o.Host)
+		kvs.Insert("host", o.Host)
 	}
 	if o.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*o.Port))
+		kvs.Insert("port", fmt.Sprint(*o.Port))
 	}
 	if o.SplunkToken != "" {
-		kvs.Insert("Splunk_Token", o.SplunkToken)
+		kvs.Insert("splunk_token", o.SplunkToken)
 	}
 	if o.BufferSize != "" {
-		kvs.Insert("Buffer_Size", o.BufferSize)
+		kvs.Insert("buffer_size", o.BufferSize)
 	}
 	if o.HTTPUser != nil {
 		u, err := sl.LoadSecret(*o.HTTPUser)
 		if err != nil {
 			return nil, err
 		}
-		kvs.Insert("HTTP_User", u)
+		kvs.Insert("http_user", u)
 	}
 	if o.HTTPPasswd != nil {
 		pwd, err := sl.LoadSecret(*o.HTTPPasswd)
 		if err != nil {
 			return nil, err
 		}
-		kvs.Insert("HTTP_Passwd", pwd)
+		kvs.Insert("http_passwd", pwd)
 	}
 	if o.Compress != "" {
-		kvs.Insert("Index", o.Compress)
+		kvs.Insert("compress", o.Compress)
 	}
 	if o.Channel != "" {
-		kvs.Insert("Type", o.Channel)
+		kvs.Insert("channel", o.Channel)
 	}
-	if o.HTTPDebugBadRequest {
-		kvs.Insert("HTTP_Debug_Bad_Request", "On")
-	} else {
-		kvs.Insert("HTTP_Debug_Bad_Request", "Off")
+	if *o.HTTPDebugBadRequest {
+		kvs.Insert("http_debug_bad_request", "On")
 	}
-	if o.SplunkSendRaw {
-		kvs.Insert("Splunk_Send_Raw", "On")
-	} else {
-		kvs.Insert("Splunk_Send_Raw", "Off")
+	if *o.SplunkSendRaw {
+		kvs.Insert("splunk_send_raw", "On")
 	}
 
 	if o.EventKey != "" {
-		kvs.Insert("Event_Key", o.EventKey)
+		kvs.Insert("event_key", o.EventKey)
 	}
 	if o.EventHost != "" {
-		kvs.Insert("Event_Host", o.EventHost)
+		kvs.Insert("event_host", o.EventHost)
 	}
 	if o.EventSource != "" {
-		kvs.Insert("Event_Source", o.EventSource)
+		kvs.Insert("event_source", o.EventSource)
 	}
 
 	if o.Workers != nil {
-		kvs.Insert("Workers", fmt.Sprint(*o.Workers))
+		kvs.Insert("workers", fmt.Sprint(*o.Workers))
 	}
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
