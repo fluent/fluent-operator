@@ -3465,11 +3465,6 @@ spec:
                       is 0.
                     format: int32
                     type: integer
-                  bufferSize:
-                    description: 'Buffer size used to receive Splunk HTTP responses:
-                      Default `2M`'
-                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
-                    type: string
                   channel:
                     description: Specify X-Splunk-Request-Channel Header for the HTTP
                       Event Collector interface.
@@ -3513,6 +3508,11 @@ spec:
                   host:
                     description: IP address or hostname of the target OpenSearch instance,
                       default `127.0.0.1`
+                    type: string
+                  httpBufferSize:
+                    description: 'Buffer size used to receive Splunk HTTP responses:
+                      Default `2M`'
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
                     type: string
                   httpDebugBadRequest:
                     description: If the HTTP server response code is 400 (bad request)

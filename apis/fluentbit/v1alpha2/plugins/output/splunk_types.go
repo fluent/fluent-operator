@@ -21,12 +21,11 @@ type Splunk struct {
 	SplunkToken string `json:"splunkToken,omitempty"`
 	//Buffer size used to receive Splunk HTTP responses: Default `2M`
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
-	BufferSize string `json:"bufferSize,omitempty"`
+	HTTPBufferSize string `json:"httpBufferSize,omitempty"`
 	// Set payload compression mechanism. The only available option is gzip.
 	Compress string `json:"compress,omitempty"`
 	// Specify X-Splunk-Request-Channel Header for the HTTP Event Collector interface.
 	Channel string `json:"channel,omitempty"`
-
 	// Optional username credential for access
 	HTTPUser *plugins.Secret `json:"httpUser,omitempty"`
 	// Password for user defined in HTTP_User
@@ -79,8 +78,8 @@ func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.SplunkToken != "" {
 		kvs.Insert("splunk_token", o.SplunkToken)
 	}
-	if o.BufferSize != "" {
-		kvs.Insert("buffer_size", o.BufferSize)
+	if o.HTTPBufferSize != "" {
+		kvs.Insert("http_buffer_size", o.HTTPBufferSize)
 	}
 	if o.HTTPUser != nil {
 		u, err := sl.LoadSecret(*o.HTTPUser)
