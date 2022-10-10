@@ -3474,6 +3474,207 @@ spec:
                   allows to disable retries or impose a limit to try N times and then
                   discard the data after reaching that limit.
                 type: string
+              splunk:
+                description: Spklunk defines Splunk Output Configuration
+                properties:
+                  Workers:
+                    description: Enables dedicated thread(s) for this output. Default
+                      value `2` is set since version 1.8.13. For previous versions
+                      is 0.
+                    format: int32
+                    type: integer
+                  channel:
+                    description: Specify X-Splunk-Request-Channel Header for the HTTP
+                      Event Collector interface.
+                    type: string
+                  compress:
+                    description: Set payload compression mechanism. The only available
+                      option is gzip.
+                    type: string
+                  eventField:
+                    description: Set event fields for the record. This option can
+                      be set multiple times and the format is key_name record_accessor_pattern.
+                    type: string
+                  eventHost:
+                    description: Specify the key name that contains the host value.
+                      This option allows a record accessors pattern.
+                    type: string
+                  eventIndex:
+                    description: The name of the index by which the event data is
+                      to be indexed.
+                    type: string
+                  eventIndexKey:
+                    description: Set a record key that will populate the index field.
+                      If the key is found, it will have precedence over the value
+                      set in event_index.
+                    type: string
+                  eventKey:
+                    description: Specify the key name that will be used to send a
+                      single value as part of the record.
+                    type: string
+                  eventSource:
+                    description: Set the source value to assign to the event data.
+                    type: string
+                  eventSourcetype:
+                    description: Set the sourcetype value to assign to the event data.
+                    type: string
+                  eventSourcetypeKey:
+                    description: Set a record key that will populate 'sourcetype'.
+                      If the key is found, it will have precedence over the value
+                      set in event_sourcetype.
+                    type: string
+                  host:
+                    description: IP address or hostname of the target OpenSearch instance,
+                      default `127.0.0.1`
+                    type: string
+                  httpBufferSize:
+                    description: 'Buffer size used to receive Splunk HTTP responses:
+                      Default `2M`'
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  httpDebugBadRequest:
+                    description: If the HTTP server response code is 400 (bad request)
+                      and this flag is enabled, it will print the full HTTP request
+                      and response to the stdout interface. This feature is available
+                      for debugging purposes.
+                    type: boolean
+                  httpPassword:
+                    description: Password for user defined in HTTP_User
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  httpUser:
+                    description: Optional username credential for access
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  port:
+                    description: TCP port of the target Splunk instance, default `8088`
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  splunkSendRaw:
+                    description: When enabled, the record keys and values are set
+                      in the top level of the map instead of under the event key.
+                      Refer to the Sending Raw Events section from the docs more details
+                      to make this option work properly.
+                    type: boolean
+                  splunkToken:
+                    description: Specify the Authentication Token for the HTTP Event
+                      Collector interface.
+                    type: string
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                type: object
               stdout:
                 description: Stdout defines Stdout Output configuration.
                 properties:

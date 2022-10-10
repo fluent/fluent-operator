@@ -726,6 +726,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.Firehose)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Splunk != nil {
+		in, out := &in.Splunk, &out.Splunk
+		*out = new(output.Splunk)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.OpenSearch != nil {
 		in, out := &in.OpenSearch, &out.OpenSearch
 		*out = new(output.OpenSearch)
