@@ -1669,7 +1669,7 @@ spec:
                   discard the data after reaching that limit.
                 type: string
               splunk:
-                description: Spklunk defines Splunk Output Configuration
+                description: Splunk defines Splunk Output Configuration
                 properties:
                   Workers:
                     description: Enables dedicated thread(s) for this output. Default
