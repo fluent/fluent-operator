@@ -102,6 +102,9 @@ spec:
                   timeKey:
                     description: Time_Key
                     type: string
+                  timeOffset:
+                    description: Time_Offset, eg. +0200
+                    type: string
                   types:
                     type: string
                 type: object
