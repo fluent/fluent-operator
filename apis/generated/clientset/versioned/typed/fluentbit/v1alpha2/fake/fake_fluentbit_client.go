@@ -47,6 +47,10 @@ func (c *FakeFluentbitV1alpha2) ClusterParsers() v1alpha2.ClusterParserInterface
 	return &FakeClusterParsers{c}
 }
 
+func (c *FakeFluentbitV1alpha2) Collectors(namespace string) v1alpha2.CollectorInterface {
+	return &FakeCollectors{c, namespace}
+}
+
 func (c *FakeFluentbitV1alpha2) FluentBits(namespace string) v1alpha2.FluentBitInterface {
 	return &FakeFluentBits{c, namespace}
 }

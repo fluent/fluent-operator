@@ -112,6 +112,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err = (&controllers.CollectorReconciler{
+		Client:               mgr.GetClient(),
+		Log:                  ctrl.Log.WithName("controllers").WithName("Collector"),
+		Scheme:               mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Collector")
+		os.Exit(1)
+	}
+
 	if err = (&controllers.FluentBitReconciler{
 		Client:               mgr.GetClient(),
 		Log:                  ctrl.Log.WithName("controllers").WithName("FluentBit"),
