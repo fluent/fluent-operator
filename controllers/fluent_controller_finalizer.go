@@ -31,6 +31,22 @@ func (r *FluentBitReconciler) handleFinalizer(ctx context.Context, instance *flu
 	return r.Update(ctx, instance)
 }
 
+func (r *CollectorReconciler) addFinalizer(ctx context.Context, instance *fluentbitv1alpha2.Collector) error {
+	instance.AddFinalizer(fluentbitv1alpha2.CollectorFinalizerName)
+	return r.Update(ctx, instance)
+}
+
+func (r *CollectorReconciler) handleFinalizer(ctx context.Context, instance *fluentbitv1alpha2.Collector) error {
+	if !instance.HasFinalizer(fluentbitv1alpha2.CollectorFinalizerName) {
+		return nil
+	}
+	if err := r.delete(ctx, instance); err != nil {
+		return err
+	}
+	instance.RemoveFinalizer(fluentbitv1alpha2.CollectorFinalizerName)
+	return r.Update(ctx, instance)
+}
+
 func (r *FluentdReconciler) addFinalizer(ctx context.Context, instance *fluentdv1alpha1.Fluentd) error {
 	instance.AddFinalizer(fluentdv1alpha1.FluentdFinalizerName)
 	return r.Update(ctx, instance)

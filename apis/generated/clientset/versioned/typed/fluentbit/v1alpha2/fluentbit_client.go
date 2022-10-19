@@ -32,6 +32,7 @@ type FluentbitV1alpha2Interface interface {
 	ClusterInputsGetter
 	ClusterOutputsGetter
 	ClusterParsersGetter
+	CollectorsGetter
 	FluentBitsGetter
 }
 
@@ -58,6 +59,10 @@ func (c *FluentbitV1alpha2Client) ClusterOutputs() ClusterOutputInterface {
 
 func (c *FluentbitV1alpha2Client) ClusterParsers() ClusterParserInterface {
 	return newClusterParsers(c)
+}
+
+func (c *FluentbitV1alpha2Client) Collectors(namespace string) CollectorInterface {
+	return newCollectors(c, namespace)
 }
 
 func (c *FluentbitV1alpha2Client) FluentBits(namespace string) FluentBitInterface {
