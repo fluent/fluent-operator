@@ -18,7 +18,7 @@ type Splunk struct {
 	// +kubebuilder:validation:Maximum:=65535
 	Port *int32 `json:"port,omitempty"`
 	// Specify the Authentication Token for the HTTP Event Collector interface.
-	SplunkToken string `json:"splunkToken,omitempty"`
+	SplunkToken *plugins.Secret `json:"splunkToken,omitempty"`
 	//Buffer size used to receive Splunk HTTP responses: Default `2M`
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	HTTPBufferSize string `json:"httpBufferSize,omitempty"`
@@ -75,8 +75,12 @@ func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.Port != nil {
 		kvs.Insert("port", fmt.Sprint(*o.Port))
 	}
-	if o.SplunkToken != "" {
-		kvs.Insert("splunk_token", o.SplunkToken)
+	if o.SplunkToken != nil {
+		u, err := sl.LoadSecret(*o.SplunkToken)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Insert("splunk_token", u)
 	}
 	if o.HTTPBufferSize != "" {
 		kvs.Insert("http_buffer_size", o.HTTPBufferSize)

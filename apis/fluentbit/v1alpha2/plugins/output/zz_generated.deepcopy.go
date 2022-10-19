@@ -600,6 +600,11 @@ func (in *Splunk) DeepCopyInto(out *Splunk) {
 		*out = new(int32)
 		**out = **in
 	}
+	if in.SplunkToken != nil {
+		in, out := &in.SplunkToken, &out.SplunkToken
+		*out = new(plugins.Secret)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.HTTPUser != nil {
 		in, out := &in.HTTPUser, &out.HTTPUser
 		*out = new(plugins.Secret)
