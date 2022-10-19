@@ -1801,7 +1801,31 @@ spec:
                   splunkToken:
                     description: Specify the Authentication Token for the HTTP Event
                       Collector interface.
-                    type: string
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
                   tls:
                     description: Fluent Bit provides integrated support for Transport
                       Layer Security (TLS) and it predecessor Secure Sockets Layer
