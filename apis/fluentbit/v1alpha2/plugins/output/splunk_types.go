@@ -105,13 +105,20 @@ func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.Channel != "" {
 		kvs.Insert("channel", o.Channel)
 	}
-	if *o.HTTPDebugBadRequest {
-		kvs.Insert("http_debug_bad_request", "On")
+	if o.HTTPDebugBadRequest != nil {
+		if *o.HTTPDebugBadRequest {
+			kvs.Insert("http_debug_bad_request", "On")
+		} else {
+			kvs.Insert("http_debug_bad_request", "Off")
+		}
 	}
-	if *o.SplunkSendRaw {
-		kvs.Insert("splunk_send_raw", "On")
+	if o.SplunkSendRaw != nil {
+		if *o.SplunkSendRaw {
+			kvs.Insert("splunk_send_raw", "On")
+		} else {
+			kvs.Insert("splunk_send_raw", "Off")
+		}
 	}
-
 	if o.EventKey != "" {
 		kvs.Insert("event_key", o.EventKey)
 	}
