@@ -9,7 +9,7 @@ Kubernetes: false
 operator:
   initcontainer:
     repository: "docker"
-    tag: "19.03"
+    tag: "20.10"
   container:
     repository: "kubesphere/fluent-operator"
     tag: "latest"

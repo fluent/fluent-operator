@@ -13891,7 +13891,7 @@ spec:
         - -c
         - set -ex; echo CONTAINER_ROOT_DIR=$(docker info -f '{{.DockerRootDir}}' 2>
           /dev/null) > /fluent-operator/fluent-bit.env
-        image: docker:19.03
+        image: docker:20.10
         name: setenv
         volumeMounts:
         - mountPath: /fluent-operator
