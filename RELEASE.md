@@ -28,6 +28,7 @@ This page describes the release process and the currently planned schedule for u
 | v1.1.0           | 2022-06-15                                 | Elon Cheng (GitHub: @wenchajun)         |
 | v1.5.0           | 2022-09-24                                 | Elon Cheng (GitHub: @wenchajun)         |
 | v1.5.1           | 2022-09-30                                 | Elon Cheng (GitHub: @wenchajun)         |
+| v1.6.0           | 2022-10-25                                 | Elon Cheng (GitHub: @wenchajun)         |
 
 # How to cut a new release
 
