@@ -1,3 +1,24 @@
+## 1.6.0 / 2022-10-25
+### Features
+- Add Fluent Bit Splunk output plugin (#417)
+
+### ENHANCEMENT
+- Bump github.com/go-kit/kit from 0.9.0 to 0.12.0 (#412)
+- Bump github.com/joho/godotenv from 1.3.0 to 1.4.0 (#413)
+- Bump github.com/go-openapi/errors from 0.19.2 to 0.20.3 (#414)
+- Bump actions/checkout from 2 to 3 (#415)
+- Build: Enhance binary (#416)
+- Chore(deps): bump github.com/onsi/gomega from 1.20.1 to 1.21.1 (#419)
+- Added support for Time_Offset parameter in regex parser (#423)
+- Changing type of SplunkToken from string to secret (#427)
+- Upgrade docker image version (#432)
+
+### BUGFIX 
+- Fixing a typo 'Spklunk' to 'Splunk' (#420)
+- Helm: Fixing error in fluentbit-FluentBit (#422) 
+- Fix clusterParser to ClusterParser (#426)
+- Fix: Handling optional bool parameters for Splunk ClusterOutput (#428)
+
 ## 1.5.1 / 2022-09-30
 
 ### ENHANCEMENT
