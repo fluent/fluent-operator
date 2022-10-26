@@ -1,5 +1,5 @@
 # Fluentd watcher agent
-FROM golang:1.19.1-alpine3.16 as buildergo
+FROM golang:1.19.2-alpine3.16 as buildergo
 RUN mkdir -p /fluentd
 RUN mkdir -p /code
 COPY . /code/
