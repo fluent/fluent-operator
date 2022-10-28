@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM golang:1.19.1 as builder
+FROM golang:1.19.2 as builder
 
 WORKDIR /
 COPY main.go /go/src/main.go
