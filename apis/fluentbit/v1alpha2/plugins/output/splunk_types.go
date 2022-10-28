@@ -120,7 +120,21 @@ func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.EventSource != "" {
 		kvs.Insert("event_source", o.EventSource)
 	}
-
+	if o.EventSourcetype != "" {
+		kvs.Insert("event_sourcetype", o.EventSourcetype)
+	}
+	if o.EventSourcetypeKey != "" {
+		kvs.Insert("event_sourcetype_key", o.EventSourcetypeKey)
+	}
+	if o.EventIndex != "" {
+		kvs.Insert("event_index", o.EventIndex)
+	}
+	if o.EventIndexKey != "" {
+		kvs.Insert("event_index_key", o.EventIndexKey)
+	}
+	if o.EventField != "" {
+		kvs.Insert("event_field", o.EventField)
+	}
 	if o.Workers != nil {
 		kvs.Insert("workers", fmt.Sprint(*o.Workers))
 	}
