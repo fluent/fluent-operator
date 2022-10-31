@@ -1,3 +1,9 @@
+## 1.6.1 / 2022-10-31
+### BUGFIX 
+- Fix: add missing config attributes for splunk output (#437)
+- Fix(go): Update go version from 1.19.1 to 1.19.2 to resolve vulnerabilities. (#438)
+- Revert "build: Enhance binary" (#439)
+
 ## 1.6.0 / 2022-10-25
 ### Features
 - Add Fluent Bit Splunk output plugin (#417)
