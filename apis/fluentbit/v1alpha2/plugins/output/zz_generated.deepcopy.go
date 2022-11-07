@@ -280,6 +280,11 @@ func (in *HTTP) DeepCopyInto(out *HTTP) {
 			(*out)[key] = val
 		}
 	}
+	if in.RetryLimit != nil {
+		in, out := &in.RetryLimit, &out.RetryLimit
+		*out = new(int32)
+		**out = **in
+	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
 		*out = new(plugins.TLS)
