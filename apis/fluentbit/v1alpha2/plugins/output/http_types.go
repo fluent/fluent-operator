@@ -57,8 +57,6 @@ type HTTP struct {
 	GelfFullMessageKey string `json:"gelfFullMessageKey,omitempty"`
 	// Specify the key to use for the level in gelf format
 	GelfLevelKey string `json:"gelfLevelKey,omitempty"`
-	// Integer value to set the maximum number of retries allowed. N must be >= 1 (default: 2)
-	RetryLimit *int32 `json:"retryLimit,omitempty"`
 	// HTTP output plugin supports TTL/SSL, for more details about the properties available
 	// and general configuration, please refer to the TLS/SSL section.
 	*plugins.TLS `json:"tls,omitempty"`
@@ -133,11 +131,6 @@ func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if h.GelfLevelKey != "" {
 		kvs.Insert("gelf_level_key", h.GelfLevelKey)
-	}
-	if h.RetryLimit != nil {
-		if *h.RetryLimit > 0 {
-			kvs.Insert("retry_limit", fmt.Sprint(*h.RetryLimit))
-		}
 	}
 	if h.TLS != nil {
 		tls, err := h.TLS.Params(sl)
