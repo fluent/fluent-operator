@@ -79,6 +79,11 @@ spec:
                         privateIP:
                           description: The EC2 instance private ip.Default is false.
                           type: boolean
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
+                          type: string
                         vpcID:
                           description: The VPC ID for current EC2 instance.Default
                             is false.
@@ -103,6 +108,11 @@ spec:
                         regex:
                           description: 'Keep records which field matches the regular
                             expression. Value Format: FIELD REGEX'
+                          type: string
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
                           type: string
                       type: object
                     kubernetes:
@@ -192,6 +202,11 @@ spec:
                             and docker_id. The parser must be registered in a parsers
                             file (refer to parser filter-kube-test as an example).
                           type: string
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
+                          type: string
                         tlsDebug:
                           description: Debug level between 0 (nothing) and 4 (every
                             detail).
@@ -222,6 +237,11 @@ spec:
                             protected mode. It prevents to crash when invalid Lua
                             script is executed. Default is true.
                           type: boolean
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
+                          type: string
                         script:
                           description: Path to the Lua script that will be used.
                           properties:
@@ -324,6 +344,11 @@ spec:
                                 type: string
                             type: object
                           type: array
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
+                          type: string
                         rules:
                           description: Rules are applied in the order they appear,
                             with each rule operating on the result of the previous
@@ -405,6 +430,11 @@ spec:
                             parsers to detect different formats by separating them
                             with a comma.
                           type: string
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
+                          type: string
                       required:
                       - parser
                       type: object
@@ -435,6 +465,11 @@ spec:
                           description: Remove prefix from affected keys if it matches
                             this string
                           type: string
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
+                          type: string
                         wildcard:
                           description: Nest records which field matches the wildcard
                           items:
@@ -462,6 +497,11 @@ spec:
                           description: Keep all other original fields in the parsed
                             result. If false, all other original fields will be removed.
                           type: boolean
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
+                          type: string
                         unescapeKey:
                           description: 'If the key is a escaped string (e.g: stringify
                             JSON), unescape the string before to apply the parser.'
@@ -484,6 +524,11 @@ spec:
                           items:
                             type: string
                           type: array
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
+                          type: string
                         whitelistKeys:
                           description: If the key is not matched, that field is removed.
                           items:
@@ -502,6 +547,11 @@ spec:
                             of the job. Since this emitter expose metrics as any other
                             component of the pipeline, you can use this property to
                             configure an optional name for it.
+                          type: string
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
                           type: string
                         rules:
                           description: 'Defines the matching criteria and the format
@@ -531,6 +581,11 @@ spec:
                           description: Rate is the amount of messages for the time.
                           format: int64
                           type: integer
+                        retryLimit:
+                          description: 'Integer value to set the maximum number of
+                            retries allowed. N must be >= 1 (default: 2) or false
+                            for no limit at all.'
+                          type: string
                         window:
                           description: Window is the amount of intervals to calculate
                             average over.
