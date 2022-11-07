@@ -735,11 +735,6 @@ spec:
                       value is http://host:port. Note that https is not supported
                       yet.
                     type: string
-                  retryLimit:
-                    description: 'Integer value to set the maximum number of retries
-                      allowed. N must be >= 1 (default: 2)'
-                    format: int32
-                    type: integer
                   tls:
                     description: HTTP output plugin supports TTL/SSL, for more details
                       about the properties available and general configuration, please
