@@ -77,11 +77,13 @@ spec:
                           description: The EC2 instance private ip.Default is false.
                           type: boolean
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         vpcID:
@@ -110,11 +112,13 @@ spec:
                             expression. Value Format: FIELD REGEX'
                           type: string
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                       type: object
@@ -206,11 +210,13 @@ spec:
                             file (refer to parser filter-kube-test as an example).
                           type: string
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         tlsDebug:
@@ -244,11 +250,13 @@ spec:
                             script is executed. Default is true.
                           type: boolean
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         script:
@@ -354,11 +362,13 @@ spec:
                             type: object
                           type: array
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         rules:
@@ -443,11 +453,13 @@ spec:
                             with a comma.
                           type: string
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                       required:
@@ -481,11 +493,13 @@ spec:
                             this string
                           type: string
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         wildcard:
@@ -516,11 +530,13 @@ spec:
                             result. If false, all other original fields will be removed.
                           type: boolean
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         unescapeKey:
@@ -546,11 +562,13 @@ spec:
                             type: string
                           type: array
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         whitelistKeys:
@@ -573,11 +591,13 @@ spec:
                             configure an optional name for it.
                           type: string
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         rules:
@@ -609,11 +629,13 @@ spec:
                           format: int64
                           type: integer
                         retryLimit:
-                          description: This value describes how many times fluent-bit
+                          description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
                             to false fluent-bit will try indefinetly. If set to any
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 2.'
                           pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         window:
