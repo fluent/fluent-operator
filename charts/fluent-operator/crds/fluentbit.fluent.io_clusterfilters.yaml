@@ -80,9 +80,12 @@ spec:
                           description: The EC2 instance private ip.Default is false.
                           type: boolean
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         vpcID:
                           description: The VPC ID for current EC2 instance.Default
@@ -110,9 +113,12 @@ spec:
                             expression. Value Format: FIELD REGEX'
                           type: string
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                       type: object
                     kubernetes:
@@ -203,9 +209,12 @@ spec:
                             file (refer to parser filter-kube-test as an example).
                           type: string
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         tlsDebug:
                           description: Debug level between 0 (nothing) and 4 (every
@@ -238,9 +247,12 @@ spec:
                             script is executed. Default is true.
                           type: boolean
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         script:
                           description: Path to the Lua script that will be used.
@@ -345,9 +357,12 @@ spec:
                             type: object
                           type: array
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         rules:
                           description: Rules are applied in the order they appear,
@@ -431,9 +446,12 @@ spec:
                             with a comma.
                           type: string
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                       required:
                       - parser
@@ -466,9 +484,12 @@ spec:
                             this string
                           type: string
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         wildcard:
                           description: Nest records which field matches the wildcard
@@ -498,9 +519,12 @@ spec:
                             result. If false, all other original fields will be removed.
                           type: boolean
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         unescapeKey:
                           description: 'If the key is a escaped string (e.g: stringify
@@ -525,9 +549,12 @@ spec:
                             type: string
                           type: array
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         whitelistKeys:
                           description: If the key is not matched, that field is removed.
@@ -549,9 +576,12 @@ spec:
                             configure an optional name for it.
                           type: string
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         rules:
                           description: 'Defines the matching criteria and the format
@@ -582,9 +612,12 @@ spec:
                           format: int64
                           type: integer
                         retryLimit:
-                          description: 'Integer value to set the maximum number of
-                            retries allowed. N must be >= 1 (default: 2) or false
-                            for no limit at all.'
+                          description: This value describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                          pattern: ^((false)|([1-9]+[0-9]*))$
                           type: string
                         window:
                           description: Window is the amount of intervals to calculate

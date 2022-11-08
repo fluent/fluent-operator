@@ -10,8 +10,9 @@ type CommonParams struct {
 
 	// Alias for the plugin
 	Alias string `json:"alias,omitempty"`
-	// Integer value to set the maximum number of retries allowed. N must be >= 1
-	// (default: 2) or false for no limit at all.
+	// This value describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work).
+	// +kubebuilder:validation:XIntOrString=true
+	// +kubebuilder:validation:Pattern="^((false)|([1-9]+[0-9]*))$"
 	RetryLimit string `json:"retryLimit,omitempty"`
 }
 
