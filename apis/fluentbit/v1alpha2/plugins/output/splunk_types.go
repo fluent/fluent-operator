@@ -52,9 +52,9 @@ type Splunk struct {
 	// Set a record key that will populate the index field. If the key is found, it will have precedence
 	// over the value set in event_index.
 	EventIndexKey string `json:"eventIndexKey,omitempty"`
-	//Set event fields for the record. This option can be set multiple times and the format is key_name
-	// record_accessor_pattern.
-	EventField string `json:"eventField,omitempty"`
+	//Set event fields for the record. This option is an array and the format is "key_name
+	// record_accessor_pattern".
+	EventFields []string `json:"eventFields,omitempty"`
 
 	// Enables dedicated thread(s) for this output. Default value `2` is set since version 1.8.13. For previous versions is 0.
 	Workers      *int32 `json:"Workers,omitempty"`
@@ -132,8 +132,10 @@ func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.EventIndexKey != "" {
 		kvs.Insert("event_index_key", o.EventIndexKey)
 	}
-	if o.EventField != "" {
-		kvs.Insert("event_field", o.EventField)
+	if o.EventFields != nil && len(o.EventFields) > 0 {
+		for _, v := range o.EventFields {
+			kvs.Insert("event_field", v)
+		}
 	}
 	if o.Workers != nil {
 		kvs.Insert("workers", fmt.Sprint(*o.Workers))
