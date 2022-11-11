@@ -625,6 +625,11 @@ func (in *Splunk) DeepCopyInto(out *Splunk) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.EventFields != nil {
+		in, out := &in.EventFields, &out.EventFields
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	if in.Workers != nil {
 		in, out := &in.Workers, &out.Workers
 		*out = new(int32)

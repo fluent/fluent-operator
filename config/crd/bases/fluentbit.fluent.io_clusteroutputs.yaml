@@ -1685,10 +1685,12 @@ spec:
                     description: Set payload compression mechanism. The only available
                       option is gzip.
                     type: string
-                  eventField:
-                    description: Set event fields for the record. This option can
-                      be set multiple times and the format is key_name record_accessor_pattern.
-                    type: string
+                  eventFields:
+                    description: Set event fields for the record. This option is an
+                      array and the format is "key_name record_accessor_pattern".
+                    items:
+                      type: string
+                    type: array
                   eventHost:
                     description: Specify the key name that contains the host value.
                       This option allows a record accessors pattern.
