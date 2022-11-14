@@ -870,7 +870,7 @@ spec:
                 type: string
               envVars:
                 description: EnvVars represent environment variables that can be passed
-                  to the fluentbit pods
+                  to fluentbit pods.
                 items:
                   description: EnvVar represents an environment variable present in
                     a Container.
