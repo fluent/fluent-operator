@@ -83,8 +83,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         vpcID:
                           description: The VPC ID for current EC2 instance.Default
@@ -118,8 +118,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                       type: object
                     kubernetes:
@@ -216,8 +216,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         tlsDebug:
                           description: Debug level between 0 (nothing) and 4 (every
@@ -256,8 +256,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         script:
                           description: Path to the Lua script that will be used.
@@ -368,8 +368,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         rules:
                           description: Rules are applied in the order they appear,
@@ -459,8 +459,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                       required:
                       - parser
@@ -499,8 +499,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         wildcard:
                           description: Nest records which field matches the wildcard
@@ -536,8 +536,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         unescapeKey:
                           description: 'If the key is a escaped string (e.g: stringify
@@ -568,8 +568,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         whitelistKeys:
                           description: If the key is not matched, that field is removed.
@@ -597,8 +597,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         rules:
                           description: 'Defines the matching criteria and the format
@@ -635,8 +635,8 @@ spec:
                             integer N>0 it will try at most N+1 times. Leading zeros
                             are not allowed (values such as 007, 0150, 01 do not work).
                             If this property is not defined fluent-bit will use the
-                            default value: 2.'
-                          pattern: ^((false)|([1-9]+[0-9]*))$
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         window:
                           description: Window is the amount of intervals to calculate
