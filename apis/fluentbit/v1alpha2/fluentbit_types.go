@@ -66,6 +66,8 @@ type FluentBitSpec struct {
 	SecurityContext *corev1.PodSecurityContext `json:"securityContext,omitempty"`
 	// Host networking is requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false.
 	HostNetwork bool `json:"hostNetwork,omitempty"`
+	// EnvVars represent environment variables that can be passed to fluentbit pods.
+	EnvVars []corev1.EnvVar `json:"envVars,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit
