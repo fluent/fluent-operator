@@ -131,6 +131,10 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 		},
 	}
 
+	if fb.Spec.EnvVars != nil {
+		ds.Spec.Template.Spec.Containers[0].Env = append(ds.Spec.Template.Spec.Containers[0].Env, fb.Spec.EnvVars...)
+	}
+
 	if fb.Spec.RuntimeClassName != "" {
 		ds.Spec.Template.Spec.RuntimeClassName = &fb.Spec.RuntimeClassName
 	}

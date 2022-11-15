@@ -242,6 +242,7 @@ FluentBitSpec defines the desired state of FluentBit
 | annotations | Annotations to add to each Fluentbit pod. | map[string]string |
 | securityContext | SecurityContext holds pod-level security attributes and common container settings. | *corev1.PodSecurityContext |
 | hostNetwork | Host networking is requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false. | bool |
+| envVars | EnvVars represent environment variables that can be passed to fluentbit pods. | []corev1.EnvVar |
 
 [Back to TOC](#table-of-contents)
 # InputSpec
@@ -284,6 +285,7 @@ OutputSpec defines the desired state of ClusterOutput
 | syslog | Syslog defines Syslog Output configuration. | *[output.Syslog](plugins/output/syslog.md) |
 | datadog | DataDog defines DataDog Output configuration. | *[output.DataDog](plugins/output/datadog.md) |
 | firehose | Firehose defines Firehose Output configuration. | *[output.Firehose](plugins/output/firehose.md) |
+| splunk | Splunk defines Splunk Output Configuration | *[output.Splunk](plugins/output/splunk.md) |
 | opensearch | OpenSearch defines OpenSearch Output configuration. | *[output.OpenSearch](plugins/output/opensearch.md) |
 | opentelemetry | OpenTelemetry defines OpenTelemetry Output configuration. | *[output.OpenTelemetry](plugins/output/opentelemetry.md) |
 | prometheusRemoteWrite | PrometheusRemoteWrite_types defines Prometheus Remote Write configuration. | *[output.PrometheusRemoteWrite](plugins/output/prometheusremotewrite.md) |
