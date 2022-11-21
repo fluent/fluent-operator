@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.filter.systemd.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterFilter
 metadata:
@@ -15,4 +16,5 @@ spec:
         name: fluent-bit-lua
       call: add_time
       timeAsTable: true
+{{- end }}
 {{- end }}
