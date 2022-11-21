@@ -32,6 +32,8 @@ type FluentBitSpec struct {
 	Image string `json:"image,omitempty"`
 	// Fluent Bit Watcher command line arguments.
 	Args []string `json:"args,omitempty"`
+	// Fluent Bit Watcher command.
+	Command []string `json:"command,omitempty"`
 	// Fluent Bit image pull policy.
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy,omitempty"`
 	// Fluent Bit image pull secret
@@ -68,6 +70,14 @@ type FluentBitSpec struct {
 	HostNetwork bool `json:"hostNetwork,omitempty"`
 	// EnvVars represent environment variables that can be passed to fluentbit pods.
 	EnvVars []corev1.EnvVar `json:"envVars,omitempty"`
+	// LivenessProbe represents the pod's liveness probe.
+	LivenessProbe *corev1.Probe `json:"livenessProbe,omitempty"`
+	// ReadinessProbe represents the pod's readiness probe.
+	ReadinessProbe *corev1.Probe `json:"readinessProbe,omitempty"`
+	// InitContainers represents the pod's init containers.
+	InitContainers []corev1.Container `json:"initContainers,omitempty"`
+	// Ports represents the pod's ports.
+	Ports []corev1.ContainerPort `json:"ports,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit

@@ -3,11 +3,11 @@ package operator
 import (
 	"fmt"
 
+	fluentbitv1alpha2 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2"
+
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	fluentbitv1alpha2 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2"
 )
 
 func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
@@ -65,11 +65,11 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 							},
 						},
 					},
+					InitContainers: fb.Spec.InitContainers,
 					Containers: []corev1.Container{
 						{
 							Name:            "fluent-bit",
 							Image:           fb.Spec.Image,
-							Args:            fb.Spec.Args,
 							ImagePullPolicy: fb.Spec.ImagePullPolicy,
 							Ports: []corev1.ContainerPort{
 								{
@@ -78,6 +78,8 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 									Protocol:      "TCP",
 								},
 							},
+							ReadinessProbe: fb.Spec.ReadinessProbe,
+							LivenessProbe:  fb.Spec.LivenessProbe,
 							Env: []corev1.EnvVar{
 								{
 									Name: "NODE_NAME",
@@ -129,6 +131,18 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 				},
 			},
 		},
+	}
+
+	if fb.Spec.Args != nil {
+		ds.Spec.Template.Spec.Containers[0].Args = fb.Spec.Args
+	}
+
+	if fb.Spec.Command != nil {
+		ds.Spec.Template.Spec.Containers[0].Command = fb.Spec.Command
+	}
+
+	if fb.Spec.Ports != nil {
+		ds.Spec.Template.Spec.Containers[0].Ports = append(ds.Spec.Template.Spec.Containers[0].Ports, fb.Spec.Ports...)
 	}
 
 	if fb.Spec.EnvVars != nil {
