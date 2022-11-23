@@ -28,6 +28,7 @@ import (
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/output"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/parser"
 	"k8s.io/api/core/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -619,6 +620,13 @@ func (in *FluentBitSpec) DeepCopyInto(out *FluentBitSpec) {
 		in, out := &in.Ports, &out.Ports
 		*out = make([]v1.ContainerPort, len(*in))
 		copy(*out, *in)
+	}
+	if in.RBACRules != nil {
+		in, out := &in.RBACRules, &out.RBACRules
+		*out = make([]rbacv1.PolicyRule, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 }
 

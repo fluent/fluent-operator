@@ -18,6 +18,7 @@ package v1alpha2
 
 import (
 	corev1 "k8s.io/api/core/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/fluent/fluent-operator/pkg/utils"
@@ -28,6 +29,8 @@ import (
 
 // FluentBitSpec defines the desired state of FluentBit
 type FluentBitSpec struct {
+	// DisableService tells if the fluentbit service should be deployed.
+	DisableService bool `json:"disableService,omitempty"`
 	// Fluent Bit image.
 	Image string `json:"image,omitempty"`
 	// Fluent Bit Watcher command line arguments.
@@ -78,6 +81,8 @@ type FluentBitSpec struct {
 	InitContainers []corev1.Container `json:"initContainers,omitempty"`
 	// Ports represents the pod's ports.
 	Ports []corev1.ContainerPort `json:"ports,omitempty"`
+	// RBACRules represents additional rbac rules which will be applied to the fluent-bit clusterrole.
+	RBACRules []rbacv1.PolicyRule `json:"rbacRules,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit
