@@ -119,6 +119,17 @@ fluentbit:
       enable: false
       brokers: "<kafka broker list like xxx.xxx.xxx.xxx:9092,yyy.yyy.yyy.yyy:9092>"
       topics: ks-log
+  
+  #Configure the default filters in FluentBit.
+  filter:
+    kubernetes:
+      enable: true
+      labels: false
+      annotations: false
+    containerd:
+      enable: true
+    systemd:
+      enable: true
 
 fluentd:
   enable: false
