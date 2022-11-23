@@ -5,6 +5,8 @@ metadata:
   labels:
     app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluent-operator
+  annotations:
+    {{- toYaml .Values.operator.annotations| nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -15,6 +17,8 @@ spec:
       labels:
         app.kubernetes.io/component: operator
         app.kubernetes.io/name: fluent-operator
+      annotations:
+        {{- toYaml .Values.operator.annotations| nindent 8 }}
     spec:
       {{- if eq .Values.containerRuntime "docker" }}
       volumes:
