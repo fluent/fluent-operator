@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	ForwardPortName = "forward"
-	HttpPortName    = "http"
+	FluentdForwardPortName = "forward"
+	FluentdHttpPortName    = "http"
 )
 
 func MakeFluentdService(fd fluentdv1alpha1.Fluentd) corev1.Service {
@@ -45,7 +45,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) corev1.Service {
 			forwardContainerPort := corev1.ServicePort{
 				Name:       DefaultForwardName,
 				Port:       forwardPort,
-				TargetPort: intstr.FromString(ForwardPortName),
+				TargetPort: intstr.FromString(FluentdForwardPortName),
 				Protocol:   corev1.ProtocolTCP,
 			}
 			svc.Spec.Ports = append(svc.Spec.Ports, forwardContainerPort)
@@ -60,7 +60,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) corev1.Service {
 			httpContainerPort := corev1.ServicePort{
 				Name:       DefaultHttpName,
 				Port:       httpPort,
-				TargetPort: intstr.FromString(HttpPortName),
+				TargetPort: intstr.FromString(FluentdHttpPortName),
 				Protocol:   corev1.ProtocolTCP,
 			}
 			svc.Spec.Ports = append(svc.Spec.Ports, httpContainerPort)
