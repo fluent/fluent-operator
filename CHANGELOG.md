@@ -1,3 +1,17 @@
+## 1.7.0 / 2022-11-23
+### Features
+- Feat: adding retry_limit to http-outputs (#445)
+- Add environment variable support to the FluentBit CRD (#449)
+- Make more fluent-bit configurations configurable via the FluentBit resource (#452)
+- Feat: control/configure default ClusterFilters (helm chart) (#453)
+
+### ENHANCEMENT
+- Splunk make eventfield plural (#447)
+
+### BUGFIX 
+- Fix: intendation corrected in fluentbit-fluentBit.yaml (#454)
+- Fix: fluentbit template render error - fixes #457 (#458)
+
 ## 1.6.1 / 2022-10-31
 ### BUGFIX 
 - Fix: add missing config attributes for splunk output (#437)
