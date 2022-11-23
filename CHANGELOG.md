@@ -4,6 +4,7 @@
 - Add environment variable support to the FluentBit CRD (#449)
 - Make more fluent-bit configurations configurable via the FluentBit resource (#452)
 - Feat: control/configure default ClusterFilters (helm chart) (#453)
+- Add fluent-bit service and option to extend the RBAC configurations (#462)
 
 ### ENHANCEMENT
 - Splunk make eventfield plural (#447)
