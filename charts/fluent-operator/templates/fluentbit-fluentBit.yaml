@@ -9,13 +9,13 @@ spec:
   image: {{ .Values.fluentbit.image.repository }}:{{ .Values.fluentbit.image.tag }}
   {{- if .Values.fluentbit.imagePullSecrets }}
   imagePullSecrets:
-  {{ toYaml .Values.fluentbit.imagePullSecrets | indent 4 }}
+{{ toYaml .Values.fluentbit.imagePullSecrets | indent 4 }}
   {{- end }}
   positionDB:
     hostPath:
       path: /var/lib/fluent-bit/
   resources:
-    {{- toYaml .Values.fluentbit.resources | nindent 4  }}
+{{- toYaml .Values.fluentbit.resources | nindent 4  }}
   fluentBitConfigName: fluent-bit-config
   tolerations:
     - operator: Exists
@@ -28,18 +28,18 @@ spec:
                 operator: DoesNotExist
   {{- if .Values.fluentbit.secrets }}
   secrets:
-  {{ toYaml .Values.fluentbit.secrets | indent 4 }}
+{{ toYaml .Values.fluentbit.secrets | indent 4 }}
   {{- end }}
   {{- if .Values.fluentbit.volumes }}
   volumes:
-  {{ toYaml .Values.fluentbit.volumes | indent 4 }}
+{{ toYaml .Values.fluentbit.volumes | indent 4 }}
   {{- end }}
   {{- if .Values.fluentbit.volumesMounts }}
   volumesMounts:
-  {{ toYaml .Values.fluentbit.volumesMounts | indent 4 }}
+{{ toYaml .Values.fluentbit.volumesMounts | indent 4 }}
   {{- end }}
   {{- if .Values.fluentbit.annotations }}
   annotations:
-  {{ toYaml .Values.fluentbit.annotations | indent 4 }}
+{{ toYaml .Values.fluentbit.annotations | indent 4 }}
   {{- end }}
 {{- end }}
