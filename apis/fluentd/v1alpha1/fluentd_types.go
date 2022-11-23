@@ -20,6 +20,7 @@ import (
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/input"
 	"github.com/fluent/fluent-operator/pkg/utils"
 	corev1 "k8s.io/api/core/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -65,6 +66,8 @@ type FluentdSpec struct {
 	RuntimeClassName string `json:"runtimeClassName,omitempty"`
 	// PriorityClassName represents the pod's priority class.
 	PriorityClassName string `json:"priorityClassName,omitempty"`
+	// RBACRules represents additional rbac rules which will be applied to the fluentd clusterrole.
+	RBACRules []rbacv1.PolicyRule `json:"rbacRules,omitempty"`
 }
 
 type BufferVolume struct {
