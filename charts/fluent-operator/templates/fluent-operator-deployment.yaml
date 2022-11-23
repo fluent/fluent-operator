@@ -15,6 +15,9 @@ spec:
       labels:
         app.kubernetes.io/component: operator
         app.kubernetes.io/name: fluent-operator
+        {{- if .Values.operator.labels }}
+        {{- toYaml .Values.operator.labels | nindent 8 }}
+        {{- end }}
     spec:
       {{- if eq .Values.containerRuntime "docker" }}
       volumes:
@@ -85,5 +88,5 @@ spec:
       serviceAccountName: fluent-operator
       {{- if .Values.operator.imagePullSecrets }}
       imagePullSecrets:
-      {{ toYaml .Values.operator.imagePullSecrets | indent 8 }}
+      {{- toYaml .Values.operator.imagePullSecrets | nindent 8 }}
       {{- end }}

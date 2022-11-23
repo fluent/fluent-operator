@@ -42,4 +42,8 @@ spec:
   annotations:
 {{ toYaml .Values.fluentbit.annotations | indent 4 }}
   {{- end }}
+  {{- if .Values.fluentbit.labels }}
+  labels:
+{{ toYaml .Values.fluentbit.labels | indent 4 }}
+  {{- end }}
 {{- end }}
