@@ -16,7 +16,7 @@ operator:
     tag: "20.10"
   container:
     repository: "kubesphere/fluent-operator"
-    tag: "latest"
+    tag: "v1.7.0"
     # FluentBit operator resources. Usually user needn't to adjust these.
   resources:
     limits:
