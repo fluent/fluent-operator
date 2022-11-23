@@ -26,6 +26,7 @@ import (
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/input"
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/output"
 	corev1 "k8s.io/api/core/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
@@ -706,6 +707,13 @@ func (in *FluentdSpec) DeepCopyInto(out *FluentdSpec) {
 	if in.Tolerations != nil {
 		in, out := &in.Tolerations, &out.Tolerations
 		*out = make([]corev1.Toleration, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.RBACRules != nil {
+		in, out := &in.RBACRules, &out.RBACRules
+		*out = make([]rbacv1.PolicyRule, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}

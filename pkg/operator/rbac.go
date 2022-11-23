@@ -8,7 +8,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func MakeRBACObjects(name, namespace, component string) (*rbacv1.ClusterRole, *corev1.ServiceAccount, *rbacv1.ClusterRoleBinding) {
+func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1.PolicyRule) (*rbacv1.ClusterRole, *corev1.ServiceAccount, *rbacv1.ClusterRoleBinding) {
 	rbacName := fmt.Sprintf("kubesphere-%s", component)
 	cr := rbacv1.ClusterRole{
 		ObjectMeta: metav1.ObjectMeta{
@@ -21,6 +21,10 @@ func MakeRBACObjects(name, namespace, component string) (*rbacv1.ClusterRole, *c
 				Resources: []string{"pods"},
 			},
 		},
+	}
+
+	if additionalRules != nil {
+		cr.Rules = append(cr.Rules, additionalRules...)
 	}
 
 	sa := corev1.ServiceAccount{
