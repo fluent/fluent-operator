@@ -27,6 +27,9 @@ operator:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
   # - name: "image-pull-secret"
+  # Reference one more key-value pairs of labels that should be attached to fluent-operator
+  labels: {}
+#  myExampleLabel: someValue  
   logPath:
     crio: /var/log
     containerd: /var/log
@@ -47,6 +50,10 @@ fluentbit:
   # Specify custom annotations to be added to each FluentBit pod.
   annotations: {}
     # prometheus.io/scrape: "true"
+  # Specify additional custom labels for fluentbit-pods
+  labels: {}
+
+
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##

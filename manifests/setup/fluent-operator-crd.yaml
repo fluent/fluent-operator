@@ -8350,6 +8350,11 @@ spec:
                   - name
                   type: object
                 type: array
+              labels:
+                additionalProperties:
+                  type: string
+                description: Labels to add to each FluentBit pod
+                type: object
               livenessProbe:
                 description: LivenessProbe represents the pod's liveness probe.
                 properties:
