@@ -38,6 +38,7 @@ var (
 )
 
 var configPath string
+var externalPluginPath string
 var binPath string
 var watchPath string
 var poll bool
@@ -48,6 +49,7 @@ func main() {
 
 	flag.StringVar(&binPath, "b", defaultBinPath, "The fluent bit binary path.")
 	flag.StringVar(&configPath, "c", defaultCfgPath, "The config file path.")
+	flag.StringVar(&externalPluginPath, "e", "", "Path to external plugin (shared lib)")
 	flag.BoolVar(&exitOnFailure, "exit-on-failure", false, "If fluentbit exits with failure, also exit the watcher.")
 	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
 	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
@@ -186,7 +188,11 @@ func start() {
 		return
 	}
 
-	cmd = exec.Command(binPath, "-c", configPath)
+	if externalPluginPath != "" {
+		cmd = exec.Command(binPath, "-c", configPath, "-e", externalPluginPath)
+	} else {
+		cmd = exec.Command(binPath, "-c", configPath)
+	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Start(); err != nil {
