@@ -19,8 +19,10 @@ spec:
     parser: cri
     {{- end }}
     refreshIntervalSeconds: 10
-    memBufLimit: {{ .Values.fluentbit.input.tail.memBufLimit }}
-    skipLongLines: true
+    memBufLimit: {{ .Values.fluentbit.input.tail.memBufLimit | default "5MB" }}
+    pathKey: {{ .Values.fluentbit.input.tail.pathKey | default "sourcePath"}}
+    excludePath: {{ .Values.fluentbit.input.tail.excludePath | default "*.gz,*.tar.gz" }}
+    skipLongLines: {{ .Values.fluentbit.input.tail.skipLongLines | default true }}
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
 {{- end }}
