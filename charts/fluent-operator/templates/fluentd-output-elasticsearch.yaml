@@ -1,6 +1,6 @@
 {{- if .Values.Kubernetes -}}
-{{- if .Values.fluentd.enable -}}
-{{- if .Values.fluentd.output.es.enable -}}
+{{- if or .Values.fluentd.enable .Values.fluentd.enabled -}}
+{{- if or .Values.fluentd.output.es.enable .Values.fluentd.output.es.enabled -}}
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:

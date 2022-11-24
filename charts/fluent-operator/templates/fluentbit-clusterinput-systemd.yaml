@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.input.systemd.enabled -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
@@ -15,4 +16,5 @@ spec:
     systemdFilter:
       - _SYSTEMD_UNIT={{ .Values.containerRuntime }}.service
       - _SYSTEMD_UNIT=kubelet.service
+{{- end }}
 {{- end }}

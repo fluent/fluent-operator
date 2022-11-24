@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if or .Values.fluentbit.filter.systemd.enable .Values.fluentbit.filter.systemd.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -25,4 +26,5 @@ data:
 
       return 1, timestamp, new_record
     end
+{{- end }}
 {{- end }}

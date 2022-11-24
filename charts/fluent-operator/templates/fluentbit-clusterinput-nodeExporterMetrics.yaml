@@ -1,5 +1,5 @@
 {{- if .Values.Kubernetes -}}
-{{- if .Values.fluentbit.input.nodeExporterMetrics -}}
+{{- if .Values.fluentbit.input.nodeExporterMetrics.enabled -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
@@ -9,6 +9,6 @@ metadata:
     fluentbit.fluent.io/component: logging
 spec:
   nodeExporterMetrics:
-{{ toYaml .Values.fluentbit.input.nodeExporterMetrics | indent 4}}
+{{ toYaml .Values.fluentbit.input.nodeExporterMetrics.config | indent 4}}
 {{- end }}
 {{- end }}

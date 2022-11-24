@@ -1,8 +1,9 @@
+---
 # Default values for fluentbit-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-#Set this to containerd or crio if you want to collect CRI format logs
+# Set this to containerd or crio if you want to collect CRI format logs
 containerRuntime: docker
 Kubernetes: false
 
@@ -13,7 +14,7 @@ operator:
   container:
     repository: "kubesphere/fluent-operator"
     tag: "latest"
-    # FluentBit operator resources. Usually user needn't to adjust these.
+  # FluentBit operator resources. Usually user needn't to adjust these.
   resources:
     limits:
       cpu: 100m
@@ -29,7 +30,7 @@ operator:
   # - name: "image-pull-secret"
   # Reference one more key-value pairs of labels that should be attached to fluent-operator
   labels: {}
-#  myExampleLabel: someValue  
+  # myExampleLabel: someValue
   logPath:
     crio: /var/log
     containerd: /var/log
@@ -39,7 +40,7 @@ fluentbit:
     repository: "kubesphere/fluent-bit"
     tag: "v1.9.9"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
-  #You can adjust it based on the log volume.
+  # You can adjust it based on the log volume.
   resources:
     limits:
       cpu: 500m
@@ -49,15 +50,13 @@ fluentbit:
       memory: 25Mi
   # Specify custom annotations to be added to each FluentBit pod.
   annotations: {}
-    # prometheus.io/scrape: "true"
+  #   prometheus.io/scrape: "true"
   # Specify additional custom labels for fluentbit-pods
   labels: {}
-
-
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
-  imagePullSecrets: [ ]
+  imagePullSecrets: []
   # - name: "image-pull-secret"
   secrets: []
   # List of volumes that can be mounted by containers belonging to the pod.
@@ -65,83 +64,97 @@ fluentbit:
   # Pod volumes to mount into the container's filesystem.
   volumesMounts: []
 
-  # Remove the above empty volumes and volumesMounts, and then set volumes and volumesMounts as below if you want to collect node exporter metrics 
-# volumes:
-#   - name: hostProc
-#     hostPath:
-#       path: /proc/
-#   - name: hostSys
-#     hostPath:
-#       path: /sys/
-# volumesMounts:
-#   - mountPath: /host/sys
-#     mountPropagation: HostToContainer
-#     name: hostSys 
-#     readOnly: true
-#   - mountPath: /host/proc
-#     mountPropagation: HostToContainer
-#     name: hostProc 
-#     readOnly: true
+  # Remove the above empty volumes and volumesMounts, and then set volumes and volumesMounts as below if you want to collect node exporter metrics
+  # volumes:
+  #   - name: hostProc
+  #     hostPath:
+  #       path: /proc/
+  #   - name: hostSys
+  #     hostPath:
+  #       path: /sys/
+  # volumesMounts:
+  #   - mountPath: /host/sys
+  #     mountPropagation: HostToContainer
+  #     name: hostSys
+  #     readOnly: true
+  #   - mountPath: /host/proc
+  #     mountPropagation: HostToContainer
+  #     name: hostProc
+  #     readOnly: true
 
-  #Set a limit of memory that Tail plugin can use when appending data to the Engine.
-  #If the limit is reach, it will be paused; when the data is flushed it resumes.
-  #if the inbound traffic is less than 2.4Mbps, setting memBufLimit to 5MB is enough
-  #if the inbound traffic is less than 4.0Mbps, setting memBufLimit to 10MB is enough
-  #if the inbound traffic is less than 13.64Mbps, setting memBufLimit to 50MB is enough
+  # Set a limit of memory that Tail plugin can use when appending data to the Engine.
+  # If the limit is reach, it will be paused; when the data is flushed it resumes.
+  # if the inbound traffic is less than 2.4Mbps, setting memBufLimit to 5MB is enough
+  # if the inbound traffic is less than 4.0Mbps, setting memBufLimit to 10MB is enough
+  # if the inbound traffic is less than 13.64Mbps, setting memBufLimit to 50MB is enough
   input:
     tail:
+      enabled: true
       memBufLimit: 5MB
-    # uncomment below nodeExporterMetrics section if you want to collect node exporter metrics 
-#   nodeExporterMetrics:
-#     tag: node_metrics
-#     scrapeInterval: 15s
-#     path:
-#       procfs: /host/proc
-#       sysfs: /host/sys
-
-  #Configure the output plugin parameter in FluentBit.
-  #You can set enable to true to output logs to the specified location.
-  output:
-    es:
-      enable: false
-      host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
-      port: 9200
-      logstashPrefix: ks-logstash-log
-#      path: ""
-#      bufferSize: "4KB"
-#      index: "fluent-bit"
-#      httpUser:
-#      httpPassword:
-#      logstashFormat: true
-#      replaceDots: false
-#      enableTLS: false
-#      tls:
-#        verify: On
-#        debug: 1
-#        caFile: "<Absolute path to CA certificate file>"
-#        caPath: "<Absolute path to scan for certificate files>"
-#        crtFile: "<Absolute path to private Key file>"
-#        keyFile: "<Absolute path to private Key file>"
-#        keyPassword:
-#        vhost: "<Hostname to be used for TLS SNI extension>"
-    kafka:
-      enable: false
-      brokers: "<kafka broker list like xxx.xxx.xxx.xxx:9092,yyy.yyy.yyy.yyy:9092>"
-      topics: ks-log
-  
-  #Configure the default filters in FluentBit.
-  filter:
-    kubernetes:
-      enable: true
-      labels: false
-      annotations: false
-    containerd:
-      enable: true
+      # alternativeName: dsfafa
+      # excludePath: *.gz,*.tar.gz
+      # pathKey: "sourcePath"
+      # multilineParserenabled: false
+    nodeExporterMetrics: {}
+    #   enabled: false
+    #   tag: node_metrics
+    #   scrapeInterval: 15s
+    #   path:
+    #     procfs: /host/proc
+    #     sysfs: /host/sys
     systemd:
-      enable: true
+      enabled: true
+
+  # Configure the filter plugin parameter in FluentBit.
+  # You can set enabled to true to enabled the specified filters.
+
+  filter:
+    containerd:
+      enabled: true
+    systemd:
+      enabled: true
+    kubernetes:
+      enabled: true
+      # labels: false
+      # annotations: false
+  # Configure the output plugin parameter in FluentBit.
+  # You can set enabled to true to output logs to the specified location.
+  output:
+    es: {}
+    #   enabled: false
+    #   host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
+    #   port: 9200
+    #   logstashPrefix: ks-logstash-log
+    #   path: ""
+    #   bufferSize: "4KB"
+    #   index: "fluent-bit"
+    #   httpUser:
+    #   httpPassword:
+    #   logstashFormat: true
+    #   replaceDots: false
+    #   enabledTLS: false
+    #   tls:
+    #     verify: On
+    #     debug: 1
+    #     caFile: "<Absolute path to CA certificate file>"
+    #     caPath: "<Absolute path to scan for certificate files>"
+    #     crtFile: "<Absolute path to private Key file>"
+    #     keyFile: "<Absolute path to private Key file>"
+    #     keyPassword:
+    #     vhost: "<Hostname to be used for TLS SNI extension>"
+    kafka: {}
+    #   enabled: false
+    #   brokers: "<kafka broker list like xxx.xxx.xxx.xxx:9092,yyy.yyy.yyy.yyy:9092>"
+    #   topics: ks-log
+    opensearch: {}
+    #   enabled: false
+    #   config: []
+    opentelemetry: {}
+    #   enabled: false
+    #   config: []
 
 fluentd:
-  enable: false
+  enabled: false
   name: fluentd
   port: 24224
   image:
@@ -155,37 +168,32 @@ fluentd:
     - default
   resources: {}
   # limits:
-    # cpu: 100m
-    # memory: 128Mi
+  #   cpu: 100m
+  #   memory: 128Mi
   # requests:
-    # cpu: 100m
-    # memory: 128Mi
-  #Configure the output plugin parameter in Fluentd.
-  #You can set enable to true to output logs to the specified location.
+  #   cpu: 100m
+  #   memory: 128Mi
+  # Configure the output plugin parameter in Fluentd.
+  # You can set enabled to true to output logs to the specified location.
   output:
     es:
-      enable: false
+      enabled: false
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200
       logstashPrefix: ks-logstash-log
       buffer:
-        enable: false
+        enabled: false
         type: file
         path: /buffers/es
     kafka:
-      enable: false
+      enabled: false
       brokers: "my-cluster-kafka-bootstrap.default.svc:9091,my-cluster-kafka-bootstrap.default.svc:9092,my-cluster-kafka-bootstrap.default.svc:9093"
       topicKey: kubernetes_ns
       buffer:
-        enable: false
+        enabled: false
         type: file
         path: /buffers/kafka
 
 nameOverride: ""
 fullnameOverride: ""
 namespaceOverride: ""
-
-
-
-
-
