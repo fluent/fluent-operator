@@ -25,5 +25,8 @@ spec:
     skipLongLines: {{ .Values.fluentbit.input.tail.skipLongLines | default true }}
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
+{{ if .Values.fluentbit.input.tail.additionalConfig }}
+{{ toYaml .Values.fluentbit.input.tail.additionalConfig | indent 4}}
+{{- end }}
 {{- end }}
 {{- end }}

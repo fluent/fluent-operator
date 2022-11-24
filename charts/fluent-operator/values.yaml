@@ -90,11 +90,11 @@ fluentbit:
   input:
     tail:
       enabled: true
-      memBufLimit: 5MB
-      # alternativeName: dsfafa
+      # memBufLimit: 5MB
       # excludePath: *.gz,*.tar.gz
       # pathKey: "sourcePath"
-      # multilineParserenabled: false
+      # skipLongLines: true
+      # additionalConfig: {} # Additional parameters
     nodeExporterMetrics: {}
     #   enabled: false
     #   tag: node_metrics
@@ -102,6 +102,8 @@ fluentbit:
     #   path:
     #     procfs: /host/proc
     #     sysfs: /host/sys
+    #   additionalConfig: {} # Additional parameters
+
     systemd:
       enabled: true
 
