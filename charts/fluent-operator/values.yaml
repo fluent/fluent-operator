@@ -21,6 +21,8 @@ operator:
     requests:
       cpu: 100m
       memory: 20Mi
+  # Specify custom annotations to be added to each Fluent Operator pod.
+  annotations: {}
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
