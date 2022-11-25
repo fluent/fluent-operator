@@ -106,6 +106,14 @@ fluentbit:
 
     systemd:
       enabled: true
+      # tag: service.*
+      # path: /var/log/journal
+      # db: /fluent-bit/tail/systemd.db
+      # dbSync: Normal
+      # systemdFilter:
+      #  - _SYSTEMD_UNIT={{ .Values.containerRuntime }}.service
+      #  - _SYSTEMD_UNIT=kubelet.service
+      # additionalConfig: {} # Additional parameters
 
   # Configure the filter plugin parameter in FluentBit.
   # You can set enabled to true to enabled the specified filters.
@@ -150,10 +158,10 @@ fluentbit:
     #   topics: ks-log
     opensearch: {}
     #   enabled: false
-    #   config: []
+    #   additionalConfig: {}
     opentelemetry: {}
     #   enabled: false
-    #   config: []
+    #   additionalConfig: {}}
 
 fluentd:
   enabled: false

@@ -13,8 +13,8 @@ spec:
     scrapeInterval: {{ .Values.fluentbit.input.nodeExporterMetrics.scrapeInterval | default "15s" }}
     path:
       procfs: {{ .Values.fluentbit.input.nodeExporterMetrics.path.procfs | default "/host/proc" }}
-      sysfs: {{ .Values.fluentbit.input.nodeExporterMetrics.sysfs. | default "/host/sys" }}
-{{ if .Values.fluentbit.input.nodeExporterMetrics.additionalConfig }}
+      sysfs: {{ .Values.fluentbit.input.nodeExporterMetrics.path.sysfs | default "/host/sys" }}
+{{- if .Values.fluentbit.input.nodeExporterMetrics.additionalConfig }}
 {{ toYaml .Values.fluentbit.input.nodeExporterMetrics.additionalConfig | indent 4}}
 {{- end }}
 
