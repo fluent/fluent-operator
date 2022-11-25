@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
   annotations:
-    {{- toYaml .Values.fluentbit.annotations| nindent 4 }}    
+    {{- toYaml .Values.fluentbit.annotations| nindent 4 }}
 spec:
   image: {{ .Values.fluentbit.image.repository }}:{{ .Values.fluentbit.image.tag }}
   {{- if .Values.fluentbit.imagePullSecrets }}
