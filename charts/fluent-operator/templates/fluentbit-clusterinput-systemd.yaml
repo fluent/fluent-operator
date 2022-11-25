@@ -9,11 +9,12 @@ metadata:
     fluentbit.fluent.io/component: logging
 spec:
   systemd:
-    tag: {{ .Values.fluentbit.input.systemd.tag | default "service.*" }}
-    path: {{ .Values.fluentbit.input.systemd.path | default "/var/log/journal" }}
-    db: {{ .Values.fluentbit.input.systemd.db | default "/fluent-bit/tail/systemd.db" }}
-    dbSync: {{ .Values.fluentbit.input.systemd.dbSync | default "Normal" }}
-    systemdFilter: {{ .Values.fluentbit.input.systemd.systemdFilter | default ["_SYSTEMD_UNIT={{ .Values.containerRuntime }}.service", "_SYSTEMD_UNIT=kubelet.service]" }}
+    tag: {{ .Values.fluentbit.input.systemd.tag }}
+    path: {{ .Values.fluentbit.input.systemd.path  }}
+    db: {{ .Values.fluentbit.input.systemd.db  }}
+    dbSync: {{ .Values.fluentbit.input.systemd.dbSync  }}
+    systemdFilter:
+{{ toYaml .Values.fluentbit.input.systemd.systemdFilter | indent 6}}
 {{- if .Values.fluentbit.input.systemd.additionalConfig }}
 {{ toYaml .Values.fluentbit.input.systemd.additionalConfig | indent 4}}
 {{- end }}

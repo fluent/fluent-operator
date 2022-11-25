@@ -4,7 +4,7 @@
 # Declare variables to be passed into your templates.
 
 # Set this to containerd or crio if you want to collect CRI format logs
-containerRuntime: docker
+containerRuntime: "docker"
 Kubernetes: false
 
 operator:
@@ -90,15 +90,15 @@ fluentbit:
   input:
     tail:
       enabled: true
-      # tag: kube.*
-      # path: /var/log/containers/*.log
-      # excludePath: *.gz,*.tar.gz
-      # refreshIntervalSeconds: 10
-      # memBufLimit: 5MB
-      # db: /fluent-bit/tail/pos.db
-      # dbSync: Normal
-      # pathKey: "sourcePath"
-      # skipLongLines: true
+      tag: "kube.*"
+      path: "/var/log/containers/*.log"
+      excludePath: "*.gz,*.tar.gz"
+      refreshIntervalSeconds: 10
+      memBufLimit: "5MB"
+      db: "/fluent-bit/tail/pos.db"
+      dbSync: "Normal"
+      pathKey: "sourcePath"
+      skipLongLines: true
       # additionalConfig: {} # Additional parameters
     nodeExporterMetrics: {}
     #   enabled: false
@@ -111,13 +111,13 @@ fluentbit:
 
     systemd:
       enabled: true
-      # tag: service.*
-      # path: /var/log/journal
-      # db: /fluent-bit/tail/systemd.db
-      # dbSync: Normal
-      # systemdFilter:
-      #  - _SYSTEMD_UNIT={{ .Values.containerRuntime }}.service
-      #  - _SYSTEMD_UNIT=kubelet.service
+      tag: "service.*"
+      path: /var/log/journal
+      systemdFilter:
+        - _SYSTEMD_UNIT={{ .Values.containerRuntime }}.service
+        - _SYSTEMD_UNIT=kubelet.service
+      db: /fluent-bit/tail/systemd.db
+      dbSync: Normal
       # additionalConfig: {} # Additional parameters
 
   # Configure the filter plugin parameter in FluentBit.
