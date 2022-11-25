@@ -90,8 +90,13 @@ fluentbit:
   input:
     tail:
       enabled: true
-      # memBufLimit: 5MB
+      # tag: kube.*
+      # path: /var/log/containers/*.log
       # excludePath: *.gz,*.tar.gz
+      # refreshIntervalSeconds: 10
+      # memBufLimit: 5MB
+      # db: /fluent-bit/tail/pos.db
+      # dbSync: Normal
       # pathKey: "sourcePath"
       # skipLongLines: true
       # additionalConfig: {} # Additional parameters

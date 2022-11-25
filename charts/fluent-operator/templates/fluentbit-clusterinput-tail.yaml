@@ -9,8 +9,8 @@ metadata:
     fluentbit.fluent.io/component: logging
 spec:
   tail:
-    tag: kube.*
-    path: /var/log/containers/*.log
+    tag: {{ .Values.fluentbit.input.tail.tag | default "kube.*" }}
+    path: {{ .Values.fluentbit.input.tail.path | default "/var/log/containers/*.log" }}
     {{- if eq .Values.containerRuntime "docker" }}
     parser: docker
     {{- else if eq .Values.containerRuntime "containerd" }}
@@ -18,13 +18,13 @@ spec:
     {{- else if eq .Values.containerRuntime "crio" }}
     parser: cri
     {{- end }}
-    refreshIntervalSeconds: 10
+    refreshIntervalSeconds: {{ .Values.fluentbit.input.tail.refreshIntervalSeconds | default 10 }}
     memBufLimit: {{ .Values.fluentbit.input.tail.memBufLimit | default "5MB" }}
-    pathKey: {{ .Values.fluentbit.input.tail.pathKey | default "sourcePath"}}
+    pathKey: {{ .Values.fluentbit.input.tail.pathKey | default "sourcePath" }}
     excludePath: {{ .Values.fluentbit.input.tail.excludePath | default "*.gz,*.tar.gz" }}
     skipLongLines: {{ .Values.fluentbit.input.tail.skipLongLines | default true }}
-    db: /fluent-bit/tail/pos.db
-    dbSync: Normal
+    db: {{ .Values.fluentbit.input.tail.db | default "/fluent-bit/tail/pos.db" }}
+    dbSync: {{ .Values.fluentbit.input.tail.dbSync | default "Normal" }}
 {{ if .Values.fluentbit.input.tail.additionalConfig }}
 {{ toYaml .Values.fluentbit.input.tail.additionalConfig | indent 4}}
 {{- end }}
