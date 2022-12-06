@@ -85,6 +85,8 @@ type Tail struct {
 	DockerMode *bool `json:"dockerMode,omitempty"`
 	// Wait period time in seconds to flush queued unfinished split lines.
 	DockerModeFlushSeconds *int64 `json:"dockerModeFlushSeconds,omitempty"`
+	// Specify an optional parser for the first line of the docker multiline mode. The parser name to be specified must be registered in the parsers.conf file.
+	DockerModeParser string `json:"dockerModeParser,omitempty"`
 	// DisableInotifyWatcher will disable inotify and use the file stat watcher instead.
 	DisableInotifyWatcher *bool `json:"disableInotifyWatcher,omitempty"`
 	// This will help to reassembly multiline messages originally split by Docker or CRI
@@ -166,6 +168,9 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if t.DockerModeFlushSeconds != nil {
 		kvs.Insert("Docker_Mode_Flush", fmt.Sprint(*t.DockerModeFlushSeconds))
+	}
+	if t.DockerModeParser != "" {
+		kvs.Insert("Docker_Mode_Parser", fmt.Sprint(t.DockerModeParser))
 	}
 	if t.DisableInotifyWatcher != nil {
 		kvs.Insert("Inotify_Watcher", fmt.Sprint(!*t.DisableInotifyWatcher))

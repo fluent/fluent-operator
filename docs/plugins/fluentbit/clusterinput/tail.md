@@ -28,5 +28,6 @@ The Tail input plugin allows to monitor one or several text files. It has a simi
 | parserN | Optional-extra parser to interpret and structure multiline entries. This option can be used to define multiple parsers. | []string |
 | dockerMode | If enabled, the plugin will recombine split Docker log lines before passing them to any parser as configured above. This mode cannot be used at the same time as Multiline. | *bool |
 | dockerModeFlushSeconds | Wait period time in seconds to flush queued unfinished split lines. | *int64 |
+| dockerModeParser | Specify an optional parser for the first line of the docker multiline mode. The parser name to be specified must be registered in the parsers.conf file. | string |
 | disableInotifyWatcher | DisableInotifyWatcher will disable inotify and use the file stat watcher instead. | *bool |
 | multilineParser | This will help to reassembly multiline messages originally split by Docker or CRI Specify one or Multiline Parser definition to apply to the content. | string |
