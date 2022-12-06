@@ -11,8 +11,8 @@ require (
 	github.com/oklog/run v1.1.0
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.24.1
-	k8s.io/api v0.25.2
-	k8s.io/apimachinery v0.25.2
+	k8s.io/api v0.25.4
+	k8s.io/apimachinery v0.25.4
 	k8s.io/client-go v0.25.2
 	k8s.io/klog/v2 v2.80.1
 	sigs.k8s.io/controller-runtime v0.13.0
