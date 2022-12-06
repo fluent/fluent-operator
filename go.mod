@@ -3,7 +3,7 @@ module github.com/fluent/fluent-operator
 go 1.19
 
 require (
-	github.com/fsnotify/fsnotify v1.5.4
+	github.com/fsnotify/fsnotify v1.6.0
 	github.com/go-kit/kit v0.12.0
 	github.com/go-logr/logr v1.2.3
 	github.com/go-openapi/errors v0.20.3
