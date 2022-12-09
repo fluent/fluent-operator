@@ -29,7 +29,7 @@ operator:
   # - name: "image-pull-secret"
   # Reference one more key-value pairs of labels that should be attached to fluent-operator
   labels: {}
-#  myExampleLabel: someValue  
+#  myExampleLabel: someValue
   logPath:
     crio: /var/log
     containerd: /var/log
@@ -37,7 +37,7 @@ operator:
 fluentbit:
   image:
     repository: "kubesphere/fluent-bit"
-    tag: "v1.9.9"
+    tag: "v2.0.6"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   #You can adjust it based on the log volume.
   resources:
@@ -65,7 +65,7 @@ fluentbit:
   # Pod volumes to mount into the container's filesystem.
   volumesMounts: []
 
-  # Remove the above empty volumes and volumesMounts, and then set volumes and volumesMounts as below if you want to collect node exporter metrics 
+  # Remove the above empty volumes and volumesMounts, and then set volumes and volumesMounts as below if you want to collect node exporter metrics
 # volumes:
 #   - name: hostProc
 #     hostPath:
@@ -76,11 +76,11 @@ fluentbit:
 # volumesMounts:
 #   - mountPath: /host/sys
 #     mountPropagation: HostToContainer
-#     name: hostSys 
+#     name: hostSys
 #     readOnly: true
 #   - mountPath: /host/proc
 #     mountPropagation: HostToContainer
-#     name: hostProc 
+#     name: hostProc
 #     readOnly: true
 
   #Set a limit of memory that Tail plugin can use when appending data to the Engine.
@@ -91,7 +91,7 @@ fluentbit:
   input:
     tail:
       memBufLimit: 5MB
-    # uncomment below nodeExporterMetrics section if you want to collect node exporter metrics 
+    # uncomment below nodeExporterMetrics section if you want to collect node exporter metrics
 #   nodeExporterMetrics:
 #     tag: node_metrics
 #     scrapeInterval: 15s
@@ -128,7 +128,7 @@ fluentbit:
       enable: false
       brokers: "<kafka broker list like xxx.xxx.xxx.xxx:9092,yyy.yyy.yyy.yyy:9092>"
       topics: ks-log
-  
+
   #Configure the default filters in FluentBit.
   filter:
     kubernetes:
@@ -184,8 +184,3 @@ fluentd:
 nameOverride: ""
 fullnameOverride: ""
 namespaceOverride: ""
-
-
-
-
-
