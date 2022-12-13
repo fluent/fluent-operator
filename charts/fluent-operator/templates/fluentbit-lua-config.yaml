@@ -1,5 +1,5 @@
-{{- if .Values.Kubernetes -}}
-{{- if or .Values.fluentbit.filter.systemd.enable .Values.fluentbit.filter.systemd.enabled -}}
+{{- if or .Values.fluentbit.enabled .Values.Kubernetes -}}
+{{- if .Values.fluentbit.filter.systemd.enable -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

@@ -1,4 +1,4 @@
-{{- if .Values.Kubernetes -}}
+{{- if or .Values.fluentbit.enabled .Values.Kubernetes -}}
 {{- if or .Values.fluentbit.output.es.enable .Values.fluentbit.output.es.enabled -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput

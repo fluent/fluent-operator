@@ -1,5 +1,6 @@
-{{- if .Values.Kubernetes -}}
-{{- if or .Values.fluentd.enable .Values.fluentd.enabled -}}
+{{- if or .Values.fluentbit.enabled .Values.Kubernetes -}}
+{{- if .Values.fluentd.enable -}}
+{{- if .Values.fluentbit.output.forward.enabled -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
@@ -12,5 +13,6 @@ spec:
   forward:
     host: {{ .Values.fluentd.name }}.{{ .Release.Namespace }}.svc
     port: {{ .Values.fluentd.forward.port }}
+{{- end }}
 {{- end }}
 {{- end }}

@@ -1,4 +1,4 @@
-{{- if .Values.Kubernetes -}}
+{{- if or .Values.fluentbit.enabled .Values.Kubernetes -}}
 {{- if or .Values.fluentbit.filter.containerd.enable .Values.fluentbit.filter.containerd.enabled -}}
 apiVersion: v1
 kind: ConfigMap

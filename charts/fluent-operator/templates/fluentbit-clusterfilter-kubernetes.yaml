@@ -1,4 +1,4 @@
-{{- if .Values.Kubernetes -}}
+{{- if or .Values.fluentbit.enabled .Values.Kubernetes -}}
 {{- if or .Values.fluentbit.filter.kubernetes.enable .Values.fluentbit.filter.kubernetes.enabled -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterFilter
