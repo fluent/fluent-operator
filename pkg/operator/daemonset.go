@@ -13,9 +13,10 @@ import (
 func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fb.Name,
-			Namespace: fb.Namespace,
-			Labels:    fb.Labels,
+			Name:        fb.Name,
+			Namespace:   fb.Namespace,
+			Labels:      fb.Labels,
+			Annotations: fb.Annotations,
 		},
 		Spec: appsv1.DaemonSetSpec{
 			Selector: &metav1.LabelSelector{

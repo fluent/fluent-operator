@@ -29,7 +29,7 @@ operator:
   # - name: "image-pull-secret"
   # Reference one more key-value pairs of labels that should be attached to fluent-operator
   labels: {}
-  # myExampleLabel: someValue
+#  myExampleLabel: someValue
   logPath:
     crio: /var/log
     containerd: /var/log
@@ -38,7 +38,7 @@ fluentbit:
   enabled: false
   image:
     repository: "kubesphere/fluent-bit"
-    tag: "v1.9.9"
+    tag: "v2.0.6"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
   resources:
@@ -65,22 +65,22 @@ fluentbit:
   volumesMounts: []
 
   # Remove the above empty volumes and volumesMounts, and then set volumes and volumesMounts as below if you want to collect node exporter metrics
-  # volumes:
-  #   - name: hostProc
-  #     hostPath:
-  #       path: /proc/
-  #   - name: hostSys
-  #     hostPath:
-  #       path: /sys/
-  # volumesMounts:
-  #   - mountPath: /host/sys
-  #     mountPropagation: HostToContainer
-  #     name: hostSys
-  #     readOnly: true
-  #   - mountPath: /host/proc
-  #     mountPropagation: HostToContainer
-  #     name: hostProc
-  #     readOnly: true
+# volumes:
+#   - name: hostProc
+#     hostPath:
+#       path: /proc/
+#   - name: hostSys
+#     hostPath:
+#       path: /sys/
+# volumesMounts:
+#   - mountPath: /host/sys
+#     mountPropagation: HostToContainer
+#     name: hostSys
+#     readOnly: true
+#   - mountPath: /host/proc
+#     mountPropagation: HostToContainer
+#     name: hostProc
+#     readOnly: true
 
   # Set a limit of memory that Tail plugin can use when appending data to the Engine.
   # If the limit is reach, it will be paused; when the data is flushed it resumes.

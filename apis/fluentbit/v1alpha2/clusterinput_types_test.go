@@ -1,8 +1,9 @@
 package v1alpha2
 
 import (
-	"github.com/go-logr/logr"
 	"testing"
+
+	"github.com/go-logr/logr"
 
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/input"
@@ -20,7 +21,11 @@ var inputExpected = `[Input]
     Skip_Long_Lines    true
     DB    /fluent-bit/tail/pos.db
     Mem_Buf_Limit    5MB
+    Parser    docker
     Tag    logs.foo.bar
+    Docker_Mode    true
+    Docker_Mode_Flush    4
+    Docker_Mode_Parser    docker-mode-parser
     Inotify_Watcher    false
 [Input]
     Name    dummy
@@ -73,6 +78,10 @@ func TestClusterInputList_Load(t *testing.T) {
 				MemBufLimit:            "5MB",
 				RefreshIntervalSeconds: ptrInt64(10),
 				DB:                     "/fluent-bit/tail/pos.db",
+				Parser:                 "docker",
+				DockerMode:             ptrBool(true),
+				DockerModeFlushSeconds: ptrInt64(4),
+				DockerModeParser:       "docker-mode-parser",
 			},
 		},
 	}
