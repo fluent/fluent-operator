@@ -4506,6 +4506,7 @@ spec:
                       - path
                       - type
                       type: object
+<<<<<<< HEAD
                     customPlugin:
                       description: Custom plugin type
                       properties:
@@ -4513,6 +4514,107 @@ spec:
                           type: string
                       required:
                       - config
+=======
+                    cloudwatch:
+                      description: out_cloudwatch plugin
+                      properties:
+                        autoCreateStream:
+                          type: boolean
+                        awsEcsAuthentication:
+                          type: boolean
+                        awsKeyId:
+                          type: string
+                        awsSecKey:
+                          type: string
+                        awsStsDurationSeconds:
+                          type: string
+                        awsStsEndpointUrl:
+                          type: string
+                        awsStsExternalId:
+                          type: string
+                        awsStsPolicy:
+                          type: string
+                        awsStsRoleArn:
+                          type: string
+                        awsStsSessionName:
+                          type: string
+                        awsUseSts:
+                          type: boolean
+                        concurrency:
+                          type: string
+                        durationSeconds:
+                          type: string
+                        endpoint:
+                          description: Specify an AWS endpoint to send data to.
+                          type: string
+                        httpProxy:
+                          type: string
+                        includeTimeKey:
+                          type: boolean
+                        jsonHandler:
+                          type: string
+                        localtime:
+                          type: boolean
+                        logGroupAwsTags:
+                          type: string
+                        logGroupAwsTagsKey:
+                          type: string
+                        logGroupName:
+                          type: string
+                        logGroupNameKey:
+                          type: string
+                        logRejectedRequest:
+                          type: string
+                        logStreamName:
+                          type: string
+                        logStreamNameKey:
+                          type: string
+                        maxEventsPerBatch:
+                          type: string
+                        maxMessageLength:
+                          type: string
+                        messageKeys:
+                          type: string
+                        policy:
+                          type: string
+                        putLogEventsDisableRetryLimit:
+                          type: boolean
+                        putLogEventsRetryLimit:
+                          type: string
+                        putLogEventsRetryWait:
+                          type: string
+                        region:
+                          description: The AWS region.
+                          type: string
+                        removeLogGroupAwsTagsKey:
+                          type: boolean
+                        removeLogGroupNameKey:
+                          type: boolean
+                        removeLogStreamNameKey:
+                          type: boolean
+                        removeRetentionInDaysKey:
+                          type: boolean
+                        retentionInDays:
+                          type: string
+                        retentionInDaysKey:
+                          type: string
+                        roleArn:
+                          description: ARN of an IAM role to assume (for cross account
+                            access).
+                          type: string
+                        roleSessionName:
+                          description: Role Session name
+                          type: string
+                        sslVerifyPeer:
+                          type: string
+                        useTagAsGroup:
+                          type: string
+                        useTagAsStream:
+                          type: string
+                        webIdentityTokenFile:
+                          description: Web identity token file
+                          type: string
+>>>>>>> Add support for Cloudwatch plugin in Fluentd
                       type: object
                     elasticsearch:
                       description: out_es plugin
@@ -17878,6 +17980,106 @@ spec:
                       description: Custom plugin type
                       properties:
                         config:
+                          type: string
+                      type: object
+                    cloudwatch:
+                      description: out_cloudwatch plugin
+                      properties:
+                        autoCreateStream:
+                          type: boolean
+                        awsEcsAuthentication:
+                          type: boolean
+                        awsKeyId:
+                          type: string
+                        awsSecKey:
+                          type: string
+                        awsStsDurationSeconds:
+                          type: string
+                        awsStsEndpointUrl:
+                          type: string
+                        awsStsExternalId:
+                          type: string
+                        awsStsPolicy:
+                          type: string
+                        awsStsRoleArn:
+                          type: string
+                        awsStsSessionName:
+                          type: string
+                        awsUseSts:
+                          type: boolean
+                        concurrency:
+                          type: string
+                        durationSeconds:
+                          type: string
+                        endpoint:
+                          description: Specify an AWS endpoint to send data to.
+                          type: string
+                        httpProxy:
+                          type: string
+                        includeTimeKey:
+                          type: boolean
+                        jsonHandler:
+                          type: string
+                        localtime:
+                          type: boolean
+                        logGroupAwsTags:
+                          type: string
+                        logGroupAwsTagsKey:
+                          type: string
+                        logGroupName:
+                          type: string
+                        logGroupNameKey:
+                          type: string
+                        logRejectedRequest:
+                          type: string
+                        logStreamName:
+                          type: string
+                        logStreamNameKey:
+                          type: string
+                        maxEventsPerBatch:
+                          type: string
+                        maxMessageLength:
+                          type: string
+                        messageKeys:
+                          type: string
+                        policy:
+                          type: string
+                        putLogEventsDisableRetryLimit:
+                          type: boolean
+                        putLogEventsRetryLimit:
+                          type: string
+                        putLogEventsRetryWait:
+                          type: string
+                        region:
+                          description: The AWS region.
+                          type: string
+                        removeLogGroupAwsTagsKey:
+                          type: boolean
+                        removeLogGroupNameKey:
+                          type: boolean
+                        removeLogStreamNameKey:
+                          type: boolean
+                        removeRetentionInDaysKey:
+                          type: boolean
+                        retentionInDays:
+                          type: string
+                        retentionInDaysKey:
+                          type: string
+                        roleArn:
+                          description: ARN of an IAM role to assume (for cross account
+                            access).
+                          type: string
+                        roleSessionName:
+                          description: Role Session name
+                          type: string
+                        sslVerifyPeer:
+                          type: string
+                        useTagAsGroup:
+                          type: string
+                        useTagAsStream:
+                          type: string
+                        webIdentityTokenFile:
+                          description: Web identity token file
                           type: string
                       type: object
                     elasticsearch:

@@ -48,6 +48,7 @@ RUN apk update \
          fluent-plugin-aws-elasticsearch-service \
          fluent-plugin-opensearch \
          fluent-plugin-grafana-loki \
+         fluent-plugin-cloudwatch-logs \
  && apk del .build-deps \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem /usr/lib/ruby/gems/2.*/gems/fluentd-*/test
 

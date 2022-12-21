@@ -34,6 +34,7 @@ const (
 	OpensearchPlugin    PluginName = "opensearch"
 	MatchPlugin         PluginName = "match"
 	BufferPlugin        PluginName = "buffer"
+	CloudwatchPlugin    PluginName = "cloudwatch_logs"
 
 	BufferTag    string = "tag"
 	LabelTag     string = "tag"
@@ -63,6 +64,7 @@ const (
 	OpensearchOutputType    OutputType = "opensearch"
 	S3OutputType            OutputType = "s3"
 	LokiOutputType          OutputType = "loki"
+	CloudwatchOutputType    OutputType = "cloudwatch_logs"
 )
 
 var (

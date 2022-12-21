@@ -10,6 +10,7 @@ import (
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/custom"
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 	"github.com/fluent/fluent-operator/pkg/utils"
+	"strconv"
 )
 
 // OutputCommon defines the common parameters for output plugin
@@ -46,6 +47,8 @@ type Output struct {
 	Loki *Loki `json:"loki,omitempty"`
 	// Custom plugin type
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
+	// out_cloudwatch plugin
+	Cloudwatch *Cloudwatch `json:"cloudwatch,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -149,6 +152,11 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 		return o.stdoutPlugin(ps, loader), nil
 	}
 	return o.customOutput(ps, loader), nil
+
+	if o.Cloudwatch != nil {
+		ps.InsertType(string(params.CloudwatchOutputType))
+		return o.cloudwatchPlugin(ps, loader), nil
+	}
 
 }
 
@@ -593,6 +601,155 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 	if o.Loki.TlsPrivateKeyFile != nil {
 		parent.InsertPairs("key", fmt.Sprint(*o.Loki.TlsPrivateKeyFile))
 	}
+	return parent
+}
+
+func (o *Output) cloudwatchPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
+	childs := make([]*params.PluginStore, 0)
+
+	if o.Cloudwatch.AutoCreateStream != nil {
+		parent.InsertPairs("auto_create_stream", strconv.FormatBool(*o.Cloudwatch.AutoCreateStream))
+	}
+	if o.Cloudwatch.AwsKeyId != nil && *o.Cloudwatch.AwsKeyId != "" {
+		parent.InsertPairs("aws_key_id", *o.Cloudwatch.AwsKeyId)
+	}
+	if o.Cloudwatch.AwsSecKey != nil && *o.Cloudwatch.AwsSecKey != "" {
+		parent.InsertPairs("aws_sec_key", *o.Cloudwatch.AwsSecKey)
+	}
+	if o.Cloudwatch.AwsUseSts != nil {
+		parent.InsertPairs("aws_use_sts", strconv.FormatBool(*o.Cloudwatch.AwsUseSts))
+	}
+	if o.Cloudwatch.AwsStsRoleARN != nil && *o.Cloudwatch.AwsStsRoleARN != "" {
+		parent.InsertPairs("aws_sts_role_arn", *o.Cloudwatch.AwsStsRoleARN)
+	}
+	if o.Cloudwatch.AwsStsSessionName != nil && *o.Cloudwatch.AwsStsSessionName != "" {
+		parent.InsertPairs("aws_sts_session_name", *o.Cloudwatch.AwsStsSessionName)
+	}
+	if o.Cloudwatch.AwsStsExternalId != nil && *o.Cloudwatch.AwsStsExternalId != "" {
+		parent.InsertPairs("aws_sts_external_id", *o.Cloudwatch.AwsStsExternalId)
+	}
+	if o.Cloudwatch.AwsStsPolicy != nil && *o.Cloudwatch.AwsStsPolicy != "" {
+		parent.InsertPairs("aws_sts_policy", *o.Cloudwatch.AwsStsPolicy)
+	}
+	if o.Cloudwatch.AwsStsDurationSeconds != nil && *o.Cloudwatch.AwsStsDurationSeconds != "" {
+		parent.InsertPairs("aws_sts_duration_seconds", *o.Cloudwatch.AwsStsDurationSeconds)
+	}
+	if o.Cloudwatch.AwsStsEndpointUrl != nil && *o.Cloudwatch.AwsStsEndpointUrl != "" {
+		parent.InsertPairs("aws_sts_endpoint_url", *o.Cloudwatch.AwsStsEndpointUrl)
+	}
+	if o.Cloudwatch.AwsEcsAuthentication != nil {
+		parent.InsertPairs("aws_ecs_authentication", strconv.FormatBool(*o.Cloudwatch.AwsEcsAuthentication))
+	}
+	if o.Cloudwatch.Concurrency != nil && *o.Cloudwatch.Concurrency != "" {
+		parent.InsertPairs("concurrency", *o.Cloudwatch.Concurrency)
+	}
+	if o.Cloudwatch.Endpoint != nil && *o.Cloudwatch.Endpoint != "" {
+		parent.InsertPairs("endpoint", *o.Cloudwatch.Endpoint)
+	}
+	if o.Cloudwatch.SslVerifyPeer != nil && *o.Cloudwatch.SslVerifyPeer != "" {
+		parent.InsertPairs("ssl_verify_peer", *o.Cloudwatch.SslVerifyPeer)
+	}
+	if o.Cloudwatch.HttpProxy != nil && *o.Cloudwatch.HttpProxy != "" {
+		parent.InsertPairs("http_proxy", *o.Cloudwatch.HttpProxy)
+	}
+	if o.Cloudwatch.IncludeTimeKey != nil {
+		parent.InsertPairs("include_time_key", strconv.FormatBool(*o.Cloudwatch.IncludeTimeKey))
+	}
+	if o.Cloudwatch.JsonHandler != nil && *o.Cloudwatch.JsonHandler != "" {
+		parent.InsertPairs("json_handler", *o.Cloudwatch.JsonHandler)
+	}
+	if o.Cloudwatch.Localtime != nil {
+		parent.InsertPairs("localtime", strconv.FormatBool(*o.Cloudwatch.Localtime))
+	}
+	if o.Cloudwatch.LogGroupAwsTags != nil && *o.Cloudwatch.LogGroupAwsTags != "" {
+		parent.InsertPairs("log_group_aws_tags", *o.Cloudwatch.LogGroupAwsTags)
+	}
+	if o.Cloudwatch.LogGroupAwsTagsKey != nil && *o.Cloudwatch.LogGroupAwsTagsKey != "" {
+		parent.InsertPairs("log_group_aws_tags_key", *o.Cloudwatch.LogGroupAwsTagsKey)
+	}
+	if o.Cloudwatch.LogGroupName != nil && *o.Cloudwatch.LogGroupName != "" {
+		parent.InsertPairs("log_group_name", *o.Cloudwatch.LogGroupName)
+	}
+	if o.Cloudwatch.LogGroupNameKey != nil && *o.Cloudwatch.LogGroupNameKey != "" {
+		parent.InsertPairs("log_group_name_key", *o.Cloudwatch.LogGroupNameKey)
+	}
+	if o.Cloudwatch.LogRejectedRequest != nil && *o.Cloudwatch.LogRejectedRequest != "" {
+		parent.InsertPairs("log_rejected_request", *o.Cloudwatch.LogRejectedRequest)
+	}
+	if o.Cloudwatch.LogStreamName != nil && *o.Cloudwatch.LogStreamName != "" {
+		parent.InsertPairs("log_stream_name", *o.Cloudwatch.LogStreamName)
+	}
+	if o.Cloudwatch.LogStreamNameKey != nil && *o.Cloudwatch.LogStreamNameKey != "" {
+		parent.InsertPairs("log_stream_name_key", *o.Cloudwatch.LogStreamNameKey)
+	}
+	if o.Cloudwatch.MaxEventsPerBatch != nil && *o.Cloudwatch.MaxEventsPerBatch != "" {
+		parent.InsertPairs("max_events_per_batch", *o.Cloudwatch.MaxEventsPerBatch)
+	}
+	if o.Cloudwatch.MaxMessageLength != nil && *o.Cloudwatch.MaxMessageLength != "" {
+		parent.InsertPairs("max_message_length", *o.Cloudwatch.MaxMessageLength)
+	}
+	if o.Cloudwatch.MessageKeys != nil && *o.Cloudwatch.MessageKeys != "" {
+		parent.InsertPairs("message_keys", *o.Cloudwatch.MessageKeys)
+	}
+	if o.Cloudwatch.PutLogEventsDisableRetryLimit != nil {
+		parent.InsertPairs("put_log_events_disable_retry_limit", strconv.FormatBool(*o.Cloudwatch.PutLogEventsDisableRetryLimit))
+	}
+	if o.Cloudwatch.PutLogEventsRetryLimit != nil && *o.Cloudwatch.PutLogEventsRetryLimit != "" {
+		parent.InsertPairs("put_log_events_retry_limit", *o.Cloudwatch.PutLogEventsRetryLimit)
+	}
+	if o.Cloudwatch.PutLogEventsRetryWait != nil && *o.Cloudwatch.PutLogEventsRetryWait != "" {
+		parent.InsertPairs("put_log_events_retry_wait", *o.Cloudwatch.PutLogEventsRetryWait)
+	}
+	if o.Cloudwatch.Region != nil && *o.Cloudwatch.Region != "" {
+		parent.InsertPairs("region", *o.Cloudwatch.Region)
+	}
+	if o.Cloudwatch.RemoveLogGroupAwsTagsKey != nil {
+		parent.InsertPairs("remove_log_group_aws_tags_key", strconv.FormatBool(*o.Cloudwatch.RemoveLogGroupAwsTagsKey))
+	}
+	if o.Cloudwatch.RemoveLogGroupNameKey != nil {
+		parent.InsertPairs("remove_log_group_name_key", strconv.FormatBool(*o.Cloudwatch.RemoveLogGroupNameKey))
+	}
+	if o.Cloudwatch.RemoveLogStreamNameKey != nil {
+		parent.InsertPairs("remove_log_stream_name_key", strconv.FormatBool(*o.Cloudwatch.RemoveLogStreamNameKey))
+	}
+	if o.Cloudwatch.RemoveRetentionInDaysKey != nil {
+		parent.InsertPairs("remove_retention_in_days_key", strconv.FormatBool(*o.Cloudwatch.RemoveRetentionInDaysKey))
+	}
+	if o.Cloudwatch.RetentionInDays != nil && *o.Cloudwatch.RetentionInDays != "" {
+		parent.InsertPairs("retention_in_days", *o.Cloudwatch.RetentionInDays)
+	}
+	if o.Cloudwatch.RetentionInDaysKey != nil && *o.Cloudwatch.RetentionInDaysKey != "" {
+		parent.InsertPairs("retention_in_days_key", *o.Cloudwatch.RetentionInDaysKey)
+	}
+	if o.Cloudwatch.UseTagAsGroup != nil && *o.Cloudwatch.UseTagAsGroup != "" {
+		parent.InsertPairs("use_tag_as_group", *o.Cloudwatch.UseTagAsGroup)
+	}
+	if o.Cloudwatch.UseTagAsStream != nil && *o.Cloudwatch.UseTagAsStream != "" {
+		parent.InsertPairs("use_tag_as_stream", *o.Cloudwatch.UseTagAsStream)
+	}
+	if o.Cloudwatch.Policy != nil && *o.Cloudwatch.Policy != "" {
+		parent.InsertPairs("policy", *o.Cloudwatch.Policy)
+	}
+	if o.Cloudwatch.DurationSeconds != nil && *o.Cloudwatch.DurationSeconds != "" {
+		parent.InsertPairs("duration_seconds", *o.Cloudwatch.DurationSeconds)
+	}
+
+	// web_identity_credentials is a subsection of its own containing AWS credential settings
+	child := params.NewPluginStore("web_identity_credentials")
+	if o.Cloudwatch.RoleARN != nil && *o.Cloudwatch.RoleARN != "" {
+		child.InsertPairs("role_arn", *o.Cloudwatch.RoleARN)
+	}
+	if o.Cloudwatch.WebIdentityTokenFile != nil && *o.Cloudwatch.WebIdentityTokenFile != "" {
+		child.InsertPairs("web_identity_token_file", *o.Cloudwatch.WebIdentityTokenFile)
+	}
+	if o.Cloudwatch.RoleSessionName != nil && *o.Cloudwatch.RoleSessionName != "" {
+		child.InsertPairs("role_session_name", *o.Cloudwatch.RoleSessionName)
+	}
+	childs = append(childs, child)
+
+	// format is a subsection of its own.  Not implemented yet.
+
+	parent.InsertChilds(childs...)
 	return parent
 }
 
