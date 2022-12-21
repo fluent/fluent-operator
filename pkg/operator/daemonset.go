@@ -95,6 +95,9 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 							},
 							ReadinessProbe: fb.Spec.ReadinessProbe,
 							LivenessProbe:  fb.Spec.LivenessProbe,
+							SecurityContext: &corev1.SecurityContext{
+								Privileged: func(b bool) *bool { return &b }(true),
+							},
 							Env: []corev1.EnvVar{
 								{
 									Name: "NODE_NAME",

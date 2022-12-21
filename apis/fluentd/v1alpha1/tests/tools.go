@@ -308,14 +308,31 @@ metadata:
   labels:
     output.fluentd.fluent.io/enabled: "true"
     output.fluentd.fluent.io/user: "user1"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - elasticsearch:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200
       logstashFormat: true
       logstashPrefix: ks-logstash-log-user1
 `
+	FluentdClusterOutput2Cloudwatch    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutput2CloudwatchRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-cloudwatch
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec:
+  outputs:
+  - cloudwatch:
+      logStreamName: loggy-mclogface
+      roleArn: abc123
+      awsStsRoleArn: xyz789
+      webIdentityTokenFile: /var/run/secrets/something/token
+`
+
 	once sync.Once
 )
 
@@ -446,6 +463,7 @@ func init() {
 			ParseIntoObject(FluentdClusterOutput2LokiRaw, &FluentdClusterOutput2Loki)
 			ParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
 			ParseIntoObject(FluentdClusterOutputCustomRaw, &FluentdClusterOutputCustom)
+			ParseIntoObject(FluentdClusterOutput2CloudwatchRaw, &FluentdClusterOutput2Cloudwatch)
 		},
 	)
 }
