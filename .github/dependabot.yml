@@ -7,15 +7,15 @@ updates:
   - package-ecosystem: "docker"
     directory: "/cmd/fluent-manager"
     schedule:
-      interval: "monthly"
+      interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/cmd/fluent-watcher/fluent-bit"
+    directory: "/cmd/fluent-watcher/fluentbit"
     schedule:
-      interval: "monthly"
+      interval: "daily"
   - package-ecosystem: "docker"
     directory: "/cmd/fluent-watcher/fluentd/base"
     schedule:
-      interval: "monthly"
+      interval: "daily"
   - package-ecosystem: "docker"
     directory: "/docs/best-practice/forwarding-logs-via-http"
     schedule:
@@ -23,5 +23,5 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
 
