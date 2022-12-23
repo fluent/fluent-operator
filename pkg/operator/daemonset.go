@@ -98,6 +98,22 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 										},
 									},
 								},
+								{
+									Name: "POD_NAME",
+									ValueFrom: &corev1.EnvVarSource{
+										FieldRef: &corev1.ObjectFieldSelector{
+											FieldPath: "metadata.name",
+										},
+									},
+								},
+								{
+									Name: "NAMESPACE",
+									ValueFrom: &corev1.EnvVarSource{
+										FieldRef: &corev1.ObjectFieldSelector{
+											FieldPath: "metadata.namespace",
+										},
+									},
+								},
 							},
 							VolumeMounts: []corev1.VolumeMount{
 								{
