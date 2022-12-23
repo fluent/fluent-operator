@@ -6,6 +6,6 @@ metadata:
     fluentbit.fluent.io/enabled: "true"
     node-role.kubernetes.io/edge: "true"
 spec:
-  matchRegex: (?:kubeedge|service)\.(.*)
+  matchRegex: (?:kubeedge(.*)|service)\.(.*)
   stdout:
       format: msgpack

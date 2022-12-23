@@ -1,0 +1,17 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  name: prometheus-remote-write-container-edge
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    node-role.kubernetes.io/edge: "true"
+spec:
+  matchRegex: (?:kubeedge-container|service)\.(.*)
+  prometheusRemoteWrite:
+    host: <cloud-prometheus-service-host>
+    port: <cloud-prometheus-service-port>
+    uri: /api/v1/write
+    addLabels : 
+      app : fluentbit
+      job : kubeedge
+      node: ${NODE_NAME}
