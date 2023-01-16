@@ -13,8 +13,8 @@ import (
 
 	"github.com/fluent/fluent-operator/pkg/filenotify"
 	"github.com/fsnotify/fsnotify"
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/oklog/run"
 )
 
@@ -23,6 +23,7 @@ const (
 	defaultCfgPath      = "/fluent-bit/etc/fluent-bit.conf"
 	defaultWatchDir     = "/fluent-bit/config"
 	defaultPollInterval = 1 * time.Second
+	defaultFlbTimeout   = 30 * time.Second
 
 	MaxDelayTime = 5 * time.Minute
 	ResetTime    = 10 * time.Minute
@@ -44,6 +45,7 @@ var watchPath string
 var poll bool
 var exitOnFailure bool
 var pollInterval time.Duration
+var flbTerminationTimeout time.Duration
 
 func main() {
 
@@ -54,10 +56,12 @@ func main() {
 	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
 	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
 	flag.DurationVar(&pollInterval, "poll-interval", defaultPollInterval, "Poll interval if using poll watcher.")
+	flag.DurationVar(&flbTerminationTimeout, "flb-timeout", defaultFlbTimeout, "Time to wait for FluentBit to gracefully terminate before sending SIGKILL.")
 
 	flag.Parse()
 
 	logger = log.NewLogfmtLogger(os.Stdout)
+	logger = log.With(logger, "time", log.TimestampFormat(time.Now, time.RFC3339))
 
 	timerCtx, timerCancel = context.WithCancel(context.Background())
 
@@ -129,14 +133,14 @@ func main() {
 						if !isValidEvent(event) {
 							continue
 						}
-
-						_ = level.Info(logger).Log("msg", "Config file changed, stopping Fluent Bit")
-
 						// After the config file changed, it should stop the fluent bit,
 						// and resets the restart backoff timer.
-						stop()
-						resetTimer()
-						_ = level.Info(logger).Log("msg", "Config file changed, stopped Fluent Bit")
+						if cmd != nil {
+							_ = level.Info(logger).Log("msg", "Config file changed, stopping Fluent Bit")
+							stop()
+							resetTimer()
+							_ = level.Info(logger).Log("msg", "Config file changed, stopped Fluent Bit")
+						}
 					case <-watcher.Errors():
 						_ = level.Error(logger).Log("msg", "Watcher stopped")
 						return nil
@@ -214,7 +218,10 @@ func wait() error {
 
 	startTime := time.Now()
 	err := cmd.Wait()
-	_ = level.Error(logger).Log("msg", "Fluent bit exited", "error", err)
+	if err != nil {
+		_ = level.Error(logger).Log("msg", "Fluent bit exited", "error", err)
+	}
+
 	// Once the fluent bit has executed for 10 minutes without any problems,
 	// it should resets the restart backoff timer.
 	if time.Since(startTime) >= ResetTime {
@@ -268,10 +275,26 @@ func stop() {
 	}
 
 	if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
-		_ = level.Info(logger).Log("msg", "Kill Fluent Bit error", "error", err)
+		_ = level.Info(logger).Log("msg", "Error while terminating FluentBit", "error", err)
 	} else {
-		_ = level.Info(logger).Log("msg", "Killed Fluent Bit")
+		_ = level.Info(logger).Log("msg", "Sent SIGTERM to FluentBit, waiting max "+flbTerminationTimeout.String())
 	}
+
+	// Wait for FluentBit to exit, send SIGKILL if it doesn't within the specified timeframe
+	terminated := make(chan *os.ProcessState)
+	go func() {
+		procState, _ := cmd.Process.Wait()
+		terminated <- procState
+	}()
+
+	select {
+	case <-time.After(flbTerminationTimeout):
+		_ = level.Info(logger).Log("msg", "FluentBit failed to terminate gracefully, killing process")
+		cmd.Process.Kill()
+	case <-terminated:
+		_ = level.Info(logger).Log("msg", "FluentBit terminated successfully")
+	}
+	cmd = nil
 }
 
 func resetTimer() {
