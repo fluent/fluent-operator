@@ -30,12 +30,13 @@ const (
 )
 
 var (
-	logger       log.Logger
-	cmd          *exec.Cmd
-	mutex        sync.Mutex
-	restartTimes int32
-	timerCtx     context.Context
-	timerCancel  context.CancelFunc
+	logger        log.Logger
+	cmd           *exec.Cmd
+	flbTerminated chan bool
+	mutex         sync.Mutex
+	restartTimes  int32
+	timerCtx      context.Context
+	timerCancel   context.CancelFunc
 )
 
 var configPath string
@@ -217,10 +218,14 @@ func wait() error {
 	mutex.Unlock()
 
 	startTime := time.Now()
+
+	flbTerminated = make(chan bool, 1)
 	err := cmd.Wait()
 	if err != nil {
 		_ = level.Error(logger).Log("msg", "Fluent bit exited", "error", err)
 	}
+	cmd = nil
+	flbTerminated <- true
 
 	// Once the fluent bit has executed for 10 minutes without any problems,
 	// it should resets the restart backoff timer.
@@ -228,9 +233,6 @@ func wait() error {
 		atomic.StoreInt32(&restartTimes, 0)
 	}
 
-	mutex.Lock()
-	cmd = nil
-	mutex.Unlock()
 	return err
 }
 
@@ -274,27 +276,21 @@ func stop() {
 		return
 	}
 
+	// Send SIGTERM, if fluent-bit doesn't terminate in the specified timeframe, send SIGKILL
 	if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
 		_ = level.Info(logger).Log("msg", "Error while terminating FluentBit", "error", err)
 	} else {
 		_ = level.Info(logger).Log("msg", "Sent SIGTERM to FluentBit, waiting max "+flbTerminationTimeout.String())
 	}
 
-	// Wait for FluentBit to exit, send SIGKILL if it doesn't within the specified timeframe
-	terminated := make(chan *os.ProcessState)
-	go func() {
-		procState, _ := cmd.Process.Wait()
-		terminated <- procState
-	}()
-
 	select {
 	case <-time.After(flbTerminationTimeout):
 		_ = level.Info(logger).Log("msg", "FluentBit failed to terminate gracefully, killing process")
 		cmd.Process.Kill()
-	case <-terminated:
+		<-flbTerminated
+	case <-flbTerminated:
 		_ = level.Info(logger).Log("msg", "FluentBit terminated successfully")
 	}
-	cmd = nil
 }
 
 func resetTimer() {
