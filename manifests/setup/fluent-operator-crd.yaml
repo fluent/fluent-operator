@@ -5217,9 +5217,6 @@ spec:
                           - "on"
                           - "off"
                           type: string
-                        host:
-                          description: Loki hostname or IP address.
-                          type: string
                         httpPassword:
                           description: Password for user defined in HTTP_User Set
                             HTTP basic authentication password
@@ -5307,12 +5304,6 @@ spec:
                           - json
                           - key_value
                           type: string
-                        port:
-                          description: Loki TCP port
-                          format: int32
-                          maximum: 65535
-                          minimum: 1
-                          type: integer
                         tenantID:
                           description: Tenant ID used by default to push logs to Loki.
                             If omitted or empty it assumes Loki is running in single-tenant
@@ -5411,8 +5402,11 @@ spec:
                               description: Hostname to be used for TLS SNI extension
                               type: string
                           type: object
+                        url:
+                          description: Loki URL.
+                          type: string
                       required:
-                      - host
+                      - url
                       type: object
                     opensearch:
                       description: out_opensearch plugin
@@ -15245,9 +15239,6 @@ spec:
                           - "on"
                           - "off"
                           type: string
-                        host:
-                          description: Loki hostname or IP address.
-                          type: string
                         httpPassword:
                           description: Password for user defined in HTTP_User Set
                             HTTP basic authentication password
@@ -15335,12 +15326,6 @@ spec:
                           - json
                           - key_value
                           type: string
-                        port:
-                          description: Loki TCP port
-                          format: int32
-                          maximum: 65535
-                          minimum: 1
-                          type: integer
                         tenantID:
                           description: Tenant ID used by default to push logs to Loki.
                             If omitted or empty it assumes Loki is running in single-tenant
@@ -15439,8 +15424,11 @@ spec:
                               description: Hostname to be used for TLS SNI extension
                               type: string
                           type: object
+                        url:
+                          description: Loki URL.
+                          type: string
                       required:
-                      - host
+                      - url
                       type: object
                     opensearch:
                       description: out_opensearch plugin

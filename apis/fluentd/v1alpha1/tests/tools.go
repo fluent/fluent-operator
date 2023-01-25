@@ -208,8 +208,7 @@ metadata:
 spec: 
   outputs: 
   - loki:
-      host: loki-logging-data.kubesphere-logging-system.svc
-      port: 3100
+      url: http://loki-logging-data.kubesphere-logging-system.svc:3100
 `
 	FluentdClusterOutputLogOperator    fluentdv1alpha1.ClusterOutput
 	FluentdClusterOutputLogOperatorRaw = `

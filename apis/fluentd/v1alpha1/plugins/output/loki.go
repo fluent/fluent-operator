@@ -4,12 +4,8 @@ import "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
 
 // The loki output plugin, allows to ingest your records into a Loki service.
 type Loki struct {
-	// Loki hostname or IP address.
-	Host *string `json:"host"`
-	// Loki TCP port
-	// +kubebuilder:validation:Minimum:=1
-	// +kubebuilder:validation:Maximum:=65535
-	Port *int32 `json:"port,omitempty"`
+	// Loki URL.
+	Url *string `json:"url"`
 	// Set HTTP basic authentication user name.
 	HTTPUser *plugins.Secret `json:"httpUser,omitempty"`
 	// Password for user defined in HTTP_User

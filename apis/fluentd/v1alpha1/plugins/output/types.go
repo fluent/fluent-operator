@@ -510,11 +510,8 @@ func (o *Output) s3Plugin(parent *params.PluginStore, loader plugins.SecretLoade
 }
 
 func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
-	if o.Loki.Host != nil {
-		parent.InsertPairs("host", fmt.Sprint(*o.Loki.Host))
-	}
-	if o.Loki.Port != nil {
-		parent.InsertPairs("port", fmt.Sprint(*o.Loki.Port))
+	if o.Loki.Url != nil {
+		parent.InsertPairs("url", fmt.Sprint(*o.Loki.Url))
 	}
 	if o.Loki.HTTPUser != nil {
 		u, err := loader.LoadSecret(*o.Loki.HTTPUser)
