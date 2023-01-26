@@ -20,6 +20,9 @@ type Loki struct {
 	// Optional list of record keys that will be placed as stream labels.
 	// This configuration property is for records key only.
 	LabelKeys []string `json:"labelKeys,omitempty"`
+	// Optional list of record keys that will be removed from stream labels.
+	// This configuration property is for records key only.
+	RemoveKeys []string `json:"removeKeys,omitempty"`
 	// Format to use when flattening the record to a log line. Valid values are json or key_value.
 	// If set to json,  the log line sent to Loki will be the Fluentd record dumped as JSON.
 	// If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
@@ -27,6 +30,6 @@ type Loki struct {
 	LineFormat string `json:"lineFormat,omitempty"`
 	// If set to true, it will add all Kubernetes labels to the Stream labels.
 	// +kubebuilder:validation:Enum:=on;off
-	AutoKubernetesLabels string `json:"autoKubernetesLabels,omitempty"`
-	*plugins.TLS         `json:"tls,omitempty"`
+	ExtractKubernetesLabels *bool `json:"extractKubernetesLabels,omitempty"`
+	*plugins.TLS            `json:"tls,omitempty"`
 }
