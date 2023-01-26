@@ -29,7 +29,6 @@ type Loki struct {
 	// +kubebuilder:validation:Enum:=json;key_value
 	LineFormat string `json:"lineFormat,omitempty"`
 	// If set to true, it will add all Kubernetes labels to the Stream labels.
-	// +kubebuilder:validation:Enum:=on;off
 	ExtractKubernetesLabels *bool `json:"extractKubernetesLabels,omitempty"`
 	*plugins.TLS            `json:"tls,omitempty"`
 }
