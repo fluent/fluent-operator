@@ -1230,8 +1230,8 @@ spec:
                           type: string
                         removeKeys:
                           description: Optional list of record keys that will be removed
-                            from stream labels. This configuration property is for records
-                            key only.
+                            from stream labels. This configuration property is for
+                            records key only.
                           items:
                             type: string
                           type: array
@@ -1278,12 +1278,12 @@ spec:
                             crtFile:
                               description: Absolute path to Certificate file
                               type: string
-                            keyFile:
-                              description: Absolute path to private Key file
-                              type: string
                             insecure:
                               description: Disable certificate validation
                               type: boolean
+                            keyFile:
+                              description: Absolute path to private Key file
+                              type: string
                           type: object
                         url:
                           description: Loki URL.
