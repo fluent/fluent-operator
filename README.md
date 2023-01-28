@@ -166,6 +166,22 @@ helm install fluent-operator --create-namespace -n fluent https://github.com/flu
 
 > Please replace < version > with a actual version like v1.0.0
 
+Fluent Operator CRDs will be installed by default when running a helm install for the chart. But if the CRD already exists, it will be skipped with a warning. So make sure you install the CRDs by yourself if you upgrade your Fluent Operator version.
+
+> Note: During the upgrade process, if a CRD was previously created using the create operation, an error will occur during the apply operation. Using apply here allows the CRD to be replaced and created in its entirety in a single operation.
+
+To replace the CRDs pull the current helm chart:
+```
+wget https://github.com/fluent/fluent-operator/releases/download/<version>/fluent-operator.tgz
+tar -xf fluent-operator.tgz
+```
+
+To update the CRDs, run the following command:
+
+```shell
+kubectl replace -f fluent-operator/crds
+```
+
 ### Fluent Operator Walkthrough
 
 For more info on various use cases of Fluent Operator, you can refer to [Fluent-Operator-Walkthrough](https://github.com/kubesphere-sigs/fluent-operator-walkthrough).
@@ -188,18 +204,18 @@ kubectl apply -f manifests/logging-stack
 # kubectl kustomize manifests/logging-stack/ | kubectl apply -f -
 ```
 
-#### Deploy the Kubernetes logging stack with Helm
+#### Deploy the Kubernetes logging pipeline with Helm
 
-You can also deploy the Kubernetes logging stack with Helm, just need to set the `Kubernetes` parameter to `ture`:
+You can also deploy the Kubernetes logging pipeline with Helm, just need to set the `Kubernetes` parameter to `true` (default):
 
 ```shell
-helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker
+helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set containerRuntime=docker
 ```
 
-If you want to deploy  `fluentd`, just need to set the `fluentd.enable` parameter to `ture`.:
+If you want to deploy  `fluentd`, just need to set the `fluentd.enable` parameter to `true`:
 
 ```shell
-helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set Kubernetes=true,containerRuntime=docker,fluentd.enable=true
+helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set containerRuntime=docker,fluentd.enable=true
 ```
 
 Within a couple of minutes, you should observe an index available:

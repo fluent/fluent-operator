@@ -1,16 +1,14 @@
 {{- if .Values.Kubernetes -}}
-{{- if .Values.fluentd.enable -}}
+{{- if .Values.fluentbit.output.stdout.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
-  name: fluentd
+  name: stdout
   labels:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging
 spec:
-  matchRegex: (?:kube|service)\.(.*)
-  forward:
-    host: {{ .Values.fluentd.name }}.{{ .Release.Namespace }}.svc
-    port: {{ .Values.fluentd.forward.port }}
+  match: "*"
+  stdout: {}
 {{- end }}
 {{- end }}

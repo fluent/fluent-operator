@@ -30,17 +30,20 @@ spec:
   secrets:
 {{ toYaml .Values.fluentbit.secrets | indent 4 }}
   {{- end }}
-  {{- if .Values.fluentbit.volumes }}
+  {{- if .Values.fluentbit.additionalVolumes }}
   volumes:
-{{ toYaml .Values.fluentbit.volumes | indent 4 }}
+{{ toYaml .Values.fluentbit.additionalVolumes | indent 4 }}
   {{- end }}
-  {{- if .Values.fluentbit.volumesMounts }}
+  {{- if .Values.fluentbit.additionalVolumesMounts }}
   volumesMounts:
-{{ toYaml .Values.fluentbit.volumesMounts | indent 4 }}
+{{ toYaml .Values.fluentbit.additionalVolumesMounts | indent 4 }}
   {{- end }}
   {{- if .Values.fluentbit.annotations }}
   annotations:
 {{ toYaml .Values.fluentbit.annotations | indent 4 }}
+  {{- if .Values.fluentbit.output.stdout }}
+    fluentbit.io/exclude: "true"
+  {{- end }}
   {{- end }}
   {{- if .Values.fluentbit.labels }}
   labels:
