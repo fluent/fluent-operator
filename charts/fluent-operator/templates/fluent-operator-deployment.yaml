@@ -20,7 +20,7 @@ spec:
         {{- if .Values.operator.labels }}
         {{- toYaml .Values.operator.labels | nindent 8 }}
         {{- end }}
-      {{- if .Values.operator.annotations }} 
+      {{- if .Values.operator.annotations }}
       annotations:
         {{- toYaml .Values.operator.annotations| nindent 8 }}
       {{- end }}
