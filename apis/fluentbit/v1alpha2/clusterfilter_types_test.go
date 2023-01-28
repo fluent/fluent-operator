@@ -1,12 +1,13 @@
 package v1alpha2
 
 import (
+	"testing"
+
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/filter"
 	"github.com/go-logr/logr"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
 )
 
 var filtersExpected = `[Filter]
@@ -37,6 +38,10 @@ var filtersExpected = `[Filter]
     Kube_CA_Path    /root/.kube/crt
     Labels    true
     Annotations    true
+    DNS_Wait_Time    30
+    Use_Kubelet    true
+    Kubelet_Port    10000
+    Kube_Meta_Cache_TTL    60s
 [Filter]
     Name    throttle
     Match    *
@@ -128,12 +133,16 @@ func TestClusterFilterList_Load(t *testing.T) {
 			FilterItems: []FilterItem{
 				{
 					Kubernetes: &filter.Kubernetes{
-						BufferSize:  "10m",
-						KubeURL:     "http://127.0.0.1:6443",
-						KubeCAFile:  "root.ca",
-						KubeCAPath:  "/root/.kube/crt",
-						Labels:      ptrBool(true),
-						Annotations: ptrBool(true),
+						BufferSize:       "10m",
+						KubeURL:          "http://127.0.0.1:6443",
+						KubeCAFile:       "root.ca",
+						KubeCAPath:       "/root/.kube/crt",
+						Labels:           ptrBool(true),
+						Annotations:      ptrBool(true),
+						DNSWaitTime:      ptrInt32(30),
+						UseKubelet:       ptrBool(true),
+						KubeletPort:      ptrInt32(10000),
+						KubeMetaCacheTTL: "60s",
 					},
 				},
 			},
