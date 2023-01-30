@@ -185,7 +185,6 @@ func isValidEvent(event fsnotify.Event) bool {
 }
 
 func start() {
-
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -200,6 +199,7 @@ func start() {
 	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	flbTerminated = make(chan bool, 1)
 	if err := cmd.Start(); err != nil {
 		_ = level.Error(logger).Log("msg", "start Fluent bit error", "error", err)
 		cmd = nil
@@ -219,7 +219,6 @@ func wait() error {
 
 	startTime := time.Now()
 
-	flbTerminated = make(chan bool, 1)
 	err := cmd.Wait()
 	if err != nil {
 		_ = level.Error(logger).Log("msg", "Fluent bit exited", "error", err)
