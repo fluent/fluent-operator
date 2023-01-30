@@ -1,6 +1,8 @@
 package output
 
-import "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+import (
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+)
 
 // The loki output plugin, allows to ingest your records into a Loki service.
 type Loki struct {
@@ -30,5 +32,16 @@ type Loki struct {
 	LineFormat string `json:"lineFormat,omitempty"`
 	// If set to true, it will add all Kubernetes labels to the Stream labels.
 	ExtractKubernetesLabels *bool `json:"extractKubernetesLabels,omitempty"`
-	*plugins.TLS            `json:"tls,omitempty"`
+	// If a record only has 1 key, then just set the log line to the value and discard the key.
+	DropSingleKey *bool `json:"dropSingleKey,omitempty"`
+	// Whether or not to include the fluentd_thread label when multiple threads are used for flushing
+	IncludeThreadLabel *bool `json:"includeThreadLabel,omitempty"`
+	// Disable certificate validation
+	Insecure *bool `json:"insecure,omitempty"`
+	// TlsCaCert defines the CA certificate file for TLS.
+	TlsCaCertFile *string `json:"tlsCaCertFile,omitempty"`
+	// TlsClientCert defines the client certificate file for TLS.
+	TlsClientCertFile *string `json:"tlsClientCertFile,omitempty"`
+	// TlsPrivateKey defines the client private key file for TLS.
+	TlsPrivateKeyFile *string `json:"tlsPrivateKeyFile,omitempty"`
 }

@@ -235,11 +235,12 @@ spec:
       removeKeys:
         - key31
         - key32
-      tls:
-#        caFile: /path/to/ca.pem
-#        crtFile: /path/to/certificate.pem
-#        keyFile: /path/to/key.key
-        insecure: true
+      dropSingleKey: true
+      includeThreadLabel: true
+#      tlsCaCertFile: /path/to/ca.pem
+#      tlsClientCertFile: /path/to/certificate.pem
+#      tlsPrivateKeyFile: /path/to/key.key
+      insecure: true
 `
 	FluentdClusterOutputLogOperator    fluentdv1alpha1.ClusterOutput
 	FluentdClusterOutputLogOperatorRaw = `

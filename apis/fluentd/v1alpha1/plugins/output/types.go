@@ -569,20 +569,23 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 	if o.Loki.ExtractKubernetesLabels != nil {
 		parent.InsertPairs("extract_kubernetes_labels", fmt.Sprint(*o.Loki.ExtractKubernetesLabels))
 	}
-	if o.Loki.TLS != nil {
-		t := o.Loki.TLS
-		if t.Insecure != nil {
-			parent.InsertPairs("insecure_tls", fmt.Sprint(*t.Insecure))
-		}
-		if t.CAFile != "" {
-			parent.InsertPairs("ca_cert", t.CAFile)
-		}
-		if t.CRTFile != "" {
-			parent.InsertPairs("cert", t.CRTFile)
-		}
-		if t.KeyFile != "" {
-			parent.InsertPairs("key", t.KeyFile)
-		}
+	if o.Loki.DropSingleKey != nil {
+		parent.InsertPairs("drop_single_key", fmt.Sprint(*o.Loki.DropSingleKey))
+	}
+	if o.Loki.IncludeThreadLabel != nil {
+		parent.InsertPairs("include_thread_label", fmt.Sprint(*o.Loki.IncludeThreadLabel))
+	}
+	if o.Loki.Insecure != nil {
+		parent.InsertPairs("insecure_tls", fmt.Sprint(*o.Loki.Insecure))
+	}
+	if o.Loki.TlsCaCertFile != nil {
+		parent.InsertPairs("ca_cert", fmt.Sprint(*o.Loki.TlsCaCertFile))
+	}
+	if o.Loki.TlsClientCertFile != nil {
+		parent.InsertPairs("cert", fmt.Sprint(*o.Loki.TlsClientCertFile))
+	}
+	if o.Loki.TlsPrivateKeyFile != nil {
+		parent.InsertPairs("key", fmt.Sprint(*o.Loki.TlsPrivateKeyFile))
 	}
 	return parent
 }
