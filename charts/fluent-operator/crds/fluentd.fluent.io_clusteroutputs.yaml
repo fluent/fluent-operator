@@ -1137,16 +1137,14 @@ spec:
                     loki:
                       description: out_loki plugin
                       properties:
-                        autoKubernetesLabels:
+                        dropSingleKey:
+                          description: If a record only has 1 key, then just set the
+                            log line to the value and discard the key.
+                          type: boolean
+                        extractKubernetesLabels:
                           description: If set to true, it will add all Kubernetes
                             labels to the Stream labels.
-                          enum:
-                          - "on"
-                          - "off"
-                          type: string
-                        host:
-                          description: Loki hostname or IP address.
-                          type: string
+                          type: boolean
                         httpPassword:
                           description: Password for user defined in HTTP_User Set
                             HTTP basic authentication password
@@ -1208,6 +1206,13 @@ spec:
                                   type: object
                               type: object
                           type: object
+                        includeThreadLabel:
+                          description: Whether or not to include the fluentd_thread
+                            label when multiple threads are used for flushing
+                          type: boolean
+                        insecure:
+                          description: Disable certificate validation
+                          type: boolean
                         labelKeys:
                           description: Optional list of record keys that will be placed
                             as stream labels. This configuration property is for records
@@ -1234,12 +1239,13 @@ spec:
                           - json
                           - key_value
                           type: string
-                        port:
-                          description: Loki TCP port
-                          format: int32
-                          maximum: 65535
-                          minimum: 1
-                          type: integer
+                        removeKeys:
+                          description: Optional list of record keys that will be removed
+                            from stream labels. This configuration property is for
+                            records key only.
+                          items:
+                            type: string
+                          type: array
                         tenantID:
                           description: Tenant ID used by default to push logs to Loki.
                             If omitted or empty it assumes Loki is running in single-tenant
@@ -1272,74 +1278,23 @@ spec:
                                   type: object
                               type: object
                           type: object
-                        tls:
-                          description: Fluentd provides integrated support for Transport
-                            Layer Security (TLS) and it predecessor Secure Sockets
-                            Layer (SSL) respectively.
-                          properties:
-                            caFile:
-                              description: Absolute path to CA certificate file
-                              type: string
-                            caPath:
-                              description: Absolute path to scan for certificate files
-                              type: string
-                            crtFile:
-                              description: Absolute path to Certificate file
-                              type: string
-                            debug:
-                              description: 'Set TLS debug verbosity level. It accept
-                                the following values: 0 (No debug), 1 (Error), 2 (State
-                                change), 3 (Informational) and 4 Verbose'
-                              enum:
-                              - 0
-                              - 1
-                              - 2
-                              - 3
-                              - 4
-                              format: int32
-                              type: integer
-                            keyFile:
-                              description: Absolute path to private Key file
-                              type: string
-                            keyPassword:
-                              description: Optional password for tls.key_file file
-                              properties:
-                                valueFrom:
-                                  description: ValueSource defines how to find a value's
-                                    key.
-                                  properties:
-                                    secretKeyRef:
-                                      description: Selects a key of a secret in the
-                                        pod's namespace
-                                      properties:
-                                        key:
-                                          description: The key of the secret to select
-                                            from.  Must be a valid secret key.
-                                          type: string
-                                        name:
-                                          description: 'Name of the referent. More
-                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                            TODO: Add other useful fields. apiVersion,
-                                            kind, uid?'
-                                          type: string
-                                        optional:
-                                          description: Specify whether the Secret
-                                            or its key must be defined
-                                          type: boolean
-                                      required:
-                                      - key
-                                      type: object
-                                  type: object
-                              type: object
-                            verify:
-                              description: Force certificate validation
-                              type: boolean
-                            vhost:
-                              description: Hostname to be used for TLS SNI extension
-                              type: string
-                          type: object
+                        tlsCaCertFile:
+                          description: TlsCaCert defines the CA certificate file for
+                            TLS.
+                          type: string
+                        tlsClientCertFile:
+                          description: TlsClientCert defines the client certificate
+                            file for TLS.
+                          type: string
+                        tlsPrivateKeyFile:
+                          description: TlsPrivateKey defines the client private key
+                            file for TLS.
+                          type: string
+                        url:
+                          description: Loki URL.
+                          type: string
                       required:
-                      - host
+                      - url
                       type: object
                     opensearch:
                       description: out_opensearch plugin

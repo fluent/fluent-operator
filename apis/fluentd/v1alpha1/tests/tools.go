@@ -208,8 +208,39 @@ metadata:
 spec: 
   outputs: 
   - loki:
-      host: loki-logging-data.kubesphere-logging-system.svc
-      port: 3100
+      url: http://loki-logging-data.kubesphere-logging-system.svc:3100
+      extractKubernetesLabels: true
+#      tenantID:
+#        valueFrom:
+#          secretKeyRef:
+#            key: tenant_key
+#            name: tenant_name
+#      httpPassword:
+#        valueFrom:
+#          secretKeyRef:
+#            key: password_key
+#            name: password_name
+#      httpUser:
+#        valueFrom:
+#          secretKeyRef:
+#            key: user_key
+#            name: user_name
+      labels:
+        - key11=value11
+        - key12 = value12
+        - key13
+      labelKeys:
+        - key21
+        - key22
+      removeKeys:
+        - key31
+        - key32
+      dropSingleKey: true
+      includeThreadLabel: true
+#      tlsCaCertFile: /path/to/ca.pem
+#      tlsClientCertFile: /path/to/certificate.pem
+#      tlsPrivateKeyFile: /path/to/key.key
+      insecure: true
 `
 	FluentdClusterOutputLogOperator    fluentdv1alpha1.ClusterOutput
 	FluentdClusterOutputLogOperatorRaw = `

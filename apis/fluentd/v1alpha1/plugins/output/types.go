@@ -3,6 +3,7 @@ package output
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
@@ -510,76 +511,81 @@ func (o *Output) s3Plugin(parent *params.PluginStore, loader plugins.SecretLoade
 }
 
 func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
-	if o.Loki.Host != nil {
-		parent.InsertPairs("host", fmt.Sprint(*o.Loki.Host))
-	}
-	if o.Loki.Port != nil {
-		parent.InsertPairs("port", fmt.Sprint(*o.Loki.Port))
+	if o.Loki.Url != nil {
+		parent.InsertPairs("url", fmt.Sprint(*o.Loki.Url))
 	}
 	if o.Loki.HTTPUser != nil {
 		u, err := loader.LoadSecret(*o.Loki.HTTPUser)
 		if err != nil {
 			return nil
 		}
-		parent.InsertPairs("http_user", u)
+		parent.InsertPairs("username", u)
 	}
 	if o.Loki.HTTPPasswd != nil {
 		passwd, err := loader.LoadSecret(*o.Loki.HTTPPasswd)
 		if err != nil {
 			return nil
 		}
-		parent.InsertPairs("http_passwd", passwd)
+		parent.InsertPairs("password", passwd)
 	}
 	if o.Loki.TenantID != nil {
 		id, err := loader.LoadSecret(*o.Loki.TenantID)
 		if err != nil {
 			return nil
 		}
-		parent.InsertPairs("tenantID", id)
+		parent.InsertPairs("tenant", id)
 	}
 	if o.Loki.Labels != nil && len(o.Loki.Labels) > 0 {
-		parent.InsertPairs("labels", utils.ConcatString(o.Loki.Labels, ","))
+		labels := make(map[string]string)
+		for _, l := range o.Loki.Labels {
+			key, value, found := strings.Cut(l, "=")
+			if !found {
+				continue
+			}
+			labels[strings.TrimSpace(key)] = strings.TrimSpace(value)
+		}
+		if len(labels) > 0 {
+			jsonStr, err := json.Marshal(labels)
+			if err != nil {
+				fmt.Printf("Error: %s", err.Error())
+			} else {
+				parent.InsertPairs("extra_labels", string(jsonStr))
+			}
+		}
+	}
+	if o.Loki.RemoveKeys != nil && len(o.Loki.RemoveKeys) > 0 {
+		parent.InsertPairs("remove_keys", utils.ConcatString(o.Loki.RemoveKeys, ","))
 	}
 	if o.Loki.LabelKeys != nil && len(o.Loki.LabelKeys) > 0 {
-		parent.InsertPairs("labels", utils.ConcatString(o.Loki.LabelKeys, ","))
+		ps := params.NewPluginStore("label")
+		for _, n := range o.Loki.LabelKeys {
+			ps.InsertPairs(n, n)
+		}
+		parent.InsertChilds(ps)
 	}
 	if o.Loki.LineFormat != "" {
 		parent.InsertPairs("line_format", o.Loki.LineFormat)
 	}
-	if o.Loki.AutoKubernetesLabels != "" {
-		parent.InsertPairs("line_format", o.Loki.AutoKubernetesLabels)
+	if o.Loki.ExtractKubernetesLabels != nil {
+		parent.InsertPairs("extract_kubernetes_labels", fmt.Sprint(*o.Loki.ExtractKubernetesLabels))
 	}
-	if o.Loki.TLS != nil {
-		t := o.Loki.TLS
-		parent.InsertPairs("tls", "ON")
-		if t.Verify != nil {
-			parent.InsertPairs("tls.verify", fmt.Sprint(*t.Verify))
-		}
-		if t.Debug != nil {
-			parent.InsertPairs("tls.debug", fmt.Sprint(*t.Debug))
-		}
-		if t.CAFile != "" {
-			parent.InsertPairs("tls.ca_file", t.CAFile)
-		}
-		if t.CAPath != "" {
-			parent.InsertPairs("tls.ca_path", t.CAPath)
-		}
-		if t.CRTFile != "" {
-			parent.InsertPairs("tls.crt_file", t.CRTFile)
-		}
-		if t.KeyFile != "" {
-			parent.InsertPairs("tls.key_file", t.KeyFile)
-		}
-		if t.KeyPassword != nil {
-			pwd, err := loader.LoadSecret(*t.KeyPassword)
-			if err != nil {
-				return nil
-			}
-			parent.InsertPairs("tls.key_passwd", pwd)
-		}
-		if t.Vhost != "" {
-			parent.InsertPairs("tls.vhost", t.Vhost)
-		}
+	if o.Loki.DropSingleKey != nil {
+		parent.InsertPairs("drop_single_key", fmt.Sprint(*o.Loki.DropSingleKey))
+	}
+	if o.Loki.IncludeThreadLabel != nil {
+		parent.InsertPairs("include_thread_label", fmt.Sprint(*o.Loki.IncludeThreadLabel))
+	}
+	if o.Loki.Insecure != nil {
+		parent.InsertPairs("insecure_tls", fmt.Sprint(*o.Loki.Insecure))
+	}
+	if o.Loki.TlsCaCertFile != nil {
+		parent.InsertPairs("ca_cert", fmt.Sprint(*o.Loki.TlsCaCertFile))
+	}
+	if o.Loki.TlsClientCertFile != nil {
+		parent.InsertPairs("cert", fmt.Sprint(*o.Loki.TlsClientCertFile))
+	}
+	if o.Loki.TlsPrivateKeyFile != nil {
+		parent.InsertPairs("key", fmt.Sprint(*o.Loki.TlsPrivateKeyFile))
 	}
 	return parent
 }

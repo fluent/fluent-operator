@@ -1,15 +1,13 @@
 package output
 
-import "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+import (
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+)
 
 // The loki output plugin, allows to ingest your records into a Loki service.
 type Loki struct {
-	// Loki hostname or IP address.
-	Host *string `json:"host"`
-	// Loki TCP port
-	// +kubebuilder:validation:Minimum:=1
-	// +kubebuilder:validation:Maximum:=65535
-	Port *int32 `json:"port,omitempty"`
+	// Loki URL.
+	Url *string `json:"url"`
 	// Set HTTP basic authentication user name.
 	HTTPUser *plugins.Secret `json:"httpUser,omitempty"`
 	// Password for user defined in HTTP_User
@@ -24,13 +22,26 @@ type Loki struct {
 	// Optional list of record keys that will be placed as stream labels.
 	// This configuration property is for records key only.
 	LabelKeys []string `json:"labelKeys,omitempty"`
+	// Optional list of record keys that will be removed from stream labels.
+	// This configuration property is for records key only.
+	RemoveKeys []string `json:"removeKeys,omitempty"`
 	// Format to use when flattening the record to a log line. Valid values are json or key_value.
 	// If set to json,  the log line sent to Loki will be the Fluentd record dumped as JSON.
 	// If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
 	// +kubebuilder:validation:Enum:=json;key_value
 	LineFormat string `json:"lineFormat,omitempty"`
 	// If set to true, it will add all Kubernetes labels to the Stream labels.
-	// +kubebuilder:validation:Enum:=on;off
-	AutoKubernetesLabels string `json:"autoKubernetesLabels,omitempty"`
-	*plugins.TLS         `json:"tls,omitempty"`
+	ExtractKubernetesLabels *bool `json:"extractKubernetesLabels,omitempty"`
+	// If a record only has 1 key, then just set the log line to the value and discard the key.
+	DropSingleKey *bool `json:"dropSingleKey,omitempty"`
+	// Whether or not to include the fluentd_thread label when multiple threads are used for flushing
+	IncludeThreadLabel *bool `json:"includeThreadLabel,omitempty"`
+	// Disable certificate validation
+	Insecure *bool `json:"insecure,omitempty"`
+	// TlsCaCert defines the CA certificate file for TLS.
+	TlsCaCertFile *string `json:"tlsCaCertFile,omitempty"`
+	// TlsClientCert defines the client certificate file for TLS.
+	TlsClientCertFile *string `json:"tlsClientCertFile,omitempty"`
+	// TlsPrivateKey defines the client private key file for TLS.
+	TlsPrivateKeyFile *string `json:"tlsPrivateKeyFile,omitempty"`
 }
