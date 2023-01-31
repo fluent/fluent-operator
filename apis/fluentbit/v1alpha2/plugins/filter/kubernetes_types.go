@@ -86,7 +86,7 @@ type Kubernetes struct {
 	KubeMetaCacheTTL string `json:"kubeMetaCacheTTL,omitempty"`
 	// configurable 'time to live' for the K8s token. By default, it is set to 600 seconds.
 	// After this time, the token is reloaded from Kube_Token_File or the Kube_Token_Command.
-	KubeTokenTTL *int32 `json:"kubeTokenTTL,omitempty"`
+	KubeTokenTTL string `json:"kubeTokenTTL,omitempty"`
 }
 
 func (_ *Kubernetes) Name() string {
@@ -183,8 +183,8 @@ func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	if k.KubeMetaCacheTTL != "" {
 		kvs.Insert("Kube_Meta_Cache_TTL", k.KubeMetaCacheTTL)
 	}
-	if k.KubeTokenTTL != nil {
-		kvs.Insert("Kube_Token_TTL", fmt.Sprint(*k.KubeTokenTTL))
+	if k.KubeTokenTTL != "" {
+		kvs.Insert("Kube_Token_TTL", k.KubeTokenTTL)
 	}
 	return kvs, nil
 }

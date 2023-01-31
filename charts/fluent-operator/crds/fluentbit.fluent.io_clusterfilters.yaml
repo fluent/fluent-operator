@@ -203,8 +203,7 @@ spec:
                           description: configurable 'time to live' for the K8s token.
                             By default, it is set to 600 seconds. After this time,
                             the token is reloaded from Kube_Token_File or the Kube_Token_Command.
-                          format: int32
-                          type: integer
+                          type: string
                         kubeURL:
                           description: API Server end-point
                           type: string
