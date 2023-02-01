@@ -96,7 +96,7 @@ jobs:
 
   helm_tests:
     runs-on: ubuntu-18.04
-    timeout-minutes: 60
+    timeout-minutes: 30
     name: helm e2e tests
     env:
       GO111MODULE: "on"
