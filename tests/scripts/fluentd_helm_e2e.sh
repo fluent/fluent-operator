@@ -10,8 +10,8 @@ function build_ginkgo_test() {
 
 function cleanup() {
   cd $PROJECT_ROOT
-  helm uninstall fluent-operator -n $LOGGING_NAMESPACE
-  kubectl delete ns $LOGGING_NAMESPACE
+#  helm uninstall fluent-operator -n $LOGGING_NAMESPACE
+#  kubectl delete ns $LOGGING_NAMESPACE
   kind delete cluster --name test && exit 0
 }
 
