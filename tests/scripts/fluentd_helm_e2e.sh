@@ -20,7 +20,7 @@ function prepare_cluster() {
   kubectl create ns $LOGGING_NAMESPACE
 
   echo "wait the control-plane ready..."
-  kubectl wait --for=condition=Ready node/test-control-plane --timeout=60s
+  kubectl wait --for=condition=Ready node/test-helm-control-plane --timeout=60s
 }
 
 function build_image() {
