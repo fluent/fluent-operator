@@ -26,7 +26,7 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 				ObjectMeta: metav1.ObjectMeta{
 					Name:        fb.Name,
 					Namespace:   fb.Namespace,
-					Labels:      fb.Labels,
+					Labels:      fb.Spec.Labels,
 					Annotations: fb.Spec.Annotations,
 				},
 				Spec: corev1.PodSpec{
