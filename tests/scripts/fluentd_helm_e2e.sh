@@ -12,11 +12,11 @@ function cleanup() {
   cd $PROJECT_ROOT
 #  helm uninstall fluent-operator -n $LOGGING_NAMESPACE
 #  kubectl delete ns $LOGGING_NAMESPACE
-  kind delete cluster --name test && exit 0
+  kind delete cluster --name test-helm && exit 0
 }
 
 function prepare_cluster() {
-  kind create cluster --name test
+  kind create cluster --name test-helm
   kubectl create ns $LOGGING_NAMESPACE
 
   echo "wait the control-plane ready..."
@@ -26,7 +26,7 @@ function prepare_cluster() {
 function build_image() {
   cd $PROJECT_ROOT
   make build-op-amd64 -e FO_IMG=kubesphere/fluent-operator:$IMAGE_TAG
-  kind load docker-image kubesphere/fluent-operator:$IMAGE_TAG --name test
+  kind load docker-image kubesphere/fluent-operator:$IMAGE_TAG --name test-helm
 }
 
 function start_fluent_operator() {
