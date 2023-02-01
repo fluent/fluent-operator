@@ -45,6 +45,7 @@ rules:
   - apiGroups:
       - fluentbit.fluent.io
     resources:
+      - collectors
       - fluentbits
       - clusterfluentbitconfigs
       - clusterfilters
