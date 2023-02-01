@@ -11,8 +11,8 @@ function build_ginkgo_test() {
 
 function cleanup() {
   cd $PROJECT_ROOT
-  kubectl delete -f manifests/setup/setup.yaml
-  kubectl delete ns $LOGGING_NAMESPACE
+#  kubectl delete -f manifests/setup/setup.yaml
+#  kubectl delete ns $LOGGING_NAMESPACE
   kind delete cluster --name test && exit 0
 }
 
