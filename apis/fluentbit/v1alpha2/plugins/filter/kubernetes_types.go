@@ -47,6 +47,8 @@ type Kubernetes struct {
 	TLSVerify *bool `json:"tlsVerify,omitempty"`
 	// When enabled, the filter reads logs coming in Journald format.
 	UseJournal *bool `json:"useJournal,omitempty"`
+	// When enabled, metadata will be fetched from K8s when docker_id is changed.
+	CacheUseDockerId *bool `json:"cacheUseDockerId,omitempty"`
 	// Set an alternative Parser to process record Tag and extract pod_name, namespace_name, container_name and docker_id.
 	// The parser must be registered in a parsers file (refer to parser filter-kube-test as an example).
 	RegexParser string `json:"regexParser,omitempty"`
@@ -65,6 +67,26 @@ type Kubernetes struct {
 	KubeMetaPreloadCacheDir string `json:"kubeMetaPreloadCacheDir,omitempty"`
 	// If set, use dummy-meta data (for test/dev purposes)
 	DummyMeta *bool `json:"dummyMeta,omitempty"`
+	// DNS lookup retries N times until the network start working
+	DNSRetries *int32 `json:"dnsRetries,omitempty"`
+	// DNS lookup interval between network status checks
+	DNSWaitTime *int32 `json:"dnsWaitTime,omitempty"`
+	// This is an optional feature flag to get metadata information from kubelet
+	// instead of calling Kube Server API to enhance the log.
+	// This could mitigate the Kube API heavy traffic issue for large cluster.
+	UseKubelet *bool `json:"useKubelet,omitempty"`
+	// kubelet port using for HTTP request, this only works when useKubelet is set to On.
+	KubeletPort *int32 `json:"kubeletPort,omitempty"`
+	// kubelet host using for HTTP request, this only works when Use_Kubelet set to On.
+	KubeletHost string `json:"kubeletHost,omitempty"`
+	// configurable TTL for K8s cached metadata. By default, it is set to 0
+	// which means TTL for cache entries is disabled and cache entries are evicted at random
+	// when capacity is reached. In order to enable this option, you should set the number to a time interval.
+	// For example, set this value to 60 or 60s and cache entries which have been created more than 60s will be evicted.
+	KubeMetaCacheTTL string `json:"kubeMetaCacheTTL,omitempty"`
+	// configurable 'time to live' for the K8s token. By default, it is set to 600 seconds.
+	// After this time, the token is reloaded from Kube_Token_File or the Kube_Token_Command.
+	KubeTokenTTL string `json:"kubeTokenTTL,omitempty"`
 }
 
 func (_ *Kubernetes) Name() string {
@@ -119,6 +141,9 @@ func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	if k.UseJournal != nil {
 		kvs.Insert("Use_Journal", fmt.Sprint(*k.UseJournal))
 	}
+	if k.CacheUseDockerId != nil {
+		kvs.Insert("Cache_Use_Docker_Id", fmt.Sprint(*k.CacheUseDockerId))
+	}
 	if k.RegexParser != "" {
 		kvs.Insert("Regex_Parser", k.RegexParser)
 	}
@@ -139,6 +164,27 @@ func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if k.DummyMeta != nil {
 		kvs.Insert("Dummy_Meta", fmt.Sprint(*k.DummyMeta))
+	}
+	if k.DNSRetries != nil {
+		kvs.Insert("DNS_Retries", fmt.Sprint(*k.DNSRetries))
+	}
+	if k.DNSWaitTime != nil {
+		kvs.Insert("DNS_Wait_Time", fmt.Sprint(*k.DNSWaitTime))
+	}
+	if k.UseKubelet != nil {
+		kvs.Insert("Use_Kubelet", fmt.Sprint(*k.UseKubelet))
+	}
+	if k.KubeletPort != nil {
+		kvs.Insert("Kubelet_Port", fmt.Sprint(*k.KubeletPort))
+	}
+	if k.KubeletHost != "" {
+		kvs.Insert("Kubelet_Host", k.KubeletHost)
+	}
+	if k.KubeMetaCacheTTL != "" {
+		kvs.Insert("Kube_Meta_Cache_TTL", k.KubeMetaCacheTTL)
+	}
+	if k.KubeTokenTTL != "" {
+		kvs.Insert("Kube_Token_TTL", k.KubeTokenTTL)
 	}
 	return kvs, nil
 }

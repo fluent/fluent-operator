@@ -26,3 +26,11 @@ Kubernetes filter allows to enrich your log files with Kubernetes metadata.
 | annotations | Include Kubernetes resource annotations in the extra metadata. | *bool |
 | kubeMetaPreloadCacheDir | If set, Kubernetes meta-data can be cached/pre-loaded from files in JSON format in this directory, named as namespace-pod.meta | string |
 | dummyMeta | If set, use dummy-meta data (for test/dev purposes) | *bool |
+| cacheUseDockerId | When enabled, metadata will be fetched from K8s when docker_id is changed. | *bool |
+| dnsRetries | DNS lookup retries N times until the network start working | *int32 |
+| dnsWaitTime | DNS lookup interval between network status checks | *int32 |
+| useKubelet | This is an optional feature flag to get metadata information from kubelet instead of calling Kube Server API to enhance the log. This could mitigate the Kube API heavy traffic issue for large cluster. | *bool |
+| kubeletPort | kubelet port using for HTTP request, this only works when useKubelet is set to On. | *int32 |
+| kubeletHost | kubelet host using for HTTP request, this only works when Use_Kubelet set to On. | string |
+| kubeMetaCacheTTL | configurable TTL for K8s cached metadata. By default, it is set to 0 which means TTL for cache entries is disabled and cache entries are evicted at random when capacity is reached. In order to enable this option, you should set the number to a time interval. For example, set this value to 60 or 60s and cache entries which have been created more than 60s will be evicted. | string |
+| kubeTokenTTL | configurable 'time to live' for the K8s token. By default, it is set to 600 seconds. After this time, the token is reloaded from Kube_Token_File or the Kube_Token_Command. | string |

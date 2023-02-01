@@ -176,8 +176,8 @@ func (r *CollectorReconciler) delete(ctx context.Context, co *fluentbitv1alpha2.
 
 	var svc corev1.Service
 	if err := r.Delete(ctx, &svc); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
+		return err
+	}
 
 	var sts appsv1.StatefulSet
 	if err := r.Delete(ctx, &sts); err != nil && !errors.IsNotFound(err) {

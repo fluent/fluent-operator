@@ -877,6 +877,11 @@ spec:
                 description: DisableService tells if the fluentbit service should
                   be deployed.
                 type: boolean
+              dnsPolicy:
+                description: Set DNS policy for the pod. Defaults to "ClusterFirst".
+                  Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default'
+                  or 'None'.
+                type: string
               envVars:
                 description: EnvVars represent environment variables that can be passed
                   to fluentbit pods.

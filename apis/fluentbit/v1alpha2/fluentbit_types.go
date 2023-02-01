@@ -85,6 +85,9 @@ type FluentBitSpec struct {
 	Ports []corev1.ContainerPort `json:"ports,omitempty"`
 	// RBACRules represents additional rbac rules which will be applied to the fluent-bit clusterrole.
 	RBACRules []rbacv1.PolicyRule `json:"rbacRules,omitempty"`
+	// Set DNS policy for the pod. Defaults to "ClusterFirst". Valid values are
+	// 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'.
+	DNSPolicy corev1.DNSPolicy `json:"dnsPolicy,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit

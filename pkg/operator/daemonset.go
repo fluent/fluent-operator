@@ -154,6 +154,10 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 		ds.Spec.Template.Spec.RuntimeClassName = &fb.Spec.RuntimeClassName
 	}
 
+	if fb.Spec.DNSPolicy != "" {
+		ds.Spec.Template.Spec.DNSPolicy = fb.Spec.DNSPolicy
+	}
+
 	if fb.Spec.PriorityClassName != "" {
 		ds.Spec.Template.Spec.PriorityClassName = fb.Spec.PriorityClassName
 	}
