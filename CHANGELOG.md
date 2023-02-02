@@ -1,3 +1,43 @@
+## 2.0.0 / 2023-02-02
+### Features
+- Feat: Support adding annotations to the fluent-operator deployment (#467)
+- Feat: Support adding labels to the fluent-operator and the fluent-bit pods (#468)
+- Feat: Add external plugin flag in the Fluent-Bit watcher (#469)
+- Feat: Support adding annotations to the fluent-bit DaemonSet (#474)
+- Feat: Add the `Collector` CRD and controller to support deploying Fluent Bit as a StatefulSet (#484)
+- Feat: Add process termination timeout to fluent-bit-watcher (#512) 
+- Feat: Add `dnsPolicy` and other Kubernetes filter options to the FluentBit CRD (#528) 
+
+### ENHANCEMENT
+- Add the `DockerModeParser` parameter to the fluentbit tail plugin (#486)
+- Increase operator memory limit to 60Mi (#496)
+- Refines the fluent-operator chart (#526)
+- Update definition of flushThreadCount (#527)
+- Upgrade Fluent Bit to v2.0.8 (#531)
+- Refines e2e test script (#535)
+- Dependabot: Update schedule and fix typo (#493)
+- Build(deps): Bump k8s.io/client-go from 0.25.2 to 0.25.4 (#475) 
+- Build(deps): Bump sigs.k8s.io/controller-runtime from 0.13.0 to 0.13.1 (#476)
+- Build(deps): Bump github.com/fsnotify/fsnotify from 1.5.4 to 1.6.0 (#477)
+- Build(deps): Bump golang from 1.19.2 to 1.19.3 in /docs/best-practice/forwarding-logs-via-http (#478)
+- Build(deps): Bump alpine from 3.16.2 to 3.17.0 in /cmd/fluent-watcher/fluentd/base (#479) 
+- Build(deps): Bump golang from 1.19.2-alpine3.16 to 1.19.3-alpine3.16 in /cmd/fluent-manager (#480) 
+- Build(deps): Bump github.com/onsi/gomega from 1.21.1 to 1.24.1 (#481)
+- Build(deps): Bump golang from 1.19.3 to 1.19.4 in /docs/best-practice/forwarding-logs-via-http (#497)
+- Build(deps): Bump alpine from 3.17.0 to 3.17.1 in /cmd/fluent-watcher/fluentd/base (#507)
+- Build(deps): Bump golang from 1.19.3-alpine3.16 to 1.19.5-alpine3.16 in /cmd/fluent-manager (#508)
+- Build(deps): Bump golang from 1.19.2-alpine3.16 to 1.19.5-alpine3.16 in /cmd/fluent-watcher/fluentbit (#509) 
+- Build(deps): Bump k8s.io/api from 0.25.4 to 0.26.1 (#519)
+- Build(deps): Bump k8s.io/apimachinery from 0.25.4 to 0.26.1 (#520)
+- Build(deps): Bump github.com/onsi/gomega from 1.24.1 to 1.26.0 (#530)
+- Build(deps): Bump roots/issue-closer-action from 1.1 to 1.2 (#538) 
+- Build(deps): Bump golang from 1.19.4 to 1.19.5 in /docs/best-practice/forwarding-logs-via-http (#539) 
+
+### BUGFIX 
+- Fix: Add Collector CRD to kustomization & Helm ClusterRole template (#515)
+- Fix: Adjust fluentd-loki-output-plugin params (#523)
+- Fix: Fix adding labels to the fluent-bit pods (#537) 
+
 ## 1.7.0 / 2022-11-23
 ### Features
 - Feat: adding retry_limit to http-outputs (#445)
