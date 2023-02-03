@@ -23,7 +23,18 @@ on:
     branches:
       - 'master'
       - 'release-*'
-
+    paths:
+      - ".github/workflows/build-op-image.yaml"
+      - "apis/**"
+      - "cmd/**"
+      - "controllers/**"
+      - "hack/**"
+      - "manifests/setup/setup.yaml"
+      - "tests/**"
+      - "pkg/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
 jobs:
   basic_tests:
     runs-on: ubuntu-18.04
