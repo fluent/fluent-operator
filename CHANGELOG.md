@@ -1,4 +1,4 @@
-## 2.0.0 / 2023-02-02
+## 2.0.0 / 2023-02-03
 ### Features
 - Feat: Support adding annotations to the fluent-operator deployment (#467)
 - Feat: Support adding labels to the fluent-operator and the fluent-bit pods (#468)
