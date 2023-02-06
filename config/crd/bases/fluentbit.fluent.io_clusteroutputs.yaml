@@ -42,6 +42,64 @@ spec:
                 description: A user friendly alias name for this output plugin. Used
                   in metrics for distinction of each configured output.
                 type: string
+              azureblob:
+                description: AzureBlob defines AzureBlob Output Configuration
+                properties:
+                  account_name:
+                    description: Azure Storage account name
+                    type: string
+                  auto_create_container:
+                    description: Creates container if ContainerName is not set.
+                    type: boolean
+                  blob_type:
+                    description: Specify the desired blob type. Must be `appendblob`
+                      or `blockblob`
+                    type: string
+                  container_name:
+                    description: Name of the container that will contain the blobs
+                    type: string
+                  emulator_mode:
+                    description: Optional toggle to use an Azure emulator
+                    type: boolean
+                  endpoint:
+                    description: HTTP Service of the endpoint (if using EmulatorMode)
+                    type: string
+                  path:
+                    description: Optional path to store the blobs.
+                    type: string
+                  shared_key:
+                    description: Specify the Azure Storage Shared Key to authenticate
+                      against the storage account
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  tls:
+                    description: Enable/Disable TLS Encryption. Azure services require
+                      TLS to be enabled.
+                    type: boolean
+                type: object
               customPlugin:
                 description: CustomPlugin defines Custom Output configuration.
                 properties:

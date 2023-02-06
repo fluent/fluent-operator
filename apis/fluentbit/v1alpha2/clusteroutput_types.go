@@ -43,6 +43,8 @@ type OutputSpec struct {
 	// A user friendly alias name for this output plugin.
 	// Used in metrics for distinction of each configured output.
 	Alias string `json:"alias,omitempty"`
+	// AzureBlob defines AzureBlob Output Configuration
+	AzureBlob *output.AzureBlob `json:"azureblob,omitempty"`
 	// RetryLimit represents configuration for the scheduler which can be set independently on each output section.
 	// This option allows to disable retries or impose a limit to try N times and then discard the data after reaching that limit.
 	RetryLimit string `json:"retry_limit,omitempty"`
