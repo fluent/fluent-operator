@@ -11,22 +11,28 @@ import (
 )
 
 func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
+	var labels map[string]string
+	if fb.Spec.Labels != nil {
+		labels = fb.Spec.Labels
+	} else {
+		labels = fb.Labels
+	}
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        fb.Name,
 			Namespace:   fb.Namespace,
-			Labels:      fb.Labels,
+			Labels:      labels,
 			Annotations: fb.Annotations,
 		},
 		Spec: appsv1.DaemonSetSpec{
 			Selector: &metav1.LabelSelector{
-				MatchLabels: fb.Labels,
+				MatchLabels: labels,
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:        fb.Name,
 					Namespace:   fb.Namespace,
-					Labels:      fb.Spec.Labels,
+					Labels:      labels,
 					Annotations: fb.Spec.Annotations,
 				},
 				Spec: corev1.PodSpec{
