@@ -2,6 +2,7 @@ package cfgrender
 
 import (
 	"github.com/go-logr/logr"
+	"strings"
 	"testing"
 
 	. "github.com/onsi/gomega"
@@ -226,7 +227,7 @@ func Test_ClusterCfgOutput2Cloudwatch(t *testing.T) {
 	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
-		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-cloudwatch.cfg"))).To(Equal(config))
+		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-cloudwatch.cfg")))).To(Equal(config))
 
 		i++
 	}
