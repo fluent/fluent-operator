@@ -41,3 +41,24 @@ spec:
       rdkafka.log_level 7
       rdkafka.metadata.broker.list 192.168.100.32:9092
 ```
+
+```yaml
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: cluster-fluentd-output-os
+  labels:
+    output.fluentd.fluent.io/scope: "cluster"
+    output.fluentd.fluent.io/enabled: "true"
+spec:
+  outputs:
+    - customPlugin:
+        config: |
+          <match **>
+            @type opensearch
+            host opensearch-logging-data.kubesphere-logging-system.svc
+            port 9200
+            logstash_format  true
+            logstash_prefix  ks-logstash-log
+          </match>
+```

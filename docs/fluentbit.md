@@ -12,6 +12,9 @@ This Document documents the types introduced by the fluentbit Operator.
 * [ClusterOutputList](#clusteroutputlist)
 * [ClusterParser](#clusterparser)
 * [ClusterParserList](#clusterparserlist)
+* [Collector](#collector)
+* [CollectorList](#collectorlist)
+* [CollectorSpec](#collectorspec)
 * [Decorder](#decorder)
 * [FilterItem](#filteritem)
 * [FilterSpec](#filterspec)
@@ -134,6 +137,60 @@ ClusterParserList contains a list of ClusterParser
 | items |  | []ClusterParser |
 
 [Back to TOC](#table-of-contents)
+# Collector
+
+Collector is the Schema for the fluentbits API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | CollectorSpec |
+| status |  | CollectorStatus |
+
+[Back to TOC](#table-of-contents)
+# CollectorList
+
+CollectorList contains a list of Collector
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []Collector |
+
+[Back to TOC](#table-of-contents)
+# CollectorSpec
+
+CollectorSpec defines the desired state of FluentBit
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| image | Fluent Bit image. | string |
+| args | Fluent Bit Watcher command line arguments. | []string |
+| imagePullPolicy | Fluent Bit image pull policy. | corev1.PullPolicy |
+| imagePullSecrets | Fluent Bit image pull secret | []corev1.LocalObjectReference |
+| resources | Compute Resources required by container. | corev1.ResourceRequirements |
+| nodeSelector | NodeSelector | map[string]string |
+| affinity | Pod's scheduling constraints. | *corev1.Affinity |
+| tolerations | Tolerations | [][corev1.Toleration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#toleration-v1-core) |
+| fluentBitConfigName | Fluentbitconfig object associated with this Fluentbit | string |
+| secrets | The Secrets are mounted into /fluent-bit/secrets/<secret-name>. | []string |
+| runtimeClassName | RuntimeClassName represents the container runtime configuration. | string |
+| priorityClassName | PriorityClassName represents the pod's priority class. | string |
+| volumes | List of volumes that can be mounted by containers belonging to the pod. | []corev1.Volume |
+| volumesMounts | Pod volumes to mount into the container's filesystem. | []corev1.VolumeMount |
+| annotations | Annotations to add to each Fluentbit pod. | map[string]string |
+| securityContext | SecurityContext holds pod-level security attributes and common container settings. | *corev1.PodSecurityContext |
+| hostNetwork | Host networking is requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false. | bool |
+| pvc | PVC definition | *corev1.PersistentVolumeClaim |
+| rbacRules | RBACRules represents additional rbac rules which will be applied to the fluent-bit clusterrole. | []rbacv1.PolicyRule |
+| disableService | By default will build the related service according to the globalinputs definition. | bool |
+| bufferPath | The path where buffer chunks are stored. | *string |
+| ports | Ports represents the pod's ports. | []corev1.ContainerPort |
+
+[Back to TOC](#table-of-contents)
 # Decorder
 
 
@@ -223,8 +280,10 @@ FluentBitSpec defines the desired state of FluentBit
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
+| disableService | DisableService tells if the fluentbit service should be deployed. | bool |
 | image | Fluent Bit image. | string |
 | args | Fluent Bit Watcher command line arguments. | []string |
+| command | Fluent Bit Watcher command. | []string |
 | imagePullPolicy | Fluent Bit image pull policy. | corev1.PullPolicy |
 | imagePullSecrets | Fluent Bit image pull secret | []corev1.LocalObjectReference |
 | positionDB | Storage for position db. You will use it if tail input is enabled. | [corev1.VolumeSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#volume-v1-core) |
@@ -240,9 +299,16 @@ FluentBitSpec defines the desired state of FluentBit
 | volumes | List of volumes that can be mounted by containers belonging to the pod. | []corev1.Volume |
 | volumesMounts | Pod volumes to mount into the container's filesystem. | []corev1.VolumeMount |
 | annotations | Annotations to add to each Fluentbit pod. | map[string]string |
+| labels | Labels to add to each FluentBit pod | map[string]string |
 | securityContext | SecurityContext holds pod-level security attributes and common container settings. | *corev1.PodSecurityContext |
 | hostNetwork | Host networking is requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false. | bool |
 | envVars | EnvVars represent environment variables that can be passed to fluentbit pods. | []corev1.EnvVar |
+| livenessProbe | LivenessProbe represents the pod's liveness probe. | *corev1.Probe |
+| readinessProbe | ReadinessProbe represents the pod's readiness probe. | *corev1.Probe |
+| initContainers | InitContainers represents the pod's init containers. | []corev1.Container |
+| ports | Ports represents the pod's ports. | []corev1.ContainerPort |
+| rbacRules | RBACRules represents additional rbac rules which will be applied to the fluent-bit clusterrole. | []rbacv1.PolicyRule |
+| dnsPolicy | Set DNS policy for the pod. Defaults to \"ClusterFirst\". Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'. | corev1.DNSPolicy |
 
 [Back to TOC](#table-of-contents)
 # InputSpec

@@ -249,6 +249,12 @@ spec:
                       - path
                       - type
                       type: object
+                    customPlugin:
+                      description: Custom plugin type
+                      properties:
+                        config:
+                          type: string
+                      type: object
                     elasticsearch:
                       description: out_es plugin
                       properties:

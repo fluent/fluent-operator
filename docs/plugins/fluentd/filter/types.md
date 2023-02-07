@@ -17,3 +17,4 @@ Filter defines all available filter plugins and their parameters.
 | recordTransformer | The filter_record_transformer filter plugin | *RecordTransformer |
 | parser | The filter_parser filter plugin | *Parser |
 | stdout | The filter_stdout filter plugin | *Stdout |
+| customPlugin | Custom plugin type | *custom.CustomPlugin |

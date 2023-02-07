@@ -52,8 +52,8 @@ User defines the common parameters for the user plugin
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| username |  | *string |
-| password |  | *string |
+| username |  | *[plugins.Secret](../secret.md) |
+| password |  | *[plugins.Secret](../secret.md) |
 # Transport
 
 Transport defines the commont parameters for the transport plugin
@@ -93,8 +93,8 @@ Auth defines the common parameters for the auth plugin
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | auth | The method for HTTP authentication. Now only basic. | *string |
-| username | The username for basic authentication. | *string |
-| password | The password for basic authentication. | *string |
+| username | The username for basic authentication. | *[plugins.Secret](../secret.md) |
+| password | The password for basic authentication. | *[plugins.Secret](../secret.md) |
 # Server
 
 Server defines the common parameters for the server plugin
@@ -106,8 +106,8 @@ Server defines the common parameters for the server plugin
 | name | Name defines the name of the server. Used for logging and certificate verification in TLS transport (when the host is the address). | *string |
 | port | Port defines the port number of the host. Note that both TCP packets (event stream) and UDP packets (heartbeat messages) are sent to this port. | *string |
 | sharedKey | SharedKey defines the shared key per server. | *string |
-| username | Username defines the username for authentication. | *string |
-| password | Password defines the password for authentication. | *string |
+| username | Username defines the username for authentication. | *[plugins.Secret](../secret.md) |
+| password | Password defines the password for authentication. | *[plugins.Secret](../secret.md) |
 | standby | Standby marks a node as the standby node for an Active-Standby model between Fluentd nodes. | *string |
 | weight | Weight defines the load balancing weight | *string |
 # SDCommon

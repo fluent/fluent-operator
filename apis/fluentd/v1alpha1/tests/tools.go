@@ -277,7 +277,27 @@ spec:
       logstashFormat: true
       logstashPrefix: ks-logstash-log
 `
-
+	FluentdClusterOutputCustom    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutputCustomRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: cluster-fluentd-output-os
+  labels:
+    output.fluentd.fluent.io/scope: "cluster"
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - customPlugin:
+      config: |
+        <match **>
+          @type opensearch
+          host opensearch-logging-data.kubesphere-logging-system.svc
+          port 9200
+          logstash_format  true
+          logstash_prefix  ks-logstash-log
+        </match>
+`
 	FluentdOutputUser1    fluentdv1alpha1.Output
 	FluentdOutputUser1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -425,6 +445,7 @@ func init() {
 			ParseIntoObject(FluentdClusterOutput2kafkaRaw, &FluentdClusterOutput2kafka)
 			ParseIntoObject(FluentdClusterOutput2LokiRaw, &FluentdClusterOutput2Loki)
 			ParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
+			ParseIntoObject(FluentdClusterOutputCustomRaw, &FluentdClusterOutputCustom)
 		},
 	)
 }

@@ -120,7 +120,8 @@ ClusterFluentdConfigStatus defines the observed state of ClusterFluentdConfig
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| errors | Errors defines the plugin errors which is selected by this fluentdconfig | string |
+| messages | Messages defines the plugin errors which is selected by this fluentdconfig | string |
+| state | The state of this fluentd config | StatusState |
 
 [Back to TOC](#table-of-contents)
 # ClusterOutput
@@ -249,7 +250,8 @@ FluentdConfigStatus defines the observed state of FluentdConfig
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| errors | Errors defines the plugin errors which is selected by this fluentdconfig | string |
+| messages | Messages defines the plugin errors which is selected by this fluentdconfig | string |
+| state | The state of this fluentd config | StatusState |
 
 [Back to TOC](#table-of-contents)
 # FluentdList
@@ -286,6 +288,7 @@ FluentdSpec defines the desired state of Fluentd
 | tolerations | Tolerations | [][corev1.Toleration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#toleration-v1-core) |
 | runtimeClassName | RuntimeClassName represents the container runtime configuration. | string |
 | priorityClassName | PriorityClassName represents the pod's priority class. | string |
+| rbacRules | RBACRules represents additional rbac rules which will be applied to the fluentd clusterrole. | []rbacv1.PolicyRule |
 
 [Back to TOC](#table-of-contents)
 # FluentdStatus
@@ -295,7 +298,8 @@ FluentdStatus defines the observed state of Fluentd
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| errs |  | string |
+| messages | Messages defines the plugin errors which is selected by this fluentdconfig | string |
+| state | The state of this fluentd | StatusState |
 
 [Back to TOC](#table-of-contents)
 # Output
