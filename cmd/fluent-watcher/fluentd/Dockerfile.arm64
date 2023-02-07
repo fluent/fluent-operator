@@ -15,9 +15,9 @@ RUN apk add curl --no-cache
 RUN curl -sL -o qemu-6.0.0.balena1-aarch64.tar.gz https://github.com/balena-io/qemu/releases/download/v6.0.0%2Bbalena1/qemu-6.0.0.balena1-aarch64.tar.gz && echo "$QEMU_DOWNLOAD_SHA256 *qemu-6.0.0.balena1-aarch64.tar.gz" | sha256sum -c - | tar zxvf qemu-6.0.0.balena1-aarch64.tar.gz -C . && mv qemu-6.0.0+balena1-aarch64/qemu-aarch64-static .
 
 # Fluentd main image
-FROM arm64v8/ruby:2.7-slim-bullseye
+FROM arm64v8/ruby:3.1-slim-bullseye
 COPY --from=builderqemu /go/qemu-aarch64-static /usr/bin/
-LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.14.6"
+LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.15.3"
 ENV TINI_VERSION=0.18.0
 
 # Do not split this into multiple RUN!
@@ -32,11 +32,12 @@ RUN apt-get update \
     " \
  && apt-get install -y --no-install-recommends $buildDeps \
  && echo 'gem: --no-document' >> /etc/gemrc \
- && gem install oj -v 3.10.18 \
- && gem install json -v 2.4.1 \
- && gem install async-http -v 0.54.0 \
- && gem install ext_monitor -v 0.1.2 \
- && gem install fluentd -v 1.14.6 \
+ && gem install oj -v 3.13.22 \
+ && gem install json -v 2.6.2 \
+ && gem install rexml -v 3.2.5 \
+ && gem install async -v 1.30.3 \
+ && gem install async-http -v 0.56.6 \
+ && gem install fluentd -v 1.15.3 \
  && gem install bigdecimal -v 1.4.4 \
  && gem install resolv -v 0.2.1 \
  && gem install elasticsearch -v 7.13.3 \
@@ -55,8 +56,8 @@ RUN apt-get update \
          fluent-plugin-aws-elasticsearch-service \
          fluent-plugin-opensearch \
  && echo "plugin installed." \
- && wget -O /tmp/jemalloc-4.5.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/4.5.0/jemalloc-4.5.0.tar.bz2 \
- && cd /tmp && tar -xjf jemalloc-4.5.0.tar.bz2 && cd jemalloc-4.5.0/ \
+ && wget -O /tmp/jemalloc-5.3.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/5.3.0/jemalloc-5.3.0.tar.bz2 \
+ && cd /tmp && tar -xjf jemalloc-5.3.0.tar.bz2 && cd jemalloc-5.3.0/ \
  && ./configure && make \
  && mv lib/libjemalloc.so.2 /usr/lib \
  && apt-get purge -y --auto-remove \
