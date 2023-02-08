@@ -1,3 +1,11 @@
+## 2.0.1 / 2023-02-08
+### ENHANCEMENT
+- Upgrade Fluentd to v1.15.3 (#556) 
+- Upgrade Fluentbit to v2.0.9 (#557)
+
+### BUGFIX 
+- Fix: Fix the bug of adding `label` (#548)
+
 ## 2.0.0 / 2023-02-03
 ### Features
 - Feat: Support adding annotations to the fluent-operator deployment (#467)
