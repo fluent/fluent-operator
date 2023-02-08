@@ -12,19 +12,19 @@ import (
 // Azure Blob is the Azure Blob output plugin, allows to ingest your records into Azure Blob Storage.
 type AzureBlob struct {
 	// Azure Storage account name
-	AccountName string `json:"account_name,omitempty"`
+	AccountName string `json:"accountName"`
 	// Specify the Azure Storage Shared Key to authenticate against the storage account
-	SharedKey *plugins.Secret `json:"shared_key,omitempty"`
+	SharedKey *plugins.Secret `json:"sharedKey"`
 	// Name of the container that will contain the blobs
-	ContainerName string `json:"container_name,omitempty"`
+	ContainerName string `json:"containerName"`
 	// Specify the desired blob type. Must be `appendblob` or `blockblob`
-	BlobType string `json:"blob_type,omitempty"`
+	BlobType string `json:"blobType,omitempty"`
 	// Creates container if ContainerName is not set.
-	AutoCreateContainer *bool `json:"auto_create_container,omitempty"`
+	AutoCreateContainer *bool `json:"autoCreateContainer,omitempty"`
 	// Optional path to store the blobs.
 	Path string `json:"path,omitempty"`
 	// Optional toggle to use an Azure emulator
-	EmulatorMode *bool `json:"emulator_mode,omitempty"`
+	EmulatorMode *bool `json:"emulatorMode,omitempty"`
 	// HTTP Service of the endpoint (if using EmulatorMode)
 	Endpoint string `json:"endpoint,omitempty"`
 	// Enable/Disable TLS Encryption. Azure services require TLS to be enabled.

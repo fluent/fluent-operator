@@ -45,20 +45,20 @@ spec:
               azureblob:
                 description: AzureBlob defines AzureBlob Output Configuration
                 properties:
-                  account_name:
+                  accountName:
                     description: Azure Storage account name
                     type: string
-                  auto_create_container:
+                  autoCreateContainer:
                     description: Creates container if ContainerName is not set.
                     type: boolean
-                  blob_type:
+                  blobType:
                     description: Specify the desired blob type. Must be `appendblob`
                       or `blockblob`
                     type: string
-                  container_name:
+                  containerName:
                     description: Name of the container that will contain the blobs
                     type: string
-                  emulator_mode:
+                  emulatorMode:
                     description: Optional toggle to use an Azure emulator
                     type: boolean
                   endpoint:
@@ -67,7 +67,7 @@ spec:
                   path:
                     description: Optional path to store the blobs.
                     type: string
-                  shared_key:
+                  sharedKey:
                     description: Specify the Azure Storage Shared Key to authenticate
                       against the storage account
                     properties:
@@ -99,6 +99,10 @@ spec:
                     description: Enable/Disable TLS Encryption. Azure services require
                       TLS to be enabled.
                     type: boolean
+                required:
+                - accountName
+                - containerName
+                - sharedKey
                 type: object
               customPlugin:
                 description: CustomPlugin defines Custom Output configuration.
