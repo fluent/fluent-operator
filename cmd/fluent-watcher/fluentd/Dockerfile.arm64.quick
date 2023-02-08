@@ -8,8 +8,8 @@ RUN echo $(ls -al /code)
 RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
 
 # Fluentd main image
-FROM kubesphere/fluentd:v1.14.6-arm64-base
-LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.14.6"
+FROM kubesphere/fluentd:v1.15.3-arm64-base
+LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.15.3"
 ENV TINI_VERSION=0.18.0
 
 # Do not split this into multiple RUN!
@@ -19,7 +19,7 @@ RUN buildDeps=" \
       make gcc g++ libc-dev \
       wget bzip2 gnupg dirmngr\
     " \
- && gem install fluentd -v 1.14.6 \
+ && gem install fluentd -v 1.15.3 \
  && apt-get purge -y --auto-remove \
                   -o APT::AutoRemove::RecommendsImportant=false \
                   $buildDeps \
