@@ -13,9 +13,9 @@ on:
       - "pkg/filenotify/**"
 
 env:
-  FD_IMG: 'kubesphere/fluentd:v1.14.6'
+  FD_IMG: 'kubesphere/fluentd:v1.15.3'
   ARCH: '-arm64'
-  FD_IMG_BASE: 'kubesphere/fluentd:v1.14.6-arm64-base'
+  FD_IMG_BASE: 'kubesphere/fluentd:v1.15.3-arm64-base'
 
 jobs:
   build-amd64:

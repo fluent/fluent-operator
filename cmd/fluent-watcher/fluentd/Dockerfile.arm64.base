@@ -28,7 +28,6 @@ RUN apt-get update \
  && gem install rexml -v 3.2.5 \
  && gem install async -v 1.30.3 \
  && gem install async-http -v 0.56.6 \
- && gem install ext_monitor -v 0.1.2 \
  && gem install bigdecimal -v 1.4.4 \
  && gem install resolv -v 0.2.1 \
  && gem install elasticsearch -v 7.13.3 \
