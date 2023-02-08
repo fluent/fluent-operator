@@ -13,7 +13,7 @@ on:
       - "pkg/filenotify/**"
 
 env:
-  FB_IMG: 'kubesphere/fluent-bit:v2.0.8'
+  FB_IMG: 'kubesphere/fluent-bit:v2.0.9'
 
 jobs:
   build:
