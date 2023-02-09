@@ -42,7 +42,7 @@ operator:
 fluentbit:
   image:
     repository: "kubesphere/fluent-bit"
-    tag: "v2.0.8"
+    tag: "v2.0.9"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   #You can adjust it based on the log volume.
   resources:
@@ -166,7 +166,7 @@ fluentd:
   port: 24224
   image:
     repository: "kubesphere/fluentd"
-    tag: "v1.14.6"
+    tag: "v1.15.3"
   replicas: 1
   forward:
     port: 24224

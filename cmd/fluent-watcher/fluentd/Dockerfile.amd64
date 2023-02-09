@@ -8,8 +8,8 @@ RUN echo $(ls -al /code)
 RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
 
 # Fluentd main image
-FROM alpine:3.13
-LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.14.6"
+FROM alpine:3.16
+LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.15.3"
 
 # Do not split this into multiple RUN!
 # Docker creates a layer for every RUN-Statement
@@ -23,11 +23,11 @@ RUN apk update \
         build-base linux-headers \
         ruby-dev gnupg \
  && echo 'gem: --no-document' >> /etc/gemrc \
- && gem install oj -v 3.10.18 \
- && gem install json -v 2.4.1 \
- && gem install async-http -v 0.54.0 \
- && gem install ext_monitor -v 0.1.2 \
- && gem install fluentd -v 1.14.6 \
+ && gem install oj -v 3.13.22 \
+ && gem install json -v 2.6.2 \
+ && gem install async -v 1.30.3 \
+ && gem install async-http -v 0.56.6 \
+ && gem install fluentd -v 1.15.3 \
  && gem install bigdecimal -v 1.4.4 \
 # NOTE: resolv v0.2.1 includes the fix for CPU spike issue due to DNS resolver.
 # This hack is needed for Ruby 2.6.7, 2.7.3 and 3.0.1. (alpine image is still kept on 2.7.3)
