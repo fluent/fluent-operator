@@ -3,9 +3,9 @@ package filter
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/custom"
 
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/custom"
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
 )
 

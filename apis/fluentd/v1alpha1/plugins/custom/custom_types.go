@@ -9,7 +9,7 @@ import (
 )
 
 type CustomPlugin struct {
-	Config string `json:"config,omitempty"`
+	Config string `json:"config"`
 }
 
 func (c *CustomPlugin) Name() string {
