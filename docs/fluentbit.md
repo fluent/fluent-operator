@@ -339,6 +339,7 @@ OutputSpec defines the desired state of ClusterOutput
 | matchRegex | A regular expression to match against the tags of incoming records. Use this option if you want to use the full regex syntax. | string |
 | alias | A user friendly alias name for this output plugin. Used in metrics for distinction of each configured output. | string |
 | azureBlob | AzureBlob defines AzureBlob Output Configuration | *[output.AzureBlob](plugins/output/azureblob.md) |
+| azureLogAnalytics | AzureLogAnalytics defines AzureLogAnalytics Output Configuration | *[output.AzureLogAnalytics](plugins/output/azureloganalytics.md) |
 | retry_limit | RetryLimit represents configuration for the scheduler which can be set independently on each output section. This option allows to disable retries or impose a limit to try N times and then discard the data after reaching that limit. | string |
 | es | Elasticsearch defines Elasticsearch Output configuration. | *[output.Elasticsearch](plugins/output/elasticsearch.md) |
 | file | File defines File Output configuration. | *[output.File](plugins/output/file.md) |
