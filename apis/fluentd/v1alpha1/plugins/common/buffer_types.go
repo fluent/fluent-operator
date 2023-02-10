@@ -85,7 +85,7 @@ type Buffer struct {
 	// FlushInterval defines the flush interval
 	// +kubebuilder:validation:Pattern:="^\\d+(\\.[0-9]{0,2})?(s|m|h|d)?$"
 	FlushInterval *string `json:"flushInterval,omitempty"`
-	// The sleep interval (seconds) for threads to wait for the next flush try(when no chunks are waiting)
+	// The number of threads to flush/write chunks in parallel
 	// +kubebuilder:validation:Pattern:="^\\d+$"
 	FlushThreadCount *string `json:"flushThreadCount,omitempty"`
 	// The timeout (seconds) until output plugin decides if the async write operation has failed. Default is 60s

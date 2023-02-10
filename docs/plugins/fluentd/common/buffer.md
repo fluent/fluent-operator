@@ -28,7 +28,7 @@ Buffer defines various parameters for the buffer Plugin
 | flushAtShutdown | Flush parameters This specifies whether to flush/write all buffer chunks on shutdown or not. | *bool |
 | flushMode | FlushMode defines the flush mode: lazy: flushes/writes chunks once per timekey interval: flushes/writes chunks per specified time via flush_interval immediate: flushes/writes chunks immediately after events are appended into chunks default: equals to lazy if time is specified as chunk key, interval otherwise | *string |
 | flushInterval | FlushInterval defines the flush interval | *string |
-| flushThreadCount | The number of threads to flush/write chunks in parallel | *integer |
+| flushThreadCount | The number of threads to flush/write chunks in parallel | *string |
 | delayedCommitTimeout | The timeout (seconds) until output plugin decides if the async write operation has failed. Default is 60s | *string |
 | overflowAction | OverflowAtction defines the output plugin behave when its buffer queue is full. Default: throw_exception | *string |
 | retryTimeout | Retry parameters The maximum time (seconds) to retry to flush again the failed chunks, until the plugin discards the buffer chunks | *string |

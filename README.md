@@ -282,7 +282,7 @@ For more info on various use cases of Fluent Operator Fluentd CRDs, you can refe
 If you want to learn more about Fluent-Operator, please refer to the [misc](docs/best-practice/misc.md).
 
 ### Custom Plugin
-[Here](docs/best-practice/custom-plugin.md) you can learn how to use custom plugin in Fluent Bit.
+[Here](docs/best-practice/custom-plugin.md) you can learn how to use custom plugin in FluentBit and Fluentd.
 
 ## Roadmap
 

@@ -16,6 +16,7 @@ var (
 	ExpectedFluentdMixedCfgsOutputES          []byte
 	ExpectedFluentdNamespacedCfgOutputES      []byte
 	ExpectedDuplicateRemovalCRSPECS           []byte
+	ExpectedFluentdClusterCfgOutputCustom     []byte
 )
 
 func init() {
@@ -27,6 +28,7 @@ func init() {
 		ExpectedFluentdMixedCfgsOutputES = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-mixed-cfgs-output-es.cfg")
 		ExpectedFluentdNamespacedCfgOutputES = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-namespaced-cfg-output-es.cfg")
 		ExpectedDuplicateRemovalCRSPECS = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/duplicate-removal-cr-specs.cfg")
+		ExpectedFluentdClusterCfgOutputCustom = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-custom.cfg")
 	})
 }
 

@@ -193,6 +193,11 @@ func (in *Kubernetes) DeepCopyInto(out *Kubernetes) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.CacheUseDockerId != nil {
+		in, out := &in.CacheUseDockerId, &out.CacheUseDockerId
+		*out = new(bool)
+		**out = **in
+	}
 	if in.K8SLoggingParser != nil {
 		in, out := &in.K8SLoggingParser, &out.K8SLoggingParser
 		*out = new(bool)
@@ -216,6 +221,26 @@ func (in *Kubernetes) DeepCopyInto(out *Kubernetes) {
 	if in.DummyMeta != nil {
 		in, out := &in.DummyMeta, &out.DummyMeta
 		*out = new(bool)
+		**out = **in
+	}
+	if in.DNSRetries != nil {
+		in, out := &in.DNSRetries, &out.DNSRetries
+		*out = new(int32)
+		**out = **in
+	}
+	if in.DNSWaitTime != nil {
+		in, out := &in.DNSWaitTime, &out.DNSWaitTime
+		*out = new(int32)
+		**out = **in
+	}
+	if in.UseKubelet != nil {
+		in, out := &in.UseKubelet, &out.UseKubelet
+		*out = new(bool)
+		**out = **in
+	}
+	if in.KubeletPort != nil {
+		in, out := &in.KubeletPort, &out.KubeletPort
+		*out = new(int32)
 		**out = **in
 	}
 }

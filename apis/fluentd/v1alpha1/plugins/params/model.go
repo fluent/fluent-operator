@@ -19,6 +19,7 @@ type PluginStore struct {
 	PrefixWhitespaces string
 	// The flag whether to ignore the path field in buffer
 	IgnorePath bool
+	Content    string
 }
 
 func NewPluginStore(name string) *PluginStore {
@@ -94,7 +95,9 @@ func (ps *PluginStore) String() string {
 	if ps == nil || ps.Name == "" {
 		return ""
 	}
-
+	if ps.Content != "" {
+		return ps.Content
+	}
 	var buf bytes.Buffer
 
 	// Handles the head section.
