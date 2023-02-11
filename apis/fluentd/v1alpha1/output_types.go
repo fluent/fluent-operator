@@ -35,10 +35,10 @@ type OutputStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-//+kubebuilder:resource:shortName=fdo
-//+genclient
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:shortName=fdo
+// +genclient
 
 // Output is the Schema for the outputs API
 type Output struct {
@@ -49,7 +49,7 @@ type Output struct {
 	Status OutputStatus `json:"status,omitempty"`
 }
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // OutputList contains a list of Output
 type OutputList struct {

@@ -75,7 +75,7 @@ type ClusterFluentdConfig struct {
 	Status ClusterFluentdConfigStatus `json:"status,omitempty"`
 }
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // ClusterFluentdConfigList contains a list of ClusterFluentdConfig
 type ClusterFluentdConfigList struct {

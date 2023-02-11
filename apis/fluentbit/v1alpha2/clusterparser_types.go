@@ -80,6 +80,7 @@ type ClusterParserList struct {
 }
 
 // +kubebuilder:object:generate:=false
+
 // ParserByName implements sort.Interface for []ClusterParser based on the Name field.
 type ParserByName []ClusterParser
 

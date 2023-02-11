@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	// Buffer path for single process
+	// DefaultBufferPath defines the buffer path for single process
 	DefaultBufferPath = "/buffers/fluentbit/log"
 )
 
@@ -129,7 +129,7 @@ func MakefbStatefuset(co fluentbitv1alpha2.Collector) appsv1.StatefulSet {
 		})
 	}
 
-	//Bind pvc
+	// Bind pvc
 	statefulset.Spec.VolumeClaimTemplates = append(statefulset.Spec.VolumeClaimTemplates, MakeFluentbitPVC(co))
 	statefulset.Spec.Template.Spec.Containers[0].VolumeMounts = append(statefulset.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
 		Name:      fmt.Sprintf("%s-buffer-pvc", co.Name),

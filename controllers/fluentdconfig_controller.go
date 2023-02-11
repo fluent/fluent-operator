@@ -82,14 +82,14 @@ type FluentdConfigReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentdconfigs,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=fluentd.fluent.io,resources=clusterfluentdconfigs,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=fluentd.fluent.io,resources=inputs;filters;outputs,verbs=list
-//+kubebuilder:rbac:groups=fluentd.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs,verbs=list;
-//+kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds,verbs=list
-//+kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds/status,verbs=patch
-//+kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentdconfigs/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentdconfigs/finalizers,verbs=update
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentdconfigs,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=clusterfluentdconfigs,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=inputs;filters;outputs,verbs=list
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs,verbs=list;
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds,verbs=list
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds/status,verbs=patch
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentdconfigs/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentdconfigs/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

@@ -41,8 +41,8 @@ type FluentBitConfigSpec struct {
 	OutputSelector metav1.LabelSelector `json:"outputSelector,omitempty"`
 	// Select parser plugins
 	ParserSelector metav1.LabelSelector `json:"parserSelector,omitempty"`
-	//If namespace is defined, then the configmap and secret for fluent-bit is in this namespace.
-	//If it is not defined, it is in the namespace of the fluentd-operator
+	// If namespace is defined, then the configmap and secret for fluent-bit is in this namespace.
+	// If it is not defined, it is in the namespace of the fluentd-operator
 	Namespace *string `json:"namespace,omitempty"`
 }
 
@@ -179,12 +179,14 @@ func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, pa
 }
 
 // +kubebuilder:object:generate:=false
+
 type Script struct {
 	Name    string
 	Content string
 }
 
 // +kubebuilder:object:generate:=false
+
 // ByName implements sort.Interface for []Script based on the Name field.
 type ByName []Script
 

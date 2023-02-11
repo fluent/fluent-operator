@@ -47,7 +47,7 @@ type ClusterOutput struct {
 	Status ClusterOutputStatus `json:"status,omitempty"`
 }
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // ClusterOutputList contains a list of ClusterOutput
 type ClusterOutputList struct {

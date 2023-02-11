@@ -2,7 +2,6 @@ package utils
 
 import (
 	"crypto/md5"
-	"hash"
 	"strings"
 )
 
@@ -40,7 +39,7 @@ func ConcatString(slice []string, sep string) string {
 }
 
 func HashCode(msg string) string {
-	var h hash.Hash = md5.New()
+	var h = md5.New()
 	h.Write([]byte(msg))
 	return string(h.Sum(nil))
 }
