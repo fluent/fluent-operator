@@ -25,7 +25,7 @@ type AzureLogAnalytics struct {
 
 // Name implement Section() method
 func (_ *AzureLogAnalytics) Name() string {
-	return "azureloganalytics"
+	return "azure"
 }
 
 // Params implement Section() method
