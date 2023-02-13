@@ -150,9 +150,9 @@ KUSTOMIZE = $(shell pwd)/bin/kustomize
 kustomize: go-deps ## Download kustomize locally if necessary.
 	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v4@v4.5.7)
 
-CODE_GENERATOR = $(shell go env GOPATH)/pkg/mod/k8s.io/code-generator@v0.25.0
+CODE_GENERATOR = $(shell go env GOPATH)/pkg/mod/k8s.io/code-generator@v0.26.1
 code-generator: go-deps ## Download code-generator locally if necessary
-	$(call go-get-tool,$(CODE_GENERATOR),k8s.io/code-generator@v0.25.0)
+	$(call go-get-tool,$(CODE_GENERATOR),k8s.io/code-generator@v0.26.1)
 
 # go-get-tool will 'go get' any package $2 and install it to $1.
 PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -169,7 +169,7 @@ rm -rf $$TMP_DIR ;\
 endef
 
 go-deps: # download go dependencies
-	go get k8s.io/code-generator@v0.25.0
+	go get k8s.io/code-generator@v0.26.1
 	go mod download
 
 docs-update: # update api docs
