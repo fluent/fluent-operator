@@ -2012,7 +2012,7 @@ spec:
                 description: A user friendly alias name for this output plugin. Used
                   in metrics for distinction of each configured output.
                 type: string
-              azureblob:
+              azureBlob:
                 description: AzureBlob defines AzureBlob Output Configuration
                 properties:
                   accountName:
@@ -2072,6 +2072,79 @@ spec:
                 required:
                 - accountName
                 - containerName
+                - sharedKey
+                type: object
+              azureLogAnalytics:
+                description: AzureLogAnalytics defines AzureLogAnalytics Output Configuration
+                properties:
+                  customerID:
+                    description: Customer ID or Workspace ID
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  logType:
+                    description: Name of the event type.
+                    type: string
+                  sharedKey:
+                    description: Specify the primary or the secondary client authentication
+                      key
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  timeGenerated:
+                    description: If set, overrides the timeKey value with the `time-generated-field`
+                      HTTP header value.
+                    type: boolean
+                  timeKey:
+                    description: Specify the name of the key where the timestamp is
+                      stored.
+                    type: string
+                required:
+                - customerID
                 - sharedKey
                 type: object
               customPlugin:
