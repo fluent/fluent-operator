@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 )
@@ -16,7 +16,7 @@ type Message struct {
 // Sample HTTP receiver for this demo
 func main() {
 	h := func(w http.ResponseWriter, req *http.Request) {
-		b, err := ioutil.ReadAll(req.Body)
+		b, err := io.ReadAll(req.Body)
 		defer req.Body.Close()
 		if err != nil {
 			log.Printf(err.Error())

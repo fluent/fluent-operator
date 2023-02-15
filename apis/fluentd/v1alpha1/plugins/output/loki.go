@@ -4,7 +4,7 @@ import (
 	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
 )
 
-// The loki output plugin, allows to ingest your records into a Loki service.
+// Loki defines The loki output plugin, allows to ingest your records into a Loki service.
 type Loki struct {
 	// Loki URL.
 	Url *string `json:"url"`

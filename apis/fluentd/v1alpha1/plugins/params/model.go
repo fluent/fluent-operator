@@ -34,7 +34,7 @@ func (ps *PluginStore) InsertPairs(key, value string) {
 	ps.Store[key] = value
 }
 
-// The @type parameter specifies the type of the plugin.
+// InsertType The @type parameter specifies the type of the plugin.
 func (ps *PluginStore) InsertType(value string) {
 	ps.InsertPairs("@type", value)
 }
@@ -45,7 +45,8 @@ func (ps *PluginStore) SetIgnorePath() {
 }
 
 // If one label section contains a match section,
-// we consider that the match section is the child of label section
+
+// InsertChilds Returns the match section value
 func (ps *PluginStore) InsertChilds(childs ...*PluginStore) {
 	if len(childs) == 0 {
 		return
@@ -58,7 +59,7 @@ func (ps *PluginStore) InsertChilds(childs ...*PluginStore) {
 	}
 }
 
-// The total hash string for this plugin store.
+// Hash Returns total hash value
 func (ps *PluginStore) Hash() string {
 	c := NewPluginStore(ps.Name)
 
@@ -73,12 +74,12 @@ func (ps *PluginStore) Hash() string {
 	return utils.HashCode(c.String())
 }
 
-// Returns tag value
+// GetTag Returns tag value
 func (ps *PluginStore) GetTag() string {
 	return ps.Store["tag"]
 }
 
-// Returns the @label value string of this plugin store.
+// RouteLabel Returns @label value
 func (ps *PluginStore) RouteLabel() string {
 	if ps.Name != "route" {
 		return ""
