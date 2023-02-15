@@ -30,7 +30,7 @@ type LabelRouter struct {
 	Routes []*Route `json:"routes,omitempty"`
 }
 
-// Each fluentd config instance will create a route pluginstore.
+// NewRoutePlugin will create a route pluginstore for each fluentd config instance
 func (r *Route) NewRoutePlugin() (*params.PluginStore, error) {
 	ps := params.NewPluginStore("route")
 	childs := make([]*params.PluginStore, 0)
@@ -83,7 +83,7 @@ func (r *Route) NewRoutePlugin() (*params.PluginStore, error) {
 	return ps, nil
 }
 
-// The global router to store routes
+// NewGlobalRouter will create a global router to store routes
 func NewGlobalRouter(id string) *params.PluginStore {
 	ps := params.NewPluginStore("match")
 	ps.InsertPairs("@id", id)

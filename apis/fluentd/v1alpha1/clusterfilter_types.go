@@ -47,7 +47,7 @@ type ClusterFilter struct {
 	Status ClusterFilterStatus `json:"status,omitempty"`
 }
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // ClusterFilterList contains a list of ClusterFilter
 type ClusterFilterList struct {

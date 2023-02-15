@@ -32,10 +32,10 @@ type FilterStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-//+kubebuilder:resource:shortName=fdf
-//+genclient
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:shortName=fdf
+// +genclient
 
 // Filter is the Schema for the filters API
 type Filter struct {
@@ -46,7 +46,7 @@ type Filter struct {
 	Status FilterStatus `json:"status,omitempty"`
 }
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // FilterList contains a list of Filter
 type FilterList struct {

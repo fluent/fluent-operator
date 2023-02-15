@@ -90,10 +90,10 @@ type FluentdStatus struct {
 	State StatusState `json:"state,omitempty"`
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-//+kubebuilder:resource:shortName=fd
-//+genclient
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:shortName=fd
+// +genclient
 
 // Fluentd is the Schema for the fluentds API
 type Fluentd struct {
@@ -127,7 +127,7 @@ func (fd *Fluentd) RemoveFinalizer(finalizerName string) {
 	fd.ObjectMeta.Finalizers = utils.RemoveString(fd.ObjectMeta.Finalizers, finalizerName)
 }
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // FluentdList contains a list of Fluentd
 type FluentdList struct {

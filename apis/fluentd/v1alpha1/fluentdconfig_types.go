@@ -55,10 +55,10 @@ type FluentdConfigStatus struct {
 	State StatusState `json:"state,omitempty"`
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-//+kubebuilder:resource:shortName=fdc
-//+genclient
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:shortName=fdc
+// +genclient
 
 // FluentdConfig is the Schema for the fluentdconfigs API
 type FluentdConfig struct {
@@ -69,7 +69,7 @@ type FluentdConfig struct {
 	Status FluentdConfigStatus `json:"status,omitempty"`
 }
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // FluentdConfigList contains a list of FluentdConfig
 type FluentdConfigList struct {

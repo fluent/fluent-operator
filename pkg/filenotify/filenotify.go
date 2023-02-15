@@ -1,7 +1,7 @@
 // Adapted from https://github.com/gohugoio/hugo
 // Apache License 2.0
 // Copyright Hugo Authors
-//
+
 // Package filenotify provides a mechanism for watching file(s) for changes.
 // Generally leans on fsnotify, but provides a poll-based notifier which fsnotify does not support.
 // These are wrapped up in a common interface so that either can be used interchangeably in your code.

@@ -63,11 +63,11 @@ type FilterItem struct {
 	Throttle *filter.Throttle `json:"throttle,omitempty"`
 	// RewriteTag defines a RewriteTag configuration.
 	RewriteTag *filter.RewriteTag `json:"rewriteTag,omitempty"`
-	//Aws defines a Aws configuration.
+	// Aws defines a Aws configuration.
 	AWS *filter.AWS `json:"aws,omitempty"`
-	//Multiline defines a Multiline configuration.
+	// Multiline defines a Multiline configuration.
 	Multiline *filter.Multiline `json:"multiline,omitempty"`
-	//CustomPlugin defines a Custom plugin configuration.
+	// CustomPlugin defines a Custom plugin configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }
 

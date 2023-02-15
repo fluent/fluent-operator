@@ -74,7 +74,7 @@ type OutputSpec struct {
 	DataDog *output.DataDog `json:"datadog,omitempty"`
 	// Firehose defines Firehose Output configuration.
 	Fireose *output.Firehose `json:"firehose,omitempty"`
-	//Splunk defines Splunk Output Configuration
+	// Splunk defines Splunk Output Configuration
 	Splunk *output.Splunk `json:"splunk,omitempty"`
 	// OpenSearch defines OpenSearch Output configuration.
 	OpenSearch *output.OpenSearch `json:"opensearch,omitempty"`
@@ -109,6 +109,7 @@ type ClusterOutputList struct {
 }
 
 // +kubebuilder:object:generate:=false
+
 // OutputByName implements sort.Interface for []ClusterOutput based on the Name field.
 type OutputByName []ClusterOutput
 
