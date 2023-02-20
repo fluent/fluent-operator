@@ -151,12 +151,12 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 		ps.InsertType(string(params.StdOutputType))
 		return o.stdoutPlugin(ps, loader), nil
 	}
-	return o.customOutput(ps, loader), nil
 
 	if o.Cloudwatch != nil {
 		ps.InsertType(string(params.CloudwatchOutputType))
 		return o.cloudwatchPlugin(ps, loader), nil
 	}
+	return o.customOutput(ps, loader), nil
 
 }
 
