@@ -248,14 +248,6 @@ spec:
                       required:
                       - type
                       type: object
-                    customPlugin:
-                      description: Custom plugin type
-                      properties:
-                        config:
-                          type: string
-                      required:
-                      - config
-                      type: object
                     cloudwatch:
                       description: out_cloudwatch plugin
                       properties:
@@ -355,6 +347,14 @@ spec:
                         webIdentityTokenFile:
                           description: Web identity token file
                           type: string
+                      type: object
+                    customPlugin:
+                      description: Custom plugin type
+                      properties:
+                        config:
+                          type: string
+                      required:
+                      - config
                       type: object
                     elasticsearch:
                       description: out_es plugin
