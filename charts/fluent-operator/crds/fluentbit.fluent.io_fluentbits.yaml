@@ -2399,6 +2399,10 @@ spec:
                     format: int32
                     type: integer
                 type: object
+              metricsPort:
+                description: Set the port used by the metrics server
+                format: int32
+                type: integer
               nodeSelector:
                 additionalProperties:
                   type: string

@@ -88,6 +88,8 @@ type FluentBitSpec struct {
 	// Set DNS policy for the pod. Defaults to "ClusterFirst". Valid values are
 	// 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'.
 	DNSPolicy corev1.DNSPolicy `json:"dnsPolicy,omitempty"`
+	// Set the port used by the metrics server
+	MetricsPort int32 `json:"metricsPort,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit
