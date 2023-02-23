@@ -1,7 +1,7 @@
 package output
 
-// Cloudwatch defines the parametes for out_cloudwatch output plugin
-type Cloudwatch struct {
+// CloudWatch defines the parametes for out_cloudwatch output plugin
+type CloudWatch struct {
 	//
 	AutoCreateStream *bool `json:"autoCreateStream,omitempty"`
 	//

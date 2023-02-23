@@ -316,8 +316,8 @@ spec:
       logstashFormat: true
       logstashPrefix: ks-logstash-log-user1
 `
-	FluentdClusterOutput2Cloudwatch    fluentdv1alpha1.ClusterOutput
-	FluentdClusterOutput2CloudwatchRaw = `
+	FluentdClusterOutput2CloudWatch    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutput2CloudWatchRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:
@@ -326,7 +326,7 @@ metadata:
     output.fluentd.fluent.io/enabled: "true"
 spec:
   outputs:
-  - cloudwatch:
+  - cloudWatch:
       logStreamName: loggy-mclogface
       roleArn: abc123
       awsStsRoleArn: xyz789
@@ -463,7 +463,7 @@ func init() {
 			ParseIntoObject(FluentdClusterOutput2LokiRaw, &FluentdClusterOutput2Loki)
 			ParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
 			ParseIntoObject(FluentdClusterOutputCustomRaw, &FluentdClusterOutputCustom)
-			ParseIntoObject(FluentdClusterOutput2CloudwatchRaw, &FluentdClusterOutput2Cloudwatch)
+			ParseIntoObject(FluentdClusterOutput2CloudWatchRaw, &FluentdClusterOutput2CloudWatch)
 		},
 	)
 }

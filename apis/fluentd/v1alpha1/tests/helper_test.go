@@ -207,7 +207,7 @@ func Test_MixedCfgs2ES(t *testing.T) {
 	}
 }
 
-func Test_ClusterCfgOutput2Cloudwatch(t *testing.T) {
+func Test_ClusterCfgOutput2CloudWatch(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
@@ -217,7 +217,7 @@ func Test_ClusterCfgOutput2Cloudwatch(t *testing.T) {
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
 	clusterFilters := []fluentdv1alpha1.ClusterFilter{FluentdClusterFilter1}
-	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutput2Cloudwatch}
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutput2CloudWatch}
 	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())

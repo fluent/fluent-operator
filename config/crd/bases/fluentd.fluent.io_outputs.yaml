@@ -248,7 +248,7 @@ spec:
                       required:
                       - type
                       type: object
-                    cloudwatch:
+                    cloudWatch:
                       description: out_cloudwatch plugin
                       properties:
                         autoCreateStream:
