@@ -110,8 +110,8 @@ spec:
                           - immediate
                           type: string
                         flushThreadCount:
-                          description: The sleep interval (seconds) for threads to
-                            wait for the next flush try(when no chunks are waiting)
+                          description: The number of threads to flush/write chunks
+                            in parallel
                           pattern: ^\d+$
                           type: string
                         id:
@@ -254,6 +254,8 @@ spec:
                       properties:
                         config:
                           type: string
+                      required:
+                      - config
                       type: object
                     elasticsearch:
                       description: out_es plugin
