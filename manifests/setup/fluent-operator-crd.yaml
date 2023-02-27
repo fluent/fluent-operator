@@ -4505,7 +4505,6 @@ spec:
                           description: If true, uses UTC.
                           type: boolean
                       required:
-                      - path
                       - type
                       type: object
                     customPlugin:
@@ -17875,7 +17874,6 @@ spec:
                           description: If true, uses UTC.
                           type: boolean
                       required:
-                      - path
                       - type
                       type: object
                     customPlugin:

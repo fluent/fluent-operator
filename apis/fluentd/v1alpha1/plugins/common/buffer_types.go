@@ -37,8 +37,7 @@ type Buffer struct {
 	TimeKeyWait *string `json:"timekeyWait,omitempty"`
 
 	// The path where buffer chunks are stored. This field would make no effect in memory buffer plugin.
-	// +kubebuilder:validation:Required
-	Path *string `json:"path"`
+	Path *string `json:"path,omitempty"`
 	// The output plugins group events into chunks.
 	// Chunk keys, specified as the argument of <buffer> section, control how to group events into chunks.
 	// If tag is empty, which means blank Chunk Keys.
