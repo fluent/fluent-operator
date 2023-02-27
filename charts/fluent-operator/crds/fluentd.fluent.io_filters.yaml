@@ -48,6 +48,8 @@ spec:
                       properties:
                         config:
                           type: string
+                      required:
+                      - config
                       type: object
                     grep:
                       description: The filter_grep filter plugin
