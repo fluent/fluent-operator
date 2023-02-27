@@ -309,6 +309,7 @@ FluentBitSpec defines the desired state of FluentBit
 | ports | Ports represents the pod's ports. | []corev1.ContainerPort |
 | rbacRules | RBACRules represents additional rbac rules which will be applied to the fluent-bit clusterrole. | []rbacv1.PolicyRule |
 | dnsPolicy | Set DNS policy for the pod. Defaults to \"ClusterFirst\". Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'. | corev1.DNSPolicy |
+| metricsPort | MetricsPort is the port used by the metrics server. If this option is set, HttpPort from ClusterFluentBitConfig needs to match this value. Default is 2020. | int32 |
 
 [Back to TOC](#table-of-contents)
 # InputSpec

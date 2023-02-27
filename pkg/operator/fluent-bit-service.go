@@ -10,11 +10,18 @@ import (
 
 const (
 	FluentBitMetricsPortName = "metrics"
-	FluentBitMetricsPort     = 2020
 	FluentBitTCPProtocolName = "TCP"
 )
 
 func MakeFluentbitService(fb fluentbitv1alpha2.FluentBit) corev1.Service {
+
+	var FluentBitMetricsPort int32
+	if fb.Spec.MetricsPort != 0 {
+		FluentBitMetricsPort = fb.Spec.MetricsPort
+	} else {
+		FluentBitMetricsPort = 2020
+	}
+
 	svc := corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fb.Name,
@@ -29,7 +36,7 @@ func MakeFluentbitService(fb fluentbitv1alpha2.FluentBit) corev1.Service {
 					Name:       FluentBitMetricsPortName,
 					Port:       FluentBitMetricsPort,
 					Protocol:   FluentBitTCPProtocolName,
-					TargetPort: intstr.FromInt(FluentBitMetricsPort),
+					TargetPort: intstr.FromInt(int(FluentBitMetricsPort)),
 				},
 			},
 		},

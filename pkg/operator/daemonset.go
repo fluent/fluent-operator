@@ -17,6 +17,14 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 	} else {
 		labels = fb.Labels
 	}
+
+	var metricsPort int32
+	if fb.Spec.MetricsPort != 0 {
+		metricsPort = fb.Spec.MetricsPort
+	} else {
+		metricsPort = 2020
+	}
+
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        fb.Name,
@@ -81,7 +89,7 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 							Ports: []corev1.ContainerPort{
 								{
 									Name:          "metrics",
-									ContainerPort: 2020,
+									ContainerPort: metricsPort,
 									Protocol:      "TCP",
 								},
 							},
