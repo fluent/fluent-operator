@@ -11852,6 +11852,12 @@ spec:
                     format: int32
                     type: integer
                 type: object
+              metricsPort:
+                description: MetricsPort is the port used by the metrics server. If
+                  this option is set, HttpPort from ClusterFluentBitConfig needs to
+                  match this value. Default is 2020.
+                format: int32
+                type: integer
               nodeSelector:
                 additionalProperties:
                   type: string
