@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.input.systemd.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
@@ -9,10 +10,13 @@ metadata:
 spec:
   systemd:
     tag: service.*
-    path: /var/log/journal
+    path: {{ .Values.fluentbit.input.systemd.path }}
     db: /fluent-bit/tail/systemd.db
     dbSync: Normal
     systemdFilter:
       - _SYSTEMD_UNIT={{ .Values.containerRuntime }}.service
+      {{- if .Values.fluentbit.input.systemd.includeKubelet }}
       - _SYSTEMD_UNIT=kubelet.service
+      {{- end }}
+{{- end }}
 {{- end }}
