@@ -98,7 +98,15 @@ fluentbit:
   #if the inbound traffic is less than 13.64Mbps, setting memBufLimit to 50MB is enough
   input:
     tail:
+      enable: true
+      refreshIntervalSeconds: 10
       memBufLimit: 5MB
+      path: "/var/log/containers/*.log"
+      skipLongLines: true
+    systemd:
+      enable: true
+      path: "/var/log/journal"
+      includeKubelet: true
     nodeExporterMetrics: {}
     # uncomment below nodeExporterMetrics section if you want to collect node exporter metrics
 #   nodeExporterMetrics:
