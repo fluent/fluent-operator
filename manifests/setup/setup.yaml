@@ -1413,7 +1413,9 @@ spec:
                     minimum: 1
                     type: integer
                   healthCheck:
-                    description: enable Health check feature
+                    description: 'enable Health check feature at http://127.0.0.1:2020/api/v1/health
+                      Note: Enabling this will not automatically configure kubernetes
+                      to use fluentbit''s healthcheck endpoint'
                     type: boolean
                   httpListen:
                     description: Address to listen

@@ -58,13 +58,12 @@ type Service struct {
 	HcErrorsCount *int64 `json:"hcErrorsCount,omitempty"`
 	// the retry failure count to meet the unhealthy requirement, this is a sum for all output plugins in a defined HC_Period, example for retry failure: [2022/02/16 20:11:36] [ warn] [engine] chunk '1-1645042288.260516436.flb' cannot be retried: task_id=0, input=tcp.3 > output=cloudwatch_logs.1
 	// +kubebuilder:validation:Minimum:=1
-    HcRetryFailureCount *int64 `json:"hcRetryFailureCount,omitempty"`
+	HcRetryFailureCount *int64 `json:"hcRetryFailureCount,omitempty"`
 	// The time period by second to count the error and retry failure data point
 	// +kubebuilder:validation:Minimum:=1
-    HcPeriod *int64 `json:"hcPeriod,omitempty"`
-	// enable Health check feature
+	HcPeriod *int64 `json:"hcPeriod,omitempty"`
+	// enable Health check feature at http://127.0.0.1:2020/api/v1/health Note: Enabling this will not automatically configure kubernetes to use fluentbit's healthcheck endpoint
 	HealthCheck *bool `json:"healthCheck,omitempty"`
-	
 	// Address to listen
 	// +kubebuilder:validation:Pattern:="^\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}$"
 	HttpListen string `json:"httpListen,omitempty"`
@@ -121,16 +120,16 @@ func (s *Service) Params() *params.KVs {
 		m.Insert("Grace", fmt.Sprint(*s.GraceSeconds))
 	}
 	if s.HcErrorsCount != nil {
-		m.Insert("HC_Errors_Count",fmt.Sprint(*s.HcErrorsCount))
+		m.Insert("HC_Errors_Count", fmt.Sprint(*s.HcErrorsCount))
 	}
 	if s.HcRetryFailureCount != nil {
-		m.Insert("HC_Retry_Failure_Count",fmt.Sprint(*s.HcRetryFailureCount))
+		m.Insert("HC_Retry_Failure_Count", fmt.Sprint(*s.HcRetryFailureCount))
 	}
 	if s.HcPeriod != nil {
-		m.Insert("HC_Period",fmt.Sprint(*s.HcPeriod))
+		m.Insert("HC_Period", fmt.Sprint(*s.HcPeriod))
 	}
 	if s.HealthCheck != nil {
-		m.Insert("Health_Check",fmt.Sprint(*s.HealthCheck))
+		m.Insert("Health_Check", fmt.Sprint(*s.HealthCheck))
 	}
 	if s.HttpListen != "" {
 		m.Insert("Http_Listen", s.HttpListen)
