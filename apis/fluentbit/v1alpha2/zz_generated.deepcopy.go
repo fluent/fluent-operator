@@ -1052,6 +1052,26 @@ func (in *Service) DeepCopyInto(out *Service) {
 		*out = new(int64)
 		**out = **in
 	}
+	if in.HcErrorsCount != nil {
+		in, out := &in.HcErrorsCount, &out.HcErrorsCount
+		*out = new(int64)
+		**out = **in
+	}
+	if in.HcRetryFailureCount != nil {
+		in, out := &in.HcRetryFailureCount, &out.HcRetryFailureCount
+		*out = new(int64)
+		**out = **in
+	}
+	if in.HcPeriod != nil {
+		in, out := &in.HcPeriod, &out.HcPeriod
+		*out = new(int64)
+		**out = **in
+	}
+	if in.HealthCheck != nil {
+		in, out := &in.HealthCheck, &out.HealthCheck
+		*out = new(bool)
+		**out = **in
+	}
 	if in.HttpPort != nil {
 		in, out := &in.HttpPort, &out.HttpPort
 		*out = new(int32)
