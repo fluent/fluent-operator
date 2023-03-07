@@ -34,8 +34,7 @@ type Interface interface {
 	FluentdV1alpha1() fluentdv1alpha1.FluentdV1alpha1Interface
 }
 
-// Clientset contains the clients for groups. Each group has exactly one
-// version included in a Clientset.
+// Clientset contains the clients for groups.
 type Clientset struct {
 	*discovery.DiscoveryClient
 	fluentbitV1alpha2 *fluentbitv1alpha2.FluentbitV1alpha2Client
