@@ -25,11 +25,11 @@ type CloudWatch struct {
 	//
 	AwsEcsAuthentication *bool `json:"awsEcsAuthentication,omitempty"`
 	//
-	Concurrency *string `json:"concurrency,omitempty"`
+	Concurrency *int `json:"concurrency,omitempty"`
 	// Specify an AWS endpoint to send data to.
 	Endpoint *string `json:"endpoint,omitempty"`
 	//
-	SslVerifyPeer *string `json:"sslVerifyPeer,omitempty"`
+	SslVerifyPeer *bool `json:"sslVerifyPeer,omitempty"`
 	//
 	HttpProxy *string `json:"httpProxy,omitempty"`
 	//

@@ -640,14 +640,14 @@ func (o *Output) cloudwatchPlugin(parent *params.PluginStore, sl plugins.SecretL
 	if o.CloudWatch.AwsEcsAuthentication != nil {
 		parent.InsertPairs("aws_ecs_authentication", strconv.FormatBool(*o.CloudWatch.AwsEcsAuthentication))
 	}
-	if o.CloudWatch.Concurrency != nil && *o.CloudWatch.Concurrency != "" {
-		parent.InsertPairs("concurrency", *o.CloudWatch.Concurrency)
+	if o.CloudWatch.Concurrency != nil {
+		parent.InsertPairs("concurrency", strconv.FormatInt(int64(*o.CloudWatch.Concurrency), 10))
 	}
 	if o.CloudWatch.Endpoint != nil && *o.CloudWatch.Endpoint != "" {
 		parent.InsertPairs("endpoint", *o.CloudWatch.Endpoint)
 	}
-	if o.CloudWatch.SslVerifyPeer != nil && *o.CloudWatch.SslVerifyPeer != "" {
-		parent.InsertPairs("ssl_verify_peer", *o.CloudWatch.SslVerifyPeer)
+	if o.CloudWatch.SslVerifyPeer != nil {
+		parent.InsertPairs("ssl_verify_peer", strconv.FormatBool(*o.CloudWatch.SslVerifyPeer))
 	}
 	if o.CloudWatch.HttpProxy != nil && *o.CloudWatch.HttpProxy != "" {
 		parent.InsertPairs("http_proxy", *o.CloudWatch.HttpProxy)

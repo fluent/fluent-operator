@@ -4790,7 +4790,7 @@ spec:
                         awsUseSts:
                           type: boolean
                         concurrency:
-                          type: string
+                          type: integer
                         durationSeconds:
                           type: string
                         endpoint:
@@ -4855,7 +4855,7 @@ spec:
                           description: Role Session name
                           type: string
                         sslVerifyPeer:
-                          type: string
+                          type: boolean
                         useTagAsGroup:
                           type: string
                         useTagAsStream:
@@ -18265,7 +18265,7 @@ spec:
                         awsUseSts:
                           type: boolean
                         concurrency:
-                          type: string
+                          type: integer
                         durationSeconds:
                           type: string
                         endpoint:
@@ -18330,7 +18330,7 @@ spec:
                           description: Role Session name
                           type: string
                         sslVerifyPeer:
-                          type: string
+                          type: boolean
                         useTagAsGroup:
                           type: string
                         useTagAsStream:
