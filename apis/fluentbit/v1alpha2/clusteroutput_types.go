@@ -74,6 +74,8 @@ type OutputSpec struct {
 	DataDog *output.DataDog `json:"datadog,omitempty"`
 	// Firehose defines Firehose Output configuration.
 	Fireose *output.Firehose `json:"firehose,omitempty"`
+	// Stackdriver defines Stackdriver Output Configuration
+	Stackdriver *output.Stackdriver `json:"stackdriver,omitempty"`
 	// Splunk defines Splunk Output Configuration
 	Splunk *output.Splunk `json:"splunk,omitempty"`
 	// OpenSearch defines OpenSearch Output configuration.
