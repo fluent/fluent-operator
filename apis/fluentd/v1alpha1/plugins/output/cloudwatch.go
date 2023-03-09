@@ -1,13 +1,17 @@
 package output
 
+import (
+	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+)
+
 // CloudWatch defines the parametes for out_cloudwatch output plugin
 type CloudWatch struct {
 	//
 	AutoCreateStream *bool `json:"autoCreateStream,omitempty"`
 	//
-	AwsKeyId *string `json:"awsKeyId,omitempty"`
+	AwsKeyId *plugins.Secret `json:"awsKeyId,omitempty"`
 	//
-	AwsSecKey *string `json:"awsSecKey,omitempty"`
+	AwsSecKey *plugins.Secret `json:"awsSecKey,omitempty"`
 	//
 	AwsUseSts *bool `json:"awsUseSts,omitempty"`
 	//

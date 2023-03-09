@@ -256,9 +256,65 @@ spec:
                         awsEcsAuthentication:
                           type: boolean
                         awsKeyId:
-                          type: string
+                          description: AwsKeyId *string `json:"awsKeyId,omitempty"`
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
                         awsSecKey:
-                          type: string
+                          description: AwsSecKey *string `json:"awsSecKey,omitempty"`
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
                         awsStsDurationSeconds:
                           type: string
                         awsStsEndpointUrl:

@@ -610,11 +610,19 @@ func (o *Output) cloudwatchPlugin(parent *params.PluginStore, sl plugins.SecretL
 	if o.CloudWatch.AutoCreateStream != nil {
 		parent.InsertPairs("auto_create_stream", strconv.FormatBool(*o.CloudWatch.AutoCreateStream))
 	}
-	if o.CloudWatch.AwsKeyId != nil && *o.CloudWatch.AwsKeyId != "" {
-		parent.InsertPairs("aws_key_id", *o.CloudWatch.AwsKeyId)
+	if o.CloudWatch.AwsKeyId != nil {
+		value, err := sl.LoadSecret(*o.CloudWatch.AwsKeyId)
+		if err != nil {
+			return nil
+		}
+		parent.InsertPairs("aws_key_id", value)
 	}
-	if o.CloudWatch.AwsSecKey != nil && *o.CloudWatch.AwsSecKey != "" {
-		parent.InsertPairs("aws_sec_key", *o.CloudWatch.AwsSecKey)
+	if o.CloudWatch.AwsSecKey != nil {
+		value, err := sl.LoadSecret(*o.CloudWatch.AwsSecKey)
+		if err != nil {
+			return nil
+		}
+		parent.InsertPairs("aws_sec_key", value)
 	}
 	if o.CloudWatch.AwsUseSts != nil {
 		parent.InsertPairs("aws_use_sts", strconv.FormatBool(*o.CloudWatch.AwsUseSts))
