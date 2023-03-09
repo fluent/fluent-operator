@@ -2179,6 +2179,93 @@ spec:
                 - customerID
                 - sharedKey
                 type: object
+              cloudWatch:
+                description: CloudWatch defines CloudWatch Output Configuration
+                properties:
+                  autoCreateGroup:
+                    description: Automatically create the log group. Defaults to False.
+                    type: boolean
+                  autoRetryRequests:
+                    description: Automatically retry failed requests to CloudWatch
+                      once. Defaults to True.
+                    type: boolean
+                  endpoint:
+                    description: Custom endpoint for CloudWatch logs API
+                    type: string
+                  externalID:
+                    description: Specify an external ID for the STS API.
+                    type: string
+                  logFormat:
+                    description: Optional parameter to tell CloudWatch the format
+                      of the data
+                    type: string
+                  logGroupName:
+                    description: Name of Cloudwatch Log Group to send log records
+                      to
+                    type: string
+                  logGroupTemplate:
+                    description: Template for Log Group name, overrides LogGroupName
+                      if set.
+                    type: string
+                  logKey:
+                    description: If set, only the value of the key will be sent to
+                      CloudWatch
+                    type: string
+                  logRetentionDays:
+                    description: Number of days logs are retained for
+                    enum:
+                    - 1
+                    - 3
+                    - 5
+                    - 7
+                    - 14
+                    - 30
+                    - 60
+                    - 90
+                    - 120
+                    - 150
+                    - 180
+                    - 365
+                    - 400
+                    - 545
+                    - 731
+                    - 1827
+                    - 3653
+                    format: int32
+                    type: integer
+                  logStreamName:
+                    description: The name of the CloudWatch Log Stream to send log
+                      records to
+                    type: string
+                  logStreamPrefix:
+                    description: Prefix for the Log Stream name. Not compatible with
+                      LogStreamName setting
+                    type: string
+                  logStreamTemplate:
+                    description: Template for Log Stream name. Overrides LogStreamPrefix
+                      and LogStreamName if set.
+                    type: string
+                  metricDimensions:
+                    description: Optional lists of lists for dimension keys to be
+                      added to all metrics. Use comma separated strings for one list
+                      of dimensions and semicolon separated strings for list of lists
+                      dimensions.
+                    type: string
+                  metricNamespace:
+                    description: Optional string to represent the CloudWatch namespace.
+                    type: string
+                  region:
+                    description: AWS Region
+                    type: string
+                  roleArn:
+                    description: Role ARN to use for cross-account access
+                    type: string
+                  stsEndpoint:
+                    description: Specify a custom STS endpoint for the AWS STS API
+                    type: string
+                required:
+                - region
+                type: object
               customPlugin:
                 description: CustomPlugin defines Custom Output configuration.
                 properties:
