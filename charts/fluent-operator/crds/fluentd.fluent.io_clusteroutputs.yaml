@@ -256,7 +256,7 @@ spec:
                         awsEcsAuthentication:
                           type: boolean
                         awsKeyId:
-                          description: AwsKeyId *string `json:"awsKeyId,omitempty"`
+                          description: Secret defines the key of a value.
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's
@@ -286,7 +286,7 @@ spec:
                               type: object
                           type: object
                         awsSecKey:
-                          description: AwsSecKey *string `json:"awsSecKey,omitempty"`
+                          description: Secret defines the key of a value.
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's
