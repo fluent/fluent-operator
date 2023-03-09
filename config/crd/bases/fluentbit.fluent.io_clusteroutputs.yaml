@@ -2030,6 +2030,146 @@ spec:
                         type: string
                     type: object
                 type: object
+              stackdriver:
+                description: Stackdriver defines Stackdriver Output Configuration
+                properties:
+                  autoformatStackdriverTrace:
+                    description: Rewrite the trace field to be formatted for use with
+                      GCP Cloud Trace
+                    type: boolean
+                  customK8sRegex:
+                    description: A custom regex to extract fields from the local_resource_id
+                      of the logs
+                    type: string
+                  exportToProjectID:
+                    description: The GCP Project that should receive the logs
+                    type: string
+                  googleServiceCredentials:
+                    description: Path to GCP Credentials JSON file
+                    type: string
+                  job:
+                    description: Identifier for a grouping of tasks. Required if Resource
+                      is generic_task
+                    type: string
+                  k8sClusterLocation:
+                    description: Location of the cluster that contains the pods/nodes.
+                      Required if Resource is k8s_container, k8s_node, or k8s_pod
+                    type: string
+                  k8sClusterName:
+                    description: Name of the cluster that the pod is running in. Required
+                      if Resource is k8s_container, k8s_node, or k8s_pod
+                    type: string
+                  labels:
+                    description: Optional list of comma separated of strings for key/value
+                      pairs
+                    items:
+                      type: string
+                    type: array
+                  labelsKey:
+                    description: Used by Stackdriver to find related labels and extract
+                      them to LogEntry Labels
+                    type: string
+                  location:
+                    description: GCP/AWS region to store data. Required if Resource
+                      is generic_node or generic_task
+                    type: string
+                  logNameKey:
+                    description: The value of this field is set as the logName field
+                      in Stackdriver
+                    type: string
+                  metadataServer:
+                    description: Metadata Server Prefix
+                    type: string
+                  namespace:
+                    description: Namespace identifier. Required if Resource is generic_node
+                      or generic_task
+                    type: string
+                  nodeID:
+                    description: Node identifier within the namespace. Required if
+                      Resource is generic_node or generic_task
+                    type: string
+                  resource:
+                    description: Set resource types of data
+                    type: string
+                  resourceLabels:
+                    description: Optional list of comma seperated strings. Setting
+                      these fields overrides the Stackdriver monitored resource API
+                      values
+                    items:
+                      type: string
+                    type: array
+                  serviceAccountEmail:
+                    description: Email associated with the service
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  serviceAccountSecret:
+                    description: Private Key associated with the service
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  severityKey:
+                    description: Specify the key that contains the severity information
+                      for the logs
+                    type: string
+                  tagPrefix:
+                    description: Used to validate the tags of logs that when the Resource
+                      is k8s_container, k8s_node, or k8s_pod
+                    type: string
+                  taskID:
+                    description: Identifier for a task within a namespace. Required
+                      if Resource is generic_task
+                    type: string
+                  workers:
+                    description: Number of dedicated threads for the Stackdriver Output
+                      Plugin
+                    format: int32
+                    type: integer
+                type: object
               stdout:
                 description: Stdout defines Stdout Output configuration.
                 properties:

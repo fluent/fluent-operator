@@ -957,6 +957,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.Firehose)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Stackdriver != nil {
+		in, out := &in.Stackdriver, &out.Stackdriver
+		*out = new(output.Stackdriver)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Splunk != nil {
 		in, out := &in.Splunk, &out.Splunk
 		*out = new(output.Splunk)

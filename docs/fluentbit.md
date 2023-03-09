@@ -354,6 +354,7 @@ OutputSpec defines the desired state of ClusterOutput
 | syslog | Syslog defines Syslog Output configuration. | *[output.Syslog](plugins/output/syslog.md) |
 | datadog | DataDog defines DataDog Output configuration. | *[output.DataDog](plugins/output/datadog.md) |
 | firehose | Firehose defines Firehose Output configuration. | *[output.Firehose](plugins/output/firehose.md) |
+| stackdriver | Stackdriver defines Stackdriver Output Configuration | *[output.Stackdriver](plugins/output/stackdriver.md) |
 | splunk | Splunk defines Splunk Output Configuration | *[output.Splunk](plugins/output/splunk.md) |
 | opensearch | OpenSearch defines OpenSearch Output configuration. | *[output.OpenSearch](plugins/output/opensearch.md) |
 | opentelemetry | OpenTelemetry defines OpenTelemetry Output configuration. | *[output.OpenTelemetry](plugins/output/opentelemetry.md) |
@@ -396,6 +397,10 @@ ParserSpec defines the desired state of ClusterParser
 | daemon | If true go to background on start | *bool |
 | flushSeconds | Interval to flush output | *int64 |
 | graceSeconds | Wait time on exit | *int64 |
+| hcErrorsCount | the error count to meet the unhealthy requirement, this is a sum for all output plugins in a defined HC_Period, example for output error: [2022/02/16 10:44:10] [ warn] [engine] failed to flush chunk '1-1645008245.491540684.flb', retry in 7 seconds: task_id=0, input=forward.1 > output=cloudwatch_logs.3 (out_id=3) | *int64 |
+| hcRetryFailureCount | the retry failure count to meet the unhealthy requirement, this is a sum for all output plugins in a defined HC_Period, example for retry failure: [2022/02/16 20:11:36] [ warn] [engine] chunk '1-1645042288.260516436.flb' cannot be retried: task_id=0, input=tcp.3 > output=cloudwatch_logs.1 | *int64 |
+| hcPeriod | The time period by second to count the error and retry failure data point | *int64 |
+| healthCheck | enable Health check feature at http://127.0.0.1:2020/api/v1/health Note: Enabling this will not automatically configure kubernetes to use fluentbit's healthcheck endpoint | *bool |
 | httpListen | Address to listen | string |
 | httpPort | Port to listen | *int32 |
 | httpServer | If true enable statistics HTTP server | *bool |
