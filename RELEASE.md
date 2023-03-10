@@ -33,6 +33,7 @@ This page describes the release process and the currently planned schedule for u
 | v1.7.0           | 2022-11-23                                 | Elon Cheng (GitHub: @wenchajun)         |
 | v2.0.0           | 2023-02-03                                 | Elon Cheng (GitHub: @wenchajun)         |
 | v2.0.1           | 2023-02-08                                 | Elon Cheng (GitHub: @wenchajun)         |
+| v2.1.0           | 2023-03-13                                 | Elon Cheng (GitHub: @wenchajun)         |
 
 # How to cut a new release
 
