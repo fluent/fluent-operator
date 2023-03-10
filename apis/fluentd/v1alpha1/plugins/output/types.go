@@ -48,7 +48,7 @@ type Output struct {
 	// Custom plugin type
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 	// out_cloudwatch plugin
-	CloudWatch *CloudWatch `json:"cloudWatch,omitempty"`
+	CloudWatch *CloudWatch `json:"cloudwatch,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -154,7 +154,7 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 
 	if o.CloudWatch != nil {
 		ps.InsertType(string(params.CloudWatchOutputType))
-		return o.cloudwatchPlugin(ps, loader), nil
+		return o.cloudWatchPlugin(ps, loader), nil
 	}
 	return o.customOutput(ps, loader), nil
 
@@ -604,7 +604,7 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 	return parent
 }
 
-func (o *Output) cloudwatchPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
+func (o *Output) cloudWatchPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
 	childs := make([]*params.PluginStore, 0)
 
 	if o.CloudWatch.AutoCreateStream != nil {
