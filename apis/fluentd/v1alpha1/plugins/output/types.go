@@ -48,7 +48,7 @@ type Output struct {
 	// Custom plugin type
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 	// out_cloudwatch plugin
-	CloudWatch *CloudWatch `json:"cloudwatch,omitempty"`
+	CloudWatch *CloudWatch `json:"cloudWatch,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -756,7 +756,6 @@ func (o *Output) cloudWatchPlugin(parent *params.PluginStore, sl plugins.SecretL
 	childs = append(childs, child)
 
 	// format is a subsection of its own.  Not implemented yet.
-
 	parent.InsertChilds(childs...)
 	return parent
 }
