@@ -4764,6 +4764,162 @@ spec:
                       required:
                       - type
                       type: object
+                    cloudWatch:
+                      description: out_cloudwatch plugin
+                      properties:
+                        autoCreateStream:
+                          type: boolean
+                        awsEcsAuthentication:
+                          type: boolean
+                        awsKeyId:
+                          description: Secret defines the key of a value.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        awsSecKey:
+                          description: Secret defines the key of a value.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        awsStsDurationSeconds:
+                          type: string
+                        awsStsEndpointUrl:
+                          type: string
+                        awsStsExternalId:
+                          type: string
+                        awsStsPolicy:
+                          type: string
+                        awsStsRoleArn:
+                          type: string
+                        awsStsSessionName:
+                          type: string
+                        awsUseSts:
+                          type: boolean
+                        concurrency:
+                          type: integer
+                        durationSeconds:
+                          type: string
+                        endpoint:
+                          description: Specify an AWS endpoint to send data to.
+                          type: string
+                        httpProxy:
+                          type: string
+                        includeTimeKey:
+                          type: boolean
+                        jsonHandler:
+                          type: string
+                        localtime:
+                          type: boolean
+                        logGroupAwsTags:
+                          type: string
+                        logGroupAwsTagsKey:
+                          type: string
+                        logGroupName:
+                          type: string
+                        logGroupNameKey:
+                          type: string
+                        logRejectedRequest:
+                          type: string
+                        logStreamName:
+                          type: string
+                        logStreamNameKey:
+                          type: string
+                        maxEventsPerBatch:
+                          type: string
+                        maxMessageLength:
+                          type: string
+                        messageKeys:
+                          type: string
+                        policy:
+                          type: string
+                        putLogEventsDisableRetryLimit:
+                          type: boolean
+                        putLogEventsRetryLimit:
+                          type: string
+                        putLogEventsRetryWait:
+                          type: string
+                        region:
+                          description: The AWS region.
+                          type: string
+                        removeLogGroupAwsTagsKey:
+                          type: boolean
+                        removeLogGroupNameKey:
+                          type: boolean
+                        removeLogStreamNameKey:
+                          type: boolean
+                        removeRetentionInDaysKey:
+                          type: boolean
+                        retentionInDays:
+                          type: string
+                        retentionInDaysKey:
+                          type: string
+                        roleArn:
+                          description: ARN of an IAM role to assume (for cross account
+                            access).
+                          type: string
+                        roleSessionName:
+                          description: Role Session name
+                          type: string
+                        sslVerifyPeer:
+                          type: boolean
+                        useTagAsGroup:
+                          type: string
+                        useTagAsStream:
+                          type: string
+                        webIdentityTokenFile:
+                          description: Web identity token file
+                          type: string
+                      type: object
                     customPlugin:
                       description: Custom plugin type
                       properties:
@@ -18138,6 +18294,162 @@ spec:
                           type: boolean
                       required:
                       - type
+                      type: object
+                    cloudWatch:
+                      description: out_cloudwatch plugin
+                      properties:
+                        autoCreateStream:
+                          type: boolean
+                        awsEcsAuthentication:
+                          type: boolean
+                        awsKeyId:
+                          description: Secret defines the key of a value.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        awsSecKey:
+                          description: Secret defines the key of a value.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        awsStsDurationSeconds:
+                          type: string
+                        awsStsEndpointUrl:
+                          type: string
+                        awsStsExternalId:
+                          type: string
+                        awsStsPolicy:
+                          type: string
+                        awsStsRoleArn:
+                          type: string
+                        awsStsSessionName:
+                          type: string
+                        awsUseSts:
+                          type: boolean
+                        concurrency:
+                          type: integer
+                        durationSeconds:
+                          type: string
+                        endpoint:
+                          description: Specify an AWS endpoint to send data to.
+                          type: string
+                        httpProxy:
+                          type: string
+                        includeTimeKey:
+                          type: boolean
+                        jsonHandler:
+                          type: string
+                        localtime:
+                          type: boolean
+                        logGroupAwsTags:
+                          type: string
+                        logGroupAwsTagsKey:
+                          type: string
+                        logGroupName:
+                          type: string
+                        logGroupNameKey:
+                          type: string
+                        logRejectedRequest:
+                          type: string
+                        logStreamName:
+                          type: string
+                        logStreamNameKey:
+                          type: string
+                        maxEventsPerBatch:
+                          type: string
+                        maxMessageLength:
+                          type: string
+                        messageKeys:
+                          type: string
+                        policy:
+                          type: string
+                        putLogEventsDisableRetryLimit:
+                          type: boolean
+                        putLogEventsRetryLimit:
+                          type: string
+                        putLogEventsRetryWait:
+                          type: string
+                        region:
+                          description: The AWS region.
+                          type: string
+                        removeLogGroupAwsTagsKey:
+                          type: boolean
+                        removeLogGroupNameKey:
+                          type: boolean
+                        removeLogStreamNameKey:
+                          type: boolean
+                        removeRetentionInDaysKey:
+                          type: boolean
+                        retentionInDays:
+                          type: string
+                        retentionInDaysKey:
+                          type: string
+                        roleArn:
+                          description: ARN of an IAM role to assume (for cross account
+                            access).
+                          type: string
+                        roleSessionName:
+                          description: Role Session name
+                          type: string
+                        sslVerifyPeer:
+                          type: boolean
+                        useTagAsGroup:
+                          type: string
+                        useTagAsStream:
+                          type: string
+                        webIdentityTokenFile:
+                          description: Web identity token file
+                          type: string
                       type: object
                     customPlugin:
                       description: Custom plugin type
