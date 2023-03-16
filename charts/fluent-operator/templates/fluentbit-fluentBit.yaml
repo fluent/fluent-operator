@@ -38,10 +38,12 @@ spec:
   volumesMounts:
 {{ toYaml .Values.fluentbit.additionalVolumesMounts | indent 4 }}
   {{- end }}
-  {{- if .Values.fluentbit.annotations }}
+  {{- if or .Values.fluentbit.annotations .Values.fluentbit.output.stdout.enable }}
   annotations:
-{{ toYaml .Values.fluentbit.annotations | indent 4 }}
-  {{- if .Values.fluentbit.output.stdout }}
+  {{- with .Values.fluentbit.annotations }}
+{{ toYaml . | indent 4 }}
+  {{- end -}}
+  {{- if .Values.fluentbit.output.stdout.enable }}
     fluentbit.io/exclude: "true"
   {{- end }}
   {{- end }}

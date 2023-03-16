@@ -14,8 +14,13 @@ spec:
       kubeURL: https://kubernetes.default.svc:443
       kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-      labels: {{ .Values.fluentbit.filter.kubernetes.labels }}
-      annotations: {{ .Values.fluentbit.filter.kubernetes.annotations }}
+      {{- $params := omit .Values.fluentbit.filter.kubernetes "enable" }}
+      {{- if .Values.fluentbit.output.stdout.enable }}
+      {{- $_ := set $params "k8sLoggingExclude" true -}}
+      {{- end }}
+      {{- with $params }}
+      {{- . | toYaml | nindent 6 }}
+      {{- end }}
   - nest:
       operation: lift
       nestedUnder: kubernetes
