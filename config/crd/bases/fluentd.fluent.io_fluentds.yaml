@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.11.3
   creationTimestamp: null
   name: fluentds.fluentd.fluent.io
 spec:
@@ -140,6 +139,7 @@ spec:
                                     type: object
                                   type: array
                               type: object
+                              x-kubernetes-map-type: atomic
                             weight:
                               description: Weight associated with matching the corresponding
                                 nodeSelectorTerm, in the range 1-100.
@@ -240,10 +240,12 @@ spec:
                                     type: object
                                   type: array
                               type: object
+                              x-kubernetes-map-type: atomic
                             type: array
                         required:
                         - nodeSelectorTerms
                         type: object
+                        x-kubernetes-map-type: atomic
                     type: object
                   podAffinity:
                     description: Describes pod affinity scheduling rules (e.g. co-locate
@@ -320,6 +322,7 @@ spec:
                                         The requirements are ANDed.
                                       type: object
                                   type: object
+                                  x-kubernetes-map-type: atomic
                                 namespaceSelector:
                                   description: A label query over the set of namespaces
                                     that the term applies to. The term is applied
@@ -376,6 +379,7 @@ spec:
                                         The requirements are ANDed.
                                       type: object
                                   type: object
+                                  x-kubernetes-map-type: atomic
                                 namespaces:
                                   description: namespaces specifies a static list
                                     of namespace names that the term applies to. The
@@ -474,6 +478,7 @@ spec:
                                     requirements are ANDed.
                                   type: object
                               type: object
+                              x-kubernetes-map-type: atomic
                             namespaceSelector:
                               description: A label query over the set of namespaces
                                 that the term applies to. The term is applied to the
@@ -525,6 +530,7 @@ spec:
                                     requirements are ANDed.
                                   type: object
                               type: object
+                              x-kubernetes-map-type: atomic
                             namespaces:
                               description: namespaces specifies a static list of namespace
                                 names that the term applies to. The term is applied
@@ -625,6 +631,7 @@ spec:
                                         The requirements are ANDed.
                                       type: object
                                   type: object
+                                  x-kubernetes-map-type: atomic
                                 namespaceSelector:
                                   description: A label query over the set of namespaces
                                     that the term applies to. The term is applied
@@ -681,6 +688,7 @@ spec:
                                         The requirements are ANDed.
                                       type: object
                                   type: object
+                                  x-kubernetes-map-type: atomic
                                 namespaces:
                                   description: namespaces specifies a static list
                                     of namespace names that the term applies to. The
@@ -779,6 +787,7 @@ spec:
                                     requirements are ANDed.
                                   type: object
                               type: object
+                              x-kubernetes-map-type: atomic
                             namespaceSelector:
                               description: A label query over the set of namespaces
                                 that the term applies to. The term is applied to the
@@ -830,6 +839,7 @@ spec:
                                     requirements are ANDed.
                                   type: object
                               type: object
+                              x-kubernetes-map-type: atomic
                             namespaces:
                               description: namespaces specifies a static list of namespace
                                 names that the term applies to. The term is applied
@@ -922,6 +932,23 @@ spec:
                         type: string
                       metadata:
                         description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: string
+                            type: object
+                          finalizers:
+                            items:
+                              type: string
+                            type: array
+                          labels:
+                            additionalProperties:
+                              type: string
+                            type: object
+                          name:
+                            type: string
+                          namespace:
+                            type: string
                         type: object
                       spec:
                         description: 'spec defines the desired characteristics of
@@ -962,6 +989,7 @@ spec:
                             - kind
                             - name
                             type: object
+                            x-kubernetes-map-type: atomic
                           dataSourceRef:
                             description: 'dataSourceRef specifies the object from
                               which to populate the volume with data, if a non-empty
@@ -980,13 +1008,13 @@ spec:
                               in dataSourceRef, dataSource isn''t set to the same
                               value and must be empty. There are three important differences
                               between dataSource and dataSourceRef: * While dataSource
-                              only allows two specific types of objects, dataSourceRef   allows
-                              any non-core object, as well as PersistentVolumeClaim
+                              only allows two specific types of objects, dataSourceRef
+                              allows any non-core object, as well as PersistentVolumeClaim
                               objects. * While dataSource ignores disallowed values
-                              (dropping them), dataSourceRef   preserves all values,
-                              and generates an error if a disallowed value is   specified.
+                              (dropping them), dataSourceRef preserves all values,
+                              and generates an error if a disallowed value is specified.
                               * While dataSource only allows local objects, dataSourceRef
-                              allows objects   in any namespaces. (Beta) Using this
+                              allows objects in any namespaces. (Beta) Using this
                               field requires the AnyVolumeDataSource feature gate
                               to be enabled. (Alpha) Using the namespace field of
                               dataSourceRef requires the CrossNamespaceVolumeDataSource
@@ -1119,6 +1147,7 @@ spec:
                                   contains only "value". The requirements are ANDed.
                                 type: object
                             type: object
+                            x-kubernetes-map-type: atomic
                           storageClassName:
                             description: 'storageClassName is the name of the StorageClass
                               required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1'
@@ -1276,6 +1305,7 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
               globalInputs:
                 description: Fluentd global inputs.
                 items:
@@ -1383,6 +1413,7 @@ spec:
                                           required:
                                           - key
                                           type: object
+                                          x-kubernetes-map-type: atomic
                                       type: object
                                   type: object
                                 username:
@@ -1414,6 +1445,7 @@ spec:
                                           required:
                                           - key
                                           type: object
+                                          x-kubernetes-map-type: atomic
                                       type: object
                                   type: object
                               type: object
@@ -1506,6 +1538,7 @@ spec:
                                       required:
                                       - key
                                       type: object
+                                      x-kubernetes-map-type: atomic
                                   type: object
                               type: object
                             username:
@@ -1536,6 +1569,7 @@ spec:
                                       required:
                                       - key
                                       type: object
+                                      x-kubernetes-map-type: atomic
                                   type: object
                               type: object
                           type: object
@@ -1728,6 +1762,7 @@ spec:
                         TODO: Add other useful fields. apiVersion, kind, uid?'
                       type: string
                   type: object
+                  x-kubernetes-map-type: atomic
                 type: array
               nodeSelector:
                 additionalProperties:
@@ -1902,9 +1937,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

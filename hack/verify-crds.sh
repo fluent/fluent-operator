@@ -5,7 +5,7 @@ set -o nounset
 set -o pipefail
 
 SCRIPT_ROOT=$(dirname "${BASH_SOURCE}")/..
-CRD_OPTIONS="crd:trivialVersions=true,preserveUnknownFields=false"
+CRD_OPTIONS="crd:generateEmbeddedObjectMeta=true"
 
 DIFFROOT="${SCRIPT_ROOT}/config/crd/bases/"
 TMP_DIFFROOT="${SCRIPT_ROOT}/_tmp/config/crd/bases/"

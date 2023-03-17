@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.11.3
   creationTimestamp: null
   name: clusteroutputs.fluentbit.fluent.io
 spec:
@@ -93,6 +92,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   tls:
@@ -132,6 +132,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   logType:
@@ -163,6 +164,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   timeGenerated:
@@ -399,6 +401,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -426,6 +429,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   idKey:
@@ -559,6 +563,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -709,6 +714,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   port:
@@ -794,6 +800,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -829,6 +836,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                 type: object
@@ -909,6 +917,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -936,6 +945,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   jsonDateFormat:
@@ -1014,6 +1024,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1126,6 +1137,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -1153,6 +1165,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   labelKeys:
@@ -1214,6 +1227,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   tls:
@@ -1273,6 +1287,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1370,6 +1385,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -1397,6 +1413,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   idKey:
@@ -1530,6 +1547,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1599,6 +1617,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -1626,6 +1645,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   logResponsePayload:
@@ -1702,6 +1722,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1762,6 +1783,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -1789,6 +1811,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   logResponsePayload:
@@ -1862,6 +1885,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1981,6 +2005,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -2008,6 +2033,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   port:
@@ -2048,6 +2074,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   tls:
@@ -2107,6 +2134,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -2210,6 +2238,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   serviceAccountSecret:
@@ -2237,6 +2266,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   severityKey:
@@ -2393,6 +2423,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -2494,6 +2525,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -2508,9 +2540,3 @@ spec:
         type: object
     served: true
     storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
