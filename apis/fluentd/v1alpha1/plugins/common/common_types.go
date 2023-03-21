@@ -3,8 +3,8 @@ package common
 import (
 	"fmt"
 
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/params"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true

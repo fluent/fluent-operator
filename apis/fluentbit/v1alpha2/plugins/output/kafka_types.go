@@ -3,8 +3,8 @@ package output
 import (
 	"fmt"
 
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
 )
 
 // +kubebuilder:object:generate:=true

@@ -1,7 +1,7 @@
 package output
 
 import (
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
 )
 
 // CloudWatch defines the parametes for out_cloudwatch output plugin

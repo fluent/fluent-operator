@@ -35,10 +35,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	fluentbitv1alpha2 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2"
-	fluentdv1alpha1 "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1"
+	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
 
-	"github.com/fluent/fluent-operator/controllers"
+	"github.com/fluent/fluent-operator/v2/controllers"
 	// +kubebuilder:scaffold:imports
 )
 
