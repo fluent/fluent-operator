@@ -1387,6 +1387,36 @@ spec:
                     description: Wait time on exit
                     format: int64
                     type: integer
+                  hcErrorsCount:
+                    description: 'the error count to meet the unhealthy requirement,
+                      this is a sum for all output plugins in a defined HC_Period,
+                      example for output error: [2022/02/16 10:44:10] [ warn] [engine]
+                      failed to flush chunk ''1-1645008245.491540684.flb'', retry
+                      in 7 seconds: task_id=0, input=forward.1 > output=cloudwatch_logs.3
+                      (out_id=3)'
+                    format: int64
+                    minimum: 1
+                    type: integer
+                  hcPeriod:
+                    description: The time period by second to count the error and
+                      retry failure data point
+                    format: int64
+                    minimum: 1
+                    type: integer
+                  hcRetryFailureCount:
+                    description: 'the retry failure count to meet the unhealthy requirement,
+                      this is a sum for all output plugins in a defined HC_Period,
+                      example for retry failure: [2022/02/16 20:11:36] [ warn] [engine]
+                      chunk ''1-1645042288.260516436.flb'' cannot be retried: task_id=0,
+                      input=tcp.3 > output=cloudwatch_logs.1'
+                    format: int64
+                    minimum: 1
+                    type: integer
+                  healthCheck:
+                    description: 'enable Health check feature at http://127.0.0.1:2020/api/v1/health
+                      Note: Enabling this will not automatically configure kubernetes
+                      to use fluentbit''s healthcheck endpoint'
+                    type: boolean
                   httpListen:
                     description: Address to listen
                     pattern: ^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$
@@ -2148,6 +2178,93 @@ spec:
                 required:
                 - customerID
                 - sharedKey
+                type: object
+              cloudWatch:
+                description: CloudWatch defines CloudWatch Output Configuration
+                properties:
+                  autoCreateGroup:
+                    description: Automatically create the log group. Defaults to False.
+                    type: boolean
+                  autoRetryRequests:
+                    description: Automatically retry failed requests to CloudWatch
+                      once. Defaults to True.
+                    type: boolean
+                  endpoint:
+                    description: Custom endpoint for CloudWatch logs API
+                    type: string
+                  externalID:
+                    description: Specify an external ID for the STS API.
+                    type: string
+                  logFormat:
+                    description: Optional parameter to tell CloudWatch the format
+                      of the data
+                    type: string
+                  logGroupName:
+                    description: Name of Cloudwatch Log Group to send log records
+                      to
+                    type: string
+                  logGroupTemplate:
+                    description: Template for Log Group name, overrides LogGroupName
+                      if set.
+                    type: string
+                  logKey:
+                    description: If set, only the value of the key will be sent to
+                      CloudWatch
+                    type: string
+                  logRetentionDays:
+                    description: Number of days logs are retained for
+                    enum:
+                    - 1
+                    - 3
+                    - 5
+                    - 7
+                    - 14
+                    - 30
+                    - 60
+                    - 90
+                    - 120
+                    - 150
+                    - 180
+                    - 365
+                    - 400
+                    - 545
+                    - 731
+                    - 1827
+                    - 3653
+                    format: int32
+                    type: integer
+                  logStreamName:
+                    description: The name of the CloudWatch Log Stream to send log
+                      records to
+                    type: string
+                  logStreamPrefix:
+                    description: Prefix for the Log Stream name. Not compatible with
+                      LogStreamName setting
+                    type: string
+                  logStreamTemplate:
+                    description: Template for Log Stream name. Overrides LogStreamPrefix
+                      and LogStreamName if set.
+                    type: string
+                  metricDimensions:
+                    description: Optional lists of lists for dimension keys to be
+                      added to all metrics. Use comma separated strings for one list
+                      of dimensions and semicolon separated strings for list of lists
+                      dimensions.
+                    type: string
+                  metricNamespace:
+                    description: Optional string to represent the CloudWatch namespace.
+                    type: string
+                  region:
+                    description: AWS Region
+                    type: string
+                  roleArn:
+                    description: Role ARN to use for cross-account access
+                    type: string
+                  stsEndpoint:
+                    description: Specify a custom STS endpoint for the AWS STS API
+                    type: string
+                required:
+                - region
                 type: object
               customPlugin:
                 description: CustomPlugin defines Custom Output configuration.
@@ -4002,6 +4119,146 @@ spec:
                         type: string
                     type: object
                 type: object
+              stackdriver:
+                description: Stackdriver defines Stackdriver Output Configuration
+                properties:
+                  autoformatStackdriverTrace:
+                    description: Rewrite the trace field to be formatted for use with
+                      GCP Cloud Trace
+                    type: boolean
+                  customK8sRegex:
+                    description: A custom regex to extract fields from the local_resource_id
+                      of the logs
+                    type: string
+                  exportToProjectID:
+                    description: The GCP Project that should receive the logs
+                    type: string
+                  googleServiceCredentials:
+                    description: Path to GCP Credentials JSON file
+                    type: string
+                  job:
+                    description: Identifier for a grouping of tasks. Required if Resource
+                      is generic_task
+                    type: string
+                  k8sClusterLocation:
+                    description: Location of the cluster that contains the pods/nodes.
+                      Required if Resource is k8s_container, k8s_node, or k8s_pod
+                    type: string
+                  k8sClusterName:
+                    description: Name of the cluster that the pod is running in. Required
+                      if Resource is k8s_container, k8s_node, or k8s_pod
+                    type: string
+                  labels:
+                    description: Optional list of comma separated of strings for key/value
+                      pairs
+                    items:
+                      type: string
+                    type: array
+                  labelsKey:
+                    description: Used by Stackdriver to find related labels and extract
+                      them to LogEntry Labels
+                    type: string
+                  location:
+                    description: GCP/AWS region to store data. Required if Resource
+                      is generic_node or generic_task
+                    type: string
+                  logNameKey:
+                    description: The value of this field is set as the logName field
+                      in Stackdriver
+                    type: string
+                  metadataServer:
+                    description: Metadata Server Prefix
+                    type: string
+                  namespace:
+                    description: Namespace identifier. Required if Resource is generic_node
+                      or generic_task
+                    type: string
+                  nodeID:
+                    description: Node identifier within the namespace. Required if
+                      Resource is generic_node or generic_task
+                    type: string
+                  resource:
+                    description: Set resource types of data
+                    type: string
+                  resourceLabels:
+                    description: Optional list of comma seperated strings. Setting
+                      these fields overrides the Stackdriver monitored resource API
+                      values
+                    items:
+                      type: string
+                    type: array
+                  serviceAccountEmail:
+                    description: Email associated with the service
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  serviceAccountSecret:
+                    description: Private Key associated with the service
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                        type: object
+                    type: object
+                  severityKey:
+                    description: Specify the key that contains the severity information
+                      for the logs
+                    type: string
+                  tagPrefix:
+                    description: Used to validate the tags of logs that when the Resource
+                      is k8s_container, k8s_node, or k8s_pod
+                    type: string
+                  taskID:
+                    description: Identifier for a task within a namespace. Required
+                      if Resource is generic_task
+                    type: string
+                  workers:
+                    description: Number of dedicated threads for the Stackdriver Output
+                      Plugin
+                    format: int32
+                    type: integer
+                type: object
               stdout:
                 description: Stdout defines Stdout Output configuration.
                 properties:
@@ -4506,6 +4763,162 @@ spec:
                           type: boolean
                       required:
                       - type
+                      type: object
+                    cloudWatch:
+                      description: out_cloudwatch plugin
+                      properties:
+                        autoCreateStream:
+                          type: boolean
+                        awsEcsAuthentication:
+                          type: boolean
+                        awsKeyId:
+                          description: Secret defines the key of a value.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        awsSecKey:
+                          description: Secret defines the key of a value.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        awsStsDurationSeconds:
+                          type: string
+                        awsStsEndpointUrl:
+                          type: string
+                        awsStsExternalId:
+                          type: string
+                        awsStsPolicy:
+                          type: string
+                        awsStsRoleArn:
+                          type: string
+                        awsStsSessionName:
+                          type: string
+                        awsUseSts:
+                          type: boolean
+                        concurrency:
+                          type: integer
+                        durationSeconds:
+                          type: string
+                        endpoint:
+                          description: Specify an AWS endpoint to send data to.
+                          type: string
+                        httpProxy:
+                          type: string
+                        includeTimeKey:
+                          type: boolean
+                        jsonHandler:
+                          type: string
+                        localtime:
+                          type: boolean
+                        logGroupAwsTags:
+                          type: string
+                        logGroupAwsTagsKey:
+                          type: string
+                        logGroupName:
+                          type: string
+                        logGroupNameKey:
+                          type: string
+                        logRejectedRequest:
+                          type: string
+                        logStreamName:
+                          type: string
+                        logStreamNameKey:
+                          type: string
+                        maxEventsPerBatch:
+                          type: string
+                        maxMessageLength:
+                          type: string
+                        messageKeys:
+                          type: string
+                        policy:
+                          type: string
+                        putLogEventsDisableRetryLimit:
+                          type: boolean
+                        putLogEventsRetryLimit:
+                          type: string
+                        putLogEventsRetryWait:
+                          type: string
+                        region:
+                          description: The AWS region.
+                          type: string
+                        removeLogGroupAwsTagsKey:
+                          type: boolean
+                        removeLogGroupNameKey:
+                          type: boolean
+                        removeLogStreamNameKey:
+                          type: boolean
+                        removeRetentionInDaysKey:
+                          type: boolean
+                        retentionInDays:
+                          type: string
+                        retentionInDaysKey:
+                          type: string
+                        roleArn:
+                          description: ARN of an IAM role to assume (for cross account
+                            access).
+                          type: string
+                        roleSessionName:
+                          description: Role Session name
+                          type: string
+                        sslVerifyPeer:
+                          type: boolean
+                        useTagAsGroup:
+                          type: string
+                        useTagAsStream:
+                          type: string
+                        webIdentityTokenFile:
+                          description: Web identity token file
+                          type: string
                       type: object
                     customPlugin:
                       description: Custom plugin type
@@ -21147,6 +21560,162 @@ spec:
                           type: boolean
                       required:
                       - type
+                      type: object
+                    cloudWatch:
+                      description: out_cloudwatch plugin
+                      properties:
+                        autoCreateStream:
+                          type: boolean
+                        awsEcsAuthentication:
+                          type: boolean
+                        awsKeyId:
+                          description: Secret defines the key of a value.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        awsSecKey:
+                          description: Secret defines the key of a value.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                              type: object
+                          type: object
+                        awsStsDurationSeconds:
+                          type: string
+                        awsStsEndpointUrl:
+                          type: string
+                        awsStsExternalId:
+                          type: string
+                        awsStsPolicy:
+                          type: string
+                        awsStsRoleArn:
+                          type: string
+                        awsStsSessionName:
+                          type: string
+                        awsUseSts:
+                          type: boolean
+                        concurrency:
+                          type: integer
+                        durationSeconds:
+                          type: string
+                        endpoint:
+                          description: Specify an AWS endpoint to send data to.
+                          type: string
+                        httpProxy:
+                          type: string
+                        includeTimeKey:
+                          type: boolean
+                        jsonHandler:
+                          type: string
+                        localtime:
+                          type: boolean
+                        logGroupAwsTags:
+                          type: string
+                        logGroupAwsTagsKey:
+                          type: string
+                        logGroupName:
+                          type: string
+                        logGroupNameKey:
+                          type: string
+                        logRejectedRequest:
+                          type: string
+                        logStreamName:
+                          type: string
+                        logStreamNameKey:
+                          type: string
+                        maxEventsPerBatch:
+                          type: string
+                        maxMessageLength:
+                          type: string
+                        messageKeys:
+                          type: string
+                        policy:
+                          type: string
+                        putLogEventsDisableRetryLimit:
+                          type: boolean
+                        putLogEventsRetryLimit:
+                          type: string
+                        putLogEventsRetryWait:
+                          type: string
+                        region:
+                          description: The AWS region.
+                          type: string
+                        removeLogGroupAwsTagsKey:
+                          type: boolean
+                        removeLogGroupNameKey:
+                          type: boolean
+                        removeLogStreamNameKey:
+                          type: boolean
+                        removeRetentionInDaysKey:
+                          type: boolean
+                        retentionInDays:
+                          type: string
+                        retentionInDaysKey:
+                          type: string
+                        roleArn:
+                          description: ARN of an IAM role to assume (for cross account
+                            access).
+                          type: string
+                        roleSessionName:
+                          description: Role Session name
+                          type: string
+                        sslVerifyPeer:
+                          type: boolean
+                        useTagAsGroup:
+                          type: string
+                        useTagAsStream:
+                          type: string
+                        webIdentityTokenFile:
+                          description: Web identity token file
+                          type: string
                       type: object
                     customPlugin:
                       description: Custom plugin type

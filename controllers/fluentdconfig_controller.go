@@ -101,7 +101,7 @@ type FluentdConfigReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
 func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = r.Log.WithValues("fluendconfig", req.NamespacedName)
+	_ = r.Log.WithValues("fluentdconfig", req.NamespacedName)
 
 	var fluentdList fluentdv1alpha1.FluentdList
 	// List all fluentd instances to bind the generated runtime configuration to each fluentd.

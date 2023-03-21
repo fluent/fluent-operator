@@ -1,3 +1,36 @@
+## 2.1.0 / 2023-03-13
+### Features
+- Feat: Adding Azure Blob output plugin (#549)
+- Feat: Generic custom plugin type for Fluentd CRDs (#555) 
+- Feat: Adding azureLogAnalytics output plugin for fluentbit (#563)
+- Feat: Add ability to customize metrics port (#587)
+- Feat: Enable fluentbit healthcheck (#598)
+- Feat: Adding GCP Stackdriver Fluentbit Output Plugin (#605)
+- Feat: Adding Cloudwatch for Fluentbit Output Plugin (#609) 
+
+### ENHANCEMENT
+- Support multi-architecture compilation, add platform amd64 compilation (#566)
+- Update kubebuilder and kubectl (#574) 
+- Config: run "make manifests" to generate metricsPort (#593)
+- Make default ClusterInputs optional and configurable (#595)
+- Bump kustomize from 4.5.7 to 5.0.0 (#572)
+- Bump k8s.io/client-go from 0.25.4 to 0.26.1 (#573)
+- build(deps): Bump k8s.io/klog/v2 from 2.80.1 to 2.90.0 (#551)
+- build(deps): Bump github.com/joho/godotenv from 1.4.0 to 1.5.1 (#552)
+- build(deps): Bump github.com/go-kit/log from 0.2.0 to 0.2.1 (#553) 
+- build(deps): Bump alpine from 3.17.1 to 3.17.2 in /cmd/fluent-watcher/fluentd/base (#569)
+- build(deps): Bump golang from 1.19.5-alpine3.17 to 1.20.1-alpine3.17 in /cmd/fluent-manager (#571)
+- build(deps): Bump golang from 1.19.5 to 1.20.1 in /docs/best-practice/forwarding-logs-via-http (#596)
+- build(deps): Bump sigs.k8s.io/controller-runtime from 0.14.4 to 0.14.5 (#599)
+- build(deps): Bump github.com/onsi/gomega from 1.26.0 to 1.27.2 (#600)
+- build(deps): Bump k8s.io/client-go from 0.26.1 to 0.26.2 (#602)
+
+### BUGFIX 
+- Fix: Fix Code format (including comment) (#565) 
+- Fix: Update CRDs description / Documentation, conform to code (#591)
+- Fix: Set the `path` field in fluentd to optional (#592)
+- Fix: Add /finalizers to fluent-operator-clusterRole.yaml to fix openshift (#608)
+
 ## 2.0.1 / 2023-02-08
 ### ENHANCEMENT
 - Upgrade Fluentd to v1.15.3 (#556) 

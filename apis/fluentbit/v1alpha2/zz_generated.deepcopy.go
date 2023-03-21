@@ -1214,6 +1214,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.Firehose)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Stackdriver != nil {
+		in, out := &in.Stackdriver, &out.Stackdriver
+		*out = new(output.Stackdriver)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Splunk != nil {
 		in, out := &in.Splunk, &out.Splunk
 		*out = new(output.Splunk)
@@ -1365,6 +1370,26 @@ func (in *Service) DeepCopyInto(out *Service) {
 	if in.GraceSeconds != nil {
 		in, out := &in.GraceSeconds, &out.GraceSeconds
 		*out = new(int64)
+		**out = **in
+	}
+	if in.HcErrorsCount != nil {
+		in, out := &in.HcErrorsCount, &out.HcErrorsCount
+		*out = new(int64)
+		**out = **in
+	}
+	if in.HcRetryFailureCount != nil {
+		in, out := &in.HcRetryFailureCount, &out.HcRetryFailureCount
+		*out = new(int64)
+		**out = **in
+	}
+	if in.HcPeriod != nil {
+		in, out := &in.HcPeriod, &out.HcPeriod
+		*out = new(int64)
+		**out = **in
+	}
+	if in.HealthCheck != nil {
+		in, out := &in.HealthCheck, &out.HealthCheck
+		*out = new(bool)
 		**out = **in
 	}
 	if in.HttpPort != nil {

@@ -2,6 +2,7 @@ package cfgrender
 
 import (
 	"github.com/go-logr/logr"
+	"strings"
 	"testing"
 
 	. "github.com/onsi/gomega"
@@ -201,6 +202,32 @@ func Test_MixedCfgs2ES(t *testing.T) {
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-es.cfg"))).To(Equal(config))
+
+		i++
+	}
+}
+
+func Test_ClusterCfgOutput2CloudWatch(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
+
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
+	g.Expect(err).NotTo(HaveOccurred())
+	clusterFilters := []fluentdv1alpha1.ClusterFilter{FluentdClusterFilter1}
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutput2CloudWatch}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
+	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	// we should not see any permutations in serialized config
+	i := 0
+	for i < maxRuntimes {
+		config, errs := psr.RenderMainConfig(false)
+		g.Expect(errs).NotTo(HaveOccurred())
+		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-cloudwatch.cfg")))).To(Equal(config))
 
 		i++
 	}

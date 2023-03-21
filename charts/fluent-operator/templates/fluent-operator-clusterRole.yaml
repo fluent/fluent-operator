@@ -47,15 +47,21 @@ rules:
     resources:
       - collectors
       - fluentbits
+      - fluentbits/finalizers
       - clusterfluentbitconfigs
+      - clusterfluentbitconfigs/finalizers
       - clusterfilters
+      - clusterfilters/finalizers
       - clusterinputs
+      - clusterinputs/finalizers
       - clusteroutputs
+      - clusteroutputs/finalizers
       - clusterparsers
       - fluentbitconfigs
       - filters
       - outputs
       - parsers
+      - clusterparsers/finalizers
     verbs:
       - create
       - delete
