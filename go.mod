@@ -1,4 +1,4 @@
-module github.com/fluent/fluent-operator
+module github.com/fluent/fluent-operator/v2
 
 go 1.19
 
