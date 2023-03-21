@@ -72,7 +72,7 @@ type Service struct {
 }
 
 // +kubebuilder:object:root=true
-// +kubebuilder:resource:shortName=fbc,scope=Cluster
+// +kubebuilder:resource:shortName=cfbc,scope=Cluster
 // +genclient
 // +genclient:nonNamespaced
 
@@ -129,7 +129,8 @@ func (s *Service) Params() *params.KVs {
 	return m
 }
 
-func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList, outputs ClusterOutputList) (string, error) {
+func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList,
+	outputs ClusterOutputList, nsFilterLists []FilterList, nsOutputLists []OutputList, rewriteTagConfigs []string) (string, error) {
 	var buf bytes.Buffer
 
 	// The Service defines the global behaviour of the Fluent Bit engine.
@@ -148,11 +149,29 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 		return "", err
 	}
 
+	var nsFilterSections []string
+	for _, nsFilterList := range nsFilterLists {
+		filters, err := nsFilterList.Load(sl)
+		if err != nil {
+			return "", err
+		}
+		nsFilterSections = append(nsFilterSections, filters)
+	}
+
 	outputSections, err := outputs.Load(sl)
 	if err != nil {
 		return "", err
 	}
-	if inputSections != "" && outputSections == "" {
+	var nsOutputSections []string
+	for _, nsOutputList := range nsOutputLists {
+		outputs, err := nsOutputList.Load(sl)
+		if err != nil {
+			return "", err
+		}
+		nsOutputSections = append(nsOutputSections, outputs)
+	}
+
+	if inputSections != "" && outputSections == "" && nsOutputSections == nil {
 		outputSections = `[Output]
     Name    null
     Match   *`
@@ -160,12 +179,22 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 
 	buf.WriteString(inputSections)
 	buf.WriteString(filterSections)
+	for _, rtc := range rewriteTagConfigs {
+		buf.WriteString(rtc)
+	}
+	for _, filters := range nsFilterSections {
+		buf.WriteString(filters)
+	}
+	for _, outputs := range nsOutputSections {
+		buf.WriteString(outputs)
+	}
 	buf.WriteString(outputSections)
 
 	return buf.String(), nil
 }
 
-func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers ClusterParserList) (string, error) {
+func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers ClusterParserList, nsParserLists []ParserList,
+	nsClusterParserLists []ClusterParserList) (string, error) {
 	var buf bytes.Buffer
 
 	parserSections, err := parsers.Load(sl)
@@ -174,6 +203,22 @@ func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, pa
 	}
 
 	buf.WriteString(parserSections)
+
+	for _, parserListPerNS := range nsParserLists {
+		nsParserSections, err := parserListPerNS.Load(sl)
+		if err != nil {
+			return "", err
+		}
+		buf.WriteString(nsParserSections)
+	}
+
+	for _, item := range nsClusterParserLists {
+		nsClusterParserSections, err := item.Load(sl)
+		if err != nil {
+			return "", err
+		}
+		buf.WriteString(nsClusterParserSections)
+	}
 
 	return buf.String(), nil
 }

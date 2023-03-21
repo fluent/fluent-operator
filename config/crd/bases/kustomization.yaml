@@ -9,6 +9,10 @@ resources:
 - fluentbit.fluent.io_clusteroutputs.yaml
 - fluentbit.fluent.io_clusterparsers.yaml
 - fluentbit.fluent.io_collectors.yaml
+- fluentbit.fluent.io_fluentbitconfigs.yaml
+- fluentbit.fluent.io_filters.yaml
+- fluentbit.fluent.io_outputs.yaml
+- fluentbit.fluent.io_parsers.yaml
 - fluentd.fluent.io_fluentds.yaml
 - fluentd.fluent.io_clusterfluentdconfigs.yaml
 - fluentd.fluent.io_fluentdconfigs.yaml

@@ -52,6 +52,10 @@ rules:
       - clusterinputs
       - clusteroutputs
       - clusterparsers
+      - fluentbitconfigs
+      - filters
+      - outputs
+      - parsers
     verbs:
       - create
       - delete

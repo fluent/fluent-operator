@@ -3,6 +3,7 @@ package custom
 import (
 	"bytes"
 	"fmt"
+	"github.com/fluent/fluent-operator/pkg/utils"
 	"strings"
 
 	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
@@ -33,6 +34,25 @@ func indentation(str string) string {
 		if i != "" {
 			buf.WriteString(fmt.Sprintf("    %s\n", strings.TrimSpace(i)))
 		}
+	}
+	return buf.String()
+}
+
+func MakeCustomConfigNamespaced(customConfig string, namespace string) string {
+	var buf bytes.Buffer
+	sections := strings.Split(customConfig, "\n")
+	for _, section := range sections {
+		section = strings.TrimSpace(section)
+		idx := strings.LastIndex(section, " ")
+		if strings.HasPrefix(section, "Match_Regex") {
+			buf.WriteString(fmt.Sprintf("Match_Regex %s\n", utils.HashedMatchRegex(namespace, section[idx+1:])))
+			continue
+		}
+		if strings.HasPrefix(section, "Match") {
+			buf.WriteString(fmt.Sprintf("Match %s\n", utils.HashedMatch(namespace, section[idx+1:])))
+			continue
+		}
+		buf.WriteString(fmt.Sprintf("%s\n", section))
 	}
 	return buf.String()
 }

@@ -55,6 +55,8 @@ type FluentBitSpec struct {
 	Tolerations []corev1.Toleration `json:"tolerations,omitempty"`
 	// Fluentbitconfig object associated with this Fluentbit
 	FluentBitConfigName string `json:"fluentBitConfigName,omitempty"`
+	// NamespaceFluentBitCfgSelector selects the namespace FluentBitConfig associated with this FluentBit
+	NamespaceFluentBitCfgSelector metav1.LabelSelector `json:"namespaceFluentBitCfgSelector,omitempty"`
 	// The Secrets are mounted into /fluent-bit/secrets/<secret-name>.
 	Secrets []string `json:"secrets,omitempty"`
 	// RuntimeClassName represents the container runtime configuration.

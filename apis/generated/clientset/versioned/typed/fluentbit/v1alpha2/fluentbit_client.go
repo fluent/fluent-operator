@@ -33,7 +33,11 @@ type FluentbitV1alpha2Interface interface {
 	ClusterOutputsGetter
 	ClusterParsersGetter
 	CollectorsGetter
+	FiltersGetter
 	FluentBitsGetter
+	FluentBitConfigsGetter
+	OutputsGetter
+	ParsersGetter
 }
 
 // FluentbitV1alpha2Client is used to interact with features provided by the fluentbit.fluent.io group.
@@ -65,8 +69,24 @@ func (c *FluentbitV1alpha2Client) Collectors(namespace string) CollectorInterfac
 	return newCollectors(c, namespace)
 }
 
+func (c *FluentbitV1alpha2Client) Filters(namespace string) FilterInterface {
+	return newFilters(c, namespace)
+}
+
 func (c *FluentbitV1alpha2Client) FluentBits(namespace string) FluentBitInterface {
 	return newFluentBits(c, namespace)
+}
+
+func (c *FluentbitV1alpha2Client) FluentBitConfigs(namespace string) FluentBitConfigInterface {
+	return newFluentBitConfigs(c, namespace)
+}
+
+func (c *FluentbitV1alpha2Client) Outputs(namespace string) OutputInterface {
+	return newOutputs(c, namespace)
+}
+
+func (c *FluentbitV1alpha2Client) Parsers(namespace string) ParserInterface {
+	return newParsers(c, namespace)
 }
 
 // NewForConfig creates a new FluentbitV1alpha2Client for the given config.

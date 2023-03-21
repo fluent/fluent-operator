@@ -16,14 +16,23 @@ This Document documents the types introduced by the fluentbit Operator.
 * [CollectorList](#collectorlist)
 * [CollectorSpec](#collectorspec)
 * [Decorder](#decorder)
+* [Filter](#filter)
 * [FilterItem](#filteritem)
+* [FilterList](#filterlist)
 * [FilterSpec](#filterspec)
 * [FluentBit](#fluentbit)
+* [FluentBitConfig](#fluentbitconfig)
+* [FluentBitConfigList](#fluentbitconfiglist)
 * [FluentBitConfigSpec](#fluentbitconfigspec)
 * [FluentBitList](#fluentbitlist)
 * [FluentBitSpec](#fluentbitspec)
 * [InputSpec](#inputspec)
+* [NamespaceFluentBitSpec](#namespacefluentbitspec)
+* [Output](#output)
+* [OutputList](#outputlist)
 * [OutputSpec](#outputspec)
+* [Parser](#parser)
+* [ParserList](#parserlist)
 * [ParserSpec](#parserspec)
 * [Script](#script)
 * [Service](#service)
@@ -202,6 +211,17 @@ CollectorSpec defines the desired state of FluentBit
 | decodeFieldAs | Any content decoded (unstructured or structured) will be replaced in the same key/value, no extra keys are added. | string |
 
 [Back to TOC](#table-of-contents)
+# Filter
+
+Filter is the Schema for namespace level filter API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | FilterSpec |
+
+[Back to TOC](#table-of-contents)
 # FilterItem
 
 
@@ -221,6 +241,17 @@ CollectorSpec defines the desired state of FluentBit
 | aws | Aws defines a Aws configuration. | *[filter.AWS](plugins/filter/aws.md) |
 | multiline | Multiline defines a Multiline configuration. | *[filter.Multiline](plugins/filter/multiline.md) |
 | customPlugin | CustomPlugin defines a Custom plugin configuration. | *custom.CustomPlugin |
+
+[Back to TOC](#table-of-contents)
+# FilterList
+
+FilterList contains a list of Filters
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []Filter |
 
 [Back to TOC](#table-of-contents)
 # FilterSpec
@@ -245,6 +276,28 @@ FluentBit is the Schema for the fluentbits API
 | metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
 | spec |  | FluentBitSpec |
 | status |  | FluentBitStatus |
+
+[Back to TOC](#table-of-contents)
+# FluentBitConfig
+
+FluentBitConfig is the Schema for the API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | NamespaceFluentBitSpec |
+
+[Back to TOC](#table-of-contents)
+# FluentBitConfigList
+
+FluentBitConfigList contains a list of Collector
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []FluentBitConfig |
 
 [Back to TOC](#table-of-contents)
 # FluentBitConfigSpec
@@ -293,6 +346,7 @@ FluentBitSpec defines the desired state of FluentBit
 | affinity | Pod's scheduling constraints. | *corev1.Affinity |
 | tolerations | Tolerations | [][corev1.Toleration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#toleration-v1-core) |
 | fluentBitConfigName | Fluentbitconfig object associated with this Fluentbit | string |
+| namespaceFluentBitCfgSelector | NamespaceFluentBitCfgSelector selects the namespace FluentBitConfig associated with this FluentBit | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | secrets | The Secrets are mounted into /fluent-bit/secrets/<secret-name>. | []string |
 | runtimeClassName | RuntimeClassName represents the container runtime configuration. | string |
 | priorityClassName | PriorityClassName represents the pod's priority class. | string |
@@ -329,6 +383,41 @@ InputSpec defines the desired state of ClusterInput
 | customPlugin | CustomPlugin defines Custom Input configuration. | *custom.CustomPlugin |
 
 [Back to TOC](#table-of-contents)
+# NamespaceFluentBitSpec
+
+NamespaceFluentBitSpec defines the desired state of FluentBit
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| filterSelector | Select filter plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| outputSelector | Select output plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| parserSelector | Select parser plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| clusterParserSelector | Select cluster level parser config | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+
+[Back to TOC](#table-of-contents)
+# Output
+
+Output is the schema for namespace level output API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | OutputSpec |
+
+[Back to TOC](#table-of-contents)
+# OutputList
+
+OutputList contains a list of Outputs
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []Output |
+
+[Back to TOC](#table-of-contents)
 # OutputSpec
 
 OutputSpec defines the desired state of ClusterOutput
@@ -359,6 +448,28 @@ OutputSpec defines the desired state of ClusterOutput
 | opentelemetry | OpenTelemetry defines OpenTelemetry Output configuration. | *[output.OpenTelemetry](plugins/output/opentelemetry.md) |
 | prometheusRemoteWrite | PrometheusRemoteWrite_types defines Prometheus Remote Write configuration. | *[output.PrometheusRemoteWrite](plugins/output/prometheusremotewrite.md) |
 | customPlugin | CustomPlugin defines Custom Output configuration. | *custom.CustomPlugin |
+
+[Back to TOC](#table-of-contents)
+# Parser
+
+Parser is the Schema for namespace level parser API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | ParserSpec |
+
+[Back to TOC](#table-of-contents)
+# ParserList
+
+ParserList contains a list of Parsers
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []Parser |
 
 [Back to TOC](#table-of-contents)
 # ParserSpec

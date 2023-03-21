@@ -29,4 +29,12 @@ type ClusterParserExpansion interface{}
 
 type CollectorExpansion interface{}
 
+type FilterExpansion interface{}
+
 type FluentBitExpansion interface{}
+
+type FluentBitConfigExpansion interface{}
+
+type OutputExpansion interface{}
+
+type ParserExpansion interface{}

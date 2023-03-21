@@ -99,6 +99,54 @@ var expected = `[Service]
     tls    On
     tls.verify    true
 `
+var expectedK8s = `[Service]
+    Daemon    false
+    Flush    1
+    Grace    30
+    Http_Server    true
+    Log_Level    info
+    Parsers_File    parsers.conf
+[Input]
+    Name    tail
+    Path    /var/log/containers/*.log
+    Refresh_Interval    10
+    Ignore_Older    5m
+    Skip_Long_Lines    true
+    DB    /fluent-bit/tail/pos.db
+    Mem_Buf_Limit    5MB
+    Tag    kube.*
+[Filter]
+    Name    parser
+    Match    acbd18db4cc2f85cedef654fccc4a4d8.kube.*
+    Key_Name    log
+    Parser    bar-acbd18db4cc2f85cedef654fccc4a4d8
+    Reserve_Data    true
+[Output]
+    Name    opensearch
+    Match    acbd18db4cc2f85cedef654fccc4a4d8.kube.*
+    Host    foo.bar
+    Port    9200
+    Index    foo-index
+`
+
+var labels = map[string]string{
+	"label0": "lv0",
+	"label1": "lv1",
+	"label3": "lval3",
+	"lbl2":   "lval2",
+	"lbl1":   "lvl1",
+}
+
+var cfg = ClusterFluentBitConfig{
+	Spec: FluentBitConfigSpec{Service: &Service{
+		Daemon:       ptrBool(false),
+		FlushSeconds: ptrInt64(1),
+		GraceSeconds: ptrInt64(30),
+		HttpServer:   ptrBool(true),
+		LogLevel:     "info",
+		ParsersFile:  "parsers.conf",
+	}},
+}
 
 func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	g := NewGomegaWithT(t)
@@ -106,14 +154,6 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
 
 	disableInotifyWatcher := ptrBool(true)
-
-	labels := map[string]string{
-		"label0": "lv0",
-		"label1": "lv1",
-		"label3": "lval3",
-		"lbl2":   "lval2",
-		"lbl1":   "lvl1",
-	}
 
 	inputObj := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
@@ -304,26 +344,111 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		Items: []ClusterOutput{syslogOut, httpOutput, openSearchOutput, kafkaOutput},
 	}
 
-	cfg := ClusterFluentBitConfig{
-		Spec: FluentBitConfigSpec{Service: &Service{
-			Daemon:       ptrBool(false),
-			FlushSeconds: ptrInt64(1),
-			GraceSeconds: ptrInt64(30),
-			HttpServer:   ptrBool(true),
-			LogLevel:     "info",
-			ParsersFile:  "parsers.conf",
-		}},
-	}
-
+	var nsFilterList []FilterList
+	var nsOutputList []OutputList
+	var rewriteTagCfgs []string
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < 5 {
-		config, err := cfg.RenderMainConfig(sl, inputs, filters, outputs)
+		config, err := cfg.RenderMainConfig(sl, inputs, filters, outputs, nsFilterList, nsOutputList, rewriteTagCfgs)
 		g.Expect(err).NotTo(HaveOccurred())
 		g.Expect(config).To(Equal(expected))
 
 		i++
 	}
+}
+
+func TestRenderMainConfigK8s(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
+
+	inputObj := &ClusterInput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterInput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "input0",
+			Labels: labels,
+		},
+		Spec: InputSpec{
+			Tail: &input.Tail{
+				Tag:                    "kube.*",
+				Path:                   "/var/log/containers/*.log",
+				SkipLongLines:          ptrBool(true),
+				IgnoreOlder:            "5m",
+				MemBufLimit:            "5MB",
+				RefreshIntervalSeconds: ptrInt64(10),
+				DB:                     "/fluent-bit/tail/pos.db",
+			}},
+	}
+	inputList := ClusterInputList{
+		Items: []ClusterInput{*inputObj},
+	}
+	filterList := ClusterFilterList{
+		Items: []ClusterFilter{},
+	}
+	outputList := ClusterOutputList{
+		Items: []ClusterOutput{},
+	}
+	filterObj := &Filter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "Filter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "filter0",
+			Namespace: "foo",
+			Labels:    labels,
+		},
+		Spec: FilterSpec{
+			Match: "kube.*",
+			FilterItems: []FilterItem{
+				{
+					Parser: &filter.Parser{
+						KeyName:     "log",
+						Parser:      "bar",
+						ReserveData: ptrBool(true),
+					},
+				},
+			},
+		},
+	}
+	nsFilterList := []FilterList{
+		{
+			Items: []Filter{*filterObj},
+		},
+	}
+	outputObj := &Output{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "Output",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "output0",
+			Namespace: "foo",
+			Labels:    labels,
+		},
+		Spec: OutputSpec{
+			Match: "kube.*",
+			OpenSearch: &output.OpenSearch{
+				Host:  "foo.bar",
+				Port:  ptrInt32(9200),
+				Index: "foo-index",
+			},
+		},
+	}
+	nsOutputList := []OutputList{
+		{
+			Items: []Output{*outputObj},
+		},
+	}
+	var rewriteTagCfg []string
+
+	config, err := cfg.RenderMainConfig(sl, inputList, filterList, outputList, nsFilterList, nsOutputList, rewriteTagCfg)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(config).To(Equal(expectedK8s))
+
 }
 
 func ptrBool(v bool) *bool {
