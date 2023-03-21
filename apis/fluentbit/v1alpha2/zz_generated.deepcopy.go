@@ -897,6 +897,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.AzureLogAnalytics)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.CloudWatch != nil {
+		in, out := &in.CloudWatch, &out.CloudWatch
+		*out = new(output.CloudWatch)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Elasticsearch != nil {
 		in, out := &in.Elasticsearch, &out.Elasticsearch
 		*out = new(output.Elasticsearch)
