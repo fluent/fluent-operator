@@ -120,6 +120,18 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) appsv1.StatefulSet {
 		sts.Spec.Template.Spec.PriorityClassName = fd.Spec.PriorityClassName
 	}
 
+	if fd.Spec.Volumes != nil {
+		sts.Spec.Template.Spec.Volumes = append(sts.Spec.Template.Spec.Volumes, fd.Spec.Volumes...)
+	}
+
+	if fd.Spec.VolumeMounts != nil {
+		sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, fd.Spec.VolumeMounts...)
+	}
+
+	if fd.Spec.VolumeClaimTemplates != nil {
+		sts.Spec.VolumeClaimTemplates = append(sts.Spec.VolumeClaimTemplates, fd.Spec.VolumeClaimTemplates...)
+	}
+
 	// Mount host or emptydir VolumeSource
 	if fd.Spec.BufferVolume != nil && !fd.Spec.BufferVolume.DisableBufferVolume {
 		bufferVolName := fmt.Sprintf("%s-buffer", fd.Name)

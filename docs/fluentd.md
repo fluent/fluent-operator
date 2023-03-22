@@ -289,6 +289,9 @@ FluentdSpec defines the desired state of Fluentd
 | runtimeClassName | RuntimeClassName represents the container runtime configuration. | string |
 | priorityClassName | PriorityClassName represents the pod's priority class. | string |
 | rbacRules | RBACRules represents additional rbac rules which will be applied to the fluentd clusterrole. | []rbacv1.PolicyRule |
+| volumes | List of volumes that can be mounted by containers belonging to the pod. | []corev1.Volume |
+| volumeMounts | Pod volumes to mount into the container's filesystem. Cannot be updated. | []corev1.VolumeMount |
+| volumeClaimTemplates | volumeClaimTemplates is a list of claims that pods are allowed to reference. The StatefulSet controller is responsible for mapping network identities to claims in a way that maintains the identity of a pod. Every claim in this list must have at least one matching (by name) volumeMount in one container in the template. | []corev1.PersistentVolumeClaim |
 
 [Back to TOC](#table-of-contents)
 # FluentdStatus
