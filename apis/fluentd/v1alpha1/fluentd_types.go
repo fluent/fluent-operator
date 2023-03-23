@@ -68,6 +68,16 @@ type FluentdSpec struct {
 	PriorityClassName string `json:"priorityClassName,omitempty"`
 	// RBACRules represents additional rbac rules which will be applied to the fluentd clusterrole.
 	RBACRules []rbacv1.PolicyRule `json:"rbacRules,omitempty"`
+	// List of volumes that can be mounted by containers belonging to the pod.
+	Volumes []corev1.Volume `json:"volumes,omitempty"`
+	// Pod volumes to mount into the container's filesystem. Cannot be updated.
+	VolumeMounts []corev1.VolumeMount `json:"volumeMounts,omitempty"`
+	// volumeClaimTemplates is a list of claims that pods are allowed to reference.
+	// The StatefulSet controller is responsible for mapping network identities to
+	// claims in a way that maintains the identity of a pod. Every claim in
+	// this list must have at least one matching (by name) volumeMount in one
+	// container in the template.
+	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty"`
 }
 
 type BufferVolume struct {
