@@ -1,7 +1,7 @@
 package output
 
 import (
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
 )
 
 // Forward defines the out_forward Buffered Output plugin forwards events to other fluentd nodes.

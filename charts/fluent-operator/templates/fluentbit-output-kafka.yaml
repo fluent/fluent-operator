@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
 {{- if .Values.fluentbit.output.kafka.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
@@ -12,5 +13,6 @@ spec:
   kafka:
     brokers: {{ .Values.fluentbit.output.kafka.brokers }}
     topics: {{ .Values.fluentbit.output.kafka.topics }}
+{{- end }}
 {{- end }}
 {{- end }}

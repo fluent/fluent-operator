@@ -13,7 +13,7 @@ import (
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	fluentdv1alpha1 "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1"
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
 )
 
 var k8sClient client.Client

@@ -21,8 +21,8 @@ import (
 	"fmt"
 	"net/http"
 
-	fluentbitv1alpha2 "github.com/fluent/fluent-operator/apis/generated/clientset/versioned/typed/fluentbit/v1alpha2"
-	fluentdv1alpha1 "github.com/fluent/fluent-operator/apis/generated/clientset/versioned/typed/fluentd/v1alpha1"
+	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned/typed/fluentbit/v1alpha2"
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned/typed/fluentd/v1alpha1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"

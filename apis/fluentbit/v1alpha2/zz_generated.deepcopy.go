@@ -22,11 +22,11 @@ limitations under the License.
 package v1alpha2
 
 import (
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/custom"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/filter"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/input"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/output"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/parser"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/custom"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/filter"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/input"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/output"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/parser"
 	"k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -895,6 +895,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 	if in.AzureLogAnalytics != nil {
 		in, out := &in.AzureLogAnalytics, &out.AzureLogAnalytics
 		*out = new(output.AzureLogAnalytics)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.CloudWatch != nil {
+		in, out := &in.CloudWatch, &out.CloudWatch
+		*out = new(output.CloudWatch)
 		(*in).DeepCopyInto(*out)
 	}
 	if in.Elasticsearch != nil {
