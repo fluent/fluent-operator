@@ -7,7 +7,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	fluentdv1alpha1 "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1"
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
 )
 
 func MakeFluentdPVC(fd fluentdv1alpha1.Fluentd) corev1.PersistentVolumeClaim {

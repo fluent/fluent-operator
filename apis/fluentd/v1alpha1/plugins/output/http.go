@@ -1,7 +1,7 @@
 package output
 
 import (
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
 )
 
 // Http defines the parameters for out_http output plugin

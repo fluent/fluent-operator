@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-logr/logr"
 
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/input"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/input"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

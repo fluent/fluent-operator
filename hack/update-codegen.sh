@@ -29,10 +29,10 @@ echo ">> Temporary output directory ${TEMP_DIR}"
 chmod +x ${CODEGEN_PKG}/generate-groups.sh
 
 ${CODEGEN_PKG}/generate-groups.sh "client" \
-    github.com/fluent/fluent-operator/apis/generated github.com/fluent/fluent-operator/apis \
+    github.com/fluent/fluent-operator/v2/apis/generated github.com/fluent/fluent-operator/v2/apis \
     "fluentbit:v1alpha2 fluentd:v1alpha1" \
     --output-base "${TEMP_DIR}" \
     --go-header-file ${SCRIPT_ROOT}/hack/boilerplate.go.txt
 
 # Copy everything back.
-cp -r "${TEMP_DIR}/github.com/fluent/fluent-operator/apis/." "${SCRIPT_ROOT}/apis/"
+cp -r "${TEMP_DIR}/github.com/fluent/fluent-operator/v2/apis/." "${SCRIPT_ROOT}/apis/"
