@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
 {{- if .Values.fluentbit.filter.containerd.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterFilter
@@ -16,5 +17,6 @@ spec:
         name: fluent-bit-containerd-config
       call: containerd
       timeAsTable: true
+{{- end }}
 {{- end }}
 {{- end }}

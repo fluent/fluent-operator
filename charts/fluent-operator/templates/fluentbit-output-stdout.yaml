@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
 {{- if .Values.fluentbit.output.stdout.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
@@ -10,5 +11,6 @@ metadata:
 spec:
   match: "*"
   stdout: {}
+{{- end }}
 {{- end }}
 {{- end }}
