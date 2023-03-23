@@ -21,6 +21,9 @@ import (
 	"os"
 	"strings"
 
+	fluentbitv1alpha2 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2"
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1"
+
 	"errors"
 
 	"github.com/joho/godotenv"
@@ -45,8 +48,8 @@ import (
 )
 
 const (
-	fluentBitComponentName = "fluent-bit"
-	fluentDComponentName   = "fluentd"
+	fluentBitName = "fluent-bit"
+	fluentDName   = "fluentd"
 )
 
 var (
@@ -56,9 +59,6 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-
-	utilruntime.Must(fluentbitv1alpha2.AddToScheme(scheme))
-	utilruntime.Must(fluentdv1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -68,11 +68,13 @@ func main() {
 	var probeAddr string
 	var watchNamespaces string
 	var logPath string
-	var disableComponentControllers string
+	var disabledControllers string
 	flag.StringVar(&watchNamespaces, "watch-namespaces", "", "Optional comma separated list of namespaces to watch for resources in. Defaults to cluster scope.")
 	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
-	flag.StringVar(&disableComponentControllers, "disable-component-controllers", "", "Optional argument which accepts two values: fluent-bit and fluentd. It will not start the controllers related to the given component.")
+	flag.StringVar(&disabledControllers, "disable-component-controllers", "",
+		"Optional argument that accepts two values: fluent-bit and fluentd. "+
+			"The specific controller will not be started if it's disabled.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
@@ -113,10 +115,10 @@ func main() {
 	}
 
 	fluentBitEnabled, fluentDEnabled := true, true
-	if disableComponentControllers != "" {
-		if disableComponentControllers == fluentBitComponentName {
+	if disabledControllers != "" {
+		if disabledControllers == fluentBitName {
 			fluentBitEnabled = false
-		} else if disableComponentControllers == fluentDComponentName {
+		} else if disabledControllers == fluentDName {
 			fluentDEnabled = false
 		} else {
 			setupLog.Error(errors.New("incorrect value for `-disable-component-controllers` and it will not be proceeded (possible values are: fluent-bit, fluentd)"), "")
@@ -124,6 +126,7 @@ func main() {
 	}
 
 	if fluentBitEnabled {
+		utilruntime.Must(fluentbitv1alpha2.AddToScheme(scheme))
 		if err = (&controllers.FluentBitConfigReconciler{
 			Client: mgr.GetClient(),
 			Log:    ctrl.Log.WithName("controllers").WithName("FluentBitConfig"),
@@ -156,6 +159,7 @@ func main() {
 	}
 
 	if fluentDEnabled {
+		utilruntime.Must(fluentdv1alpha1.AddToScheme(scheme))
 		if err = (&controllers.FluentdConfigReconciler{
 			Client: mgr.GetClient(),
 			Log:    ctrl.Log.WithName("controllers").WithName("FluentdConfig"),
