@@ -46,7 +46,7 @@ import (
 
 const (
 	fluentBitName = "fluent-bit"
-	fluentDName   = "fluentd"
+	fluentdName   = "fluentd"
 )
 
 var (
@@ -111,12 +111,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	fluentBitEnabled, fluentDEnabled := true, true
+	fluentBitEnabled, fluentdEnabled := true, true
 	if disabledControllers != "" {
 		if disabledControllers == fluentBitName {
 			fluentBitEnabled = false
-		} else if disabledControllers == fluentDName {
-			fluentDEnabled = false
+		} else if disabledControllers == fluentdName {
+			fluentdEnabled = false
 		} else {
 			setupLog.Error(errors.New("incorrect value for `-disable-component-controllers` and it will not be proceeded (possible values are: fluent-bit, fluentd)"), "")
 		}
@@ -155,7 +155,7 @@ func main() {
 		// +kubebuilder:scaffold:builder
 	}
 
-	if fluentDEnabled {
+	if fluentdEnabled {
 		utilruntime.Must(fluentdv1alpha1.AddToScheme(scheme))
 		if err = (&controllers.FluentdConfigReconciler{
 			Client: mgr.GetClient(),
