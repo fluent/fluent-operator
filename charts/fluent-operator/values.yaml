@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-#Set this to containerd or crio if you want to collect CRI format logs
+# Set this to containerd or crio if you want to collect CRI format logs
 containerRuntime: docker
 #  If you want to deploy a default Fluent Bit pipeline (including Fluent Bit Input, Filter, and output) to collect Kubernetes logs, you'll need to set the Kubernetes parameter to true
 # see https://github.com/fluent/fluent-operator/tree/master/manifests/logging-stack
@@ -44,7 +44,7 @@ fluentbit:
     repository: "kubesphere/fluent-bit"
     tag: "v2.0.9"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
-  #You can adjust it based on the log volume.
+  # You can adjust it based on the log volume.
   resources:
     limits:
       cpu: 500m
@@ -64,7 +64,7 @@ fluentbit:
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
-  imagePullSecrets: [ ]
+  imagePullSecrets: []
   # - name: "image-pull-secret"
   secrets: []
   # List of volumes that can be mounted by containers belonging to the pod.
@@ -90,12 +90,12 @@ fluentbit:
 #     name: hostProc
 #     readOnly: true
 
-  #Set a limit of memory that Tail plugin can use when appending data to the Engine.
+  # Set a limit of memory that Tail plugin can use when appending data to the Engine.
   # You can find more details here: https://docs.fluentbit.io/manual/pipeline/inputs/tail#config
-  #If the limit is reach, it will be paused; when the data is flushed it resumes.
-  #if the inbound traffic is less than 2.4Mbps, setting memBufLimit to 5MB is enough
-  #if the inbound traffic is less than 4.0Mbps, setting memBufLimit to 10MB is enough
-  #if the inbound traffic is less than 13.64Mbps, setting memBufLimit to 50MB is enough
+  # If the limit is reach, it will be paused; when the data is flushed it resumes.
+  # if the inbound traffic is less than 2.4Mbps, setting memBufLimit to 5MB is enough
+  # if the inbound traffic is less than 4.0Mbps, setting memBufLimit to 10MB is enough
+  # if the inbound traffic is less than 13.64Mbps, setting memBufLimit to 50MB is enough
   input:
     tail:
       enable: true
@@ -116,8 +116,8 @@ fluentbit:
 #       procfs: /host/proc
 #       sysfs: /host/sys
 
-  #Configure the output plugin parameter in FluentBit.
-  #You can set enable to true to output logs to the specified location.
+  # Configure the output plugin parameter in FluentBit.
+  # You can set enable to true to output logs to the specified location.
   output:
 #  You can find more supported output plugins here: https://github.com/fluent/fluent-operator/tree/master/docs/plugins/fluentbit/clusteroutput
     es:
@@ -153,7 +153,7 @@ fluentbit:
     stdout:
       enable: true
 
-  #Configure the default filters in FluentBit.
+  # Configure the default filters in FluentBit.
   # The `filter` will filter and parse the collected log information and output the logs into a uniform format. You can choose whether to turn this on or not.
   filter:
     kubernetes:
