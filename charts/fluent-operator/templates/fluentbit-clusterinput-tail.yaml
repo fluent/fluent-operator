@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
 {{- if .Values.fluentbit.input.tail.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
@@ -23,5 +24,6 @@ spec:
     skipLongLines: {{ .Values.fluentbit.input.tail.skipLongLines }}
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
+{{- end }}
 {{- end }}
 {{- end }}

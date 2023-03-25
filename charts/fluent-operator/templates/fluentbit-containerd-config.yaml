@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
 {{- if .Values.fluentbit.filter.containerd.enable -}}
 apiVersion: v1
 kind: ConfigMap
@@ -22,5 +23,6 @@ data:
             return 0,timestamp,record
            end
     end
+{{- end }}
 {{- end }}
 {{- end }}

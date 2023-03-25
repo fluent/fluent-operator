@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
 {{- if .Values.fluentbit.filter.kubernetes.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterFilter
@@ -37,5 +38,6 @@ spec:
       - kubernetes_*
       nestUnder: kubernetes
       removePrefix: kubernetes_
+{{- end }}
 {{- end }}
 {{- end }}
