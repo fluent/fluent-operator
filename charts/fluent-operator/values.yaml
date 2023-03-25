@@ -163,7 +163,7 @@ fluentbit:
     opensearch: {}
     # You can configure the opensearch-related configuration here
     stdout:
-      enable: true
+      enable: false
 
   # Configure the default filters in FluentBit.
   # The `filter` will filter and parse the collected log information and output the logs into a uniform format. You can choose whether to turn this on or not.
