@@ -51,8 +51,24 @@ func (c *FakeFluentbitV1alpha2) Collectors(namespace string) v1alpha2.CollectorI
 	return &FakeCollectors{c, namespace}
 }
 
+func (c *FakeFluentbitV1alpha2) Filters(namespace string) v1alpha2.FilterInterface {
+	return &FakeFilters{c, namespace}
+}
+
 func (c *FakeFluentbitV1alpha2) FluentBits(namespace string) v1alpha2.FluentBitInterface {
 	return &FakeFluentBits{c, namespace}
+}
+
+func (c *FakeFluentbitV1alpha2) FluentBitConfigs(namespace string) v1alpha2.FluentBitConfigInterface {
+	return &FakeFluentBitConfigs{c, namespace}
+}
+
+func (c *FakeFluentbitV1alpha2) Outputs(namespace string) v1alpha2.OutputInterface {
+	return &FakeOutputs{c, namespace}
+}
+
+func (c *FakeFluentbitV1alpha2) Parsers(namespace string) v1alpha2.ParserInterface {
+	return &FakeParsers{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

@@ -57,6 +57,10 @@ rules:
       - clusteroutputs
       - clusteroutputs/finalizers
       - clusterparsers
+      - fluentbitconfigs
+      - filters
+      - outputs
+      - parsers
       - clusterparsers/finalizers
     verbs:
       - create

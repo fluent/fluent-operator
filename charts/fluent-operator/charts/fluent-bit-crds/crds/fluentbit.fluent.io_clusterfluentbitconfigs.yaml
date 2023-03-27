@@ -13,7 +13,7 @@ spec:
     listKind: ClusterFluentBitConfigList
     plural: clusterfluentbitconfigs
     shortNames:
-    - fbc
+    - cfbc
     singular: clusterfluentbitconfig
   scope: Cluster
   versions:
