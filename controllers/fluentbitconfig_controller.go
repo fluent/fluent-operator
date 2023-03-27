@@ -126,7 +126,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			}
 
 			// List all the namespace level resources if they exist and generate configs to mutate tags
-			nsFilterLists, nsOutputLists, nsParserLists, nsClusterParserLists, rewriteTagConfigs, err := r.processNamespaceFluentBitCfgs(ctx, fb, inputs)
+			nsFilterLists, nsOutputLists, nsParserLists, nsClusterParserLists, rewriteTagConfigs, err := r.processNamespacedFluentBitCfgs(ctx, fb, inputs)
 
 			if err != nil {
 				return ctrl.Result{}, err
@@ -190,7 +190,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	return ctrl.Result{}, nil
 }
 
-func (r *FluentBitConfigReconciler) processNamespaceFluentBitCfgs(ctx context.Context, fb fluentbitv1alpha2.FluentBit, inputs fluentbitv1alpha2.ClusterInputList) ([]fluentbitv1alpha2.FilterList, []fluentbitv1alpha2.OutputList,
+func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(ctx context.Context, fb fluentbitv1alpha2.FluentBit, inputs fluentbitv1alpha2.ClusterInputList) ([]fluentbitv1alpha2.FilterList, []fluentbitv1alpha2.OutputList,
 	[]fluentbitv1alpha2.ParserList, []fluentbitv1alpha2.ClusterParserList, []string, error) {
 	var nsCfgs fluentbitv1alpha2.FluentBitConfigList
 	var filters []fluentbitv1alpha2.FilterList
@@ -199,7 +199,7 @@ func (r *FluentBitConfigReconciler) processNamespaceFluentBitCfgs(ctx context.Co
 	var clusterParsers []fluentbitv1alpha2.ClusterParserList
 	var rewriteTagConfigs []string
 	// set of rewrite_tag plugin configs to mutate tags for log records coming out of a namespace
-	selector, err := metav1.LabelSelectorAsSelector(&fb.Spec.NamespaceFluentBitCfgSelector)
+	selector, err := metav1.LabelSelectorAsSelector(&fb.Spec.NamespacedFluentBitCfgSelector)
 	if err != nil {
 		return filters, outputs, parsers, clusterParsers, nil, err
 	}

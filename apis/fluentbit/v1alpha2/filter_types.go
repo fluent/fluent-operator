@@ -75,10 +75,10 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
 			}
 			if item.Spec.Match != "" {
-				buf.WriteString(fmt.Sprintf("    Match    %s\n", utils.HashedMatch(item.Namespace, item.Spec.Match)))
+				buf.WriteString(fmt.Sprintf("    Match    %s\n", utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match)))
 			}
 			if item.Spec.MatchRegex != "" {
-				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", utils.HashedMatchRegex(item.Namespace, item.Spec.MatchRegex)))
+				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex)))
 			}
 			for _, filter := range item.Spec.FilterItems {
 				if filter.Kubernetes != nil {

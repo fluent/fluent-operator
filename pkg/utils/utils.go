@@ -45,10 +45,10 @@ func HashCode(msg string) string {
 	return string(h.Sum(nil))
 }
 
-func HashedMatch(namespace string, match string) string {
+func GenerateNamespacedMatchExpr(namespace string, match string) string {
 	return fmt.Sprintf("%x.%s", md5.Sum([]byte(namespace)), match)
 }
 
-func HashedMatchRegex(namespace string, matchRegex string) string {
+func GenerateNamespacedMatchRegExpr(namespace string, matchRegex string) string {
 	return fmt.Sprintf("^%x\\.%s", md5.Sum([]byte(namespace)), matchRegex)
 }

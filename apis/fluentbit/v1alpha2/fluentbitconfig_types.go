@@ -23,8 +23,8 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// NamespaceFluentBitSpec defines the desired state of FluentBit
-type NamespaceFluentBitSpec struct {
+// NamespacedFluentBitSpec defines the desired state of FluentBit
+type NamespacedFluentBitSpec struct {
 	// Select filter plugins
 	FilterSelector metav1.LabelSelector `json:"filterSelector,omitempty"`
 	// Select output plugins
@@ -44,7 +44,7 @@ type FluentBitConfig struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec NamespaceFluentBitSpec `json:"spec,omitempty"`
+	Spec NamespacedFluentBitSpec `json:"spec,omitempty"`
 }
 
 // +kubebuilder:object:root=true
