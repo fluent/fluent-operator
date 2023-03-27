@@ -35,7 +35,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: NamespacedFluentBitSpec defines the desired state of FluentBit
+            description: NamespacedFluentBitCfgSpec defines the desired state of FluentBit
             properties:
               clusterParserSelector:
                 description: Select cluster level parser config
