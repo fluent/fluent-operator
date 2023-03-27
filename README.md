@@ -168,6 +168,14 @@ helm install fluent-operator --create-namespace -n fluent https://github.com/flu
 
 Fluent Operator CRDs will be installed by default when running a helm install for the chart. But if the CRD already exists, it will be skipped with a warning. So make sure you install the CRDs by yourself if you upgrade your Fluent Operator version.
 
+By default the installation with Helm create all the CRDs (fluent-bit and fluentd ones).
+If you do not intent to use one of the two components, it is possible to skip its CRDs and also to not start the controllers for it in the operator.
+To achieve that a `operator.disableComponentControllers` parameter can be provided:
+
+```shell
+helm install fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set operator.disableComponentControllers=fluent-bit
+```
+
 > Note: During the upgrade process, if a CRD was previously created using the create operation, an error will occur during the apply operation. Using apply here allows the CRD to be replaced and created in its entirety in a single operation.
 
 To replace the CRDs pull the current helm chart:
