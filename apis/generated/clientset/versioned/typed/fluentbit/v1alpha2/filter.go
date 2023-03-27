@@ -21,8 +21,8 @@ import (
 	"context"
 	"time"
 
-	v1alpha2 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2"
-	scheme "github.com/fluent/fluent-operator/apis/generated/clientset/versioned/scheme"
+	v1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
+	scheme "github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"

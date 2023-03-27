@@ -21,13 +21,16 @@ import (
 	"context"
 	"crypto/md5"
 	"fmt"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"os"
+
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
+
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"os"
+
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -35,7 +38,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/source"
 	"strings"
 
-	fluentbitv1alpha2 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2"
+	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
 )
 
 // FluentBitConfigReconciler reconciles a FluentBitConfig object

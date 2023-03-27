@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.11.3
   creationTimestamp: null
   name: fluentbitconfigs.fluentbit.fluent.io
 spec:
@@ -36,7 +35,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: NamespaceFluentBitSpec defines the desired state of FluentBit
+            description: NamespacedFluentBitSpec defines the desired state of FluentBit
             properties:
               clusterParserSelector:
                 description: Select cluster level parser config
@@ -82,6 +81,7 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
               filterSelector:
                 description: Select filter plugins
                 properties:
@@ -126,6 +126,7 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
               outputSelector:
                 description: Select output plugins
                 properties:
@@ -170,6 +171,7 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
               parserSelector:
                 description: Select parser plugins
                 properties:
@@ -214,13 +216,8 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
             type: object
         type: object
     served: true
     storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

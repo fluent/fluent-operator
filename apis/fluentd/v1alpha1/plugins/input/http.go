@@ -1,7 +1,7 @@
 package input
 
 import (
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/common"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
 )
 
 // Http defines the in_http Input plugin that listens to a TCP socket to receive the event stream.

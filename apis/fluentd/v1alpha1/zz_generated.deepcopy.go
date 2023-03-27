@@ -22,9 +22,9 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/filter"
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/input"
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/output"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/filter"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/input"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/output"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -714,6 +714,27 @@ func (in *FluentdSpec) DeepCopyInto(out *FluentdSpec) {
 	if in.RBACRules != nil {
 		in, out := &in.RBACRules, &out.RBACRules
 		*out = make([]rbacv1.PolicyRule, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.Volumes != nil {
+		in, out := &in.Volumes, &out.Volumes
+		*out = make([]corev1.Volume, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.VolumeMounts != nil {
+		in, out := &in.VolumeMounts, &out.VolumeMounts
+		*out = make([]corev1.VolumeMount, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.VolumeClaimTemplates != nil {
+		in, out := &in.VolumeClaimTemplates, &out.VolumeClaimTemplates
+		*out = make([]corev1.PersistentVolumeClaim, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}

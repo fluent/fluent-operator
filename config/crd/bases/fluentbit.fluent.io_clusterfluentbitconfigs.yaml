@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.11.3
   creationTimestamp: null
   name: clusterfluentbitconfigs.fluentbit.fluent.io
 spec:
@@ -83,6 +82,7 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
               inputSelector:
                 description: Select input plugins
                 properties:
@@ -127,6 +127,7 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
               namespace:
                 description: If namespace is defined, then the configmap and secret
                   for fluent-bit is in this namespace. If it is not defined, it is
@@ -176,6 +177,7 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
               parserSelector:
                 description: Select parser plugins
                 properties:
@@ -220,6 +222,7 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+                x-kubernetes-map-type: atomic
               service:
                 description: Service defines the global behaviour of the Fluent Bit
                   engine.
@@ -298,9 +301,3 @@ spec:
         type: object
     served: true
     storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

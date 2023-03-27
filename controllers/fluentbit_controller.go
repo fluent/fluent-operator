@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	rbacv1 "k8s.io/api/rbac/v1"
 
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
@@ -30,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	fluentbitv1alpha2 "github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2"
-	"github.com/fluent/fluent-operator/pkg/operator"
+	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
+	"github.com/fluent/fluent-operator/v2/pkg/operator"
 )
 
 // FluentBitReconciler reconciles a FluentBit object
@@ -105,13 +106,13 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	if err := ctrl.SetControllerReference(&fb, saObj, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, rbacObj); err != nil && !errors.IsAlreadyExists(err) {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, rbacObj, r.mutate(rbacObj, fb)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, saObj); err != nil && !errors.IsAlreadyExists(err) {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, saObj, r.mutate(saObj, fb)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, bindingObj); err != nil && !errors.IsAlreadyExists(err) {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, bindingObj, r.mutate(bindingObj, fb)); err != nil {
 		return ctrl.Result{}, err
 	}
 
@@ -182,6 +183,49 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb fluentbitv1alpha2.Flu
 			}
 			return nil
 		}
+	case *rbacv1.Role:
+		expected, _, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace)
+
+		return func() error {
+			o.Name = expected.Name
+			o.Rules = expected.Rules
+			return nil
+		}
+	case *rbacv1.ClusterRole:
+		expected, _, _ := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules)
+		return func() error {
+			o.Name = expected.Name
+			o.Rules = expected.Rules
+			return nil
+		}
+
+	case *corev1.ServiceAccount:
+		_, expected, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace)
+
+		return func() error {
+			o.Name = expected.Name
+			if err := ctrl.SetControllerReference(&fb, o, r.Scheme); err != nil {
+				return err
+			}
+			return nil
+		}
+	case *rbacv1.RoleBinding:
+		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace)
+		return func() error {
+			o.Name = expected.Name
+			o.Subjects = expected.Subjects
+			o.RoleRef = expected.RoleRef
+			return nil
+		}
+	case *rbacv1.ClusterRoleBinding:
+		_, _, expected := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules)
+		return func() error {
+			o.Name = expected.Name
+			o.Subjects = expected.Subjects
+			o.RoleRef = expected.RoleRef
+			return nil
+		}
+
 	default:
 	}
 

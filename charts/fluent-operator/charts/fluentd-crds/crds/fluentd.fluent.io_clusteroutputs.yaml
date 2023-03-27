@@ -1,27 +1,26 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.11.3
   creationTimestamp: null
-  name: outputs.fluentd.fluent.io
+  name: clusteroutputs.fluentd.fluent.io
 spec:
   group: fluentd.fluent.io
   names:
-    kind: Output
-    listKind: OutputList
-    plural: outputs
+    kind: ClusterOutput
+    listKind: ClusterOutputList
+    plural: clusteroutputs
     shortNames:
-    - fdo
-    singular: output
-  scope: Namespaced
+    - cfdo
+    singular: clusteroutput
+  scope: Cluster
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Output is the Schema for the outputs API
+        description: ClusterOutput is the Schema for the clusteroutputs API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -36,7 +35,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: OutputSpec defines the desired state of Output
+            description: ClusterOutputSpec defines the desired state of ClusterOutput
             properties:
               outputs:
                 items:
@@ -283,6 +282,7 @@ spec:
                                   required:
                                   - key
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                           type: object
                         awsSecKey:
@@ -313,6 +313,7 @@ spec:
                                   required:
                                   - key
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                           type: object
                         awsStsDurationSeconds:
@@ -466,6 +467,7 @@ spec:
                                   required:
                                   - key
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                           type: object
                         path:
@@ -512,6 +514,7 @@ spec:
                                   required:
                                   - key
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                           type: object
                       type: object
@@ -700,6 +703,7 @@ spec:
                                           required:
                                           - key
                                           type: object
+                                          x-kubernetes-map-type: atomic
                                       type: object
                                   type: object
                                 username:
@@ -731,6 +735,7 @@ spec:
                                           required:
                                           - key
                                           type: object
+                                          x-kubernetes-map-type: atomic
                                       type: object
                                   type: object
                               type: object
@@ -795,6 +800,7 @@ spec:
                                         required:
                                         - key
                                         type: object
+                                        x-kubernetes-map-type: atomic
                                     type: object
                                 type: object
                               port:
@@ -843,6 +849,7 @@ spec:
                                         required:
                                         - key
                                         type: object
+                                        x-kubernetes-map-type: atomic
                                     type: object
                                 type: object
                               weight:
@@ -936,6 +943,7 @@ spec:
                                           required:
                                           - key
                                           type: object
+                                          x-kubernetes-map-type: atomic
                                       type: object
                                   type: object
                                 port:
@@ -986,6 +994,7 @@ spec:
                                           required:
                                           - key
                                           type: object
+                                          x-kubernetes-map-type: atomic
                                       type: object
                                   type: object
                                 weight:
@@ -1096,6 +1105,7 @@ spec:
                                       required:
                                       - key
                                       type: object
+                                      x-kubernetes-map-type: atomic
                                   type: object
                               type: object
                             username:
@@ -1126,6 +1136,7 @@ spec:
                                       required:
                                       - key
                                       type: object
+                                      x-kubernetes-map-type: atomic
                                   type: object
                               type: object
                           type: object
@@ -1337,6 +1348,7 @@ spec:
                                   required:
                                   - key
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                           type: object
                         httpUser:
@@ -1367,6 +1379,7 @@ spec:
                                   required:
                                   - key
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                           type: object
                         includeThreadLabel:
@@ -1439,6 +1452,7 @@ spec:
                                   required:
                                   - key
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                           type: object
                         tlsCaCertFile:
@@ -1513,6 +1527,7 @@ spec:
                                   required:
                                   - key
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                           type: object
                         path:
@@ -1559,6 +1574,7 @@ spec:
                                   required:
                                   - key
                                   type: object
+                                  x-kubernetes-map-type: atomic
                               type: object
                           type: object
                       type: object
@@ -1606,16 +1622,10 @@ spec:
                 type: array
             type: object
           status:
-            description: OutputStatus defines the observed state of Output
+            description: ClusterOutputStatus defines the observed state of ClusterOutput
             type: object
         type: object
     served: true
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

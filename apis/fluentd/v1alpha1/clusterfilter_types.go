@@ -17,7 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins/filter"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/filter"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

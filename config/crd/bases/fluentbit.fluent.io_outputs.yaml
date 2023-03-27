@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
+    controller-gen.kubebuilder.io/version: v0.11.3
   creationTimestamp: null
   name: outputs.fluentbit.fluent.io
 spec:
@@ -93,6 +92,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   tls:
@@ -132,6 +132,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   logType:
@@ -163,6 +164,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   timeGenerated:
@@ -176,6 +178,93 @@ spec:
                 required:
                 - customerID
                 - sharedKey
+                type: object
+              cloudWatch:
+                description: CloudWatch defines CloudWatch Output Configuration
+                properties:
+                  autoCreateGroup:
+                    description: Automatically create the log group. Defaults to False.
+                    type: boolean
+                  autoRetryRequests:
+                    description: Automatically retry failed requests to CloudWatch
+                      once. Defaults to True.
+                    type: boolean
+                  endpoint:
+                    description: Custom endpoint for CloudWatch logs API
+                    type: string
+                  externalID:
+                    description: Specify an external ID for the STS API.
+                    type: string
+                  logFormat:
+                    description: Optional parameter to tell CloudWatch the format
+                      of the data
+                    type: string
+                  logGroupName:
+                    description: Name of Cloudwatch Log Group to send log records
+                      to
+                    type: string
+                  logGroupTemplate:
+                    description: Template for Log Group name, overrides LogGroupName
+                      if set.
+                    type: string
+                  logKey:
+                    description: If set, only the value of the key will be sent to
+                      CloudWatch
+                    type: string
+                  logRetentionDays:
+                    description: Number of days logs are retained for
+                    enum:
+                    - 1
+                    - 3
+                    - 5
+                    - 7
+                    - 14
+                    - 30
+                    - 60
+                    - 90
+                    - 120
+                    - 150
+                    - 180
+                    - 365
+                    - 400
+                    - 545
+                    - 731
+                    - 1827
+                    - 3653
+                    format: int32
+                    type: integer
+                  logStreamName:
+                    description: The name of the CloudWatch Log Stream to send log
+                      records to
+                    type: string
+                  logStreamPrefix:
+                    description: Prefix for the Log Stream name. Not compatible with
+                      LogStreamName setting
+                    type: string
+                  logStreamTemplate:
+                    description: Template for Log Stream name. Overrides LogStreamPrefix
+                      and LogStreamName if set.
+                    type: string
+                  metricDimensions:
+                    description: Optional lists of lists for dimension keys to be
+                      added to all metrics. Use comma separated strings for one list
+                      of dimensions and semicolon separated strings for list of lists
+                      dimensions.
+                    type: string
+                  metricNamespace:
+                    description: Optional string to represent the CloudWatch namespace.
+                    type: string
+                  region:
+                    description: AWS Region
+                    type: string
+                  roleArn:
+                    description: Role ARN to use for cross-account access
+                    type: string
+                  stsEndpoint:
+                    description: Specify a custom STS endpoint for the AWS STS API
+                    type: string
+                required:
+                - region
                 type: object
               customPlugin:
                 description: CustomPlugin defines Custom Output configuration.
@@ -312,6 +401,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -339,6 +429,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   idKey:
@@ -472,6 +563,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -622,6 +714,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   port:
@@ -707,6 +800,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -742,6 +836,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                 type: object
@@ -822,6 +917,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -849,6 +945,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   jsonDateFormat:
@@ -927,6 +1024,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1039,6 +1137,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -1066,6 +1165,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   labelKeys:
@@ -1127,6 +1227,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   tls:
@@ -1186,6 +1287,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1283,6 +1385,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -1310,6 +1413,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   idKey:
@@ -1443,6 +1547,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1512,6 +1617,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -1539,6 +1645,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   logResponsePayload:
@@ -1615,6 +1722,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1675,6 +1783,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -1702,6 +1811,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   logResponsePayload:
@@ -1775,6 +1885,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -1894,6 +2005,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   httpUser:
@@ -1921,6 +2033,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   port:
@@ -1961,6 +2074,7 @@ spec:
                             required:
                             - key
                             type: object
+                            x-kubernetes-map-type: atomic
                         type: object
                     type: object
                   tls:
@@ -2020,6 +2134,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -2029,6 +2144,148 @@ spec:
                         description: Hostname to be used for TLS SNI extension
                         type: string
                     type: object
+                type: object
+              stackdriver:
+                description: Stackdriver defines Stackdriver Output Configuration
+                properties:
+                  autoformatStackdriverTrace:
+                    description: Rewrite the trace field to be formatted for use with
+                      GCP Cloud Trace
+                    type: boolean
+                  customK8sRegex:
+                    description: A custom regex to extract fields from the local_resource_id
+                      of the logs
+                    type: string
+                  exportToProjectID:
+                    description: The GCP Project that should receive the logs
+                    type: string
+                  googleServiceCredentials:
+                    description: Path to GCP Credentials JSON file
+                    type: string
+                  job:
+                    description: Identifier for a grouping of tasks. Required if Resource
+                      is generic_task
+                    type: string
+                  k8sClusterLocation:
+                    description: Location of the cluster that contains the pods/nodes.
+                      Required if Resource is k8s_container, k8s_node, or k8s_pod
+                    type: string
+                  k8sClusterName:
+                    description: Name of the cluster that the pod is running in. Required
+                      if Resource is k8s_container, k8s_node, or k8s_pod
+                    type: string
+                  labels:
+                    description: Optional list of comma separated of strings for key/value
+                      pairs
+                    items:
+                      type: string
+                    type: array
+                  labelsKey:
+                    description: Used by Stackdriver to find related labels and extract
+                      them to LogEntry Labels
+                    type: string
+                  location:
+                    description: GCP/AWS region to store data. Required if Resource
+                      is generic_node or generic_task
+                    type: string
+                  logNameKey:
+                    description: The value of this field is set as the logName field
+                      in Stackdriver
+                    type: string
+                  metadataServer:
+                    description: Metadata Server Prefix
+                    type: string
+                  namespace:
+                    description: Namespace identifier. Required if Resource is generic_node
+                      or generic_task
+                    type: string
+                  nodeID:
+                    description: Node identifier within the namespace. Required if
+                      Resource is generic_node or generic_task
+                    type: string
+                  resource:
+                    description: Set resource types of data
+                    type: string
+                  resourceLabels:
+                    description: Optional list of comma seperated strings. Setting
+                      these fields overrides the Stackdriver monitored resource API
+                      values
+                    items:
+                      type: string
+                    type: array
+                  serviceAccountEmail:
+                    description: Email associated with the service
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  serviceAccountSecret:
+                    description: Private Key associated with the service
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  severityKey:
+                    description: Specify the key that contains the severity information
+                      for the logs
+                    type: string
+                  tagPrefix:
+                    description: Used to validate the tags of logs that when the Resource
+                      is k8s_container, k8s_node, or k8s_pod
+                    type: string
+                  taskID:
+                    description: Identifier for a task within a namespace. Required
+                      if Resource is generic_task
+                    type: string
+                  workers:
+                    description: Number of dedicated threads for the Stackdriver Output
+                      Plugin
+                    format: int32
+                    type: integer
                 type: object
               stdout:
                 description: Stdout defines Stdout Output configuration.
@@ -2166,6 +2423,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -2267,6 +2525,7 @@ spec:
                                 required:
                                 - key
                                 type: object
+                                x-kubernetes-map-type: atomic
                             type: object
                         type: object
                       verify:
@@ -2281,9 +2540,3 @@ spec:
         type: object
     served: true
     storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/fluent/fluent-operator/pkg/filenotify"
+	"github.com/fluent/fluent-operator/v2/pkg/filenotify"
 	"github.com/fsnotify/fsnotify"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"

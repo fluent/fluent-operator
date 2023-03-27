@@ -1,4 +1,5 @@
 {{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
 {{- if .Values.fluentbit.output.es.enable -}}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
@@ -37,6 +38,7 @@ spec:
 {{- if .Values.fluentbit.output.es.enableTLS }}
     tls:
 {{ toYaml .Values.fluentbit.output.es.tls | indent 6 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

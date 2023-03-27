@@ -20,7 +20,7 @@ import (
 	"bytes"
 	"crypto/md5"
 	"fmt"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"reflect"
 	"sort"

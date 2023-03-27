@@ -19,9 +19,9 @@ package v1alpha2
 import (
 	"bytes"
 	"fmt"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/apis/fluentbit/v1alpha2/plugins/custom"
-	"github.com/fluent/fluent-operator/pkg/utils"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/custom"
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"reflect"
 	"sort"

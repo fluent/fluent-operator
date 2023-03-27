@@ -1,12 +1,12 @@
-FROM golang:1.19.5-alpine3.16 as buildergo
+FROM golang:1.20.2-alpine3.16 as buildergo
 RUN mkdir -p /fluent-bit
 RUN mkdir -p /code
 COPY . /code/
 WORKDIR /code
 RUN echo $(ls -al /code)
-RUN CGO_ENABLED=0 go build -i -ldflags '-w -s' -o /fluent-bit/fluent-bit /code/cmd/fluent-watcher/fluentbit/main.go
+RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /fluent-bit/fluent-bit /code/cmd/fluent-watcher/fluentbit/main.go
 
-FROM fluent/fluent-bit:2.0.9
+FROM fluent/fluent-bit:2.0.10
 LABEL Description="Fluent Bit docker image" Vendor="Fluent" Version="1.0"
 
 COPY conf/fluent-bit.conf conf/parsers.conf /fluent-bit/etc/
