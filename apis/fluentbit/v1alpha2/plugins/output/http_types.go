@@ -52,7 +52,7 @@ type HTTP struct {
 	// Specify the key to use for the host in gelf format
 	GelfHostKey string `json:"gelfHostKey,omitempty"`
 	// Specify the key to use as the short message in gelf format
-	GelfShortMessgeKey string `json:"gelfShortMessgeKey,omitempty"`
+	GelfShortMessageKey string `json:"gelfShortMessageKey,omitempty"`
 	// Specify the key to use for the full message in gelf format
 	GelfFullMessageKey string `json:"gelfFullMessageKey,omitempty"`
 	// Specify the key to use for the level in gelf format
@@ -123,8 +123,8 @@ func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if h.GelfHostKey != "" {
 		kvs.Insert("gelf_host_key", h.GelfHostKey)
 	}
-	if h.GelfShortMessgeKey != "" {
-		kvs.Insert("gelf_short_messge_key", h.GelfShortMessgeKey)
+	if h.GelfShortMessageKey != "" {
+		kvs.Insert("gelf_short_message_key", h.GelfShortMessageKey)
 	}
 	if h.GelfFullMessageKey != "" {
 		kvs.Insert("gelf_full_message_key", h.GelfFullMessageKey)
