@@ -20,7 +20,7 @@ The http output plugin allows to flush your records into a HTTP endpoint. For no
 | jsonDateFormat | Specify the format of the date. Supported formats are double, epoch and iso8601 (eg: 2018-05-30T09:39:52.000681Z) | string |
 | gelfTimestampKey | Specify the key to use for timestamp in gelf format | string |
 | gelfHostKey | Specify the key to use for the host in gelf format | string |
-| gelfShortMessgeKey | Specify the key to use as the short message in gelf format | string |
+| gelfShortMessageKey | Specify the key to use as the short message in gelf format | string |
 | gelfFullMessageKey | Specify the key to use for the full message in gelf format | string |
 | gelfLevelKey | Specify the key to use for the level in gelf format | string |
 | tls | HTTP output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section. | *[plugins.TLS](../tls.md) |
