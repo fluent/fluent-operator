@@ -18134,7 +18134,7 @@ spec:
               buffer:
                 description: Buffer definition
                 properties:
-                  DisableBufferVolume:
+                  disableBufferVolume:
                     description: Enabled buffer pvc by default.
                     type: boolean
                   emptyDir:
@@ -22036,7 +22036,7 @@ spec:
                   gelfLevelKey:
                     description: Specify the key to use for the level in gelf format
                     type: string
-                  gelfShortMessgeKey:
+                  gelfShortMessageKey:
                     description: Specify the key to use as the short message in gelf
                       format
                     type: string

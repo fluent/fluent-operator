@@ -34,7 +34,7 @@ This Document documents the types introduced by the fluentd Operator.
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| DisableBufferVolume | Enabled buffer pvc by default. | bool |
+| disableBufferVolume | Enabled buffer pvc by default. | bool |
 | hostPath | Volume definition. | *corev1.HostPathVolumeSource |
 | emptyDir |  | *corev1.EmptyDirVolumeSource |
 | pvc | PVC definition | *corev1.PersistentVolumeClaim |

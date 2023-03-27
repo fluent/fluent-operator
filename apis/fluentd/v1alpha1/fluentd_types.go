@@ -82,7 +82,7 @@ type FluentdSpec struct {
 
 type BufferVolume struct {
 	// Enabled buffer pvc by default.
-	DisableBufferVolume bool `json:"DisableBufferVolume,omitempty"`
+	DisableBufferVolume bool `json:"disableBufferVolume,omitempty"`
 
 	// Volume definition.
 	HostPath *corev1.HostPathVolumeSource `json:"hostPath,omitempty"`
