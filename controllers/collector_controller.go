@@ -93,7 +93,7 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 
 	// Install RBAC resources for the filter plugin kubernetes
 	var rbacObj, saObj, bindingObj client.Object
-	rbacObj, saObj, bindingObj = operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules)
+	rbacObj, saObj, bindingObj = operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
 	// Set ServiceAccount's owner to this fluentbit
 	if err := ctrl.SetControllerReference(&co, saObj, r.Scheme); err != nil {
 		return ctrl.Result{}, err

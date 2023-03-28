@@ -182,6 +182,7 @@ CollectorSpec defines the desired state of FluentBit
 | volumes | List of volumes that can be mounted by containers belonging to the pod. | []corev1.Volume |
 | volumesMounts | Pod volumes to mount into the container's filesystem. | []corev1.VolumeMount |
 | annotations | Annotations to add to each Fluentbit pod. | map[string]string |
+| serviceAccountAnnotations | Annotations to add to the Fluentbit service account | map[string]string |
 | securityContext | SecurityContext holds pod-level security attributes and common container settings. | *corev1.PodSecurityContext |
 | hostNetwork | Host networking is requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false. | bool |
 | pvc | PVC definition | *corev1.PersistentVolumeClaim |
@@ -299,6 +300,7 @@ FluentBitSpec defines the desired state of FluentBit
 | volumes | List of volumes that can be mounted by containers belonging to the pod. | []corev1.Volume |
 | volumesMounts | Pod volumes to mount into the container's filesystem. | []corev1.VolumeMount |
 | annotations | Annotations to add to each Fluentbit pod. | map[string]string |
+| serviceAccountAnnotations | Annotations to add to the Fluentbit service account | map[string]string |
 | labels | Labels to add to each FluentBit pod | map[string]string |
 | securityContext | SecurityContext holds pod-level security attributes and common container settings. | *corev1.PodSecurityContext |
 | hostNetwork | Host networking is requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false. | bool |
