@@ -12,7 +12,7 @@ import (
 
 func MakeFluentdPVC(fd fluentdv1alpha1.Fluentd) corev1.PersistentVolumeClaim {
 	bufferStorage := fd.Spec.BufferVolume
-	if bufferStorage == nil {
+	if bufferStorage == nil || bufferStorage.PersistentVolumeClaim == nil {
 		return makeDefaultFluentdPVC(fd)
 	}
 	bufferPvc := bufferStorage.PersistentVolumeClaim.Spec

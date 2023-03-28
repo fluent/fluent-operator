@@ -169,14 +169,14 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) appsv1.StatefulSet {
 		}
 	}
 
-	// Bind pvc
-	sts.Spec.VolumeClaimTemplates = append(sts.Spec.VolumeClaimTemplates, MakeFluentdPVC(fd))
+    if fd.Spec.BufferVolume == nil || !fd.Spec.BufferVolume.DisableBufferVolume {
+        sts.Spec.VolumeClaimTemplates = append(sts.Spec.VolumeClaimTemplates, MakeFluentdPVC(fd))
 
-	sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
-		Name:      fmt.Sprintf("%s-buffer-pvc", fd.Name),
-		MountPath: BufferMountPath,
-	})
-
+        sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+            Name:      fmt.Sprintf("%s-buffer-pvc", fd.Name),
+            MountPath: BufferMountPath,
+        })
+    }
 	return sts
 }
 
