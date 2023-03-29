@@ -91,7 +91,7 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	}
 
 	// Install RBAC resources for the filter plugin kubernetes
-	var rbacObj, saObj, bindingObj = operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules)
+	var rbacObj, saObj, bindingObj = operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
 
 	// Set ServiceAccount's owner to this Fluentd
 	if err := ctrl.SetControllerReference(&fd, saObj, r.Scheme); err != nil {

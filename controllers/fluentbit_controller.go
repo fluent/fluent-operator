@@ -98,9 +98,9 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	// Install RBAC resources for the filter plugin kubernetes
 	var rbacObj, saObj, bindingObj client.Object
 	if r.Namespaced {
-		rbacObj, saObj, bindingObj = operator.MakeScopedRBACObjects(fb.Name, fb.Namespace)
+		rbacObj, saObj, bindingObj = operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 	} else {
-		rbacObj, saObj, bindingObj = operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules)
+		rbacObj, saObj, bindingObj = operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
 	}
 	// Set ServiceAccount's owner to this fluentbit
 	if err := ctrl.SetControllerReference(&fb, saObj, r.Scheme); err != nil {
@@ -184,7 +184,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb fluentbitv1alpha2.Flu
 			return nil
 		}
 	case *rbacv1.Role:
-		expected, _, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace)
+		expected, _, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 
 		return func() error {
 			o.Name = expected.Name
@@ -192,7 +192,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb fluentbitv1alpha2.Flu
 			return nil
 		}
 	case *rbacv1.ClusterRole:
-		expected, _, _ := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules)
+		expected, _, _ := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
 		return func() error {
 			o.Name = expected.Name
 			o.Rules = expected.Rules
@@ -200,17 +200,18 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb fluentbitv1alpha2.Flu
 		}
 
 	case *corev1.ServiceAccount:
-		_, expected, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace)
+		_, expected, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 
 		return func() error {
 			o.Name = expected.Name
+			o.Annotations = expected.Annotations
 			if err := ctrl.SetControllerReference(&fb, o, r.Scheme); err != nil {
 				return err
 			}
 			return nil
 		}
 	case *rbacv1.RoleBinding:
-		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace)
+		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 		return func() error {
 			o.Name = expected.Name
 			o.Subjects = expected.Subjects
@@ -218,7 +219,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb fluentbitv1alpha2.Flu
 			return nil
 		}
 	case *rbacv1.ClusterRoleBinding:
-		_, _, expected := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules)
+		_, _, expected := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
 		return func() error {
 			o.Name = expected.Name
 			o.Subjects = expected.Subjects

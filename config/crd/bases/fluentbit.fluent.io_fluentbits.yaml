@@ -4476,6 +4476,11 @@ spec:
                         type: string
                     type: object
                 type: object
+              serviceAccountAnnotations:
+                additionalProperties:
+                  type: string
+                description: Annotations to add to the Fluentbit service account
+                type: object
               tolerations:
                 description: Tolerations
                 items:

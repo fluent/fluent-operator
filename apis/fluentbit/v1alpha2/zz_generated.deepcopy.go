@@ -440,6 +440,13 @@ func (in *CollectorSpec) DeepCopyInto(out *CollectorSpec) {
 			(*out)[key] = val
 		}
 	}
+	if in.ServiceAccountAnnotations != nil {
+		in, out := &in.ServiceAccountAnnotations, &out.ServiceAccountAnnotations
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
 	if in.SecurityContext != nil {
 		in, out := &in.SecurityContext, &out.SecurityContext
 		*out = new(v1.PodSecurityContext)
@@ -871,6 +878,13 @@ func (in *FluentBitSpec) DeepCopyInto(out *FluentBitSpec) {
 	}
 	if in.Annotations != nil {
 		in, out := &in.Annotations, &out.Annotations
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
+	if in.ServiceAccountAnnotations != nil {
+		in, out := &in.ServiceAccountAnnotations, &out.ServiceAccountAnnotations
 		*out = make(map[string]string, len(*in))
 		for key, val := range *in {
 			(*out)[key] = val

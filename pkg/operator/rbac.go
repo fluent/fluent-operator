@@ -8,7 +8,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1.PolicyRule) (*rbacv1.ClusterRole, *corev1.ServiceAccount, *rbacv1.ClusterRoleBinding) {
+func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1.PolicyRule, saAnnotations map[string]string) (*rbacv1.ClusterRole, *corev1.ServiceAccount, *rbacv1.ClusterRoleBinding) {
 	rbacName := fmt.Sprintf("kubesphere-%s", component)
 	cr := rbacv1.ClusterRole{
 		ObjectMeta: metav1.ObjectMeta{
@@ -29,8 +29,9 @@ func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1
 
 	sa := corev1.ServiceAccount{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
+			Name:        name,
+			Namespace:   namespace,
+			Annotations: saAnnotations,
 		},
 	}
 
@@ -55,7 +56,7 @@ func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1
 	return &cr, &sa, &crb
 }
 
-func MakeScopedRBACObjects(fbName, fbNamespace string) (*rbacv1.Role, *corev1.ServiceAccount, *rbacv1.RoleBinding) {
+func MakeScopedRBACObjects(fbName, fbNamespace string, saAnnotations map[string]string) (*rbacv1.Role, *corev1.ServiceAccount, *rbacv1.RoleBinding) {
 	r := rbacv1.Role{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "kubesphere:fluent",
@@ -72,8 +73,9 @@ func MakeScopedRBACObjects(fbName, fbNamespace string) (*rbacv1.Role, *corev1.Se
 
 	sa := corev1.ServiceAccount{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fbName,
-			Namespace: fbNamespace,
+			Name:        fbName,
+			Namespace:   fbNamespace,
+			Annotations: saAnnotations,
 		},
 	}
 

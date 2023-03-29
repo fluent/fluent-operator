@@ -7827,6 +7827,11 @@ spec:
                         type: string
                     type: object
                 type: object
+              serviceAccountAnnotations:
+                additionalProperties:
+                  type: string
+                description: Annotations to add to the Fluentbit service account
+                type: object
               tolerations:
                 description: Tolerations
                 items:
@@ -15333,6 +15338,11 @@ spec:
                         type: string
                     type: object
                 type: object
+              serviceAccountAnnotations:
+                additionalProperties:
+                  type: string
+                description: Annotations to add to the Fluentbit service account
+                type: object
               tolerations:
                 description: Tolerations
                 items:
@@ -19139,6 +19149,11 @@ spec:
               runtimeClassName:
                 description: RuntimeClassName represents the container runtime configuration.
                 type: string
+              serviceAccountAnnotations:
+                additionalProperties:
+                  type: string
+                description: Annotations to add to the Fluentd service account
+                type: object
               tolerations:
                 description: Tolerations
                 items:

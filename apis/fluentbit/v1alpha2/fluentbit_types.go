@@ -69,6 +69,8 @@ type FluentBitSpec struct {
 	VolumesMounts []corev1.VolumeMount `json:"volumesMounts,omitempty"`
 	// Annotations to add to each Fluentbit pod.
 	Annotations map[string]string `json:"annotations,omitempty"`
+	// Annotations to add to the Fluentbit service account
+	ServiceAccountAnnotations map[string]string `json:"serviceAccountAnnotations,omitempty"`
 	// Labels to add to each FluentBit pod
 	Labels map[string]string `json:"labels,omitempty"`
 	// SecurityContext holds pod-level security attributes and common container settings.
