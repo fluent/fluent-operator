@@ -1,6 +1,7 @@
 VERSION?=$(shell cat VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
 FB_IMG ?= kubesphere/fluent-bit:v2.0.10
+FB_IMG_DEBUG ?= kubesphere/fluent-bit:v2.0.10-debug
 FD_IMG ?= kubesphere/fluentd:v1.15.3
 FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
 FD_IMG_BASE ?= kubesphere/fluentd:v1.15.3-arm64-base
@@ -97,6 +98,9 @@ build-op:
 # Build amd64/arm64 Fluent Bit container image
 build-fb: prepare-build
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
+
+build-fb-debug: prepare-build
+	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile.debug . -t ${FB_IMG_DEBUG}
 
 # Build all amd64 docker images
 build-amd64: build-op-amd64 build-fb-amd64 build-fd-amd64

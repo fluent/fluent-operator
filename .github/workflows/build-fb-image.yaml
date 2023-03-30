@@ -14,6 +14,7 @@ on:
 
 env:
   FB_IMG: 'kubesphere/fluent-bit:v2.0.10'
+  FB_IMG_DEBUG: 'kubesphere/fluent-bit:v2.0.10-debug'
 
 jobs:
   build:
@@ -49,3 +50,4 @@ jobs:
       - name: Build and Push Image for Fluent Bit
         run: |
           make build-fb -e FB_IMG=${{ env.FB_IMG }}
+          make build-fb-debug -e FB_IMG_DEBUG=${{ env.FB_IMG }}
