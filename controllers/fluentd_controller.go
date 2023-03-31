@@ -109,22 +109,22 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 
 	// Deploy Fluentd Statefulset
 	dp := operator.MakeStatefulset(fd)
-	if err := ctrl.SetControllerReference(&fd, &dp, r.Scheme); err != nil {
+	if err := ctrl.SetControllerReference(&fd, dp, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, &dp, r.mutate(&dp, &fd)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, dp, r.mutate(dp, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
 
 	// Deploy Fluentd Service
 	if !fd.Spec.DisableService {
 		svc := operator.MakeFluentdService(fd)
-		if err := ctrl.SetControllerReference(&fd, &svc, r.Scheme); err != nil {
+		if err := ctrl.SetControllerReference(&fd, svc, r.Scheme); err != nil {
 			return ctrl.Result{}, err
 		}
 
-		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, &svc, r.mutate(&svc, &fd)); err != nil {
+		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, &fd)); err != nil {
 			return ctrl.Result{}, err
 		}
 	}

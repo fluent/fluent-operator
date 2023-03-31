@@ -1564,6 +1564,23 @@ spec:
                         type: string
                     type: object
                 type: object
+              service:
+                description: Service represents configurations on the fluent-bit service.
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: Annotations to add to each Fluentbit service.
+                    type: object
+                  labels:
+                    additionalProperties:
+                      type: string
+                    description: Labels to add to each FluentBit service
+                    type: object
+                  name:
+                    description: Name is the name of the FluentBit service.
+                    type: string
+                type: object
               serviceAccountAnnotations:
                 additionalProperties:
                   type: string

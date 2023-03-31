@@ -2,6 +2,7 @@ package operator
 
 import (
 	"fmt"
+
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -15,7 +16,7 @@ var (
 	DefaultBufferPath = "/buffers/fluentbit/log"
 )
 
-func MakefbStatefuset(co fluentbitv1alpha2.Collector) appsv1.StatefulSet {
+func MakefbStatefuset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 	statefulset := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      co.Name,
@@ -136,7 +137,7 @@ func MakefbStatefuset(co fluentbitv1alpha2.Collector) appsv1.StatefulSet {
 		MountPath: FlunetbitBufferMountPath(co),
 	})
 
-	return statefulset
+	return &statefulset
 }
 
 func MakeFluentbitPVC(co fluentbitv1alpha2.Collector) corev1.PersistentVolumeClaim {

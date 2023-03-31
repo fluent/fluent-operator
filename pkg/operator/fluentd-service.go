@@ -13,16 +13,29 @@ const (
 	FluentdHttpPortName    = "http"
 )
 
-func MakeFluentdService(fd fluentdv1alpha1.Fluentd) corev1.Service {
-	labels := map[string]string{
-		"app.kubernetes.io/name":      fd.Name,
-		"app.kubernetes.io/instance":  "fluentd",
-		"app.kubernetes.io/component": "fluentd",
+func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
+	var name string
+	var labels map[string]string
+
+	if fd.Spec.Service.Name != "" {
+		name = fd.Spec.Service.Name
+	} else {
+		name = fd.Name
+	}
+
+	if len(fd.Spec.Service.Labels) != 0 {
+		labels = fd.Spec.Service.Labels
+	} else {
+		labels = map[string]string{
+			"app.kubernetes.io/name":      name,
+			"app.kubernetes.io/instance":  "fluentd",
+			"app.kubernetes.io/component": "fluentd",
+		}
 	}
 
 	svc := corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fd.Name,
+			Name:      name,
 			Namespace: fd.Namespace,
 			Labels:    labels,
 		},
@@ -67,5 +80,9 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) corev1.Service {
 		}
 	}
 
-	return svc
+	if len(fd.Spec.Service.Annotations) != 0 {
+		svc.ObjectMeta.Annotations = fd.Spec.Service.Annotations
+	}
+
+	return &svc
 }

@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+
 	rbacv1 "k8s.io/api/rbac/v1"
 
 	"github.com/go-logr/logr"
@@ -119,22 +120,22 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	// Deploy Fluent Bit DaemonSet
 	logPath := r.getContainerLogPath(fb)
 	ds := operator.MakeDaemonSet(fb, logPath)
-	if err := ctrl.SetControllerReference(&fb, &ds, r.Scheme); err != nil {
+	if err := ctrl.SetControllerReference(&fb, ds, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, &ds, r.mutate(&ds, fb)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, ds, r.mutate(ds, fb)); err != nil {
 		return ctrl.Result{}, err
 	}
 
 	// Deploy FluentBit Service
 	if !fb.Spec.DisableService {
 		svc := operator.MakeFluentbitService(fb)
-		if err := ctrl.SetControllerReference(&fb, &svc, r.Scheme); err != nil {
+		if err := ctrl.SetControllerReference(&fb, svc, r.Scheme); err != nil {
 			return ctrl.Result{}, err
 		}
 
-		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, &svc, r.mutate(&svc, fb)); err != nil {
+		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, fb)); err != nil {
 			return ctrl.Result{}, err
 		}
 	}

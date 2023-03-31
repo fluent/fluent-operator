@@ -80,6 +80,18 @@ type FluentdSpec struct {
 	// this list must have at least one matching (by name) volumeMount in one
 	// container in the template.
 	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty"`
+	// Service represents configurations on the fluentd service.
+	Service FluentDService `json:"service,omitempty"`
+}
+
+// FluentDService the service of the FluentD
+type FluentDService struct {
+	// Name is the name of the FluentD service.
+	Name string `json:"name,omitempty"`
+	// Annotations to add to each FluentD service.
+	Annotations map[string]string `json:"annotations,omitempty"`
+	// Labels to add to each FluentD service
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 type BufferVolume struct {

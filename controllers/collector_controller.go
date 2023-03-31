@@ -110,22 +110,22 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 
 	// Deploy Fluent Bit Statefuset
 	sts := operator.MakefbStatefuset(co)
-	if err := ctrl.SetControllerReference(&co, &sts, r.Scheme); err != nil {
+	if err := ctrl.SetControllerReference(&co, sts, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, &sts, r.mutate(&sts, co)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sts, r.mutate(sts, co)); err != nil {
 		return ctrl.Result{}, err
 	}
 
 	// Deploy collector Service
 	if !co.Spec.DisableService {
 		svc := operator.MakeCollecotrService(co)
-		if err := ctrl.SetControllerReference(&co, &svc, r.Scheme); err != nil {
+		if err := ctrl.SetControllerReference(&co, svc, r.Scheme); err != nil {
 			return ctrl.Result{}, err
 		}
 
-		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, &svc, r.mutate(&svc, co)); err != nil {
+		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, co)); err != nil {
 			return ctrl.Result{}, err
 		}
 	}
