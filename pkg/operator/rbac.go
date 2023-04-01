@@ -9,7 +9,7 @@ import (
 )
 
 func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1.PolicyRule, saAnnotations map[string]string) (*rbacv1.ClusterRole, *corev1.ServiceAccount, *rbacv1.ClusterRoleBinding) {
-	rbacName := fmt.Sprintf("kubesphere-%s", component)
+	rbacName := fmt.Sprintf("fluent-operator-%s", component)
 	cr := rbacv1.ClusterRole{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: rbacName,
@@ -37,7 +37,7 @@ func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1
 
 	crb := rbacv1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: rbacName,
+			Name: fmt.Sprintf("%s-%s", component, name),
 		},
 		Subjects: []rbacv1.Subject{
 			{
@@ -59,7 +59,7 @@ func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1
 func MakeScopedRBACObjects(fbName, fbNamespace string, saAnnotations map[string]string) (*rbacv1.Role, *corev1.ServiceAccount, *rbacv1.RoleBinding) {
 	r := rbacv1.Role{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "kubesphere:fluent",
+			Name:      "fluent-operator:fluent",
 			Namespace: fbNamespace,
 		},
 		Rules: []rbacv1.PolicyRule{
@@ -81,7 +81,7 @@ func MakeScopedRBACObjects(fbName, fbNamespace string, saAnnotations map[string]
 
 	rb := rbacv1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "kubesphere:fluent",
+			Name:      fmt.Sprintf("fluent-operator-%s", fbName),
 			Namespace: fbNamespace,
 		},
 		Subjects: []rbacv1.Subject{
@@ -94,7 +94,7 @@ func MakeScopedRBACObjects(fbName, fbNamespace string, saAnnotations map[string]
 		RoleRef: rbacv1.RoleRef{
 			APIGroup: rbacv1.GroupName,
 			Kind:     "Role",
-			Name:     "kubesphere:fluent",
+			Name:     "fluent-operator:fluent",
 		},
 	}
 
