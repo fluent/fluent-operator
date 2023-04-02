@@ -97,9 +97,17 @@ rules:
       - clusterrolebindings
     verbs:
       - create
+      - list
+      - get
+      - watch
+      - patch
   - apiGroups:
       - rbac.authorization.k8s.io
     resources:
       - clusterroles
     verbs:
       - create
+      - list
+      - get
+      - watch
+      - patch
