@@ -1,0 +1,16 @@
+{{- if .Values.fluentbit.kubeedge.enable -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterInput
+metadata:
+  name: prometheus-scrape-metrics-edge
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    node-role.kubernetes.io/edge: "true"
+spec:
+  prometheusScrapeMetrics:
+    tag: kubeedge.*
+    host: 127.0.0.1
+    port: 10350
+    scrapeInterval: 30s
+    metricsPath : /metrics/cadvisor 
+{{- end }}

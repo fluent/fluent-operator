@@ -180,6 +180,14 @@ fluentbit:
     systemd:
       enable: true
 
+  kubeedge:
+    enable: false
+    prometheusRemoteWrite:
+    # Change the host to the address of a cloud-side Prometheus-compatible server that can receive Prometheus remote write data
+      host: "<cloud-prometheus-service-host>"
+    # Change the port to the port of a cloud-side Prometheus-compatible server that can receive Prometheus remote write data
+      port: "<cloud-prometheus-service-port>"
+
 fluentd:
   # Installs a sub chart carrying the CRDs for the fluentd controller. The sub chart is enabled by default.
   crdsEnable: true

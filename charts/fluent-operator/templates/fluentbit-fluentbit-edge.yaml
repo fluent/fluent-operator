@@ -1,0 +1,43 @@
+{{- if .Values.fluentbit.kubeedge.enable -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: FluentBit
+metadata:
+  name: fluentbit-edge
+  namespace: fluent
+  labels:
+    app.kubernetes.io/name: fluent-bit
+spec:
+  image: {{ .Values.fluentbit.image.repository }}:{{ .Values.fluentbit.image.tag }}
+  positionDB:
+    hostPath:
+      path: /var/lib/fluent-bit/
+  resources:
+{{- toYaml .Values.fluentbit.resources | nindent 4  }}
+  fluentBitConfigName: fluent-bit-config-edge
+  tolerations:
+    - operator: Exists
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: Exists
+  hostNetwork : true
+  volumes:
+    - name: host-proc
+      hostPath:
+        path: /proc/
+    - name: host-sys
+      hostPath:
+        path: /sys/
+  volumesMounts:
+    - mountPath: /host/sys
+      mountPropagation: HostToContainer
+      name: host-sys
+      readOnly: true
+    - mountPath: /host/proc
+      mountPropagation: HostToContainer
+      name: host-proc
+      readOnly: true
+{{- end }}
