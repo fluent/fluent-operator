@@ -26,6 +26,7 @@ Elasticsearch is the es output plugin, allows to ingest your records into an Ela
 | logstashDateFormat | Time format (based on strftime) to generate the second part of the Index name. | string |
 | timeKey | When Logstash_Format is enabled, each record will get a new timestamp field. The Time_Key property defines the name of that field. | string |
 | timeKeyFormat | When Logstash_Format is enabled, this property defines the format of the timestamp. | string |
+| timeKeyNanos | When Logstash_Format is enabled, enabling this property sends nanosecond precision timestamps. | *bool |
 | includeTagKey | When enabled, it append the Tag name to the record. | *bool |
 | tagKey | When Include_Tag_Key is enabled, this property defines the key name for the tag. | string |
 | generateID | When enabled, generate _id for outgoing records. This prevents duplicate records when retrying ES. | *bool |

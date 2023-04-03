@@ -19,6 +19,7 @@ Kubernetes filter allows to enrich your log files with Kubernetes metadata.
 | tlsDebug | Debug level between 0 (nothing) and 4 (every detail). | *int32 |
 | tlsVerify | When enabled, turns on certificate validation when connecting to the Kubernetes API server. | *bool |
 | useJournal | When enabled, the filter reads logs coming in Journald format. | *bool |
+| cacheUseDockerId | When enabled, metadata will be fetched from K8s when docker_id is changed. | *bool |
 | regexParser | Set an alternative Parser to process record Tag and extract pod_name, namespace_name, container_name and docker_id. The parser must be registered in a parsers file (refer to parser filter-kube-test as an example). | string |
 | k8sLoggingParser | Allow Kubernetes Pods to suggest a pre-defined Parser (read more about it in Kubernetes Annotations section) | *bool |
 | k8sLoggingExclude | Allow Kubernetes Pods to exclude their logs from the log processor (read more about it in Kubernetes Annotations section). | *bool |
@@ -26,7 +27,6 @@ Kubernetes filter allows to enrich your log files with Kubernetes metadata.
 | annotations | Include Kubernetes resource annotations in the extra metadata. | *bool |
 | kubeMetaPreloadCacheDir | If set, Kubernetes meta-data can be cached/pre-loaded from files in JSON format in this directory, named as namespace-pod.meta | string |
 | dummyMeta | If set, use dummy-meta data (for test/dev purposes) | *bool |
-| cacheUseDockerId | When enabled, metadata will be fetched from K8s when docker_id is changed. | *bool |
 | dnsRetries | DNS lookup retries N times until the network start working | *int32 |
 | dnsWaitTime | DNS lookup interval between network status checks | *int32 |
 | useKubelet | This is an optional feature flag to get metadata information from kubelet instead of calling Kube Server API to enhance the log. This could mitigate the Kube API heavy traffic issue for large cluster. | *bool |
