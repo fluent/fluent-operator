@@ -16,6 +16,7 @@ This Document documents the types introduced by the fluentd Operator.
 * [Filter](#filter)
 * [FilterList](#filterlist)
 * [FilterSpec](#filterspec)
+* [FluentDService](#fluentdservice)
 * [Fluentd](#fluentd)
 * [FluentdConfig](#fluentdconfig)
 * [FluentdConfigList](#fluentdconfiglist)
@@ -190,6 +191,18 @@ FilterSpec defines the desired state of Filter
 | filters |  | [][[filter.Filter](plugins/filter/filter.md)](plugins/[filter/filter](plugins/filter/filter/md).md) |
 
 [Back to TOC](#table-of-contents)
+# FluentDService
+
+FluentDService the service of the FluentD
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| name | Name is the name of the FluentD service. | string |
+| annotations | Annotations to add to each FluentD service. | map[string]string |
+| labels | Labels to add to each FluentD service | map[string]string |
+
+[Back to TOC](#table-of-contents)
 # Fluentd
 
 Fluentd is the Schema for the fluentds API
@@ -293,6 +306,7 @@ FluentdSpec defines the desired state of Fluentd
 | volumes | List of volumes that can be mounted by containers belonging to the pod. | []corev1.Volume |
 | volumeMounts | Pod volumes to mount into the container's filesystem. Cannot be updated. | []corev1.VolumeMount |
 | volumeClaimTemplates | volumeClaimTemplates is a list of claims that pods are allowed to reference. The StatefulSet controller is responsible for mapping network identities to claims in a way that maintains the identity of a pod. Every claim in this list must have at least one matching (by name) volumeMount in one container in the template. | []corev1.PersistentVolumeClaim |
+| service | Service represents configurations on the fluentd service. | FluentDService |
 
 [Back to TOC](#table-of-contents)
 # FluentdStatus

@@ -14,6 +14,7 @@ This Document documents the types introduced by the fluentbit Operator.
 * [ClusterParserList](#clusterparserlist)
 * [Collector](#collector)
 * [CollectorList](#collectorlist)
+* [CollectorService](#collectorservice)
 * [CollectorSpec](#collectorspec)
 * [Decorder](#decorder)
 * [Filter](#filter)
@@ -25,9 +26,10 @@ This Document documents the types introduced by the fluentbit Operator.
 * [FluentBitConfigList](#fluentbitconfiglist)
 * [FluentBitConfigSpec](#fluentbitconfigspec)
 * [FluentBitList](#fluentbitlist)
+* [FluentBitService](#fluentbitservice)
 * [FluentBitSpec](#fluentbitspec)
 * [InputSpec](#inputspec)
-* [NamespaceFluentBitSpec](#namespacefluentbitspec)
+* [NamespacedFluentBitCfgSpec](#namespacedfluentbitcfgspec)
 * [Output](#output)
 * [OutputList](#outputlist)
 * [OutputSpec](#outputspec)
@@ -169,6 +171,18 @@ CollectorList contains a list of Collector
 | items |  | []Collector |
 
 [Back to TOC](#table-of-contents)
+# CollectorService
+
+CollectorService defines the service of the FluentBit
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| name | Name is the name of the FluentBit service. | string |
+| annotations | Annotations to add to each Fluentbit service. | map[string]string |
+| labels | Labels to add to each FluentBit service | map[string]string |
+
+[Back to TOC](#table-of-contents)
 # CollectorSpec
 
 CollectorSpec defines the desired state of FluentBit
@@ -199,6 +213,7 @@ CollectorSpec defines the desired state of FluentBit
 | disableService | By default will build the related service according to the globalinputs definition. | bool |
 | bufferPath | The path where buffer chunks are stored. | *string |
 | ports | Ports represents the pod's ports. | []corev1.ContainerPort |
+| service | Service represents configurations on the fluent-bit service. | CollectorService |
 
 [Back to TOC](#table-of-contents)
 # Decorder
@@ -287,7 +302,7 @@ FluentBitConfig is the Schema for the API
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
-| spec |  | NamespaceFluentBitSpec |
+| spec |  | NamespacedFluentBitCfgSpec |
 
 [Back to TOC](#table-of-contents)
 # FluentBitConfigList
@@ -327,6 +342,18 @@ FluentBitList contains a list of FluentBit
 | items |  | []FluentBit |
 
 [Back to TOC](#table-of-contents)
+# FluentBitService
+
+FluentBitService defines the service of the FluentBit
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| name | Name is the name of the FluentBit service. | string |
+| annotations | Annotations to add to each Fluentbit service. | map[string]string |
+| labels | Labels to add to each FluentBit service | map[string]string |
+
+[Back to TOC](#table-of-contents)
 # FluentBitSpec
 
 FluentBitSpec defines the desired state of FluentBit
@@ -347,7 +374,7 @@ FluentBitSpec defines the desired state of FluentBit
 | affinity | Pod's scheduling constraints. | *corev1.Affinity |
 | tolerations | Tolerations | [][corev1.Toleration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#toleration-v1-core) |
 | fluentBitConfigName | Fluentbitconfig object associated with this Fluentbit | string |
-| namespaceFluentBitCfgSelector | NamespaceFluentBitCfgSelector selects the namespace FluentBitConfig associated with this FluentBit | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| namespaceFluentBitCfgSelector | NamespacedFluentBitCfgSelector selects the namespace FluentBitConfig associated with this FluentBit | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | secrets | The Secrets are mounted into /fluent-bit/secrets/<secret-name>. | []string |
 | runtimeClassName | RuntimeClassName represents the container runtime configuration. | string |
 | priorityClassName | PriorityClassName represents the pod's priority class. | string |
@@ -366,6 +393,7 @@ FluentBitSpec defines the desired state of FluentBit
 | rbacRules | RBACRules represents additional rbac rules which will be applied to the fluent-bit clusterrole. | []rbacv1.PolicyRule |
 | dnsPolicy | Set DNS policy for the pod. Defaults to \"ClusterFirst\". Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'. | corev1.DNSPolicy |
 | metricsPort | MetricsPort is the port used by the metrics server. If this option is set, HttpPort from ClusterFluentBitConfig needs to match this value. Default is 2020. | int32 |
+| service | Service represents configurations on the fluent-bit service. | FluentBitService |
 
 [Back to TOC](#table-of-contents)
 # InputSpec
@@ -385,9 +413,9 @@ InputSpec defines the desired state of ClusterInput
 | customPlugin | CustomPlugin defines Custom Input configuration. | *custom.CustomPlugin |
 
 [Back to TOC](#table-of-contents)
-# NamespaceFluentBitSpec
+# NamespacedFluentBitCfgSpec
 
-NamespaceFluentBitSpec defines the desired state of FluentBit
+NamespacedFluentBitCfgSpec defines the desired state of FluentBit
 
 
 | Field | Description | Scheme |
