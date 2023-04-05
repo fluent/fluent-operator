@@ -10,7 +10,7 @@ import (
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
 )
 
-func MakeFluentdPVC(fd fluentdv1alpha1.Fluentd) corev1.PersistentVolumeClaim {
+func MakeFluentdPVC(fd fluentdv1alpha1.Fluentd) *corev1.PersistentVolumeClaim {
 	bufferStorage := fd.Spec.BufferVolume
 	if bufferStorage == nil || bufferStorage.PersistentVolumeClaim == nil {
 		return makeDefaultFluentdPVC(fd)
@@ -35,10 +35,10 @@ func MakeFluentdPVC(fd fluentdv1alpha1.Fluentd) corev1.PersistentVolumeClaim {
 			VolumeMode:  bufferPvc.VolumeMode,
 		},
 	}
-	return pvc
+	return &pvc
 }
 
-func makeDefaultFluentdPVC(fd fluentdv1alpha1.Fluentd) corev1.PersistentVolumeClaim {
+func makeDefaultFluentdPVC(fd fluentdv1alpha1.Fluentd) *corev1.PersistentVolumeClaim {
 	labels := map[string]string{
 		"app.kubernetes.io/name":      fd.Name,
 		"app.kubernetes.io/instance":  "fluentd",
@@ -63,5 +63,5 @@ func makeDefaultFluentdPVC(fd fluentdv1alpha1.Fluentd) corev1.PersistentVolumeCl
 			VolumeMode:  &fsmode,
 		},
 	}
-	return pvc
+	return &pvc
 }

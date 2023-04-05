@@ -94,6 +94,18 @@ type FluentBitSpec struct {
 	DNSPolicy corev1.DNSPolicy `json:"dnsPolicy,omitempty"`
 	// MetricsPort is the port used by the metrics server. If this option is set, HttpPort from ClusterFluentBitConfig needs to match this value. Default is 2020.
 	MetricsPort int32 `json:"metricsPort,omitempty"`
+	// Service represents configurations on the fluent-bit service.
+	Service FluentBitService `json:"service,omitempty"`
+}
+
+// FluentBitService defines the service of the FluentBit
+type FluentBitService struct {
+	// Name is the name of the FluentBit service.
+	Name string `json:"name,omitempty"`
+	// Annotations to add to each Fluentbit service.
+	Annotations map[string]string `json:"annotations,omitempty"`
+	// Labels to add to each FluentBit service
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 // FluentBitStatus defines the observed state of FluentBit

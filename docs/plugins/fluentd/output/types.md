@@ -22,3 +22,4 @@ Output defines all available output plugins and their parameters
 | stdout | out_stdout plugin | *Stdout |
 | loki | out_loki plugin | *Loki |
 | customPlugin | Custom plugin type | *custom.CustomPlugin |
+| cloudWatch | out_cloudwatch plugin | *CloudWatch |

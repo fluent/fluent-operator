@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.DaemonSet {
+func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.DaemonSet {
 	var labels map[string]string
 	if fb.Spec.Labels != nil {
 		labels = fb.Spec.Labels
@@ -212,5 +212,5 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) appsv1.Daemon
 		})
 	}
 
-	return ds
+	return &ds
 }

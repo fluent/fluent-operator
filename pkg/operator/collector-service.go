@@ -14,12 +14,27 @@ const (
 	CollecotrTCPProtocolName = "TCP"
 )
 
-func MakeCollecotrService(co fluentbitv1alpha2.Collector) corev1.Service {
+func MakeCollecotrService(co fluentbitv1alpha2.Collector) *corev1.Service {
+	var name string
+	var labels map[string]string
+
+	if co.Spec.Service.Name != "" {
+		name = co.Spec.Service.Name
+	} else {
+		name = co.Name
+	}
+
+	if len(co.Spec.Service.Labels) != 0 {
+		labels = co.Spec.Service.Labels
+	} else {
+		labels = co.Labels
+	}
+
 	svc := corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      co.Name,
+			Name:      name,
 			Namespace: co.Namespace,
-			Labels:    co.Labels,
+			Labels:    labels,
 		},
 		Spec: corev1.ServiceSpec{
 			Selector: co.Labels,
@@ -46,5 +61,9 @@ func MakeCollecotrService(co fluentbitv1alpha2.Collector) corev1.Service {
 		}
 	}
 
-	return svc
+	if len(co.Spec.Service.Annotations) != 0 {
+		svc.ObjectMeta.Annotations = co.Spec.Service.Annotations
+	}
+
+	return &svc
 }

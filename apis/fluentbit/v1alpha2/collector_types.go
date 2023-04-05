@@ -75,6 +75,18 @@ type CollectorSpec struct {
 	BufferPath *string `json:"bufferPath,omitempty"`
 	// Ports represents the pod's ports.
 	Ports []corev1.ContainerPort `json:"ports,omitempty"`
+	// Service represents configurations on the fluent-bit service.
+	Service CollectorService `json:"service,omitempty"`
+}
+
+// CollectorService defines the service of the FluentBit
+type CollectorService struct {
+	// Name is the name of the FluentBit service.
+	Name string `json:"name,omitempty"`
+	// Annotations to add to each Fluentbit service.
+	Annotations map[string]string `json:"annotations,omitempty"`
+	// Labels to add to each FluentBit service
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 // CollectorStatus defines the observed state of FluentBit

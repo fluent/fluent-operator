@@ -29,7 +29,7 @@ const (
 	InputHttpType    = "http"
 )
 
-func MakeStatefulset(fd fluentdv1alpha1.Fluentd) appsv1.StatefulSet {
+func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 	replicas := *fd.Spec.Replicas
 	if replicas == 0 {
 		replicas = 1
@@ -149,7 +149,7 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) appsv1.StatefulSet {
 				Name:      bufferVolName,
 				MountPath: BufferMountPath,
 			})
-			return sts
+			return &sts
 		}
 
 		if bufferpv.EmptyDir != nil {
@@ -165,19 +165,19 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) appsv1.StatefulSet {
 				MountPath: BufferMountPath,
 			})
 
-			return sts
+			return &sts
 		}
 	}
 
 	if fd.Spec.BufferVolume == nil || !fd.Spec.BufferVolume.DisableBufferVolume {
-		sts.Spec.VolumeClaimTemplates = append(sts.Spec.VolumeClaimTemplates, MakeFluentdPVC(fd))
+		sts.Spec.VolumeClaimTemplates = append(sts.Spec.VolumeClaimTemplates, *MakeFluentdPVC(fd))
 
 		sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
 			Name:      fmt.Sprintf("%s-buffer-pvc", fd.Name),
 			MountPath: BufferMountPath,
 		})
 	}
-	return sts
+	return &sts
 }
 
 func makeStatefulsetPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {

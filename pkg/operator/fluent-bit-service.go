@@ -13,7 +13,21 @@ const (
 	FluentBitTCPProtocolName = "TCP"
 )
 
-func MakeFluentbitService(fb fluentbitv1alpha2.FluentBit) corev1.Service {
+func MakeFluentbitService(fb fluentbitv1alpha2.FluentBit) *corev1.Service {
+	var name string
+	var labels map[string]string
+
+	if fb.Spec.Service.Name != "" {
+		name = fb.Spec.Service.Name
+	} else {
+		name = fb.Name
+	}
+
+	if len(fb.Spec.Service.Labels) != 0 {
+		labels = fb.Spec.Service.Labels
+	} else {
+		labels = fb.Labels
+	}
 
 	var FluentBitMetricsPort int32
 	if fb.Spec.MetricsPort != 0 {
@@ -24,9 +38,9 @@ func MakeFluentbitService(fb fluentbitv1alpha2.FluentBit) corev1.Service {
 
 	svc := corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fb.Name,
+			Name:      name,
 			Namespace: fb.Namespace,
-			Labels:    fb.Labels,
+			Labels:    labels,
 		},
 		Spec: corev1.ServiceSpec{
 			Selector: fb.Labels,
@@ -53,5 +67,9 @@ func MakeFluentbitService(fb fluentbitv1alpha2.FluentBit) corev1.Service {
 		}
 	}
 
-	return svc
+	if len(fb.Spec.Service.Annotations) != 0 {
+		svc.ObjectMeta.Annotations = fb.Spec.Service.Annotations
+	}
+
+	return &svc
 }
