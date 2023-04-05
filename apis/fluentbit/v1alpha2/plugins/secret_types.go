@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/go-logr/logr"
 	"github.com/go-openapi/errors"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -26,20 +25,20 @@ type ValueSource struct {
 }
 
 type SecretLoader struct {
-	client    client.Client
+	Client    client.Client
 	namespace string
 }
 
-func NewSecretLoader(c client.Client, ns string, l logr.Logger) SecretLoader {
+func NewSecretLoader(c client.Client, ns string) SecretLoader {
 	return SecretLoader{
-		client:    c,
+		Client:    c,
 		namespace: ns,
 	}
 }
 
 func (sl SecretLoader) LoadSecret(s Secret) (string, error) {
 	var secret corev1.Secret
-	if err := sl.client.Get(context.Background(), client.ObjectKey{Name: s.ValueFrom.SecretKeyRef.Name, Namespace: sl.namespace}, &secret); err != nil {
+	if err := sl.Client.Get(context.Background(), client.ObjectKey{Name: s.ValueFrom.SecretKeyRef.Name, Namespace: sl.namespace}, &secret); err != nil {
 		return "", err
 	}
 
