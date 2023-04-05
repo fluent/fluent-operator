@@ -1,6 +1,6 @@
 # Lua
 
-The Lua Filter allows you to modify the incoming records using custom Lua Scripts.
+The Lua Filter allows you to modify the incoming records using custom Lua Scripts. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/lua**
 
 
 | Field | Description | Scheme |

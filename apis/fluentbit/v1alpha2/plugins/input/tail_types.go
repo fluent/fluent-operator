@@ -9,8 +9,9 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The Tail input plugin allows to monitor one or several text files.
-// It has a similar behavior like tail -f shell command.
+// The Tail input plugin allows to monitor one or several text files. <br />
+// It has a similar behavior like tail -f shell command. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/tail**
 type Tail struct {
 	// Set the initial buffer size to read files data.
 	// This value is used too to increase buffer size.

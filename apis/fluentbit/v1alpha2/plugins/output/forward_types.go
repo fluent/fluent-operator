@@ -9,8 +9,9 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// Forward is the protocol used by Fluentd to route messages between peers.
-// The forward output plugin allows to provide interoperability between Fluent Bit and Fluentd.
+// Forward is the protocol used by Fluentd to route messages between peers. <br />
+// The forward output plugin allows to provide interoperability between Fluent Bit and Fluentd. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/forward**
 type Forward struct {
 	// Target host where Fluent-Bit or Fluentd are listening for Forward messages.
 	Host string `json:"host,omitempty"`

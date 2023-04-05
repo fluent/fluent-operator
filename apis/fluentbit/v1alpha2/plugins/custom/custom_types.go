@@ -12,7 +12,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// CustomPlugin is used to support filter plugins that are not implemented yet
+// CustomPlugin is used to support filter plugins that are not implemented yet. <br />
+// **For example usage, refer to https://github.com/jjsiv/fluent-operator/blob/master/docs/best-practice/custom-plugin.md**
 type CustomPlugin struct {
 	Config string `json:"config,omitempty"`
 }

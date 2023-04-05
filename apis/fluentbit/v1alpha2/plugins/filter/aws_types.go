@@ -9,7 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The AWS Filter Enriches logs with AWS Metadata. Currently the plugin adds the EC2 instance ID and availability zone to log records.
+// The AWS Filter Enriches logs with AWS Metadata. Currently the plugin adds the EC2 instance ID and availability zone to log records. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/aws-metadata**
 type AWS struct {
 	plugins.CommonParams `json:",inline"`
 	// Specify which version of the instance metadata service to use. Valid values are 'v1' or 'v2'.

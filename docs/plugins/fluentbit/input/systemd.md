@@ -1,6 +1,6 @@
 # Systemd
 
-The Systemd input plugin allows to collect log messages from the Journald daemon on Linux environments.
+The Systemd input plugin allows to collect log messages from the Journald daemon on Linux environments. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/systemd**
 
 
 | Field | Description | Scheme |

@@ -7,8 +7,9 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// RewriteTag define a `rewrite_tag` filter, allows to re-emit a record under a new Tag.
-// Once a record has been re-emitted, the original record can be preserved or discarded.
+// RewriteTag define a `rewrite_tag` filter, allows to re-emit a record under a new Tag. <br />
+// Once a record has been re-emitted, the original record can be preserved or discarded. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/rewrite-tag**
 type RewriteTag struct {
 	plugins.CommonParams `json:",inline"`
 	// Defines the matching criteria and the format of the Tag for the matching record.

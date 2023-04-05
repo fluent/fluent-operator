@@ -1,6 +1,6 @@
 # Throttle
 
-Throttle filter allows you to set the average rate of messages per internal, based on leaky bucket and sliding window algorithm.
+Throttle filter allows you to set the average rate of messages per internal, based on leaky bucket and sliding window algorithm. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/throttle**
 
 
 | Field | Description | Scheme |

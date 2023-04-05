@@ -9,6 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
+// Kafka output plugin allows to ingest your records into an Apache Kafka service. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/kafka**
 type Kafka struct {
 	// Specify data format, options available: json, msgpack.
 	Format string `json:"format,omitempty"`

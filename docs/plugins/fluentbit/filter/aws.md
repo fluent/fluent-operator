@@ -1,6 +1,6 @@
 # AWS
 
-The AWS Filter Enriches logs with AWS Metadata. Currently the plugin adds the EC2 instance ID and availability zone to log records.
+The AWS Filter Enriches logs with AWS Metadata. Currently the plugin adds the EC2 instance ID and availability zone to log records. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/aws-metadata**
 
 
 | Field | Description | Scheme |

@@ -1,6 +1,6 @@
 # OpenTelemetry
 
-OpenTelemetry is An output plugin to submit Metrics to an OpenTelemetry endpoint, allows taking metrics from Fluent Bit and submit them to an OpenTelemetry HTTP endpoint.
+OpenTelemetry is An output plugin to submit Metrics to an OpenTelemetry endpoint, <br /> allows taking metrics from Fluent Bit and submit them to an OpenTelemetry HTTP endpoint. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/opentelemetry**
 
 
 | Field | Description | Scheme |

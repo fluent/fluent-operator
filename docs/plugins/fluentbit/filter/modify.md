@@ -1,6 +1,6 @@
 # Modify
 
-The Modify Filter plugin allows you to change records using rules and conditions.
+The Modify Filter plugin allows you to change records using rules and conditions. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/modify**
 
 
 | Field | Description | Scheme |

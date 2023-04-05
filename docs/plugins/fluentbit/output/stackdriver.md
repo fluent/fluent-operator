@@ -1,6 +1,6 @@
 # Stackdriver
 
-Stackdriver is the Stackdriver output plugin, allows you to ingest your records into GCP Stackdriver.
+Stackdriver is the Stackdriver output plugin, allows you to ingest your records into GCP Stackdriver. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/stackdriver**
 
 
 | Field | Description | Scheme |

@@ -9,9 +9,10 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The http output plugin allows to flush your records into a HTTP endpoint.
+// The http output plugin allows to flush your records into a HTTP endpoint. <br />
 // For now the functionality is pretty basic and it issues a POST request
-// with the data records in MessagePack (or JSON) format.
+// with the data records in MessagePack (or JSON) format. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/http**
 type HTTP struct {
 	// IP address or hostname of the target HTTP Server
 	Host string `json:"host,omitempty"`

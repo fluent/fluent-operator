@@ -1,6 +1,6 @@
 # Stdout
 
-The stdout output plugin allows to print to the standard output the data received through the input plugin.
+The stdout output plugin allows to print to the standard output the data received through the input plugin. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/standard-output**
 
 
 | Field | Description | Scheme |

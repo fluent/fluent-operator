@@ -9,7 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// Syslog output plugin allows you to deliver messages to Syslog servers.
+// Syslog output plugin allows you to deliver messages to Syslog servers. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/syslog**
 type Syslog struct {
 	// Host domain or IP address of the remote Syslog server.
 	Host string `json:"host,omitempty"`

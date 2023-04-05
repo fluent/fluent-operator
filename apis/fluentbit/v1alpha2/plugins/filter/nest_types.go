@@ -7,7 +7,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The Nest Filter plugin allows you to operate on or with nested data. Its modes of operation are
+// The Nest Filter plugin allows you to operate on or with nested data. Its modes of operation are "nest" and "lift". <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/nest**
 type Nest struct {
 	plugins.CommonParams `json:",inline"`
 	// Select the operation nest or lift

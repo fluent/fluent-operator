@@ -1,6 +1,6 @@
 # NodeExporterMetrics
 
-The NodeExporterMetrics input plugin, which based on Prometheus Node Exporter to collect system / host level metrics.
+A plugin based on Prometheus Node Exporter to collect system / host level metrics. <br /> **Note: Metrics collected with Node Exporter Metrics flow through a separate pipeline from logs and current filters do not operate on top of metrics.** <br /> This plugin is currently only supported on Linux based operating systems. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/node-exporter-metrics**
 
 
 | Field | Description | Scheme |

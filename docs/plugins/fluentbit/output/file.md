@@ -1,6 +1,6 @@
 # File
 
-The file output plugin allows to write the data received through the input plugin to file.
+The file output plugin allows to write the data received through the input plugin to file. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/file**
 
 
 | Field | Description | Scheme |

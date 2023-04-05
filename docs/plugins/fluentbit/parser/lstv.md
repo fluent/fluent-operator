@@ -1,6 +1,6 @@
 # LSTV
 
-The LSTV parser plugin
+The LSTV parser allows to parse LTSV formatted texts. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/parsers/ltsv**
 
 
 | Field | Description | Scheme |

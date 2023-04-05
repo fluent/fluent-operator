@@ -1,6 +1,6 @@
 # RecordModifier
 
-The Record Modifier Filter plugin allows to append fields or to exclude specific fields. RemoveKeys and WhitelistKeys are exclusive.
+The Record Modifier Filter plugin allows to append fields or to exclude specific fields. <br /> RemoveKeys and WhitelistKeys are exclusive. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/record-modifier**
 
 
 | Field | Description | Scheme |

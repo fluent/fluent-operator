@@ -1,6 +1,6 @@
 # Splunk
 
-OpenSearch is the opensearch output plugin, allows to ingest your records into an OpenSearch database.
+Splunk output plugin allows to ingest your records into a Splunk Enterprise service through the HTTP Event Collector (HEC) interface. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/splunk**
 
 
 | Field | Description | Scheme |

@@ -9,7 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The Modify Filter plugin allows you to change records using rules and conditions.
+// The Modify Filter plugin allows you to change records using rules and conditions. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/modify**
 type Modify struct {
 	plugins.CommonParams `json:",inline"`
 	// All conditions have to be true for the rules to be applied.

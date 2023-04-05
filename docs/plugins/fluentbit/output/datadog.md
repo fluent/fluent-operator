@@ -1,6 +1,6 @@
 # DataDog
 
-DataDog output plugin allows you to ingest your logs into Datadog.
+DataDog output plugin allows you to ingest your logs into Datadog. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/datadog**
 
 
 | Field | Description | Scheme |

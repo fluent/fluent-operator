@@ -1,6 +1,6 @@
 # Regex
 
-The regex parser plugin
+The regex parser allows to define a custom Ruby Regular Expression that will use a named capture feature to define which content belongs to which key name. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/parsers/regular-expression**
 
 
 | Field | Description | Scheme |

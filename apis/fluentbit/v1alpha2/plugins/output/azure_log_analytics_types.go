@@ -9,7 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// Azure Log Analytics is the Azure Log Analytics output plugin, allows you to ingest your records into Azure Log Analytics Workspace.
+// Azure Log Analytics is the Azure Log Analytics output plugin, allows you to ingest your records into Azure Log Analytics Workspace. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/azure**
 type AzureLogAnalytics struct {
 	// Customer ID or Workspace ID
 	CustomerID *plugins.Secret `json:"customerID"`

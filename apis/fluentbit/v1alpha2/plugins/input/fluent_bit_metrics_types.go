@@ -8,6 +8,11 @@ import (
 
 // +kubebuilder:object:generate:=true
 
+// Fluent Bit exposes its own metrics to allow you to monitor the internals of your pipeline. <br />
+// The collected metrics can be processed similarly to those from the Prometheus Node Exporter input plugin. <br />
+// They can be sent to output plugins including Prometheus Exporter, Prometheus Remote Write or OpenTelemetry. <br />
+// **Important note: Metrics collected with Node Exporter Metrics flow through a separate pipeline from logs and current filters do not operate on top of metrics.** <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/fluentbit-metrics**
 type FluentbitMetrics struct {
 	Tag string `json:"tag,omitempty"`
 

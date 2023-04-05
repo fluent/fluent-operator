@@ -1,6 +1,6 @@
 # Syslog
 
-Syslog output plugin allows you to deliver messages to Syslog servers.
+Syslog output plugin allows you to deliver messages to Syslog servers. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/syslog**
 
 
 | Field | Description | Scheme |

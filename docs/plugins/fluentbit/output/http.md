@@ -1,6 +1,6 @@
 # HTTP
 
-The http output plugin allows to flush your records into a HTTP endpoint. For now the functionality is pretty basic and it issues a POST request with the data records in MessagePack (or JSON) format.
+The http output plugin allows to flush your records into a HTTP endpoint. <br /> For now the functionality is pretty basic and it issues a POST request with the data records in MessagePack (or JSON) format. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/http**
 
 
 | Field | Description | Scheme |

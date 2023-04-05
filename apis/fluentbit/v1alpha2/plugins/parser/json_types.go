@@ -9,7 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The JSON parser plugin
+// The JSON parser plugin. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/parsers/json**
 type JSON struct {
 	// Time_Key
 	TimeKey string `json:"timeKey,omitempty"`

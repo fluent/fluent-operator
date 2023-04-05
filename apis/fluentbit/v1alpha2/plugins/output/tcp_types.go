@@ -9,8 +9,9 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The tcp output plugin allows to send records to a remote TCP server.
-// The payload can be formatted in different ways as required.
+// The tcp output plugin allows to send records to a remote TCP server. <br />
+// The payload can be formatted in different ways as required. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/tcp-and-tls**
 type TCP struct {
 	// Target host where Fluent-Bit or Fluentd are listening for Forward messages.
 	Host string `json:"host,omitempty"`

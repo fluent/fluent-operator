@@ -1,6 +1,6 @@
 # AzureBlob
 
-Azure Blob is the Azure Blob output plugin, allows to ingest your records into Azure Blob Storage.
+Azure Blob is the Azure Blob output plugin, allows to ingest your records into Azure Blob Storage. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/azure_blob**
 
 
 | Field | Description | Scheme |

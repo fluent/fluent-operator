@@ -1,6 +1,6 @@
 # Parser
 
-The Parser Filter plugin allows to parse field in event records.
+The Parser Filter plugin allows to parse field in event records. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/parser**
 
 
 | Field | Description | Scheme |

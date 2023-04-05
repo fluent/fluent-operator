@@ -1,6 +1,6 @@
 # Kafka
 
-
+Kafka output plugin allows to ingest your records into an Apache Kafka service. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/kafka**
 
 
 | Field | Description | Scheme |

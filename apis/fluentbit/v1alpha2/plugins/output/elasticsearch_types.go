@@ -9,7 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// Elasticsearch is the es output plugin, allows to ingest your records into an Elasticsearch database.
+// Elasticsearch is the es output plugin, allows to ingest your records into an Elasticsearch database. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/elasticsearch**
 type Elasticsearch struct {
 	// IP address or hostname of the target Elasticsearch instance
 	Host string `json:"host,omitempty"`

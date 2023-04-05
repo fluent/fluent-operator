@@ -1,6 +1,6 @@
 # Firehose
 
-The Firehose output plugin, allows to ingest your records into AWS Firehose. It uses the new high performance kinesis_firehose plugin (written in C) instead of the older firehose plugin (written in Go). The fluent-bit container must have the plugin installed.\n\nhttps://docs.fluentbit.io/manual/pipeline/outputs/firehose https://github.com/aws/amazon-kinesis-firehose-for-fluent-bit
+The Firehose output plugin, allows to ingest your records into AWS Firehose. <br /> It uses the new high performance kinesis_firehose plugin (written in C) instead <br /> of the older firehose plugin (written in Go). <br /> The fluent-bit container must have the plugin installed. <br /> https://docs.fluentbit.io/manual/pipeline/outputs/firehose <br /> https://github.com/aws/amazon-kinesis-firehose-for-fluent-bit <br />
 
 
 | Field | Description | Scheme |

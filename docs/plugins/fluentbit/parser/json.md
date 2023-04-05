@@ -1,6 +1,6 @@
 # JSON
 
-The JSON parser plugin
+The JSON parser plugin. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/parsers/json**
 
 
 | Field | Description | Scheme |

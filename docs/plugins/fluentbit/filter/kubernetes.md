@@ -1,6 +1,6 @@
 # Kubernetes
 
-Kubernetes filter allows to enrich your log files with Kubernetes metadata.
+Kubernetes filter allows to enrich your log files with Kubernetes metadata. <br /> **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/kubernetes**
 
 
 | Field | Description | Scheme |
