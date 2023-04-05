@@ -16,7 +16,11 @@ type RecordModifier struct {
 	// If the key is matched, that field is removed.
 	RemoveKeys []string `json:"removeKeys,omitempty"`
 	// If the key is not matched, that field is removed.
+	AllowlistKeys []string `json:"allowlistKeys,omitempty"`
+	// An alias of allowlistKeys for backwards compatibility.
 	WhitelistKeys []string `json:"whitelistKeys,omitempty"`
+	// If set, the plugin appends uuid to each record. The value assigned becomes the key in the map.
+	UUIDKeys []string `json:"uuidKeys,omitempty"`
 }
 
 func (_ *RecordModifier) Name() string {
@@ -35,8 +39,14 @@ func (rm *RecordModifier) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	for _, key := range rm.RemoveKeys {
 		kvs.Insert("Remove_key", key)
 	}
+	for _, key := range rm.AllowlistKeys {
+		kvs.Insert("Allowlist_key", key)
+	}
 	for _, key := range rm.WhitelistKeys {
 		kvs.Insert("Whitelist_key", key)
+	}
+	for _, key := range rm.UUIDKeys {
+		kvs.Insert("Uuid_key", key)
 	}
 	return kvs, nil
 }

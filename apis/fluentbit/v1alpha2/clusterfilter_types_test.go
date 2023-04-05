@@ -10,7 +10,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var filtersExpected = `[Filter]
+func TestClusterFilterList_Load(t *testing.T) {
+	var filtersExpected = `[Filter]
     Name    modify
     Match    logs.foo.bar
     Condition    Key_value_equals    kve0    kvev0
@@ -50,8 +51,6 @@ var filtersExpected = `[Filter]
     Window    300
     Interval    1s
 `
-
-func TestClusterFilterList_Load(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
@@ -185,4 +184,78 @@ func TestClusterFilterList_Load(t *testing.T) {
 
 		i++
 	}
+}
+
+func TestClusterFilter_RecordModifier_Generated(t *testing.T) {
+	var filtersExpected = `[Filter]
+    Name    record_modifier
+    Match    logs.foo.bar
+    Record    hostname ${HOSTNAME}
+    Record    product Awesome_Tool
+    Remove_key    Swap.total
+    Remove_key    Swap.free
+    Remove_key    Swap.used
+    Allowlist_key    Mem.total
+    Allowlist_key    Mem.free
+    Allowlist_key    Mem.used
+    Whitelist_key    Disk.total
+    Whitelist_key    Disk.free
+    Whitelist_key    Disk.used
+    Uuid_key    ID1
+    Uuid_key    UiD2
+`
+	g := NewGomegaWithT(t)
+
+	sl := plugins.NewSecretLoader(nil, "test namespace", logr.Logger{})
+
+	rmFilter := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "filterRecordModifier",
+		},
+		Spec: FilterSpec{
+			Match: "logs.foo.bar",
+			FilterItems: []FilterItem{
+				{
+					RecordModifier: &filter.RecordModifier{
+						CommonParams: plugins.CommonParams{},
+						Records: []string{
+							"hostname ${HOSTNAME}",
+							"product Awesome_Tool",
+						},
+						RemoveKeys: []string{
+							"Swap.total",
+							"Swap.free",
+							"Swap.used",
+						},
+						AllowlistKeys: []string{
+							"Mem.total",
+							"Mem.free",
+							"Mem.used",
+						},
+						WhitelistKeys: []string{
+							"Disk.total",
+							"Disk.free",
+							"Disk.used",
+						},
+						UUIDKeys: []string{
+							"ID1",
+							"UiD2",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{*rmFilter},
+	}
+
+	clusterFilters, err := filters.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterFilters).To(Equal(filtersExpected))
 }
