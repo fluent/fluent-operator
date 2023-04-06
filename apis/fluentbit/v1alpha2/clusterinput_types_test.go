@@ -3,8 +3,6 @@ package v1alpha2
 import (
 	"testing"
 
-	"github.com/go-logr/logr"
-
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/input"
 	. "github.com/onsi/gomega"
@@ -46,7 +44,7 @@ var inputExpected = `[Input]
 func TestClusterInputList_Load(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
 	labels := map[string]string{
 		"label0": "lv0",
@@ -149,7 +147,7 @@ var fluentbitExpected = `[Input]
 func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
 	labels := map[string]string{
 		"label0": "lv0",

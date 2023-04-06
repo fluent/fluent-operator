@@ -1,7 +1,6 @@
 package v1alpha2
 
 import (
-	"github.com/go-logr/logr"
 	"testing"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
@@ -69,7 +68,7 @@ var outputExpected = `[Output]
 func TestClusterOutputList_Load(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
 	labels := map[string]string{
 		"label0": "lv0",

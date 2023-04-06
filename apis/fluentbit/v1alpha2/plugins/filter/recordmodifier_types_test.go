@@ -5,14 +5,13 @@ import (
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/go-logr/logr"
 	. "github.com/onsi/gomega"
 )
 
 func TestFilter_RecordModifier_Params(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	sl := plugins.NewSecretLoader(nil, "test namespace", logr.Logger{})
+	sl := plugins.NewSecretLoader(nil, "test namespace")
 
 	mod := RecordModifier{
 		CommonParams: plugins.CommonParams{},

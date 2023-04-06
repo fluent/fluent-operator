@@ -205,7 +205,7 @@ func TestClusterFilter_RecordModifier_Generated(t *testing.T) {
 `
 	g := NewGomegaWithT(t)
 
-	sl := plugins.NewSecretLoader(nil, "test namespace", logr.Logger{})
+	sl := plugins.NewSecretLoader(nil, "test namespace")
 
 	rmFilter := &ClusterFilter{
 		TypeMeta: metav1.TypeMeta{
