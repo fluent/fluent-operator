@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/filter"
-	"github.com/go-logr/logr"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -54,7 +53,7 @@ var filtersExpected = `[Filter]
 func TestClusterFilterList_Load(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
 	labels := map[string]string{
 		"label0": "lv0",
