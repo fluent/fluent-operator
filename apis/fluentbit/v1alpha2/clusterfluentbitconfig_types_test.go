@@ -1,7 +1,6 @@
 package v1alpha2
 
 import (
-	"github.com/go-logr/logr"
 	"testing"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -151,7 +150,7 @@ var cfg = ClusterFluentBitConfig{
 func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
 	disableInotifyWatcher := ptrBool(true)
 
@@ -360,7 +359,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 
 func TestRenderMainConfigK8s(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, "testnamespace", logr.Logger{})
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
 	inputObj := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
