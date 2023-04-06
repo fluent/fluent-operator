@@ -10,7 +10,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The loki output plugin, allows to ingest your records into a Loki service.
+// The loki output plugin, allows to ingest your records into a Loki service. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/loki**
 type Loki struct {
 	// Loki hostname or IP address.
 	Host string `json:"host"`

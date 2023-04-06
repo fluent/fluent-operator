@@ -7,7 +7,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The file output plugin allows to write the data received through the input plugin to file.
+// The file output plugin allows to write the data received through the input plugin to file. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/file**
 type File struct {
 	// Absolute directory path to store files. If not set, Fluent Bit will write the files on it's own positioned directory.
 	Path string `json:"path,omitempty"`

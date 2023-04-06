@@ -7,7 +7,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The Multiline Filter helps to concatenate messages that originally belong to one context but were split across multiple records or log lines.
+// The Multiline Filter helps to concatenate messages that originally belong to one context but were split across multiple records or log lines. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/multiline-stacktrace**
 type Multiline struct {
 	plugins.CommonParams `json:",inline"`
 	// The Inline struct helps to concatenate messages that originally belong to one context but were split across multiple records or log lines.

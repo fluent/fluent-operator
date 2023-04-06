@@ -130,7 +130,11 @@ func plugins(docsLocations []DocumentsLocation) {
 			}
 
 			dst := fmt.Sprintf("./docs/plugins/%s/%s.md", dl.name, src_name)
-			f, _ := os.Create(dst)
+			f, err := os.Create(dst)
+			if err != nil {
+				fmt.Printf("Error while generating documentation: %s\n", err.Error())
+			}
+
 			f.WriteString(buffer.String())
 		}
 	}

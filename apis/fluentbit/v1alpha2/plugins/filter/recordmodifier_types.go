@@ -7,8 +7,9 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The Record Modifier Filter plugin allows to append fields or to exclude specific fields.
-// RemoveKeys and WhitelistKeys are exclusive.
+// The Record Modifier Filter plugin allows to append fields or to exclude specific fields. <br />
+// RemoveKeys and WhitelistKeys are exclusive. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/record-modifier**
 type RecordModifier struct {
 	plugins.CommonParams `json:",inline"`
 	// Append fields. This parameter needs key and value pair.

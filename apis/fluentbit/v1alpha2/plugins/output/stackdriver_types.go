@@ -9,7 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// Stackdriver is the Stackdriver output plugin, allows you to ingest your records into GCP Stackdriver.
+// Stackdriver is the Stackdriver output plugin, allows you to ingest your records into GCP Stackdriver. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/stackdriver**
 type Stackdriver struct {
 	// Path to GCP Credentials JSON file
 	GoogleServiceCredentials string `json:"googleServiceCredentials,omitempty"`

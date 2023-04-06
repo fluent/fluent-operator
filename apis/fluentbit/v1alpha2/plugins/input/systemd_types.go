@@ -7,7 +7,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The Systemd input plugin allows to collect log messages from the Journald daemon on Linux environments.
+// The Systemd input plugin allows to collect log messages from the Journald daemon on Linux environments. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/systemd**
 type Systemd struct {
 	// Optional path to the Systemd journal directory,
 	// if not set, the plugin will use default paths to read local-only logs.

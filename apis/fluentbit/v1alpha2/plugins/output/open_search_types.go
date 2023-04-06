@@ -8,7 +8,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// OpenSearch is the opensearch output plugin, allows to ingest your records into an OpenSearch database.
+// OpenSearch is the opensearch output plugin, allows to ingest your records into an OpenSearch database. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/opensearch**
 type OpenSearch struct {
 	// IP address or hostname of the target OpenSearch instance, default `127.0.0.1`
 	Host string `json:"host,omitempty"`

@@ -9,7 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// Kubernetes filter allows to enrich your log files with Kubernetes metadata.
+// Kubernetes filter allows to enrich your log files with Kubernetes metadata. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/kubernetes**
 type Kubernetes struct {
 	plugins.CommonParams `json:",inline"`
 	// Set the buffer size for HTTP client when reading responses from Kubernetes API server.

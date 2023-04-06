@@ -9,7 +9,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// DataDog output plugin allows you to ingest your logs into Datadog.
+// DataDog output plugin allows you to ingest your logs into Datadog. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/datadog**
 type DataDog struct {
 	// Host is the Datadog server where you are sending your logs.
 	Host string `json:"host,omitempty"`

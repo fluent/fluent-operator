@@ -9,10 +9,10 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-/*  Fluent Bit 1.9 includes additional metrics features to allow you to collect both logs and metrics with the same collector.
- *  The initial release of the Prometheus Scrape metric allows you to collect metrics from a Prometheus-based
- *  endpoint at a set interval. These metrics can be routed to metric supported endpoints such as Prometheus Exporter, InfluxDB, or Prometheus Remote Write
- */
+// Fluent Bit 1.9 includes additional metrics features to allow you to collect both logs and metrics with the same collector. <br />
+// The initial release of the Prometheus Scrape metric allows you to collect metrics from a Prometheus-based <br />
+// endpoint at a set interval. These metrics can be routed to metric supported endpoints such as Prometheus Exporter, InfluxDB, or Prometheus Remote Write. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/prometheus-scrape-metrics**
 type PrometheusScrapeMetrics struct {
 	// Tag name associated to all records comming from this plugin
 	Tag string `json:"tag,omitempty"`

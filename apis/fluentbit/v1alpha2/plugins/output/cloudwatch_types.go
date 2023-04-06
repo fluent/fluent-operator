@@ -8,7 +8,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// CloudWatch is the AWS CloudWatch output plugin, allows you to ingest your records into AWS CloudWatch.
+// CloudWatch is the AWS CloudWatch output plugin, allows you to ingest your records into AWS CloudWatch. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/cloudwatch**
 type CloudWatch struct {
 	// AWS Region
 	Region string `json:"region"`

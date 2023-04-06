@@ -7,7 +7,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The Grep Filter plugin allows to match or exclude specific records based in regular expression patterns.
+// The Grep Filter plugin allows to match or exclude specific records based in regular expression patterns. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/grep**
 type Grep struct {
 	plugins.CommonParams `json:",inline"`
 	// Keep records which field matches the regular expression.

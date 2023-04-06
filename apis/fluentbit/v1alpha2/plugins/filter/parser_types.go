@@ -10,7 +10,8 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// The Parser Filter plugin allows to parse field in event records.
+// The Parser Filter plugin allows to parse field in event records. <br />
+// **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/filters/parser**
 type Parser struct {
 	plugins.CommonParams `json:",inline"`
 	// Specify field name in record to parse.
