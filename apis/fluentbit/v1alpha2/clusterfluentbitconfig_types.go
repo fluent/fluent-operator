@@ -174,11 +174,15 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 
 	var nsFilterSections []string
 	for _, nsFilterList := range nsFilterLists {
-		filters, err := nsFilterList.Load(sl)
-		if err != nil {
-			return "", err
+		if nsFilterList.Items != nil {
+			ns := nsFilterList.Items[0].Namespace
+			namespacedSl := plugins.NewSecretLoader(sl.Client, ns)
+			filters, err := nsFilterList.Load(namespacedSl)
+			if err != nil {
+				return "", err
+			}
+			nsFilterSections = append(nsFilterSections, filters)
 		}
-		nsFilterSections = append(nsFilterSections, filters)
 	}
 
 	outputSections, err := outputs.Load(sl)
@@ -187,11 +191,16 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 	}
 	var nsOutputSections []string
 	for _, nsOutputList := range nsOutputLists {
-		outputs, err := nsOutputList.Load(sl)
-		if err != nil {
-			return "", err
+		// The lists are per namespace, so get the namespace from the first item in a list
+		if nsOutputList.Items != nil {
+			ns := nsOutputList.Items[0].Namespace
+			namespacedSl := plugins.NewSecretLoader(sl.Client, ns)
+			outputs, err := nsOutputList.Load(namespacedSl)
+			if err != nil {
+				return "", err
+			}
+			nsOutputSections = append(nsOutputSections, outputs)
 		}
-		nsOutputSections = append(nsOutputSections, outputs)
 	}
 
 	if inputSections != "" && outputSections == "" && nsOutputSections == nil {
@@ -228,11 +237,15 @@ func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, pa
 	buf.WriteString(parserSections)
 
 	for _, parserListPerNS := range nsParserLists {
-		nsParserSections, err := parserListPerNS.Load(sl)
-		if err != nil {
-			return "", err
+		if parserListPerNS.Items != nil {
+			ns := parserListPerNS.Items[0].Namespace
+			namespacedSl := plugins.NewSecretLoader(sl.Client, ns)
+			nsParserSections, err := parserListPerNS.Load(namespacedSl)
+			if err != nil {
+				return "", err
+			}
+			buf.WriteString(nsParserSections)
 		}
-		buf.WriteString(nsParserSections)
 	}
 
 	for _, item := range nsClusterParserLists {

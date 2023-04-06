@@ -141,7 +141,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 				ns = os.Getenv("NAMESPACE")
 			}
 			// Inject config data into Secret
-			sl := plugins.NewSecretLoader(r.Client, ns, r.Log)
+			sl := plugins.NewSecretLoader(r.Client, ns)
 			mainAppCfg, err := cfg.RenderMainConfig(sl, inputs, filters, outputs, nsFilterLists, nsOutputLists, rewriteTagConfigs)
 			if err != nil {
 				return ctrl.Result{}, err
