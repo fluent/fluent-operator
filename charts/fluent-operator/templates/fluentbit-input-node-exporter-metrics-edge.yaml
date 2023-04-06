@@ -1,0 +1,16 @@
+{{- if .Values.fluentbit.kubeedge.enable -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterInput
+metadata:
+  name: node-exporter-metrics-edge
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    node-role.kubernetes.io/edge: "true"
+spec:
+  nodeExporterMetrics:
+    tag: kubeedge.*
+    scrapeInterval: 30s
+    path :
+        procfs: /host/proc
+        sysfs : /host/sys
+{{- end }}

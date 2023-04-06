@@ -50,4 +50,4 @@ jobs:
       - name: Build and Push Image for Fluent Bit
         run: |
           make build-fb -e FB_IMG=${{ env.FB_IMG }}
-          make build-fb-debug -e FB_IMG_DEBUG=${{ env.FB_IMG }}
+          make build-fb-debug -e FB_IMG_DEBUG=${{ env.FB_IMG_DEBUG }}
