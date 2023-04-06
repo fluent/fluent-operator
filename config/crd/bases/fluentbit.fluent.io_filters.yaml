@@ -596,6 +596,11 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        allowlistKeys:
+                          description: If the key is not matched, that field is removed.
+                          items:
+                            type: string
+                          type: array
                         records:
                           description: Append fields. This parameter needs key and
                             value pair.
@@ -617,8 +622,14 @@ spec:
                             default value: 1.'
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
+                        uuidKeys:
+                          description: If set, the plugin appends uuid to each record.
+                            The value assigned becomes the key in the map.
+                          items:
+                            type: string
+                          type: array
                         whitelistKeys:
-                          description: If the key is not matched, that field is removed.
+                          description: An alias of allowlistKeys for backwards compatibility.
                           items:
                             type: string
                           type: array

@@ -399,8 +399,18 @@ func (in *RecordModifier) DeepCopyInto(out *RecordModifier) {
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
+	if in.AllowlistKeys != nil {
+		in, out := &in.AllowlistKeys, &out.AllowlistKeys
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	if in.WhitelistKeys != nil {
 		in, out := &in.WhitelistKeys, &out.WhitelistKeys
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
+	if in.UUIDKeys != nil {
+		in, out := &in.UUIDKeys, &out.UUIDKeys
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
