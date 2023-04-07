@@ -34,7 +34,7 @@ type InfluxDB struct {
 	HTTPUser *plugins.Secret `json:"httpUser,omitempty"`
 	// Password for user defined in HTTP_User
 	HTTPPasswd *plugins.Secret `json:"httpPassword,omitempty"`
-	// Authentication token used with InfluDB v2 - if specified, both HTTPUser and HTTPPasswd are ignored
+	// Authentication token used with InfluxDB v2 - if specified, both HTTPUser and HTTPPasswd are ignored
 	HTTPToken *plugins.Secret `json:"httpToken,omitempty"`
 	// List of keys that needs to be tagged
 	TagKeys []string `json:"tagKeys,omitempty"`
