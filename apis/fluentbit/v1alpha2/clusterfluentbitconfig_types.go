@@ -76,7 +76,7 @@ type Service struct {
 	// File to log diagnostic output
 	LogFile string `json:"logFile,omitempty"`
 	// Diagnostic level (error/warning/info/debug/trace)
-	// +kubebuilder:validation:Enum:=error;warning;info;debug;trace
+	// +kubebuilder:validation:Enum:=off;error;warning;info;debug;trace
 	LogLevel string `json:"logLevel,omitempty"`
 	// Optional 'parsers' config file (can be multiple)
 	ParsersFile string `json:"parsersFile,omitempty"`

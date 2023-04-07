@@ -43,6 +43,10 @@ type OutputSpec struct {
 	// A user friendly alias name for this output plugin.
 	// Used in metrics for distinction of each configured output.
 	Alias string `json:"alias,omitempty"`
+	// Set the plugin's logging verbosity level. Allowed values are: off, error, warn, info, debug and trace, Defaults to the SERVICE section's Log_Level
+	// +kubebuilder:validation:Enum:=off;error;warning;info;debug;trace
+	LogLevel string `json:"logLevel,omitempty"`
+
 	// AzureBlob defines AzureBlob Output Configuration
 	AzureBlob *output.AzureBlob `json:"azureBlob,omitempty"`
 	// AzureLogAnalytics defines AzureLogAnalytics Output Configuration
@@ -138,6 +142,9 @@ func (list ClusterOutputList) Load(sl plugins.SecretLoader) (string, error) {
 			}
 			if item.Spec.Match != "" {
 				buf.WriteString(fmt.Sprintf("    Match    %s\n", item.Spec.Match))
+			}
+			if item.Spec.LogLevel != "" {
+				buf.WriteString(fmt.Sprintf("    Log_Level    %s\n", item.Spec.LogLevel))
 			}
 			if item.Spec.MatchRegex != "" {
 				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", item.Spec.MatchRegex))

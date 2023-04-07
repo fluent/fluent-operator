@@ -80,6 +80,15 @@ spec:
                   tag:
                     type: string
                 type: object
+              logLevel:
+                enum:
+                - "off"
+                - error
+                - warning
+                - info
+                - debug
+                - trace
+                type: string
               nodeExporterMetrics:
                 description: NodeExporterMetrics defines Node Exporter Metrics Input
                   configuration.

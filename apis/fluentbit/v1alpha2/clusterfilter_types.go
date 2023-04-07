@@ -40,6 +40,8 @@ type FilterSpec struct {
 	// A regular expression to match against the tags of incoming records.
 	// Use this option if you want to use the full regex syntax.
 	MatchRegex string `json:"matchRegex,omitempty"`
+	// +kubebuilder:validation:Enum:=off;error;warning;info;debug;trace
+	LogLevel string `json:"logLevel,omitempty"`
 	// A set of filter plugins in order.
 	FilterItems []FilterItem `json:"filters,omitempty"`
 }
@@ -116,6 +118,9 @@ func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 			buf.WriteString("[Filter]\n")
 			if p.Name() != "" {
 				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+			}
+			if item.Spec.LogLevel != "" {
+				buf.WriteString(fmt.Sprintf("    Log_Level    %s\n", item.Spec.LogLevel))
 			}
 			if item.Spec.Match != "" {
 				buf.WriteString(fmt.Sprintf("    Match    %s\n", item.Spec.Match))
