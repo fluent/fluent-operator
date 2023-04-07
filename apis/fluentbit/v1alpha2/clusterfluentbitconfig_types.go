@@ -174,6 +174,9 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 
 	var nsFilterSections []string
 	for _, nsFilterList := range nsFilterLists {
+		if len(nsFilterList.Items) == 0 {
+			continue
+		}
 		if nsFilterList.Items != nil {
 			ns := nsFilterList.Items[0].Namespace
 			namespacedSl := plugins.NewSecretLoader(sl.Client, ns)
@@ -191,6 +194,9 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 	}
 	var nsOutputSections []string
 	for _, nsOutputList := range nsOutputLists {
+		if len(nsOutputList.Items) == 0 {
+			continue
+		}
 		// The lists are per namespace, so get the namespace from the first item in a list
 		if nsOutputList.Items != nil {
 			ns := nsOutputList.Items[0].Namespace
@@ -237,6 +243,9 @@ func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, pa
 	buf.WriteString(parserSections)
 
 	for _, parserListPerNS := range nsParserLists {
+		if len(parserListPerNS.Items) == 0 {
+			continue
+		}
 		if parserListPerNS.Items != nil {
 			ns := parserListPerNS.Items[0].Namespace
 			namespacedSl := plugins.NewSecretLoader(sl.Client, ns)
