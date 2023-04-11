@@ -50,5 +50,6 @@ func GenerateNamespacedMatchExpr(namespace string, match string) string {
 }
 
 func GenerateNamespacedMatchRegExpr(namespace string, matchRegex string) string {
+	matchRegex = strings.TrimPrefix(matchRegex, "^")
 	return fmt.Sprintf("^%x\\.%s", md5.Sum([]byte(namespace)), matchRegex)
 }

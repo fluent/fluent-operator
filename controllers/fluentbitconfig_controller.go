@@ -286,6 +286,12 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(cfg fluentbitv1alph
 			continue
 		}
 		tag = input.Spec.Tail.Tag
+		idx := strings.Index(tag, ".")
+		if idx == -1 {
+			tag = ""
+		} else {
+			tag = tag[:idx+1] + "*"
+		}
 	}
 	if tag == "" {
 		return ""
