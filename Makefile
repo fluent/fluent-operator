@@ -150,6 +150,11 @@ CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: go-deps ## Download controller-gen locally if necessary.
 	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.11.3)
 
+GINKGO = $(shell pwd)/bin/ginkgo
+ginkgo: go-deps ## Download controller-gen locally if necessary.
+	$(call go-get-tool,$(GINKGO),github.com/onsi/ginkgo/ginkgo@v1.16.5)
+
+
 KUSTOMIZE = $(shell pwd)/bin/kustomize
 kustomize: go-deps ## Download kustomize locally if necessary.
 	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5@v5.0.0)
@@ -179,10 +184,10 @@ go-deps: # download go dependencies
 docs-update: # update api docs
 	go run ./cmd/doc-gen/main.go
 
-e2e: # make e2e tests
+e2e: ginkgo # make e2e tests
 	chmod a+x tests/scripts/fluentd_e2e.sh && bash tests/scripts/fluentd_e2e.sh
 
-helm-e2e: # make helm e2e tests
+helm-e2e: ginkgo # make helm e2e tests
 	chmod a+x tests/scripts/fluentd_helm_e2e.sh && bash tests/scripts/fluentd_helm_e2e.sh
 
 update-helm-package: # update helm repo

@@ -72,6 +72,8 @@ type OutputSpec struct {
 	Loki *output.Loki `json:"loki,omitempty"`
 	// Syslog defines Syslog Output configuration.
 	Syslog *output.Syslog `json:"syslog,omitempty"`
+	// InfluxDB defines InfluxDB Output configuration.
+	InfluxDB *output.InfluxDB `json:"influxDB,omitempty"`
 	// DataDog defines DataDog Output configuration.
 	DataDog *output.DataDog `json:"datadog,omitempty"`
 	// Firehose defines Firehose Output configuration.
@@ -86,6 +88,7 @@ type OutputSpec struct {
 	OpenTelemetry *output.OpenTelemetry `json:"opentelemetry,omitempty"`
 	// PrometheusRemoteWrite_types defines Prometheus Remote Write configuration.
 	PrometheusRemoteWrite *output.PrometheusRemoteWrite `json:"prometheusRemoteWrite,omitempty"`
+
 	// CustomPlugin defines Custom Output configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }
