@@ -37,6 +37,8 @@ type InputSpec struct {
 	// A user friendly alias name for this input plugin.
 	// Used in metrics for distinction of each configured input.
 	Alias string `json:"alias,omitempty"`
+	// +kubebuilder:validation:Enum:=off;error;warning;info;debug;trace
+	LogLevel string `json:"logLevel,omitempty"`
 	// Dummy defines Dummy Input configuration.
 	Dummy *input.Dummy `json:"dummy,omitempty"`
 	// Tail defines Tail Input configuration.
@@ -100,6 +102,9 @@ func (list ClusterInputList) Load(sl plugins.SecretLoader) (string, error) {
 			}
 			if item.Spec.Alias != "" {
 				buf.WriteString(fmt.Sprintf("    Alias    %s\n", item.Spec.Alias))
+			}
+			if item.Spec.LogLevel != "" {
+				buf.WriteString(fmt.Sprintf("    Log_Level    %s\n", item.Spec.LogLevel))
 			}
 			kvs, err := p.Params(sl)
 			if err != nil {

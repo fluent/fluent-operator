@@ -701,6 +701,15 @@ spec:
                       type: object
                   type: object
                 type: array
+              logLevel:
+                enum:
+                - "off"
+                - error
+                - warning
+                - info
+                - debug
+                - trace
+                type: string
               match:
                 description: A pattern to match against the tags of incoming records.
                   It's case-sensitive and support the star (*) character as a wildcard.
@@ -1440,6 +1449,7 @@ spec:
                   logLevel:
                     description: Diagnostic level (error/warning/info/debug/trace)
                     enum:
+                    - "off"
                     - error
                     - warning
                     - info
@@ -1717,6 +1727,15 @@ spec:
                   tag:
                     type: string
                 type: object
+              logLevel:
+                enum:
+                - "off"
+                - error
+                - warning
+                - info
+                - debug
+                - trace
+                type: string
               nodeExporterMetrics:
                 description: NodeExporterMetrics defines Node Exporter Metrics Input
                   configuration.
@@ -3089,6 +3108,18 @@ spec:
                       will be used.
                     type: string
                 type: object
+              logLevel:
+                description: 'Set the plugin''s logging verbosity level. Allowed values
+                  are: off, error, warn, info, debug and trace, Defaults to the SERVICE
+                  section''s Log_Level'
+                enum:
+                - "off"
+                - error
+                - warning
+                - info
+                - debug
+                - trace
+                type: string
               loki:
                 description: Loki defines Loki Output configuration.
                 properties:
@@ -10227,6 +10258,15 @@ spec:
                       type: object
                   type: object
                 type: array
+              logLevel:
+                enum:
+                - "off"
+                - error
+                - warning
+                - info
+                - debug
+                - trace
+                type: string
               match:
                 description: A pattern to match against the tags of incoming records.
                   It's case-sensitive and support the star (*) character as a wildcard.
@@ -22350,6 +22390,18 @@ spec:
                       will be used.
                     type: string
                 type: object
+              logLevel:
+                description: 'Set the plugin''s logging verbosity level. Allowed values
+                  are: off, error, warn, info, debug and trace, Defaults to the SERVICE
+                  section''s Log_Level'
+                enum:
+                - "off"
+                - error
+                - warning
+                - info
+                - debug
+                - trace
+                type: string
               loki:
                 description: Loki defines Loki Output configuration.
                 properties:

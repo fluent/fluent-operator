@@ -1098,6 +1098,18 @@ spec:
                       will be used.
                     type: string
                 type: object
+              logLevel:
+                description: 'Set the plugin''s logging verbosity level. Allowed values
+                  are: off, error, warn, info, debug and trace, Defaults to the SERVICE
+                  section''s Log_Level'
+                enum:
+                - "off"
+                - error
+                - warning
+                - info
+                - debug
+                - trace
+                type: string
               loki:
                 description: Loki defines Loki Output configuration.
                 properties:
