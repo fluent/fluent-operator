@@ -728,6 +728,13 @@ func (in *FluentdSpec) DeepCopyInto(out *FluentdSpec) {
 			(*out)[key] = val
 		}
 	}
+	if in.Annotations != nil {
+		in, out := &in.Annotations, &out.Annotations
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
 	if in.ServiceAccountAnnotations != nil {
 		in, out := &in.ServiceAccountAnnotations, &out.ServiceAccountAnnotations
 		*out = make(map[string]string, len(*in))

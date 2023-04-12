@@ -53,9 +53,10 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 
 	sts := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fd.Name,
-			Namespace: fd.Namespace,
-			Labels:    labels,
+			Name:        fd.Name,
+			Namespace:   fd.Namespace,
+			Labels:      labels,
+			Annotations: fd.Annotations,
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas: &replicas,
@@ -64,9 +65,10 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      fd.Name,
-					Namespace: fd.Namespace,
-					Labels:    labels,
+					Name:        fd.Name,
+					Namespace:   fd.Namespace,
+					Labels:      labels,
+					Annotations: fd.Spec.Annotations,
 				},
 				Spec: corev1.PodSpec{
 					ServiceAccountName: fd.Name,

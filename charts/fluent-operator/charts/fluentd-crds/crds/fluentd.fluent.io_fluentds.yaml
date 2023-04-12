@@ -865,6 +865,11 @@ spec:
                         type: array
                     type: object
                 type: object
+              annotations:
+                additionalProperties:
+                  type: string
+                description: Annotations to add to each Fluentd pod.
+                type: objects
               args:
                 description: Fluentd Watcher command line arguments.
                 items:
