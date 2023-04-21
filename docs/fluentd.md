@@ -291,6 +291,7 @@ FluentdSpec defines the desired state of Fluentd
 | workers | Numbers of the workers in Fluentd instance | *int32 |
 | image | Fluentd image. | string |
 | args | Fluentd Watcher command line arguments. | []string |
+| envVars | EnvVars represent environment variables that can be passed to fluentd pods. | []corev1.EnvVar |
 | fluentdCfgSelector | FluentdCfgSelector defines the selectors to select the fluentd config CRs. | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | buffer | Buffer definition | *BufferVolume |
 | imagePullPolicy | Fluentd image pull policy. | corev1.PullPolicy |
