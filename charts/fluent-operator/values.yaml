@@ -18,6 +18,12 @@ operator:
     repository: "kubesphere/fluent-operator"
     tag: "latest"
     # FluentBit operator resources. Usually user needn't to adjust these.
+  # nodeSelector configuration for Fluent Operator pods
+  nodeSelector: {}
+  # Tolerations applied to Fluent Operator pods
+  tolerations: []
+  # Priority Class applied to Fluent Operator pods
+  priorityClassName: ""
   resources:
     limits:
       cpu: 100m
@@ -83,7 +89,13 @@ fluentbit:
   additionalVolumes: []
   # Pod volumes to mount into the container's filesystem.
   additionalVolumesMounts: []
-
+  # nodeSelector configuration for Daemonset pods
+  nodeSelector: {}
+  # Tolerations applied to Daemonset pods
+  tolerations: 
+  - operator: Exists
+  # Priority Class applied to Daemonset pods
+  priorityClassName: ""
   # Remove the above empty volumes and volumesMounts, and then set additionalVolumes and additionalVolumesMounts as below if you want to collect node exporter metrics
   # additionalVolumes:
   #   - name: hostProc

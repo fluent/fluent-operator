@@ -18,8 +18,17 @@ spec:
   resources:
 {{- toYaml .Values.fluentbit.resources | nindent 4  }}
   fluentBitConfigName: fluent-bit-config
+{{- with .Values.fluentbit.tolerations }}
   tolerations:
-    - operator: Exists
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .Values.fluentbit.nodeSelector }}
+  nodeSelector:
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- if .Values.fluentbit.priorityClassName }}
+  priorityClassName: {{ .Values.fluentbit.priorityClassName | quote }}
+{{- end }}
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
