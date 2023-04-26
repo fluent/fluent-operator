@@ -95,7 +95,22 @@ spec:
         - name: env
           mountPath: /fluent-operator
       serviceAccountName: fluent-operator
+      {{- if .Values.operator.priorityClassName }}
+      priorityClassName: {{ .Values.operator.priorityClassName | quote }}
+      {{- end }}
       {{- if .Values.operator.imagePullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.operator.imagePullSecrets | nindent 8 }}
+        {{ toYaml .Values.operator.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      {{- if .Values.operator.tolerations }}
+      tolerations:
+        {{ toYaml .Values.operator.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.operator.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.operator.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.operator.podSecurityContext }}
+      podSecurityContext:
+        {{ toYaml .Values.operator.podSecurityContext | nindent 8 }}
       {{- end }}
