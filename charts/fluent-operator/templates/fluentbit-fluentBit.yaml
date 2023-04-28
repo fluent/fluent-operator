@@ -18,6 +18,10 @@ spec:
   resources:
 {{- toYaml .Values.fluentbit.resources | nindent 4  }}
   fluentBitConfigName: fluent-bit-config
+{{- if .Values.fluentbit.envVars }}
+  envVars:
+{{ toYaml .Values.fluentbit.envVars | indent 4 }}
+{{- end }}
 {{- with .Values.fluentbit.tolerations }}
   tolerations:
 {{ toYaml . | indent 4 }}
