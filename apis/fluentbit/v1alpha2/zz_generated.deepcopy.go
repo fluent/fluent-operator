@@ -1283,6 +1283,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.Syslog)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.InfluxDB != nil {
+		in, out := &in.InfluxDB, &out.InfluxDB
+		*out = new(output.InfluxDB)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.DataDog != nil {
 		in, out := &in.DataDog, &out.DataDog
 		*out = new(output.DataDog)
