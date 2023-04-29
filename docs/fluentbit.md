@@ -279,6 +279,7 @@ FilterSpec defines the desired state of ClusterFilter
 | ----- | ----------- | ------ |
 | match | A pattern to match against the tags of incoming records. It's case-sensitive and support the star (*) character as a wildcard. | string |
 | matchRegex | A regular expression to match against the tags of incoming records. Use this option if you want to use the full regex syntax. | string |
+| logLevel |  | string |
 | filters | A set of filter plugins in order. | []FilterItem |
 
 [Back to TOC](#table-of-contents)
@@ -404,6 +405,7 @@ InputSpec defines the desired state of ClusterInput
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | alias | A user friendly alias name for this input plugin. Used in metrics for distinction of each configured input. | string |
+| logLevel |  | string |
 | dummy | Dummy defines Dummy Input configuration. | *[input.Dummy](plugins/input/dummy.md) |
 | tail | Tail defines Tail Input configuration. | *[input.Tail](plugins/input/tail.md) |
 | systemd | Systemd defines Systemd Input configuration. | *[input.Systemd](plugins/input/systemd.md) |
@@ -458,6 +460,7 @@ OutputSpec defines the desired state of ClusterOutput
 | match | A pattern to match against the tags of incoming records. It's case sensitive and support the star (*) character as a wildcard. | string |
 | matchRegex | A regular expression to match against the tags of incoming records. Use this option if you want to use the full regex syntax. | string |
 | alias | A user friendly alias name for this output plugin. Used in metrics for distinction of each configured output. | string |
+| logLevel | Set the plugin's logging verbosity level. Allowed values are: off, error, warn, info, debug and trace, Defaults to the SERVICE section's Log_Level | string |
 | azureBlob | AzureBlob defines AzureBlob Output Configuration | *[output.AzureBlob](plugins/output/azureblob.md) |
 | azureLogAnalytics | AzureLogAnalytics defines AzureLogAnalytics Output Configuration | *[output.AzureLogAnalytics](plugins/output/azureloganalytics.md) |
 | cloudWatch | CloudWatch defines CloudWatch Output Configuration | *[output.CloudWatch](plugins/output/cloudwatch.md) |
@@ -472,6 +475,7 @@ OutputSpec defines the desired state of ClusterOutput
 | tcp | TCP defines TCP Output configuration. | *[output.TCP](plugins/output/tcp.md) |
 | loki | Loki defines Loki Output configuration. | *[output.Loki](plugins/output/loki.md) |
 | syslog | Syslog defines Syslog Output configuration. | *[output.Syslog](plugins/output/syslog.md) |
+| influxDB | InfluxDB defines InfluxDB Output configuration. | *[output.InfluxDB](plugins/output/influxdb.md) |
 | datadog | DataDog defines DataDog Output configuration. | *[output.DataDog](plugins/output/datadog.md) |
 | firehose | Firehose defines Firehose Output configuration. | *[output.Firehose](plugins/output/firehose.md) |
 | stackdriver | Stackdriver defines Stackdriver Output Configuration | *[output.Stackdriver](plugins/output/stackdriver.md) |
