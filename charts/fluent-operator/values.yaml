@@ -98,6 +98,11 @@ fluentbit:
   - operator: Exists
   # Priority Class applied to Fluent Bit pods. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
   priorityClassName: ""
+  # Environment variables that can be passed to fluentbit pods
+  envVars: []
+  #  - name: FOO
+  #    value: "bar"
+
   # Remove the above empty volumes and volumesMounts, and then set additionalVolumes and additionalVolumesMounts as below if you want to collect node exporter metrics
   # additionalVolumes:
   #   - name: hostProc
