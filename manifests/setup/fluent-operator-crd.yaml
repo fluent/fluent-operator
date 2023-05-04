@@ -3049,6 +3049,205 @@ spec:
                       server, e.g: /something'
                     type: string
                 type: object
+              influxDB:
+                description: InfluxDB defines InfluxDB Output configuration.
+                properties:
+                  autoTags:
+                    description: Automatically tag keys where value is string.
+                    type: boolean
+                  bucket:
+                    description: InfluxDB bucket name where records will be inserted
+                      - if specified, database is ignored and v2 of API is used
+                    type: string
+                  database:
+                    description: InfluxDB database name where records will be inserted.
+                    type: string
+                  host:
+                    description: IP address or hostname of the target InfluxDB service.
+                    format: ipv6
+                    type: string
+                  httpPassword:
+                    description: Password for user defined in HTTP_User
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  httpToken:
+                    description: Authentication token used with InfluxDB v2 - if specified,
+                      both HTTPUser and HTTPPasswd are ignored
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  httpUser:
+                    description: Optional username for HTTP Basic Authentication
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  org:
+                    description: InfluxDB organization name where the bucket is (v2
+                      only)
+                    type: string
+                  port:
+                    description: TCP port of the target InfluxDB service.
+                    format: int32
+                    maximum: 65536
+                    minimum: 0
+                    type: integer
+                  sequenceTag:
+                    description: The name of the tag whose value is incremented for
+                      the consecutive simultaneous events.
+                    type: string
+                  tagKeys:
+                    description: List of keys that needs to be tagged
+                    items:
+                      type: string
+                    type: array
+                  tagListKey:
+                    description: Key of the string array optionally contained within
+                      each log record that contains tag keys for that record
+                    type: string
+                  tagsListEnabled:
+                    description: Dynamically tag keys which are in the string array
+                      at Tags_List_Key key.
+                    type: boolean
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                                x-kubernetes-map-type: atomic
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                required:
+                - host
+                type: object
               kafka:
                 description: Kafka defines Kafka Output configuration.
                 properties:
@@ -3673,6 +3872,14 @@ spec:
                   logResponsePayload:
                     description: Log the response payload within the Fluent Bit log.
                     type: boolean
+                  logsUri:
+                    description: 'Specify an optional HTTP URI for the target web
+                      server listening for logs, e.g: /v1/logs'
+                    type: string
+                  metricsUri:
+                    description: 'Specify an optional HTTP URI for the target web
+                      server listening for metrics, e.g: /v1/metrics'
+                    type: string
                   port:
                     description: TCP port of the target OpenSearch instance, default
                       `80`
@@ -3754,9 +3961,9 @@ spec:
                         description: Hostname to be used for TLS SNI extension
                         type: string
                     type: object
-                  uri:
+                  tracesUri:
                     description: 'Specify an optional HTTP URI for the target web
-                      server, e.g: /something'
+                      server listening for traces, e.g: /v1/traces'
                     type: string
                 type: object
               prometheusRemoteWrite:
@@ -18232,6 +18439,11 @@ spec:
                         type: array
                     type: object
                 type: object
+              annotations:
+                additionalProperties:
+                  type: string
+                description: Annotations to add to each Fluentd pod.
+                type: object
               args:
                 description: Fluentd Watcher command line arguments.
                 items:
@@ -18628,6 +18840,116 @@ spec:
                 description: By default will build the related service according to
                   the globalinputs definition.
                 type: boolean
+              envVars:
+                description: EnvVars represent environment variables that can be passed
+                  to fluentd pods.
+                items:
+                  description: EnvVar represents an environment variable present in
+                    a Container.
+                  properties:
+                    name:
+                      description: Name of the environment variable. Must be a C_IDENTIFIER.
+                      type: string
+                    value:
+                      description: 'Variable references $(VAR_NAME) are expanded using
+                        the previously defined environment variables in the container
+                        and any service environment variables. If a variable cannot
+                        be resolved, the reference in the input string will be unchanged.
+                        Double $$ are reduced to a single $, which allows for escaping
+                        the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the
+                        string literal "$(VAR_NAME)". Escaped references will never
+                        be expanded, regardless of whether the variable exists or
+                        not. Defaults to "".'
+                      type: string
+                    valueFrom:
+                      description: Source for the environment variable's value. Cannot
+                        be used if value is not empty.
+                      properties:
+                        configMapKeyRef:
+                          description: Selects a key of a ConfigMap.
+                          properties:
+                            key:
+                              description: The key to select.
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Add other useful fields. apiVersion, kind, uid?'
+                              type: string
+                            optional:
+                              description: Specify whether the ConfigMap or its key
+                                must be defined
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        fieldRef:
+                          description: 'Selects a field of the pod: supports metadata.name,
+                            metadata.namespace, `metadata.labels[''<KEY>'']`, `metadata.annotations[''<KEY>'']`,
+                            spec.nodeName, spec.serviceAccountName, status.hostIP,
+                            status.podIP, status.podIPs.'
+                          properties:
+                            apiVersion:
+                              description: Version of the schema the FieldPath is
+                                written in terms of, defaults to "v1".
+                              type: string
+                            fieldPath:
+                              description: Path of the field to select in the specified
+                                API version.
+                              type: string
+                          required:
+                          - fieldPath
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        resourceFieldRef:
+                          description: 'Selects a resource of the container: only
+                            resources limits and requests (limits.cpu, limits.memory,
+                            limits.ephemeral-storage, requests.cpu, requests.memory
+                            and requests.ephemeral-storage) are currently supported.'
+                          properties:
+                            containerName:
+                              description: 'Container name: required for volumes,
+                                optional for env vars'
+                              type: string
+                            divisor:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              description: Specifies the output format of the exposed
+                                resources, defaults to "1"
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            resource:
+                              description: 'Required: resource to select'
+                              type: string
+                          required:
+                          - resource
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        secretKeyRef:
+                          description: Selects a key of a secret in the pod's namespace
+                          properties:
+                            key:
+                              description: The key of the secret to select from.  Must
+                                be a valid secret key.
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Add other useful fields. apiVersion, kind, uid?'
+                              type: string
+                            optional:
+                              description: Specify whether the Secret or its key must
+                                be defined
+                              type: boolean
+                          required:
+                          - key
+                          type: object
+                          x-kubernetes-map-type: atomic
+                      type: object
+                  required:
+                  - name
+                  type: object
+                type: array
               fluentdCfgSelector:
                 description: FluentdCfgSelector defines the selectors to select the
                   fluentd config CRs.
@@ -22331,6 +22653,205 @@ spec:
                       server, e.g: /something'
                     type: string
                 type: object
+              influxDB:
+                description: InfluxDB defines InfluxDB Output configuration.
+                properties:
+                  autoTags:
+                    description: Automatically tag keys where value is string.
+                    type: boolean
+                  bucket:
+                    description: InfluxDB bucket name where records will be inserted
+                      - if specified, database is ignored and v2 of API is used
+                    type: string
+                  database:
+                    description: InfluxDB database name where records will be inserted.
+                    type: string
+                  host:
+                    description: IP address or hostname of the target InfluxDB service.
+                    format: ipv6
+                    type: string
+                  httpPassword:
+                    description: Password for user defined in HTTP_User
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  httpToken:
+                    description: Authentication token used with InfluxDB v2 - if specified,
+                      both HTTPUser and HTTPPasswd are ignored
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  httpUser:
+                    description: Optional username for HTTP Basic Authentication
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  org:
+                    description: InfluxDB organization name where the bucket is (v2
+                      only)
+                    type: string
+                  port:
+                    description: TCP port of the target InfluxDB service.
+                    format: int32
+                    maximum: 65536
+                    minimum: 0
+                    type: integer
+                  sequenceTag:
+                    description: The name of the tag whose value is incremented for
+                      the consecutive simultaneous events.
+                    type: string
+                  tagKeys:
+                    description: List of keys that needs to be tagged
+                    items:
+                      type: string
+                    type: array
+                  tagListKey:
+                    description: Key of the string array optionally contained within
+                      each log record that contains tag keys for that record
+                    type: string
+                  tagsListEnabled:
+                    description: Dynamically tag keys which are in the string array
+                      at Tags_List_Key key.
+                    type: boolean
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                                x-kubernetes-map-type: atomic
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                required:
+                - host
+                type: object
               kafka:
                 description: Kafka defines Kafka Output configuration.
                 properties:
@@ -22955,6 +23476,14 @@ spec:
                   logResponsePayload:
                     description: Log the response payload within the Fluent Bit log.
                     type: boolean
+                  logsUri:
+                    description: 'Specify an optional HTTP URI for the target web
+                      server listening for logs, e.g: /v1/logs'
+                    type: string
+                  metricsUri:
+                    description: 'Specify an optional HTTP URI for the target web
+                      server listening for metrics, e.g: /v1/metrics'
+                    type: string
                   port:
                     description: TCP port of the target OpenSearch instance, default
                       `80`
@@ -23036,9 +23565,9 @@ spec:
                         description: Hostname to be used for TLS SNI extension
                         type: string
                     type: object
-                  uri:
+                  tracesUri:
                     description: 'Specify an optional HTTP URI for the target web
-                      server, e.g: /something'
+                      server listening for traces, e.g: /v1/traces'
                     type: string
                 type: object
               prometheusRemoteWrite:
