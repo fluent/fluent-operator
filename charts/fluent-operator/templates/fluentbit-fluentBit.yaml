@@ -33,13 +33,10 @@ spec:
 {{- if .Values.fluentbit.priorityClassName }}
   priorityClassName: {{ .Values.fluentbit.priorityClassName | quote }}
 {{- end }}
+  {{- with .Values.fluentbit.affinity }}
   affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: node-role.kubernetes.io/edge
-                operator: DoesNotExist
+{{ toYaml . | indent 4 }}
+  {{- end }}
   {{- if .Values.fluentbit.secrets }}
   secrets:
 {{ toYaml .Values.fluentbit.secrets | indent 4 }}
