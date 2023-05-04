@@ -13,7 +13,7 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/cmd/fluent-watcher/fluentd/base"
+    directory: "/cmd/fluent-watcher/fluentd"
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
