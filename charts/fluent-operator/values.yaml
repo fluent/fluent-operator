@@ -150,7 +150,7 @@ fluentbit:
   # Configure the output plugin parameter in FluentBit.
   # You can set enable to true to output logs to the specified location.
   output:
-    #  You can find more supported output plugins here: https://github.com/fluent/fluent-operator/tree/master/docs/plugins/fluentbit/clusteroutput
+    #  You can find more supported output plugins here: https://github.com/fluent/fluent-operator/tree/master/docs/plugins/fluentbit/output
     es:
       enable: false
       host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
