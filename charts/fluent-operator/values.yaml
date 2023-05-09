@@ -91,6 +91,14 @@ fluentbit:
   additionalVolumes: []
   # Pod volumes to mount into the container's filesystem.
   additionalVolumesMounts: []
+  # affinity configuration for Fluent Bit pods. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/edge
+                operator: DoesNotExist
   # nodeSelector configuration for Fluent Bit pods. Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
   # Node tolerations applied to Fluent Bit pods. Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
