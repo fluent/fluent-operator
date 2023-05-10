@@ -8,7 +8,7 @@ RUN echo $(ls -al /code)
 RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
 
 # Fluentd main image
-FROM alpine:3.17
+FROM alpine:3.18
 LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.15.3"
 
 # Do not split this into multiple RUN!
