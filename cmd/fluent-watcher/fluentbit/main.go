@@ -30,13 +30,12 @@ const (
 )
 
 var (
-	logger        log.Logger
-	cmd           *exec.Cmd
-	flbTerminated chan bool
-	mutex         sync.Mutex
-	restartTimes  int32
-	timerCtx      context.Context
-	timerCancel   context.CancelFunc
+	logger       log.Logger
+	cmd          *exec.Cmd
+	mutex        sync.Mutex
+	restartTimes int32
+	timerCtx     context.Context
+	timerCancel  context.CancelFunc
 )
 
 var configPath string
@@ -102,7 +101,7 @@ func main() {
 			},
 			func(err error) {
 				close(cancel)
-				stop()
+				reloadOrStop()
 				resetTimer()
 			},
 		)
@@ -138,7 +137,7 @@ func main() {
 						// and resets the restart backoff timer.
 						if cmd != nil {
 							_ = level.Info(logger).Log("msg", "Config file changed, stopping Fluent Bit")
-							stop()
+							reloadOrStop()
 							resetTimer()
 							_ = level.Info(logger).Log("msg", "Config file changed, stopped Fluent Bit")
 						}
@@ -197,9 +196,9 @@ func start() {
 	} else {
 		cmd = exec.Command(binPath, "-c", configPath)
 	}
+	cmd = exec.Command(binPath, "-Y")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	flbTerminated = make(chan bool, 1)
 	if err := cmd.Start(); err != nil {
 		_ = level.Error(logger).Log("msg", "start Fluent bit error", "error", err)
 		cmd = nil
@@ -224,7 +223,6 @@ func wait() error {
 		_ = level.Error(logger).Log("msg", "Fluent bit exited", "error", err)
 	}
 	cmd = nil
-	flbTerminated <- true
 
 	// Once the fluent bit has executed for 10 minutes without any problems,
 	// it should resets the restart backoff timer.
@@ -265,7 +263,7 @@ func backoff() {
 	}
 }
 
-func stop() {
+func reloadOrStop() {
 
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -275,21 +273,22 @@ func stop() {
 		return
 	}
 
-	// Send SIGTERM, if fluent-bit doesn't terminate in the specified timeframe, send SIGKILL
-	if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
-		_ = level.Info(logger).Log("msg", "Error while terminating FluentBit", "error", err)
-	} else {
-		_ = level.Info(logger).Log("msg", "Sent SIGTERM to FluentBit, waiting max "+flbTerminationTimeout.String())
+	// Send SIGHUP, if fluent-bit doesn't terminate in the specified timeframe, send SIGKILL
+	err := cmd.Process.Signal(syscall.SIGHUP)
+	if err == nil {
+		_ = level.Info(logger).Log("msg", "Sent SIGTHUP to FluentBit, Gracefully reloaded FluentBit config")
+		return
 	}
 
-	select {
-	case <-time.After(flbTerminationTimeout):
-		_ = level.Info(logger).Log("msg", "FluentBit failed to terminate gracefully, killing process")
-		cmd.Process.Kill()
-		<-flbTerminated
-	case <-flbTerminated:
-		_ = level.Info(logger).Log("msg", "FluentBit terminated successfully")
+	_ = level.Info(logger).Log("msg", "Gracefully reload FluentBit config error", "error", err)
+	err = cmd.Process.Kill()
+	if err == nil {
+		_ = level.Info(logger).Log("msg", "Killed FluentBit")
+		return
+
 	}
+
+	_ = level.Info(logger).Log("msg", "Kill FluentBit error", "error", err)
 }
 
 func resetTimer() {
