@@ -197,6 +197,7 @@ func start() {
 	} else {
 		cmd = exec.Command(binPath, "-c", configPath)
 	}
+	cmd =exec.Command(binPath,"-Y")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	flbTerminated = make(chan bool, 1)
@@ -275,11 +276,11 @@ func stop() {
 		return
 	}
 
-	// Send SIGTERM, if fluent-bit doesn't terminate in the specified timeframe, send SIGKILL
-	if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
+	// Send SIGHUP, if fluent-bit doesn't terminate in the specified timeframe, send SIGKILL
+	if err := cmd.Process.Signal(syscall.SIGHUP); err != nil {
 		_ = level.Info(logger).Log("msg", "Error while terminating FluentBit", "error", err)
 	} else {
-		_ = level.Info(logger).Log("msg", "Sent SIGTERM to FluentBit, waiting max "+flbTerminationTimeout.String())
+		_ = level.Info(logger).Log("msg", "Sent SIGTHUP to FluentBit, waiting max "+flbTerminationTimeout.String())
 	}
 
 	select {
