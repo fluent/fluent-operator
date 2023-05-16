@@ -8,8 +8,8 @@ metadata:
     node-role.kubernetes.io/edge: "true"
 spec:
   nodeExporterMetrics:
-    tag: kubeedge.*
-    scrapeInterval: 30s
+    tag: kubeedge.metrics.*
+    scrapeInterval: 1m
     path :
         procfs: /host/proc
         sysfs : /host/sys

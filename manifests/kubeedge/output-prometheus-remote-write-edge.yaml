@@ -6,7 +6,7 @@ metadata:
     fluentbit.fluent.io/enabled: "true"
     node-role.kubernetes.io/edge: "true"
 spec:
-  matchRegex: (?:kubeedge|service)\.(.*)
+  match: kubeedge.metrics.*
   prometheusRemoteWrite:
     host: <cloud-prometheus-service-host>
     port: <cloud-prometheus-service-port>
