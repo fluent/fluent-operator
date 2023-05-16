@@ -8,9 +8,9 @@ metadata:
     node-role.kubernetes.io/edge: "true"
 spec:
   prometheusScrapeMetrics:
-    tag: kubeedge.*
+    tag: kubeedge.metrics.*
     host: 127.0.0.1
     port: 10350
-    scrapeInterval: 30s
+    scrapeInterval: 1m
     metricsPath : /metrics/cadvisor 
 {{- end }}
