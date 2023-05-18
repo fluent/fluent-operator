@@ -1,3 +1,34 @@
+## 2.3.0 / 2023-05-18
+### Features
+- Feat: Adding influxdb plugin (#690)
+
+### ENHANCEMENT
+- Add EnvVars support to FluentD (#697)
+- Add Pod Annotations support to FluentD (#698)
+- Fluent operator & fluentbit: Added tolerations, nodeSelector + more (#704)
+- EnvVars support in fluentbit helm template (#706) 
+- Add uri field for each telemetry type in opentelemetry plugin, remove old uri field (#708)
+- Adjust fluentd watcher dependabot (#716)
+- remove the deprecated -i flag in go build (#720) 
+- Adjust fluentd arm64 image build timeout (#721) 
+- Fluent-bit upgrade to v2.1.2 (#723)
+- Add fluentbit.affinity configuration (#726)
+- Adjust edge metrics collection config (#736) 
+- build(deps): Bump k8s.io/apimachinery from 0.26.3 to 0.27.1 (#701)
+- build(deps): Bump helm/chart-testing-action from 2.1.0 to 2.4.0 (#710)
+- build(deps): Bump k8s.io/klog/v2 from 2.90.1 to 2.100.1 (#712)
+- build(deps): Bump golang from 1.20.3-alpine3.17 to 1.20.4-alpine3.17 in /cmd/fluent-manager (#713)
+- build(deps): Bump golang from 1.20.3-alpine3.16 to 1.20.4-alpine3.16 in /cmd/fluent-watcher/fluentbit (#714)
+- build(deps): Bump golang from 1.20.2 to 1.20.4 in /docs/best-practice/forwarding-logs-via-http (#715) 
+- build(deps): Bump golang from 1.19.2-alpine3.16 to 1.20.4-alpine3.16 in /cmd/fluent-watcher/fluentd (#717)
+- build(deps): Bump arm64v8/ruby from 3.1-slim-bullseye to 3.2-slim-bullseye in /cmd/fluent-watcher/fluentd (#718)
+- build(deps): Bump alpine from 3.16 to 3.17 in /cmd/fluent-watcher/fluentd (#719)
+
+### BUGFIX 
+- Fix: Fix missing log level  (#691) 
+- Fix: Fix rewrite_tag match rule and trim start of string pattern (#692) 
+- Fix(docs): Update cluster outputs docs link (#724)
+
 ## 2.2.0 / 2023-04-07
 ### Features
 - Feat: Adding Fluentd cloudwatch plugin (#586)
