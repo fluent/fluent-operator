@@ -18,6 +18,10 @@ spec:
   resources:
 {{- toYaml .Values.fluentbit.resources | nindent 4  }}
   fluentBitConfigName: fluent-bit-config
+  {{- if .Values.fluentbit.namespaceFluentBitCfgSelector }}
+  namespaceFluentBitCfgSelector:
+{{ toYaml .Values.fluentbit.namespaceFluentBitCfgSelector | indent 4  }}
+  {{- end }}
 {{- if .Values.fluentbit.envVars }}
   envVars:
 {{ toYaml .Values.fluentbit.envVars | indent 4 }}

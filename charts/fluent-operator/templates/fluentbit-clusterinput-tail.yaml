@@ -12,6 +12,7 @@ spec:
   tail:
     tag: kube.*
     path: {{ .Values.fluentbit.input.tail.path }}
+    readFromHead: {{ .Values.fluentbit.input.tail.readFromHead }}
     {{- if eq .Values.containerRuntime "docker" }}
     parser: docker
     {{- else if eq .Values.containerRuntime "containerd" }}
