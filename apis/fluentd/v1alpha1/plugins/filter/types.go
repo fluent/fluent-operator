@@ -192,28 +192,28 @@ func (f *Filter) parserPlugin(parent *params.PluginStore, loader plugins.SecretL
 	}
 
 	if f.Parser.KeyName != nil {
-		parent.InsertPairs("key_name", fmt.Sprint(f.Parser.KeyName))
+		parent.InsertPairs("key_name", fmt.Sprint(*f.Parser.KeyName))
 	}
 	if f.Parser.ReserveTime != nil {
-		parent.InsertPairs("reserve_time", fmt.Sprint(f.Parser.ReserveTime))
+		parent.InsertPairs("reserve_time", fmt.Sprint(*f.Parser.ReserveTime))
 	}
 	if f.Parser.ReserveData != nil {
-		parent.InsertPairs("reserve_data", fmt.Sprint(f.Parser.ReserveData))
+		parent.InsertPairs("reserve_data", fmt.Sprint(*f.Parser.ReserveData))
 	}
 	if f.Parser.RemoveKeyNameField != nil {
-		parent.InsertPairs("remove_key_name_field", fmt.Sprint(f.Parser.RemoveKeyNameField))
+		parent.InsertPairs("remove_key_name_field", fmt.Sprint(*f.Parser.RemoveKeyNameField))
 	}
 	if f.Parser.ReplaceInvalidSequence != nil {
-		parent.InsertPairs("replace_invalid_sequence", fmt.Sprint(f.Parser.ReplaceInvalidSequence))
+		parent.InsertPairs("replace_invalid_sequence", fmt.Sprint(*f.Parser.ReplaceInvalidSequence))
 	}
 	if f.Parser.InjectKeyPrefix != nil {
-		parent.InsertPairs("inject_key_prefix", fmt.Sprint(f.Parser.InjectKeyPrefix))
+		parent.InsertPairs("inject_key_prefix", fmt.Sprint(*f.Parser.InjectKeyPrefix))
 	}
 	if f.Parser.HashValueField != nil {
-		parent.InsertPairs("hash_value_field", fmt.Sprint(f.Parser.HashValueField))
+		parent.InsertPairs("hash_value_field", fmt.Sprint(*f.Parser.HashValueField))
 	}
 	if f.Parser.EmitInvalidRecordToError != nil {
-		parent.InsertPairs("emit_invalid_record_to_error", fmt.Sprint(f.Parser.EmitInvalidRecordToError))
+		parent.InsertPairs("emit_invalid_record_to_error", fmt.Sprint(*f.Parser.EmitInvalidRecordToError))
 	}
 
 	if child != nil {
