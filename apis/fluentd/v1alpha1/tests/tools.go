@@ -35,6 +35,58 @@ spec:
       config.fluentd.fluent.io/enabled: "true"
 `
 
+	FluentdInputTail    fluentdv1alpha1.Fluentd
+	FluentdInputTailRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: fluent
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - tail: 
+      tag: "foo.bar"
+      path: /var/log/test.log
+      emitUnmatchedLines: true
+      enableStatWatcher: true
+      enableWatchTimer: true
+      followInodes: false
+      group:
+        pattern: '/^\/home\/logs\/(?<file>.+)\.log$/'
+        ratePeriod: 30
+        rule:
+          limit: 2
+          match:
+            key1: val1
+            key2: val2
+      ignoreRepeatedPermissionError: false
+      limitRecentlyModified: 3
+      maxLineSize: 10000
+      multilineFlushInterval: 4
+      openOnEveryUpdate: false
+      parse:
+        type: json
+      pathKey: tailed_path
+      posFile: /fluentd/pos.db
+      posFileCompactionInterval: 5
+      readBytesLimitPerSecond: 8192
+      readFromHead: false
+      readLinesLimit: 15
+      refreshInterval: 2
+      rotateWait: 30
+      skipRefreshOnStartup: false
+      excludePath:
+      - /var/log/foo.log
+      - /var/log/bar
+  replicas: 1
+  image: kubesphere/fluentd:v1.15.3
+  fluentdCfgSelector: 
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+`
+
 	FluentdClusterFluentdConfig1    fluentdv1alpha1.ClusterFluentdConfig
 	FluentdClusterFluentdConfig1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -147,6 +199,20 @@ spec:
       type: file
       path: /buffers/es.log
   `
+
+	FluentdClusterOutputTag    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutputTagRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-stdout
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - stdout: {}
+    tag: foo.*
+`
 
 	FluentdclusterOutput2ES    fluentdv1alpha1.ClusterOutput
 	FluentdclusterOutput2ESRaw = `
@@ -449,6 +515,8 @@ func init() {
 	once.Do(
 		func() {
 			ParseIntoObject(FluentdRaw, &Fluentd)
+			ParseIntoObject(FluentdInputTailRaw, &FluentdInputTail)
+			ParseIntoObject(FluentdClusterOutputTagRaw, &FluentdClusterOutputTag)
 			ParseIntoObject(FluentdClusterFluentdConfig1Raw, &FluentdClusterFluentdConfig1)
 			ParseIntoObject(FluentdClusterFluentdConfig2Raw, &FluentdClusterFluentdConfig2)
 			ParseIntoObject(FluentdConfigUser1Raw, &FluentdConfigUser1)

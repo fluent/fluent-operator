@@ -6,6 +6,7 @@ FilterCommon defines the common parameters for the filter plugin.
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | logLevel | The @log_level parameter specifies the plugin-specific logging level | *string |
+| tag | Which tag to be matched. | *string |
 # Filter
 
 Filter defines all available filter plugins and their parameters.

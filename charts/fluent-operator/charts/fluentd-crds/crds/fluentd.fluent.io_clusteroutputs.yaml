@@ -1618,6 +1618,9 @@ spec:
                     stdout:
                       description: out_stdout plugin
                       type: object
+                    tag:
+                      description: Which tag to be matched.
+                      type: string
                   type: object
                 type: array
             type: object

@@ -155,7 +155,8 @@ func (ps *PluginStore) processBody(buf *bytes.Buffer) {
 
 	keys := make([]string, 0, len(ps.Store))
 	for k := range ps.Store {
-		if k == "tag" {
+		// Don't add tag unless it is an input plugin
+		if k == "tag" && ps.Name != "source" {
 			continue
 		}
 		if ps.Name == string(BufferPlugin) && ps.IgnorePath {
