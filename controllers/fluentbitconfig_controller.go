@@ -48,6 +48,8 @@ type FluentBitConfigReconciler struct {
 	Scheme *runtime.Scheme
 }
 
+var storeNamespaces map[string]bool
+
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterfluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs;clusterparsers,verbs=list
@@ -65,6 +67,10 @@ type FluentBitConfigReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
 func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = r.Log.WithValues("fluentbitconfig", req.NamespacedName)
+
+	// Re-initialize during each reconcile loop to clear namespace names
+	// we will repopulate namespaces that have a FluentBitConfig CR
+	storeNamespaces = make(map[string]bool)
 
 	var fbs fluentbitv1alpha2.FluentBitList
 	if err := r.List(ctx, &fbs); err != nil {
@@ -222,9 +228,12 @@ func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(ctx context.C
 		parsers = append(parsers, parserList)
 		clusterParsers = append(clusterParsers, clusterParserList)
 
-		rewriteTagConfig := r.generateRewriteTagConfig(cfg, inputs)
-		if rewriteTagConfig != "" {
-			rewriteTagConfigs = append(rewriteTagConfigs, rewriteTagConfig)
+		if _, ok := storeNamespaces[cfg.Namespace]; !ok {
+			rewriteTagConfig := r.generateRewriteTagConfig(cfg, inputs)
+			if rewriteTagConfig != "" {
+				rewriteTagConfigs = append(rewriteTagConfigs, rewriteTagConfig)
+				storeNamespaces[cfg.Namespace] = true
+			}
 		}
 	}
 
