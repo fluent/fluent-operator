@@ -1859,6 +1859,266 @@ spec:
                       description: The @log_level parameter specifies the plugin-specific
                         logging level
                       type: string
+                    tail:
+                      description: in_tail plugin
+                      properties:
+                        emitUnmatchedLines:
+                          description: Emits unmatched lines when <parse> format is
+                            not matched for incoming logs.
+                          type: boolean
+                        enableStatWatcher:
+                          description: Enables the additional inotify-based watcher.
+                            Setting this parameter to false will disable the inotify
+                            events and use only timer watcher for file tailing. This
+                            option is mainly for avoiding the stuck issue with inotify.
+                          type: boolean
+                        enableWatchTimer:
+                          description: Enables the additional watch timer. Setting
+                            this parameter to false will significantly reduce CPU
+                            and I/O consumption when tailing a large number of files
+                            on systems with inotify support. The default is true which
+                            results in an additional 1 second timer being used.
+                          type: boolean
+                        encoding:
+                          description: Specifies the encoding of reading lines. By
+                            default, in_tail emits string value as ASCII-8BIT encoding.
+                            If encoding is specified, in_tail changes string to encoding.
+                            If encoding and fromEncoding both are specified, in_tail
+                            tries to encode string from fromEncoding to encoding.
+                          type: string
+                        excludePath:
+                          description: The paths excluded from the watcher list.
+                          items:
+                            type: string
+                          type: array
+                        followInodes:
+                          description: Avoid to read rotated files duplicately. You
+                            should set true when you use * or strftime format in path.
+                          type: boolean
+                        fromEncoding:
+                          description: Specifies the encoding of reading lines. By
+                            default, in_tail emits string value as ASCII-8BIT encoding.
+                            If encoding is specified, in_tail changes string to encoding.
+                            If encoding and fromEncoding both are specified, in_tail
+                            tries to encode string from fromEncoding to encoding.
+                          type: string
+                        group:
+                          description: The in_tail plugin can assign each log file
+                            to a group, based on user defined rules. The limit parameter
+                            controls the total number of lines collected for a group
+                            within a rate_period time interval.
+                          properties:
+                            pattern:
+                              description: Specifies the regular expression for extracting
+                                metadata (namespace, podname) from log file path.
+                                Default value of the pattern regexp extracts information
+                                about namespace, podname, docker_id, container of
+                                the log (K8s specific).
+                              type: string
+                            ratePeriod:
+                              description: Time period in which the group line limit
+                                is applied. in_tail resets the counter after every
+                                rate_period interval.
+                              format: int32
+                              type: integer
+                            rule:
+                              description: Grouping rules for log files.
+                              properties:
+                                limit:
+                                  description: Maximum number of lines allowed from
+                                    a group in rate_period time interval. The default
+                                    value of -1 doesn't throttle log files of that
+                                    group.
+                                  format: int32
+                                  type: integer
+                                match:
+                                  additionalProperties:
+                                    type: string
+                                  description: match parameter is used to check if
+                                    a file belongs to a particular group based on
+                                    hash keys (named captures from pattern) and hash
+                                    values (regexp in string)
+                                  type: object
+                              type: object
+                          required:
+                          - rule
+                          type: object
+                        ignoreRepeatedPermissionError:
+                          description: If you have to exclude the non-permission files
+                            from the watch list, set this parameter to true. It suppresses
+                            the repeated permission error logs.
+                          type: boolean
+                        limitRecentlyModified:
+                          description: Limits the watching files that the modification
+                            time is within the specified time range when using * in
+                            path.
+                          format: int32
+                          type: integer
+                        maxLineSize:
+                          description: The maximum length of a line. Longer lines
+                            than it will be just skipped.
+                          format: int32
+                          type: integer
+                        multilineFlushInterval:
+                          description: The interval of flushing the buffer for multiline
+                            format.
+                          format: int32
+                          type: integer
+                        openOnEveryUpdate:
+                          description: Opens and closes the file on every update instead
+                            of leaving it open until it gets rotated.
+                          type: boolean
+                        parse:
+                          description: Parse defines various parameters for the parse
+                            plugin
+                          properties:
+                            estimateCurrentEvent:
+                              description: If true, use Fluent::Eventnow(current time)
+                                as a timestamp when time_key is specified.
+                              type: boolean
+                            expression:
+                              description: Specifies the regular expression for matching
+                                logs. Regular expression also supports i and m suffix.
+                              type: string
+                            id:
+                              description: The @id parameter specifies a unique name
+                                for the configuration.
+                              type: string
+                            keepTimeKey:
+                              description: If true, keep time field in th record.
+                              type: boolean
+                            localtime:
+                              description: If true, uses local time.
+                              type: boolean
+                            logLevel:
+                              description: The @log_level parameter specifies the
+                                plugin-specific logging level
+                              type: string
+                            timeFormat:
+                              description: Process value according to the specified
+                                format. This is available only when time_type is *string
+                              type: string
+                            timeFormatFallbacks:
+                              description: Uses the specified time format as a fallback
+                                in the specified order. You can parse undetermined
+                                time format by using time_format_fallbacks. This options
+                                is enabled when time_type is mixed.
+                              type: string
+                            timeKey:
+                              description: Specify time field for event time. If the
+                                event doesn't have this field, current time is used.
+                              type: string
+                            timeType:
+                              description: parses/formats value according to this
+                                type, default is *string
+                              enum:
+                              - float
+                              - unixtime
+                              - '*string'
+                              - mixed
+                              type: string
+                            timeout:
+                              description: Specify timeout for parse processing.
+                              pattern: ^\d+(\.[0-9]{0,2})?(s|m|h|d)?$
+                              type: string
+                            timezone:
+                              description: Uses the specified timezone.
+                              type: string
+                            type:
+                              description: The @type parameter specifies the type
+                                of the plugin.
+                              enum:
+                              - regexp
+                              - apache2
+                              - apache_error
+                              - nginx
+                              - syslog
+                              - csv
+                              - tsv
+                              - ltsv
+                              - json
+                              - multiline
+                              - none
+                              type: string
+                            types:
+                              description: 'Specify types for converting field into
+                                another, i.e: types user_id:integer,paid:bool,paid_usd_amount:float'
+                              type: string
+                            utc:
+                              description: If true, uses UTC.
+                              type: boolean
+                          required:
+                          - type
+                          type: object
+                        path:
+                          description: The path(s) to read. Multiple paths can be
+                            specified, separated by comma ','.
+                          type: string
+                        pathKey:
+                          description: Adds the watching file path to the path_key
+                            field.
+                          type: string
+                        pathTimezone:
+                          description: This parameter is for strftime formatted path
+                            like /path/to/%Y/%m/%d/.
+                          type: string
+                        posFile:
+                          description: (recommended) Fluentd will record the position
+                            it last read from this file. pos_file handles multiple
+                            positions in one file so no need to have multiple pos_file
+                            parameters per source. Don't share pos_file between in_tail
+                            configurations. It causes unexpected behavior e.g. corrupt
+                            pos_file content.
+                          type: string
+                        posFileCompactionInterval:
+                          description: The interval of doing compaction of pos file.
+                          format: int32
+                          type: integer
+                        readBytesLimitPerSecond:
+                          description: The number of reading bytes per second to read
+                            with I/O operation. This value should be equal or greater
+                            than 8192.
+                          format: int32
+                          type: integer
+                        readFromHead:
+                          description: Starts to read the logs from the head of the
+                            file or the last read position recorded in pos_file, not
+                            tail.
+                          type: boolean
+                        readLinesLimit:
+                          description: The number of lines to read with each I/O operation.
+                          format: int32
+                          type: integer
+                        refreshInterval:
+                          description: The interval to refresh the list of watch files.
+                            This is used when the path includes *.
+                          format: int32
+                          type: integer
+                        rotateWait:
+                          description: in_tail actually does a bit more than tail
+                            -F itself. When rotating a file, some data may still need
+                            to be written to the old file as opposed to the new one.
+                            in_tail takes care of this by keeping a reference to the
+                            old file (even after it has been rotated) for some time
+                            before transitioning completely to the new file. This
+                            helps prevent data designated for the old file from getting
+                            lost. By default, this time interval is 5 seconds. The
+                            rotate_wait parameter accepts a single integer representing
+                            the number of seconds you want this time interval to be.
+                          format: int32
+                          type: integer
+                        skipRefreshOnStartup:
+                          description: Skips the refresh of the watch list on startup.
+                            This reduces the startup time when * is used in path.
+                          type: boolean
+                        tag:
+                          description: The tag of the event.
+                          type: string
+                      required:
+                      - parse
+                      - path
+                      - tag
+                      type: object
                   type: object
                 type: array
               image:

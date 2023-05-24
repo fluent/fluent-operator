@@ -16,7 +16,7 @@ type FilterCommon struct {
 	// The @log_level parameter specifies the plugin-specific logging level
 	LogLevel *string `json:"logLevel,omitempty"`
 	// Which tag to be matched.
-	Tag *string `json:"-"`
+	Tag *string `json:"tag,omitempty"`
 }
 
 // Filter defines all available filter plugins and their parameters.

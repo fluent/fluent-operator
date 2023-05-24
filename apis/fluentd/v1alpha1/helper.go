@@ -168,7 +168,9 @@ func (r *CfgResources) filterForFilters(cfgId, namespace, name, crdtype string,
 	for n, filter := range filters {
 		filterId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
 		filter.FilterCommon.Id = &filterId
-		filter.FilterCommon.Tag = &params.DefaultTag
+		if filter.FilterCommon.Tag == nil {
+			filter.FilterCommon.Tag = &params.DefaultTag
+		}
 
 		ps, err := filter.Params(sl)
 		if err != nil {
@@ -192,7 +194,9 @@ func (r *CfgResources) filterForOutputs(cfgId, namespace, name, crdtype string,
 	for n, output := range outputs {
 		outputId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
 		output.OutputCommon.Id = &outputId
-		output.OutputCommon.Tag = &params.DefaultTag
+		if output.OutputCommon.Tag == nil {
+			output.OutputCommon.Tag = &params.DefaultTag
+		}
 
 		ps, err := output.Params(sl)
 		if err != nil {

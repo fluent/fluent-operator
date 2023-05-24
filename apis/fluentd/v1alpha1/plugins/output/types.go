@@ -21,7 +21,7 @@ type OutputCommon struct {
 	// The @label parameter is to route the events to <label> sections
 	Label *string `json:"-"`
 	// Which tag to be matched.
-	Tag *string `json:"-"`
+	Tag *string `json:"tag,omitempty"`
 }
 
 // Output defines all available output plugins and their parameters

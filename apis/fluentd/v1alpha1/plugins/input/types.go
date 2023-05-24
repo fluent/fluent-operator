@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/params"
@@ -26,6 +27,8 @@ type Input struct {
 	Forward *Forward `json:"forward,omitempty"`
 	// in_http plugin
 	Http *Http `json:"http,omitempty"`
+	// in_tail plugin
+	Tail *Tail `json:"tail,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -70,7 +73,127 @@ func (i *Input) Params(loader plugins.SecretLoader) (*params.PluginStore, error)
 		return i.httpPlugin(ps, loader), nil
 	}
 
+	if i.Tail != nil {
+		ps.InsertType(string(params.TailInputType))
+		return i.tailPlugin(ps, loader), nil
+	}
+
 	return nil, errors.New("you must define an input plugin")
+}
+
+func (i *Input) tailPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+	tailModel := i.Tail
+	childs := make([]*params.PluginStore, 0)
+
+	if tailModel.Parse != nil {
+		child, _ := tailModel.Parse.Params(loader)
+		childs = append(childs, child)
+	}
+
+	if tailModel.Group != nil {
+		child, _ := tailModel.Group.Params(loader)
+		childs = append(childs, child)
+	}
+	// TODO: add group section!
+	parent.InsertChilds(childs...)
+
+	if tailModel.Tag != "" {
+		parent.InsertPairs("tag", fmt.Sprint(tailModel.Tag))
+	}
+
+	if tailModel.Path != "" {
+		parent.InsertPairs("path", fmt.Sprint(tailModel.Path))
+	}
+
+	if tailModel.PathTimezone != "" {
+		parent.InsertPairs("path_timezone", fmt.Sprint(tailModel.PathTimezone))
+	}
+
+	if tailModel.ExcludePath != nil {
+		parent.InsertPairs("exclude_path", strings.ReplaceAll(fmt.Sprintf("%+q", tailModel.ExcludePath), "\" \"", "\", \""))
+	}
+
+	if tailModel.FollowInodes != nil {
+		parent.InsertPairs("follow_inodes", fmt.Sprint(*tailModel.FollowInodes))
+	}
+
+	if tailModel.RefreshInterval != nil {
+		parent.InsertPairs("refresh_interval", fmt.Sprint(*tailModel.RefreshInterval))
+	}
+
+	if tailModel.LimitRecentlyModified != nil {
+		parent.InsertPairs("limit_recently_modified", fmt.Sprint(*tailModel.LimitRecentlyModified))
+	}
+
+	if tailModel.SkipRefreshOnStartup != nil {
+		parent.InsertPairs("skip_refresh_on_startup", fmt.Sprint(*tailModel.SkipRefreshOnStartup))
+	}
+
+	if tailModel.ReadFromHead != nil {
+		parent.InsertPairs("read_from_head", fmt.Sprint(*tailModel.ReadFromHead))
+	}
+
+	if tailModel.Encoding != "" {
+		parent.InsertPairs("encoding", fmt.Sprint(tailModel.Encoding))
+	}
+
+	if tailModel.FromEncoding != "" {
+		parent.InsertPairs("from_encoding", fmt.Sprint(tailModel.FromEncoding))
+	}
+
+	if tailModel.ReadLinesLimit != nil {
+		parent.InsertPairs("read_lines_limit", fmt.Sprint(*tailModel.ReadLinesLimit))
+	}
+
+	if tailModel.ReadBytesLimitPerSecond != nil {
+		parent.InsertPairs("read_bytes_limit_per_second", fmt.Sprint(*tailModel.ReadBytesLimitPerSecond))
+	}
+
+	if tailModel.MaxLineSize != nil {
+		parent.InsertPairs("max_line_size", fmt.Sprint(*tailModel.MaxLineSize))
+	}
+
+	if tailModel.MultilineFlushInterval != nil {
+		parent.InsertPairs("multiline_flush_interval", fmt.Sprint(*tailModel.MultilineFlushInterval))
+	}
+
+	if tailModel.PosFile != "" {
+		parent.InsertPairs("pos_file", fmt.Sprint(tailModel.PosFile))
+	}
+
+	if tailModel.PosFileCompactionInterval != nil {
+		parent.InsertPairs("pos_file_compaction_interval", fmt.Sprint(*tailModel.PosFileCompactionInterval))
+	}
+
+	if tailModel.PathKey != "" {
+		parent.InsertPairs("path_key", fmt.Sprint(tailModel.PathKey))
+	}
+
+	if tailModel.RotateWait != nil {
+		parent.InsertPairs("rotate_wait", fmt.Sprint(*tailModel.RotateWait))
+	}
+
+	if tailModel.EnableWatchTimer != nil {
+		parent.InsertPairs("enable_watch_timer", fmt.Sprint(*tailModel.EnableWatchTimer))
+	}
+
+	if tailModel.EnableStatWatcher != nil {
+		parent.InsertPairs("enable_stat_watcher", fmt.Sprint(*tailModel.EnableStatWatcher))
+	}
+
+	if tailModel.OpenOnEveryUpdate != nil {
+		parent.InsertPairs("open_on_every_update", fmt.Sprint(*tailModel.OpenOnEveryUpdate))
+	}
+
+	if tailModel.EmitUnmatchedLines != nil {
+		parent.InsertPairs("emit_unmatched_lines", fmt.Sprint(*tailModel.EmitUnmatchedLines))
+	}
+
+	if tailModel.IgnoreRepatedPermissionError != nil {
+		parent.InsertPairs("ignore_repeated_permission_error", fmt.Sprint(*tailModel.IgnoreRepatedPermissionError))
+	}
+
+	return parent
 }
 
 func (i *Input) forwardPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
