@@ -38,6 +38,7 @@ type Loki struct {
 	// Optional list of keys to remove.
 	RemoveKeys []string `json:"removeKeys,omitempty"`
 	// If set to true and after extracting labels only a single key remains, the log line sent to Loki will be the value of that key in line_format.
+	// +kubebuilder:validation:Enum:=on;off
 	DropSingleKey string `json:"dropSingleKey,omitempty"`
 	// Format to use when flattening the record to a log line. Valid values are json or key_value.
 	// If set to json,  the log line sent to Loki will be the Fluent Bit record dumped as JSON.

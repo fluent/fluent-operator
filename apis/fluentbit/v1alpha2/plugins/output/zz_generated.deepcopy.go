@@ -512,6 +512,11 @@ func (in *Loki) DeepCopyInto(out *Loki) {
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
+	if in.RemoveKeys != nil {
+		in, out := &in.RemoveKeys, &out.RemoveKeys
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
 		*out = new(plugins.TLS)

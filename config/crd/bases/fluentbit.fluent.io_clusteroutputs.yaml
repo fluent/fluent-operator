@@ -1321,8 +1321,8 @@ spec:
                     type: string
                   dropSingleKey:
                     description: If set to true and after extracting labels only a
-                      single key remains, the log line sent to Loki will be the
-                      value of that key in line_format.
+                      single key remains, the log line sent to Loki will be the value
+                      of that key in line_format.
                     enum:
                     - "on"
                     - "off"
@@ -1461,7 +1461,8 @@ spec:
                   tenantIDKey:
                     description: Specify the name of the key from the original record
                       that contains the Tenant ID. The value of the key is set as
-                      X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically.
+                      X-Scope-OrgID of HTTP header. It is useful to set Tenant ID
+                      dynamically.
                     type: string
                   tls:
                     description: Fluent Bit provides integrated support for Transport
