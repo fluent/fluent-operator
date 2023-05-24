@@ -3329,6 +3329,14 @@ spec:
                     - "on"
                     - "off"
                     type: string
+                  dropSingleKey:
+                    description: If set to true and after extracting labels only a
+                      single key remains, the log line sent to Loki will be the
+                      value of that key in line_format.
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   host:
                     description: Loki hostname or IP address.
                     type: string
@@ -3396,6 +3404,10 @@ spec:
                     items:
                       type: string
                     type: array
+                  labelMapPath:
+                    description: Specify the label map file path. The file defines
+                      how to extract labels from each record.
+                    type: string
                   labels:
                     description: Stream labels for API request. It can be multiple
                       comma separated of strings specifying  key=value pairs. In addition
@@ -3421,6 +3433,11 @@ spec:
                     maximum: 65535
                     minimum: 1
                     type: integer
+                  removeKeys:
+                    description: Optional list of keys to remove.
+                    items:
+                      type: string
+                    type: array
                   tenantID:
                     description: Tenant ID used by default to push logs to Loki. If
                       omitted or empty it assumes Loki is running in single-tenant
@@ -3451,6 +3468,11 @@ spec:
                             x-kubernetes-map-type: atomic
                         type: object
                     type: object
+                  tenantIDKey:
+                    description: Specify the name of the key from the original record
+                      that contains the Tenant ID. The value of the key is set as
+                      X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically.
+                    type: string
                   tls:
                     description: Fluent Bit provides integrated support for Transport
                       Layer Security (TLS) and it predecessor Secure Sockets Layer

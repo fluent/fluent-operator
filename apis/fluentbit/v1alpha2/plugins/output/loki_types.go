@@ -33,6 +33,12 @@ type Loki struct {
 	// Optional list of record keys that will be placed as stream labels.
 	// This configuration property is for records key only.
 	LabelKeys []string `json:"labelKeys,omitempty"`
+	// Specify the label map file path. The file defines how to extract labels from each record.
+	LabelMapPath string `json:"labelMapPath,omitempty"`
+	// Optional list of keys to remove.
+	RemoveKeys []string `json:"removeKeys,omitempty"`
+	// If set to true and after extracting labels only a single key remains, the log line sent to Loki will be the value of that key in line_format.
+	DropSingleKey string `json:"dropSingleKey,omitempty"`
 	// Format to use when flattening the record to a log line. Valid values are json or key_value.
 	// If set to json,  the log line sent to Loki will be the Fluent Bit record dumped as JSON.
 	// If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
@@ -41,6 +47,9 @@ type Loki struct {
 	// If set to true, it will add all Kubernetes labels to the Stream labels.
 	// +kubebuilder:validation:Enum:=on;off
 	AutoKubernetesLabels string `json:"autoKubernetesLabels,omitempty"`
+	// Specify the name of the key from the original record that contains the Tenant ID. 
+	// The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically.
+	TenantIDKey string `json:"tenantIDKey,omitempty"`
 	*plugins.TLS         `json:"tls,omitempty"`
 }
 
@@ -85,11 +94,23 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if l.LabelKeys != nil && len(l.LabelKeys) > 0 {
 		kvs.Insert("label_keys", utils.ConcatString(l.LabelKeys, ","))
 	}
+	if l.LabelMapPath != "" {
+		kvs.Insert("label_map_path", l.LabelMapPath)
+	}
+	if l.RemoveKeys != nil && len(l.RemoveKeys) > 0 {
+		kvs.Insert("remove_keys", utils.ConcatString(l.RemoveKeys, ","))
+	}
+	if l.DropSingleKey != "" {
+		kvs.Insert("drop_single_key", l.DropSingleKey)
+	}
 	if l.LineFormat != "" {
 		kvs.Insert("line_format", l.LineFormat)
 	}
 	if l.AutoKubernetesLabels != "" {
 		kvs.Insert("auto_kubernetes_labels", l.AutoKubernetesLabels)
+	}
+	if l.TenantIDKey != "" {
+		kvs.Insert("tenant_id_key", l.TenantIDKey)
 	}
 	if l.TLS != nil {
 		tls, err := l.TLS.Params(sl)
