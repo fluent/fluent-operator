@@ -8,6 +8,7 @@ import (
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/params"
 )
+
 // The in_tail Input plugin allows Fluentd to read events from the tail of text files. Its behavior is similar to the tail -F command.
 type Tail struct {
 	// +kubebuilder:validation:Required

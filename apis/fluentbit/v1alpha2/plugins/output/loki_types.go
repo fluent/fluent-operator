@@ -48,10 +48,10 @@ type Loki struct {
 	// If set to true, it will add all Kubernetes labels to the Stream labels.
 	// +kubebuilder:validation:Enum:=on;off
 	AutoKubernetesLabels string `json:"autoKubernetesLabels,omitempty"`
-	// Specify the name of the key from the original record that contains the Tenant ID. 
+	// Specify the name of the key from the original record that contains the Tenant ID.
 	// The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically.
-	TenantIDKey string `json:"tenantIDKey,omitempty"`
-	*plugins.TLS         `json:"tls,omitempty"`
+	TenantIDKey  string `json:"tenantIDKey,omitempty"`
+	*plugins.TLS `json:"tls,omitempty"`
 }
 
 // implement Section() method
