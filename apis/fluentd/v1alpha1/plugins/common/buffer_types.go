@@ -261,6 +261,14 @@ func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 		ps.InsertPairs("retry_type", fmt.Sprint(*b.RetryType))
 	}
 
+	if b.RetryMaxTimes != nil {
+		ps.InsertPairs("retry_max_times", fmt.Sprint(*b.RetryMaxTimes))
+	}
+
+	if b.RetryForever != nil {
+		ps.InsertPairs("retry_forever", fmt.Sprint(*b.RetryForever))
+	}
+
 	if b.RetryWait != nil {
 		ps.InsertPairs("retry_wait", fmt.Sprint(*b.RetryWait))
 	}
