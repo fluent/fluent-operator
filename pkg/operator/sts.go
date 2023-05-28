@@ -21,6 +21,8 @@ const (
 
 	DefaultForwardPort int32 = 24424
 	DefaultHttpPort    int32 = 9880
+	// 101 is the fsGroup that fluentd runs as in the kubesphere image
+	DefaultFsGroup int64 = 101
 
 	DefaultForwardName = "forward"
 	DefaultHttpName    = "http"
@@ -50,6 +52,8 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 			}
 		}
 	}
+
+	defaultFsGroup := DefaultFsGroup
 
 	sts := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
@@ -109,6 +113,9 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 					NodeSelector: fd.Spec.NodeSelector,
 					Tolerations:  fd.Spec.Tolerations,
 					Affinity:     fd.Spec.Affinity,
+					SecurityContext: &corev1.PodSecurityContext{
+						FSGroup: &defaultFsGroup,
+					},
 				},
 			},
 		},
@@ -136,6 +143,10 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 
 	if fd.Spec.EnvVars != nil {
 		sts.Spec.Template.Spec.Containers[0].Env = append(sts.Spec.Template.Spec.Containers[0].Env, fd.Spec.EnvVars...)
+	}
+
+	if fd.Spec.SecurityContext != nil {
+		sts.Spec.Template.Spec.SecurityContext = fd.Spec.SecurityContext
 	}
 
 	// Mount host or emptydir VolumeSource

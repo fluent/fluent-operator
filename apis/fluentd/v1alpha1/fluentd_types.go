@@ -86,6 +86,8 @@ type FluentdSpec struct {
 	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty"`
 	// Service represents configurations on the fluentd service.
 	Service FluentDService `json:"service,omitempty"`
+	// PodSecurityContext represents the security context for the fluentd pods.
+	SecurityContext *corev1.PodSecurityContext `json:"securityContext,omitempty"`
 }
 
 // FluentDService the service of the FluentD
