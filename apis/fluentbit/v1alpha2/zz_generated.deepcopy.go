@@ -1293,8 +1293,8 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.DataDog)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Fireose != nil {
-		in, out := &in.Fireose, &out.Fireose
+	if in.Firehose != nil {
+		in, out := &in.Firehose, &out.Firehose
 		*out = new(output.Firehose)
 		(*in).DeepCopyInto(*out)
 	}
