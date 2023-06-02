@@ -55,7 +55,7 @@ const (
 	SYSTEM = `# Enable RPC endpoint
 <system>
 	rpc_endpoint 127.0.0.1:24444
-	log_level info
+	log_level %s
 	workers %d
 </system>
 `
@@ -186,7 +186,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 				return ctrl.Result{}, err
 			}
 
-			systemCfg = fmt.Sprintf(SYSTEM, workers)
+			systemCfg = fmt.Sprintf(SYSTEM, fd.Spec.LogLevel, workers)
 		}
 
 		secName := fmt.Sprintf("%s-config", fd.Name)

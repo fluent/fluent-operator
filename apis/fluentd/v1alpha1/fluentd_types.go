@@ -42,6 +42,11 @@ type FluentdSpec struct {
 	Replicas *int32 `json:"replicas,omitempty"`
 	// Numbers of the workers in Fluentd instance
 	Workers *int32 `json:"workers,omitempty"`
+	// Global logging verbosity
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:Enum:=fatal;error;warn;info;debug;trace
+	// +kubebuilder:default:=info
+	LogLevel string `json:"logLevel,omitempty"`
 	// Fluentd image.
 	Image string `json:"image,omitempty"`
 	// Fluentd Watcher command line arguments.
