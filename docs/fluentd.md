@@ -309,6 +309,7 @@ FluentdSpec defines the desired state of Fluentd
 | volumeMounts | Pod volumes to mount into the container's filesystem. Cannot be updated. | []corev1.VolumeMount |
 | volumeClaimTemplates | volumeClaimTemplates is a list of claims that pods are allowed to reference. The StatefulSet controller is responsible for mapping network identities to claims in a way that maintains the identity of a pod. Every claim in this list must have at least one matching (by name) volumeMount in one container in the template. | []corev1.PersistentVolumeClaim |
 | service | Service represents configurations on the fluentd service. | FluentDService |
+| securityContext | PodSecurityContext represents the security context for the fluentd pods. | *corev1.PodSecurityContext |
 
 [Back to TOC](#table-of-contents)
 # FluentdStatus

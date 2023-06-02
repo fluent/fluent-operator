@@ -55,7 +55,7 @@ type DocumentsLocation struct {
 
 // Inspired by coreos/prometheus-operator: https://github.com/coreos/prometheus-operator
 func main() {
-	var pluginsLoactions = []DocumentsLocation{
+	var pluginsLocations = []DocumentsLocation{
 		{
 			path: fluentbitPluginPath,
 			name: "fluentbit",
@@ -65,9 +65,9 @@ func main() {
 			name: "fluentd",
 		},
 	}
-	plugins(pluginsLoactions)
+	plugins(pluginsLocations)
 
-	var crdsLoactions = []DocumentsLocation{
+	var crdsLocations = []DocumentsLocation{
 		{
 			path: fluentbitCrdsPath,
 			name: "fluentbit",
@@ -77,7 +77,7 @@ func main() {
 			name: "fluentd",
 		},
 	}
-	crds(crdsLoactions)
+	crds(crdsLocations)
 }
 
 func plugins(docsLocations []DocumentsLocation) {
@@ -140,8 +140,8 @@ func plugins(docsLocations []DocumentsLocation) {
 	}
 }
 
-func crds(docsLoactions []DocumentsLocation) {
-	for _, dl := range docsLoactions {
+func crds(docsLocations []DocumentsLocation) {
+	for _, dl := range docsLocations {
 		var srcs []string
 		err := filepath.Walk(dl.path, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
