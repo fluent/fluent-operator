@@ -478,6 +478,7 @@ OutputSpec defines the desired state of ClusterOutput
 | influxDB | InfluxDB defines InfluxDB Output configuration. | *[output.InfluxDB](plugins/output/influxdb.md) |
 | datadog | DataDog defines DataDog Output configuration. | *[output.DataDog](plugins/output/datadog.md) |
 | firehose | Firehose defines Firehose Output configuration. | *[output.Firehose](plugins/output/firehose.md) |
+| kinesis | Kinesis defines Kinesis Output configuration. | *[output.Kinesis](plugins/output/kinesis.md) |
 | stackdriver | Stackdriver defines Stackdriver Output Configuration | *[output.Stackdriver](plugins/output/stackdriver.md) |
 | splunk | Splunk defines Splunk Output Configuration | *[output.Splunk](plugins/output/splunk.md) |
 | opensearch | OpenSearch defines OpenSearch Output configuration. | *[output.OpenSearch](plugins/output/opensearch.md) |

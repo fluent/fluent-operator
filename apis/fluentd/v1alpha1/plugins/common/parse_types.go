@@ -29,7 +29,7 @@ type Parse struct {
 	// Specify time field for event time. If the event doesn't have this field, current time is used.
 	TimeKey *string `json:"timeKey,omitempty"`
 	// If true, use Fluent::Eventnow(current time) as a timestamp when time_key is specified.
-	EstimateCurentEvent *bool `json:"estimateCurrentEvent,omitempty"`
+	EstimateCurrentEvent *bool `json:"estimateCurrentEvent,omitempty"`
 	// If true, keep time field in th record.
 	KeepTimeKey *bool `json:"keepTimeKey,omitempty"`
 	// Specify timeout for parse processing.
@@ -61,8 +61,8 @@ func (p *Parse) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 	if p.TimeKey != nil {
 		ps.InsertPairs("time_key", fmt.Sprint(*p.TimeKey))
 	}
-	if p.EstimateCurentEvent != nil {
-		ps.InsertPairs("estimate_curent_event", fmt.Sprint(*p.EstimateCurentEvent))
+	if p.EstimateCurrentEvent != nil {
+		ps.InsertPairs("estimate_current_event", fmt.Sprint(*p.EstimateCurrentEvent))
 	}
 	if p.KeepTimeKey != nil {
 		ps.InsertPairs("keep_timeout", fmt.Sprint(*p.KeepTimeKey))
