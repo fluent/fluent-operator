@@ -19801,6 +19801,17 @@ spec:
                   type: object
                   x-kubernetes-map-type: atomic
                 type: array
+              logLevel:
+                default: info
+                description: Global logging verbosity
+                enum:
+                - fatal
+                - error
+                - warn
+                - info
+                - debug
+                - trace
+                type: string
               nodeSelector:
                 additionalProperties:
                   type: string

@@ -18,5 +18,8 @@ spec:
   fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
+  {{- if .Values.fluentd.logLevel }}
+  logLevel: {{ .Values.fluentd.logLevel }}
+  {{- end }}
 {{- end }}
 {{- end }}

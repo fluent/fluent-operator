@@ -240,6 +240,7 @@ fluentd:
     requests:
       cpu: 100m
       memory: 128Mi
+  logLevel: ""
   # Configure the output plugin parameter in Fluentd.
   # Fluentd is disabled by default, if you enable it make sure to also set up an output to use.
   output:
