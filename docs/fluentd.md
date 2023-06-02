@@ -289,6 +289,7 @@ FluentdSpec defines the desired state of Fluentd
 | disableService | By default will build the related service according to the globalinputs definition. | bool |
 | replicas | Numbers of the Fluentd instance | *int32 |
 | workers | Numbers of the workers in Fluentd instance | *int32 |
+| logLevel | Global logging verbosity | string |
 | image | Fluentd image. | string |
 | args | Fluentd Watcher command line arguments. | []string |
 | envVars | EnvVars represent environment variables that can be passed to fluentd pods. | []corev1.EnvVar |
