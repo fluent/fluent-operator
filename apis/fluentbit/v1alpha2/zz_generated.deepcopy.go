@@ -1298,6 +1298,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.Firehose)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Kinesis != nil {
+		in, out := &in.Kinesis, &out.Kinesis
+		*out = new(output.Kinesis)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Stackdriver != nil {
 		in, out := &in.Stackdriver, &out.Stackdriver
 		*out = new(output.Stackdriver)
