@@ -149,6 +149,10 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 		sts.Spec.Template.Spec.SecurityContext = fd.Spec.SecurityContext
 	}
 
+	if fd.Spec.SchedulerName != "" {
+		sts.Spec.Template.Spec.SchedulerName = fd.Spec.SchedulerName
+	}
+
 	// Mount host or emptydir VolumeSource
 	if fd.Spec.BufferVolume != nil && !fd.Spec.BufferVolume.DisableBufferVolume {
 		bufferVolName := fmt.Sprintf("%s-buffer", fd.Name)

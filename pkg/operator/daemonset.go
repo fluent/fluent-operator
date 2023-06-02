@@ -176,6 +176,10 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 		ds.Spec.Template.Spec.PriorityClassName = fb.Spec.PriorityClassName
 	}
 
+	if fb.Spec.SchedulerName != "" {
+		ds.Spec.Template.Spec.SchedulerName = fb.Spec.SchedulerName
+	}
+
 	if fb.Spec.Volumes != nil {
 		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, fb.Spec.Volumes...)
 	}

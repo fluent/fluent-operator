@@ -96,6 +96,8 @@ type FluentBitSpec struct {
 	MetricsPort int32 `json:"metricsPort,omitempty"`
 	// Service represents configurations on the fluent-bit service.
 	Service FluentBitService `json:"service,omitempty"`
+	// SchedulerName represents the desired scheduler for fluent-bit pods.
+	SchedulerName string `json:"schedulerName,omitempty"`
 }
 
 // FluentBitService defines the service of the FluentBit

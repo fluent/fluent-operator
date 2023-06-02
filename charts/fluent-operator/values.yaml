@@ -110,6 +110,7 @@ fluentbit:
   envVars: []
   #  - name: FOO
   #    value: "bar"
+  schedulerName: ""
 
   # Remove the above empty volumes and volumesMounts, and then set additionalVolumes and additionalVolumesMounts as below if you want to collect node exporter metrics
   # additionalVolumes:
@@ -240,6 +241,7 @@ fluentd:
     requests:
       cpu: 100m
       memory: 128Mi
+  schedulerName: ""
   # Configure the output plugin parameter in Fluentd.
   # Fluentd is disabled by default, if you enable it make sure to also set up an output to use.
   output:
