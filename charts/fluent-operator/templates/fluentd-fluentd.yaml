@@ -18,6 +18,9 @@ spec:
   fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
+  {{- if .Values.fluentd.schedulerName }}
+  schedulerName: {{ .Values.fluentd.schedulerName }}
+  {{- end }}
   {{- if .Values.fluentd.logLevel }}
   logLevel: {{ .Values.fluentd.logLevel }}
   {{- end }}

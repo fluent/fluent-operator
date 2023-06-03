@@ -93,6 +93,8 @@ type FluentdSpec struct {
 	Service FluentDService `json:"service,omitempty"`
 	// PodSecurityContext represents the security context for the fluentd pods.
 	SecurityContext *corev1.PodSecurityContext `json:"securityContext,omitempty"`
+	// SchedulerName represents the desired scheduler for fluentd pods.
+	SchedulerName string `json:"schedulerName,omitempty"`
 }
 
 // FluentDService the service of the FluentD

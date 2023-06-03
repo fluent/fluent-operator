@@ -2264,6 +2264,10 @@ spec:
               runtimeClassName:
                 description: RuntimeClassName represents the container runtime configuration.
                 type: string
+              schedulerName:
+                description: SchedulerName represents the desired scheduler for fluentd
+                  pods.
+                type: string
               securityContext:
                 description: PodSecurityContext represents the security context for
                   the fluentd pods.
