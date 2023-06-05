@@ -1,3 +1,49 @@
+## 2.3.0 / 2023-06-05
+### Features
+- Feat: Adding influxdb plugin (#690)
+- Feat: Add EnvVars support to FluentD (#697)
+- Feat: Add Pod Annotations support to FluentD (#698)
+- Feat: Fluent operator & fluentbit: Added tolerations, nodeSelector + more (#704)
+- Feat: Add fluentbit.affinity configuration (#726)
+- Feat: Allow setting fluentd PodSecurityContext (#744)
+- Feat: Fluentd in_tail plugin (#753)
+- Feat: Add missing fluentd buffer options (#757)
+- Feat: Add AWS Kinesis Data Streams output plugin for Fluent Bit (#768)
+- Feat: Add global log_level support for fluentd (#770)
+- Feat: Add scheduler support for fluentbit & fluentd (#771)
+
+### ENHANCEMENT
+- EnvVars support in fluentbit helm template (#706) 
+- Add uri field for each telemetry type in opentelemetry plugin, remove old uri field (#708)
+- Adjust fluentd watcher dependabot (#716)
+- remove the deprecated -i flag in go build (#720) 
+- Adjust fluentd arm64 image build timeout (#721)
+- Adjust edge metrics collection config (#736) 
+- Add some fluentbit helm opts (#743)
+- Align CRDs and Operator with the fluentbit loki output (#756)
+- Fluent-bit upgrade to v2.1.4 (#767)
+- build(deps): Bump k8s.io/apimachinery from 0.26.3 to 0.27.1 (#701)
+- build(deps): Bump helm/chart-testing-action from 2.1.0 to 2.4.0 (#710)
+- build(deps): Bump k8s.io/klog/v2 from 2.90.1 to 2.100.1 (#712)
+- build(deps): Bump golang from 1.20.3-alpine3.17 to 1.20.4-alpine3.17 in /cmd/fluent-manager (#713)
+- build(deps): Bump golang from 1.20.3-alpine3.16 to 1.20.4-alpine3.16 in /cmd/fluent-watcher/fluentbit (#714)
+- build(deps): Bump golang from 1.20.2 to 1.20.4 in /docs/best-practice/forwarding-logs-via-http (#715) 
+- build(deps): Bump golang from 1.19.2-alpine3.16 to 1.20.4-alpine3.16 in /cmd/fluent-watcher/fluentd (#717)
+- build(deps): Bump arm64v8/ruby from 3.1-slim-bullseye to 3.2-slim-bullseye in /cmd/fluent-watcher/fluentd (#718)
+- build(deps): Bump alpine from 3.16 to 3.17 in /cmd/fluent-watcher/fluentd (#719)
+- build(deps): Bump github.com/onsi/gomega from 1.27.6 to 1.27.7 (#748)
+- build(deps): Bump k8s.io/apimachinery from 0.27.1 to 0.27.2 (#751)
+- build(deps): Bump helm/kind-action from 1.5.0 to 1.7.0 (#765)
+
+### BUGFIX 
+- Fix: Fix missing log level  (#691) 
+- Fix: Fix rewrite_tag match rule and trim start of string pattern (#692) 
+- Fix(docs): Update cluster outputs docs link (#724)
+- Fix: dereference pointers in parser filter plugin for fluentd (#745)
+- Fix: fluentbit namespace-logging: only generate rewrite tag config once (#746)
+- Fix: minor typo fix for firehose (#764)
+- Fix: fix typo for estimate_current_event in fluentd (#769) 
+
 ## 2.2.0 / 2023-04-07
 ### Features
 - Feat: Adding Fluentd cloudwatch plugin (#586)
