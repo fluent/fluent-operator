@@ -16,7 +16,7 @@ var (
 	DefaultBufferPath = "/buffers/fluentbit/log"
 )
 
-func MakefbStatefuset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
+func MakefbStatefulset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 	statefulset := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      co.Name,
@@ -106,6 +106,10 @@ func MakefbStatefuset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 		statefulset.Spec.Template.Spec.PriorityClassName = co.Spec.PriorityClassName
 	}
 
+	if co.Spec.SchedulerName != "" {
+		statefulset.Spec.Template.Spec.SchedulerName = co.Spec.SchedulerName
+	}
+
 	if co.Spec.Volumes != nil {
 		statefulset.Spec.Template.Spec.Volumes = append(statefulset.Spec.Template.Spec.Volumes, co.Spec.Volumes...)
 	}
@@ -134,7 +138,7 @@ func MakefbStatefuset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 	statefulset.Spec.VolumeClaimTemplates = append(statefulset.Spec.VolumeClaimTemplates, MakeFluentbitPVC(co))
 	statefulset.Spec.Template.Spec.Containers[0].VolumeMounts = append(statefulset.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
 		Name:      fmt.Sprintf("%s-buffer-pvc", co.Name),
-		MountPath: FlunetbitBufferMountPath(co),
+		MountPath: FluentbitBufferMountPath(co),
 	})
 
 	return &statefulset
@@ -185,7 +189,7 @@ func makeDefaultFluentbitPVC(co fluentbitv1alpha2.Collector) corev1.PersistentVo
 	return pvc
 }
 
-func FlunetbitBufferMountPath(co fluentbitv1alpha2.Collector) string {
+func FluentbitBufferMountPath(co fluentbitv1alpha2.Collector) string {
 	bufferPath := co.Spec.BufferPath
 	if bufferPath != nil {
 		return *bufferPath

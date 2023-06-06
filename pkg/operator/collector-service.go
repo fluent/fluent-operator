@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	CollecotrMetricsPortName = "metrics"
-	CollecotrMetricsPort     = 2020
-	CollecotrTCPProtocolName = "TCP"
+	CollectorMetricsPortName = "metrics"
+	CollectorMetricsPort     = 2020
+	CollectorTCPProtocolName = "TCP"
 )
 
-func MakeCollecotrService(co fluentbitv1alpha2.Collector) *corev1.Service {
+func MakeCollectorService(co fluentbitv1alpha2.Collector) *corev1.Service {
 	var name string
 	var labels map[string]string
 
@@ -41,10 +41,10 @@ func MakeCollecotrService(co fluentbitv1alpha2.Collector) *corev1.Service {
 			Type:     corev1.ServiceTypeClusterIP,
 			Ports: []corev1.ServicePort{
 				{
-					Name:       CollecotrMetricsPortName,
-					Port:       CollecotrMetricsPort,
-					Protocol:   CollecotrTCPProtocolName,
-					TargetPort: intstr.FromInt(CollecotrMetricsPort),
+					Name:       CollectorMetricsPortName,
+					Port:       CollectorMetricsPort,
+					Protocol:   CollectorTCPProtocolName,
+					TargetPort: intstr.FromInt(CollectorMetricsPort),
 				},
 			},
 		},
