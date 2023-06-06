@@ -108,8 +108,8 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	// Deploy Fluent Bit Statefuset
-	sts := operator.MakefbStatefuset(co)
+	// Deploy Fluent Bit Statefulset
+	sts := operator.MakefbStatefulset(co)
 	if err := ctrl.SetControllerReference(&co, sts, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -120,7 +120,7 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 
 	// Deploy collector Service
 	if !co.Spec.DisableService {
-		svc := operator.MakeCollecotrService(co)
+		svc := operator.MakeCollectorService(co)
 		if err := ctrl.SetControllerReference(&co, svc, r.Scheme); err != nil {
 			return ctrl.Result{}, err
 		}
@@ -136,7 +136,7 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 func (r *CollectorReconciler) mutate(obj client.Object, co fluentbitv1alpha2.Collector) controllerutil.MutateFn {
 	switch o := obj.(type) {
 	case *appsv1.StatefulSet:
-		expected := operator.MakefbStatefuset(co)
+		expected := operator.MakefbStatefulset(co)
 
 		return func() error {
 			o.Labels = expected.Labels
@@ -149,7 +149,7 @@ func (r *CollectorReconciler) mutate(obj client.Object, co fluentbitv1alpha2.Col
 			return nil
 		}
 	case *corev1.Service:
-		expected := operator.MakeCollecotrService(co)
+		expected := operator.MakeCollectorService(co)
 
 		return func() error {
 			o.Labels = expected.Labels

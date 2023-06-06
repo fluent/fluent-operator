@@ -77,6 +77,8 @@ type CollectorSpec struct {
 	Ports []corev1.ContainerPort `json:"ports,omitempty"`
 	// Service represents configurations on the fluent-bit service.
 	Service CollectorService `json:"service,omitempty"`
+	// SchedulerName represents the desired scheduler for the Fluentbit collector pods
+	SchedulerName string `json:"schedulerName,omitempty"`
 }
 
 // CollectorService defines the service of the FluentBit
