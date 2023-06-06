@@ -23,6 +23,7 @@ import (
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -92,40 +93,30 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	// Install RBAC resources for the filter plugin kubernetes
-	var rbacObj, saObj, bindingObj client.Object
-	rbacObj, saObj, bindingObj = operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
-	// Set ServiceAccount's owner to this fluentbit
-	if err := ctrl.SetControllerReference(&co, saObj, r.Scheme); err != nil {
+	cr, sa, crb := operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
+	// Deploy Fluent Bit Collector ClusterRole
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, cr, r.mutate(cr, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, rbacObj); err != nil && !errors.IsAlreadyExists(err) {
+	// Deploy Fluent Bit Collector ClusterRoleBinding
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, crb, r.mutate(crb, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, saObj); err != nil && !errors.IsAlreadyExists(err) {
-		return ctrl.Result{}, err
-	}
-	if err := r.Create(ctx, bindingObj); err != nil && !errors.IsAlreadyExists(err) {
+	// Deploy Fluent Bit Collector ServiceAccount
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	// Deploy Fluent Bit Statefulset
+	// Deploy Fluent Bit Collector Statefulset
 	sts := operator.MakefbStatefulset(co)
-	if err := ctrl.SetControllerReference(&co, sts, r.Scheme); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sts, r.mutate(sts, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sts, r.mutate(sts, co)); err != nil {
-		return ctrl.Result{}, err
-	}
-
-	// Deploy collector Service
+	// Deploy Fluent Bit Collector Service
 	if !co.Spec.DisableService {
 		svc := operator.MakeCollectorService(co)
-		if err := ctrl.SetControllerReference(&co, svc, r.Scheme); err != nil {
-			return ctrl.Result{}, err
-		}
-
-		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, co)); err != nil {
+		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, &co)); err != nil {
 			return ctrl.Result{}, err
 		}
 	}
@@ -133,35 +124,56 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	return ctrl.Result{}, nil
 }
 
-func (r *CollectorReconciler) mutate(obj client.Object, co fluentbitv1alpha2.Collector) controllerutil.MutateFn {
+func (r *CollectorReconciler) mutate(obj client.Object, co *fluentbitv1alpha2.Collector) controllerutil.MutateFn {
 	switch o := obj.(type) {
+	case *rbacv1.ClusterRole:
+		expected, _, _ := operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
+
+		return func() error {
+			o.Rules = expected.Rules
+			return nil
+		}
+	case *corev1.ServiceAccount:
+		_, expected, _ := operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
+
+		return func() error {
+			o.Annotations = expected.Annotations
+			if err := ctrl.SetControllerReference(co, o, r.Scheme); err != nil {
+				return err
+			}
+			return nil
+		}
+	case *rbacv1.ClusterRoleBinding:
+		_, _, expected := operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
+
+		return func() error {
+			o.RoleRef = expected.RoleRef
+			o.Subjects = expected.Subjects
+			return nil
+		}
 	case *appsv1.StatefulSet:
-		expected := operator.MakefbStatefulset(co)
+		expected := operator.MakefbStatefulset(*co)
 
 		return func() error {
 			o.Labels = expected.Labels
-			o.Annotations = expected.Annotations
 			o.Spec = expected.Spec
-			o.SetOwnerReferences(nil)
-			if err := ctrl.SetControllerReference(&co, o, r.Scheme); err != nil {
+			if err := ctrl.SetControllerReference(co, o, r.Scheme); err != nil {
 				return err
 			}
 			return nil
 		}
 	case *corev1.Service:
-		expected := operator.MakeCollectorService(co)
+		expected := operator.MakeCollectorService(*co)
 
 		return func() error {
 			o.Labels = expected.Labels
 			o.Spec.Selector = expected.Spec.Selector
 			o.Spec.Ports = expected.Spec.Ports
-			o.SetOwnerReferences(nil)
-			if err := ctrl.SetControllerReference(&co, o, r.Scheme); err != nil {
+			if err := ctrl.SetControllerReference(co, o, r.Scheme); err != nil {
 				return err
 			}
 			return nil
 		}
-
 	default:
 	}
 
@@ -169,18 +181,38 @@ func (r *CollectorReconciler) mutate(obj client.Object, co fluentbitv1alpha2.Col
 }
 
 func (r *CollectorReconciler) delete(ctx context.Context, co *fluentbitv1alpha2.Collector) error {
-	var sa corev1.ServiceAccount
+	sa := corev1.ServiceAccount{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      co.Name,
+			Namespace: co.Namespace,
+		},
+	}
 	if err := r.Delete(ctx, &sa); err != nil && !errors.IsNotFound(err) {
 		return err
 	}
+	// TODO: clusterrole, clusterrolebinding
 
-	var svc corev1.Service
-	if err := r.Delete(ctx, &svc); err != nil && !errors.IsNotFound(err) {
+	sts := appsv1.StatefulSet{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      co.Name,
+			Namespace: co.Namespace,
+		},
+	}
+	if err := r.Delete(ctx, &sts); err != nil && !errors.IsNotFound(err) {
 		return err
 	}
 
-	var sts appsv1.StatefulSet
-	if err := r.Delete(ctx, &sts); err != nil && !errors.IsNotFound(err) {
+	svcName := co.Name
+	if co.Spec.Service.Name != "" {
+		svcName = co.Spec.Service.Name
+	}
+	svc := corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      svcName,
+			Namespace: co.Namespace,
+		},
+	}
+	if err := r.Delete(ctx, &svc); err != nil && !errors.IsNotFound(err) {
 		return err
 	}
 

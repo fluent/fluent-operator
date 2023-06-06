@@ -97,45 +97,33 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	// Install RBAC resources for the filter plugin kubernetes
-	var rbacObj, saObj, bindingObj client.Object
+	var role, sa, binding client.Object
 	if r.Namespaced {
-		rbacObj, saObj, bindingObj = operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
+		role, sa, binding = operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 	} else {
-		rbacObj, saObj, bindingObj = operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
+		role, sa, binding = operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
 	}
-	// Set ServiceAccount's owner to this fluentbit
-	if err := ctrl.SetControllerReference(&fb, saObj, r.Scheme); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &fb)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, rbacObj, r.mutate(rbacObj, fb)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &fb)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, saObj, r.mutate(saObj, fb)); err != nil {
-		return ctrl.Result{}, err
-	}
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, bindingObj, r.mutate(bindingObj, fb)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, binding, r.mutate(binding, &fb)); err != nil {
 		return ctrl.Result{}, err
 	}
 
 	// Deploy Fluent Bit DaemonSet
 	logPath := r.getContainerLogPath(fb)
 	ds := operator.MakeDaemonSet(fb, logPath)
-	if err := ctrl.SetControllerReference(&fb, ds, r.Scheme); err != nil {
-		return ctrl.Result{}, err
-	}
-
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, ds, r.mutate(ds, fb)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, ds, r.mutate(ds, &fb)); err != nil {
 		return ctrl.Result{}, err
 	}
 
 	// Deploy FluentBit Service
 	if !fb.Spec.DisableService {
 		svc := operator.MakeFluentbitService(fb)
-		if err := ctrl.SetControllerReference(&fb, svc, r.Scheme); err != nil {
-			return ctrl.Result{}, err
-		}
-
-		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, fb)); err != nil {
+		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, &fb)); err != nil {
 			return ctrl.Result{}, err
 		}
 	}
@@ -153,33 +141,31 @@ func (r *FluentBitReconciler) getContainerLogPath(fb fluentbitv1alpha2.FluentBit
 	}
 }
 
-func (r *FluentBitReconciler) mutate(obj client.Object, fb fluentbitv1alpha2.FluentBit) controllerutil.MutateFn {
-	logPath := r.getContainerLogPath(fb)
+func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.FluentBit) controllerutil.MutateFn {
+	logPath := r.getContainerLogPath(*fb)
 
 	switch o := obj.(type) {
 	case *appsv1.DaemonSet:
-		expected := operator.MakeDaemonSet(fb, logPath)
+		expected := operator.MakeDaemonSet(*fb, logPath)
 
 		return func() error {
 			o.Labels = expected.Labels
 			o.Annotations = expected.Annotations
 			o.Spec = expected.Spec
-			o.SetOwnerReferences(nil)
-			if err := ctrl.SetControllerReference(&fb, o, r.Scheme); err != nil {
+			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
 				return err
 			}
 			return nil
 		}
 
 	case *corev1.Service:
-		expected := operator.MakeFluentbitService(fb)
+		expected := operator.MakeFluentbitService(*fb)
 
 		return func() error {
 			o.Labels = expected.Labels
 			o.Spec.Selector = expected.Spec.Selector
 			o.Spec.Ports = expected.Spec.Ports
-			o.SetOwnerReferences(nil)
-			if err := ctrl.SetControllerReference(&fb, o, r.Scheme); err != nil {
+			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
 				return err
 			}
 			return nil
@@ -188,25 +174,24 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb fluentbitv1alpha2.Flu
 		expected, _, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 
 		return func() error {
-			o.Name = expected.Name
 			o.Rules = expected.Rules
+			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
+				return err
+			}
 			return nil
 		}
 	case *rbacv1.ClusterRole:
 		expected, _, _ := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
 		return func() error {
-			o.Name = expected.Name
 			o.Rules = expected.Rules
 			return nil
 		}
-
 	case *corev1.ServiceAccount:
 		_, expected, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 
 		return func() error {
-			o.Name = expected.Name
 			o.Annotations = expected.Annotations
-			if err := ctrl.SetControllerReference(&fb, o, r.Scheme); err != nil {
+			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
 				return err
 			}
 			return nil
@@ -214,20 +199,20 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb fluentbitv1alpha2.Flu
 	case *rbacv1.RoleBinding:
 		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 		return func() error {
-			o.Name = expected.Name
 			o.Subjects = expected.Subjects
 			o.RoleRef = expected.RoleRef
+			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
+				return err
+			}
 			return nil
 		}
 	case *rbacv1.ClusterRoleBinding:
 		_, _, expected := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
 		return func() error {
-			o.Name = expected.Name
 			o.Subjects = expected.Subjects
 			o.RoleRef = expected.RoleRef
 			return nil
 		}
-
 	default:
 	}
 
@@ -235,23 +220,57 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb fluentbitv1alpha2.Flu
 }
 
 func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.FluentBit) error {
-	var sa corev1.ServiceAccount
-	err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Name}, &sa)
-	if err == nil {
-		if err := r.Delete(ctx, &sa); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
-	} else if !errors.IsNotFound(err) {
+	sa := corev1.ServiceAccount{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fb.Name,
+			Namespace: fb.Namespace,
+		},
+	}
+	if err := r.Delete(ctx, &sa); err != nil && !errors.IsNotFound(err) {
 		return err
 	}
 
-	var ds appsv1.DaemonSet
-	err = r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Name}, &ds)
-	if err == nil {
-		if err := r.Delete(ctx, &ds); err != nil && !errors.IsNotFound(err) {
+	if r.Namespaced {
+		roleName, _, roleBindingName := operator.MakeScopedRBACNames(fb.Name)
+		role := rbacv1.Role{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      roleName,
+				Namespace: fb.Namespace,
+			},
+		}
+		if err := r.Delete(ctx, &role); err != nil && !errors.IsNotFound(err) {
 			return err
 		}
-	} else if !errors.IsNotFound(err) {
+
+		rolebinding := rbacv1.RoleBinding{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      roleBindingName,
+				Namespace: fb.Namespace,
+			},
+		}
+		if err := r.Delete(ctx, &rolebinding); err != nil && !errors.IsNotFound(err) {
+			return err
+		}
+	}
+	// TODO: clusterrole, clusterrolebinding
+
+	ds := appsv1.DaemonSet{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fb.Name,
+			Namespace: fb.Namespace,
+		},
+	}
+	if err := r.Delete(ctx, &ds); err != nil && !errors.IsNotFound(err) {
+		return err
+	}
+
+	svc := corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fb.Name,
+			Namespace: fb.Namespace,
+		},
+	}
+	if err := r.Delete(ctx, &svc); err != nil && !errors.IsNotFound(err) {
 		return err
 	}
 
