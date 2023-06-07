@@ -294,7 +294,7 @@ func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 			ps.InsertPairs("time_type", fmt.Sprint(*b.Time.TimeType))
 		}
 		if b.Time.TimeFormat != nil {
-			ps.InsertPairs("time_type", fmt.Sprint(*b.Time.TimeFormat))
+			ps.InsertPairs("time_format", fmt.Sprint(*b.Time.TimeFormat))
 		}
 		if b.Time.Localtime != nil {
 			ps.InsertPairs("localtime", fmt.Sprint(*b.Time.Localtime))

@@ -199,7 +199,7 @@ func (j *Inject) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 		ps.InsertPairs("time_type", fmt.Sprint(*j.TimeType))
 	}
 	if j.TimeFormat != nil {
-		ps.InsertPairs("time_type", fmt.Sprint(*j.TimeFormat))
+		ps.InsertPairs("time_format", fmt.Sprint(*j.TimeFormat))
 	}
 	if j.Localtime != nil {
 		ps.InsertPairs("localtime", fmt.Sprint(*j.Localtime))
