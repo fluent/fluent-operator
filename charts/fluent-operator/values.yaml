@@ -147,6 +147,9 @@ fluentbit:
       readFromHead: false
     systemd:
       enable: true
+      systemdFilter:
+        enable: true
+        filters: []
       path: "/var/log/journal"
       includeKubelet: true
     nodeExporterMetrics: {}
