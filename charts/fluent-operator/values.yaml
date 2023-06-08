@@ -150,6 +150,7 @@ fluentbit:
       enable: true
       path: "/var/log/journal"
       includeKubelet: true
+      stripUnderscores: "off"
     nodeExporterMetrics: {}
     # uncomment below nodeExporterMetrics section if you want to collect node exporter metrics
   #   nodeExporterMetrics:

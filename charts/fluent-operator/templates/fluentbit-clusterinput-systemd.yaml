@@ -14,6 +14,7 @@ spec:
     path: {{ .Values.fluentbit.input.systemd.path }}
     db: /fluent-bit/tail/systemd.db
     dbSync: Normal
+    stripUnderscores: {{ .Values.fluentbit.input.systemd.stripUnderscores | quote }}
     systemdFilter:
       - _SYSTEMD_UNIT={{ .Values.containerRuntime }}.service
       {{- if .Values.fluentbit.input.systemd.includeKubelet }}
