@@ -180,7 +180,7 @@ spec:
                               type: string
                             timeFormat:
                               description: Process value according to the specified
-                                format. This is available only when time_type is *string
+                                format. This is available only when time_type is string
                               type: string
                             timeFormatFallbacks:
                               description: Uses the specified time format as a fallback
@@ -194,11 +194,11 @@ spec:
                               type: string
                             timeType:
                               description: parses/formats value according to this
-                                type, default is *string
+                                type, default is string
                               enum:
                               - float
                               - unixtime
-                              - '*string'
+                              - string
                               - mixed
                               type: string
                             timeout:
@@ -338,7 +338,7 @@ spec:
                               type: boolean
                             timeFormat:
                               description: Process value according to the specified
-                                format. This is available only when time_type is *string
+                                format. This is available only when time_type is string
                               type: string
                             timeFormatFallbacks:
                               description: Uses the specified time format as a fallback
@@ -348,11 +348,11 @@ spec:
                               type: string
                             timeType:
                               description: parses/formats value according to this
-                                type, default is *string
+                                type, default is string
                               enum:
                               - float
                               - unixtime
-                              - '*string'
+                              - string
                               - mixed
                               type: string
                             timezone:
@@ -392,7 +392,7 @@ spec:
                                 timeFormat:
                                   description: Process value according to the specified
                                     format. This is available only when time_type
-                                    is *string
+                                    is string
                                   type: string
                                 timeFormatFallbacks:
                                   description: Uses the specified time format as a
@@ -402,11 +402,11 @@ spec:
                                   type: string
                                 timeType:
                                   description: parses/formats value according to this
-                                    type, default is *string
+                                    type, default is string
                                   enum:
                                   - float
                                   - unixtime
-                                  - '*string'
+                                  - string
                                   - mixed
                                   type: string
                                 timezone:
