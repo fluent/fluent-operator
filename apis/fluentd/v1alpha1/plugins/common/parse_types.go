@@ -75,7 +75,7 @@ func (p *Parse) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 		ps.InsertPairs("time_type", fmt.Sprint(*p.TimeType))
 	}
 	if p.TimeFormat != nil {
-		ps.InsertPairs("time_type", fmt.Sprint(*p.TimeFormat))
+		ps.InsertPairs("time_format", fmt.Sprint(*p.TimeFormat))
 	}
 	if p.Localtime != nil {
 		ps.InsertPairs("localtime", fmt.Sprint(*p.Localtime))

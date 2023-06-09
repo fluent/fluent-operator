@@ -20,10 +20,10 @@ type CommonFields struct {
 
 // Time defines the common parameters for the time plugin
 type Time struct {
-	// parses/formats value according to this type, default is *string
-	// +kubebuilder:validation:Enum:=float;unixtime;*string;mixed
+	// parses/formats value according to this type, default is string
+	// +kubebuilder:validation:Enum:=float;unixtime;string;mixed
 	TimeType *string `json:"timeType,omitempty"`
-	// Process value according to the specified format. This is available only when time_type is *string
+	// Process value according to the specified format. This is available only when time_type is string
 	TimeFormat *string `json:"timeFormat,omitempty"`
 	// If true, uses local time.
 	Localtime *bool `json:"localtime,omitempty"`
@@ -199,7 +199,7 @@ func (j *Inject) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 		ps.InsertPairs("time_type", fmt.Sprint(*j.TimeType))
 	}
 	if j.TimeFormat != nil {
-		ps.InsertPairs("time_type", fmt.Sprint(*j.TimeFormat))
+		ps.InsertPairs("time_format", fmt.Sprint(*j.TimeFormat))
 	}
 	if j.Localtime != nil {
 		ps.InsertPairs("localtime", fmt.Sprint(*j.Localtime))
