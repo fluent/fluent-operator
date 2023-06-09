@@ -91,39 +91,29 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	}
 
 	// Install RBAC resources for the filter plugin kubernetes
-	var rbacObj, saObj, bindingObj = operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
-
-	// Set ServiceAccount's owner to this Fluentd
-	if err := ctrl.SetControllerReference(&fd, saObj, r.Scheme); err != nil {
+	cr, sa, crb := operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
+	// Deploy Fluentd ClusterRole
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, cr, r.mutate(cr, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, rbacObj); err != nil && !errors.IsAlreadyExists(err) {
+	// Deploy Fluentd ClusterRoleBinding
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, crb, r.mutate(crb, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if err := r.Create(ctx, saObj); err != nil && !errors.IsAlreadyExists(err) {
-		return ctrl.Result{}, err
-	}
-	if err := r.Create(ctx, bindingObj); err != nil && !errors.IsAlreadyExists(err) {
+	// Deploy Fluentd ServiceAccount
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
 
 	// Deploy Fluentd Statefulset
-	dp := operator.MakeStatefulset(fd)
-	if err := ctrl.SetControllerReference(&fd, dp, r.Scheme); err != nil {
-		return ctrl.Result{}, err
-	}
-
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, dp, r.mutate(dp, &fd)); err != nil {
+	sts := operator.MakeStatefulset(fd)
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sts, r.mutate(sts, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
 
 	// Deploy Fluentd Service
 	if !fd.Spec.DisableService {
 		svc := operator.MakeFluentdService(fd)
-		if err := ctrl.SetControllerReference(&fd, svc, r.Scheme); err != nil {
-			return ctrl.Result{}, err
-		}
-
 		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, &fd)); err != nil {
 			return ctrl.Result{}, err
 		}
