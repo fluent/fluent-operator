@@ -66,5 +66,9 @@ spec:
   labels:
 {{ toYaml .Values.fluentbit.labels | indent 4 }}
   {{- end }}
+  {{- if .Values.fluentbit.podSecurityContext }}
+  securityContext:
+{{ toYaml .Values.fluentbit.podSecurityContext | nindent 4 }}
+  {{- end }}
 {{- end }}
 {{- end }}

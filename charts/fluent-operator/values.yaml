@@ -87,6 +87,8 @@ fluentbit:
   imagePullSecrets: []
   # - name: "image-pull-secret"
   secrets: []
+  # Pod security context for Fluent Bit pods. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  podSecurityContext: {}
   # List of volumes that can be mounted by containers belonging to the pod.
   additionalVolumes: []
   # Pod volumes to mount into the container's filesystem.
