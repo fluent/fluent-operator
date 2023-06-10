@@ -111,6 +111,6 @@ spec:
         {{ toYaml .Values.operator.nodeSelector | nindent 8 }}
       {{- end }}
       {{- if .Values.operator.podSecurityContext }}
-      podSecurityContext:
+      securityContext:
         {{ toYaml .Values.operator.podSecurityContext | nindent 8 }}
       {{- end }}
