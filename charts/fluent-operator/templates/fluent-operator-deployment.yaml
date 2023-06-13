@@ -80,6 +80,10 @@ spec:
       containers:
       - name: fluent-operator
         image: {{ .Values.operator.container.repository }}:{{ .Values.operator.container.tag }}
+        {{- if .Values.operator.securityContext }}
+        securityContext:
+          {{ toYaml .Values.operator.securityContext | nindent 10 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.operator.resources | nindent 10 }}
         env:
