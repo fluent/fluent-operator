@@ -26,6 +26,10 @@ spec:
   envVars:
 {{ toYaml .Values.fluentbit.envVars | indent 4 }}
 {{- end }}
+{{- if .Values.fluentbit.securityContext }}
+  containerSecurityContext:
+  {{ toYaml .Values.fluentbit.securityContext | nindent 4 }}
+{{- end }}
 {{- with .Values.fluentbit.tolerations }}
   tolerations:
 {{ toYaml . | indent 4 }}

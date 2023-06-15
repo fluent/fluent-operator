@@ -75,6 +75,8 @@ type FluentBitSpec struct {
 	Labels map[string]string `json:"labels,omitempty"`
 	// SecurityContext holds pod-level security attributes and common container settings.
 	SecurityContext *corev1.PodSecurityContext `json:"securityContext,omitempty"`
+	// ContainerSecurityContext holds container-level security attributes.
+	ContainerSecurityContext *corev1.SecurityContext `json:"containerSecurityContext,omitempty"`
 	// Host networking is requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false.
 	HostNetwork bool `json:"hostNetwork,omitempty"`
 	// EnvVars represent environment variables that can be passed to fluentbit pods.

@@ -91,6 +91,8 @@ fluentbit:
   secrets: []
   # Pod security context for Fluent Bit pods. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   podSecurityContext: {}
+  # Security context for Fluent Bit container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
   # List of volumes that can be mounted by containers belonging to the pod.
   additionalVolumes: []
   # Pod volumes to mount into the container's filesystem.

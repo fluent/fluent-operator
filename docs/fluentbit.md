@@ -385,6 +385,7 @@ FluentBitSpec defines the desired state of FluentBit
 | serviceAccountAnnotations | Annotations to add to the Fluentbit service account | map[string]string |
 | labels | Labels to add to each FluentBit pod | map[string]string |
 | securityContext | SecurityContext holds pod-level security attributes and common container settings. | *corev1.PodSecurityContext |
+| containerSecurityContext | ContainerSecurityContext holds container-level security attributes. | *corev1.SecurityContext |
 | hostNetwork | Host networking is requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false. | bool |
 | envVars | EnvVars represent environment variables that can be passed to fluentbit pods. | []corev1.EnvVar |
 | livenessProbe | LivenessProbe represents the pod's liveness probe. | *corev1.Probe |
