@@ -35,6 +35,7 @@ const (
 	MatchPlugin         PluginName = "match"
 	BufferPlugin        PluginName = "buffer"
 	CloudWatchPlugin    PluginName = "cloudwatch_logs"
+	DatadogPlugin       PluginName = "datadog"
 
 	BufferTag    string = "tag"
 	LabelTag     string = "tag"
@@ -66,6 +67,7 @@ const (
 	S3OutputType            OutputType = "s3"
 	LokiOutputType          OutputType = "loki"
 	CloudWatchOutputType    OutputType = "cloudwatch_logs"
+	DatadogOutputType       OutputType = "datadog"
 )
 
 var (

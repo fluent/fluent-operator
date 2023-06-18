@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"strings"
 
+	"strconv"
+
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/custom"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/params"
 	"github.com/fluent/fluent-operator/v2/pkg/utils"
-	"strconv"
 )
 
 // OutputCommon defines the common parameters for output plugin
@@ -49,6 +50,8 @@ type Output struct {
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 	// out_cloudwatch plugin
 	CloudWatch *CloudWatch `json:"cloudWatch,omitempty"`
+	// datadog plugin
+	Datadog *Datadog `json:"datadog,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -155,6 +158,11 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 	if o.CloudWatch != nil {
 		ps.InsertType(string(params.CloudWatchOutputType))
 		return o.cloudWatchPlugin(ps, loader), nil
+	}
+
+	if o.Datadog != nil {
+		ps.InsertType(string(params.DatadogOutputType))
+		return o.datadogPlugin(ps, loader), nil
 	}
 	return o.customOutput(ps, loader), nil
 
@@ -771,6 +779,97 @@ func (o *Output) customOutput(parent *params.PluginStore, loader plugins.SecretL
 	customPlugin, _ := o.CustomPlugin.Params(loader)
 	parent.Content = customPlugin.Content
 	return parent
+}
+
+func (o *Output) datadogPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+	if o.Datadog.ApiKey != nil {
+		apiKey, err := loader.LoadSecret(*o.Datadog.ApiKey)
+		if err != nil {
+			return nil, err
+		}
+		parent.InsertPairs("api_key", apiKey)
+	}
+
+	if o.Datadog.UseJson != nil {
+		parent.InsertPairs("use_json", fmt.Sprint(*o.Datadog.UseJson))
+	}
+
+	if o.Datadog.IncludeTagKey != nil {
+		parent.InsertPairs("include_tag_key", fmt.Sprint(*o.Datadog.IncludeTagKey))
+	}
+
+	if o.Datadog.TagKey != nil {
+		parent.InsertPairs("tag_key", fmt.Sprint(*o.Datadog.TagKey))
+	}
+
+	if o.Datadog.TimestampKey != nil {
+		parent.InsertPairs("timestamp_key", fmt.Sprint(*o.Datadog.TimestampKey))
+	}
+
+	if o.Datadog.UseSSL != nil {
+		parent.InsertPairs("use_ssl", fmt.Sprint(*o.Datadog.UseSSL))
+	}
+
+	if o.Datadog.NoSSLValidation != nil {
+		parent.InsertPairs("no_ssl_validation", fmt.Sprint(*o.Datadog.NoSSLValidation))
+	}
+
+	if o.Datadog.SSLPort != nil {
+		parent.InsertPairs("ssl_port", fmt.Sprint(*o.Datadog.SSLPort))
+	}
+
+	if o.Datadog.MaxRetries != nil {
+		parent.InsertPairs("max_retries", fmt.Sprint(*o.Datadog.MaxRetries))
+	}
+
+	if o.Datadog.MaxBackoff != nil {
+		parent.InsertPairs("max_backoff", fmt.Sprint(*o.Datadog.MaxBackoff))
+	}
+
+	if o.Datadog.UseHTTP != nil {
+		parent.InsertPairs("use_http", fmt.Sprint(*o.Datadog.UseHTTP))
+	}
+
+	if o.Datadog.UseCompression != nil {
+		parent.InsertPairs("use_compression", fmt.Sprint(*o.Datadog.UseCompression))
+	}
+
+	if o.Datadog.CompressionLevel != nil {
+		parent.InsertPairs("compression_level", fmt.Sprint(*o.Datadog.CompressionLevel))
+	}
+
+	if o.Datadog.DDSource != nil {
+		parent.InsertPairs("dd_source", fmt.Sprint(*o.Datadog.DDSource))
+	}
+
+	if o.Datadog.DDSourceCategory != nil {
+		parent.InsertPairs("dd_source_category", fmt.Sprint(*o.Datadog.DDSourceCategory))
+	}
+
+	if o.Datadog.DDTags != nil {
+		parent.InsertPairs("dd_tags", fmt.Sprint(*o.Datadog.DDTags))
+	}
+
+	if o.Datadog.DDHostname != nil {
+		parent.InsertPairs("dd_hostname", fmt.Sprint(*o.Datadog.DDHostname))
+	}
+
+	if o.Datadog.Service != nil {
+		parent.InsertPairs("service", fmt.Sprint(*o.Datadog.Service))
+	}
+
+	if o.Datadog.ProxyPort != nil {
+		parent.InsertPairs("proxy_port", fmt.Sprint(*o.Datadog.ProxyPort))
+	}
+
+	if o.Datadog.Host != nil {
+		parent.InsertPairs("host", fmt.Sprint(*o.Datadog.Host))
+	}
+
+	if o.Datadog.HttpProxy != nil {
+		parent.InsertPairs("http_proxy", fmt.Sprint(*o.Datadog.HttpProxy))
+	}
+	return parent, nil
 }
 
 var _ plugins.Plugin = &Output{}
