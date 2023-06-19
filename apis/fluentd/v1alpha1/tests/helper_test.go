@@ -266,7 +266,7 @@ func Test_ClusterCfgOutput2Datadog(t *testing.T) {
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
-	clusterFilters := []fluentdv1alpha1.ClusterFilter{}
+	clusterFilters := []fluentdv1alpha1.ClusterFilter{FluentdClusterFilter1}
 	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutput2Datadog}
 	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
@@ -277,7 +277,7 @@ func Test_ClusterCfgOutput2Datadog(t *testing.T) {
 	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
-		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-datadog.cfg"))).To(Equal(config))
+		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-datadog.cfg")))).To(Equal(config))
 
 		i++
 	}

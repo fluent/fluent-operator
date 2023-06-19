@@ -843,7 +843,7 @@ func (o *Output) datadogPlugin(parent *params.PluginStore, sl plugins.SecretLoad
 	}
 
 	if o.Datadog.DDSourceCategory != nil {
-		parent.InsertPairs("dd_source_category", fmt.Sprint(*o.Datadog.DDSourceCategory))
+		parent.InsertPairs("dd_sourcecategory", fmt.Sprint(*o.Datadog.DDSourceCategory))
 	}
 
 	if o.Datadog.DDTags != nil {
