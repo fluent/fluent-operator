@@ -858,8 +858,8 @@ func (o *Output) datadogPlugin(parent *params.PluginStore, sl plugins.SecretLoad
 		parent.InsertPairs("service", fmt.Sprint(*o.Datadog.Service))
 	}
 
-	if o.Datadog.ProxyPort != nil {
-		parent.InsertPairs("proxy_port", fmt.Sprint(*o.Datadog.ProxyPort))
+	if o.Datadog.Port != nil {
+		parent.InsertPairs("port", fmt.Sprint(*o.Datadog.Port))
 	}
 
 	if o.Datadog.Host != nil {

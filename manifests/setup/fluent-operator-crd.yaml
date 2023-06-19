@@ -5345,7 +5345,7 @@ spec:
                         noSSLValidation:
                           description: Disable SSL validation (useful for proxy forwarding)
                           type: boolean
-                        proxyPort:
+                        port:
                           description: Proxy port when logs are not directly forwarded
                             to Datadog and ssl is not used
                           format: int32
@@ -25768,7 +25768,7 @@ spec:
                         noSSLValidation:
                           description: Disable SSL validation (useful for proxy forwarding)
                           type: boolean
-                        proxyPort:
+                        port:
                           description: Proxy port when logs are not directly forwarded
                             to Datadog and ssl is not used
                           format: int32

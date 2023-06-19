@@ -45,7 +45,7 @@ type Datadog struct {
 	// Proxy port when logs are not directly forwarded to Datadog and ssl is not used
 	// +kubebuilder:validation:Minimum:=1
 	// +kubebuilder:validation:Maximum:=65535
-	ProxyPort *uint32 `json:"proxyPort,omitempty"`
+	Port *uint32 `json:"port,omitempty"`
 	// Proxy endpoint when logs are not directly forwarded to Datadog
 	Host *string `json:"host,omitempty"`
 	// HTTP proxy, only takes effect if HTTP forwarding is enabled (use_http). Defaults to HTTP_PROXY/http_proxy env vars.

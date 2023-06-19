@@ -410,10 +410,9 @@ metadata:
 spec: 
   outputs: 
   - datadog:
-      service: http-intake.logs.datadoghq.com
-      host: test
+      dd_source: kubernetes
+	  dd_sourcecategory: kubernetes
 `
-
 	once sync.Once
 )
 
