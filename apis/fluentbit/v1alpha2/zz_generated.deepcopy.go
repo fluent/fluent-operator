@@ -961,6 +961,11 @@ func (in *FluentBitSpec) DeepCopyInto(out *FluentBitSpec) {
 		*out = new(v1.PodSecurityContext)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.ContainerSecurityContext != nil {
+		in, out := &in.ContainerSecurityContext, &out.ContainerSecurityContext
+		*out = new(v1.SecurityContext)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.EnvVars != nil {
 		in, out := &in.EnvVars, &out.EnvVars
 		*out = make([]v1.EnvVar, len(*in))
