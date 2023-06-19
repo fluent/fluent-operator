@@ -162,7 +162,7 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 
 	if o.Datadog != nil {
 		ps.InsertType(string(params.DatadogOutputType))
-		return o.datadogPlugin(ps, loader), nil
+		return o.datadogPlugin(ps, loader)
 	}
 	return o.customOutput(ps, loader), nil
 

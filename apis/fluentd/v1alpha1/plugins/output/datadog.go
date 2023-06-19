@@ -1,6 +1,6 @@
 package output
 
-import "github.com/fluent/fluent-operator/apis/fluentd/v1alpha1/plugins"
+import "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
 
 // Opensearch defines the parameters for out_opensearch plugin
 type Datadog struct {

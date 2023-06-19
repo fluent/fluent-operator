@@ -413,6 +413,129 @@ spec:
                       required:
                       - config
                       type: object
+                    datadog:
+                      description: datadog plugin
+                      properties:
+                        apiKey:
+                          description: This parameter is required in order to authenticate
+                            your fluent agent.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion,
+                                        kind, uid?'
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                              type: object
+                          type: object
+                        compressionLevel:
+                          description: Set the log compression level for HTTP (1 to
+                            9, 9 being the best ratio)
+                          format: int32
+                          type: integer
+                        ddHostname:
+                          description: Used by Datadog to identify the host submitting
+                            the logs.
+                          type: string
+                        ddSource:
+                          description: This tells Datadog what integration it is
+                          type: string
+                        ddSourceCategory:
+                          description: Multiple value attribute. Can be used to refine
+                            the source attribute
+                          type: string
+                        ddTags:
+                          description: Custom tags with the following format "key1:value1,
+                            key2:value2"
+                          type: string
+                        host:
+                          description: Proxy endpoint when logs are not directly forwarded
+                            to Datadog
+                          type: string
+                        httpProxy:
+                          description: HTTP proxy, only takes effect if HTTP forwarding
+                            is enabled (use_http). Defaults to HTTP_PROXY/http_proxy
+                            env vars.
+                          type: string
+                        includeTagKey:
+                          description: Automatically include the Fluentd tag in the
+                            record.
+                          type: boolean
+                        maxBackoff:
+                          description: The maximum time waited between each retry
+                            in seconds
+                          format: int32
+                          type: integer
+                        maxRetries:
+                          description: The number of retries before the output plugin
+                            stops. Set to -1 for unlimited retries
+                          format: int32
+                          type: integer
+                        noSSLValidation:
+                          description: Disable SSL validation (useful for proxy forwarding)
+                          type: boolean
+                        proxyPort:
+                          description: Proxy port when logs are not directly forwarded
+                            to Datadog and ssl is not used
+                          format: int32
+                          maximum: 65535
+                          minimum: 1
+                          type: integer
+                        service:
+                          description: Used by Datadog to correlate between logs,
+                            traces and metrics.
+                          type: string
+                        sslPort:
+                          description: Port used to send logs over a SSL encrypted
+                            connection to Datadog. If use_http is disabled, use 10516
+                            for the US region and 443 for the EU region.
+                          format: int32
+                          maximum: 65535
+                          minimum: 1
+                          type: integer
+                        tagKey:
+                          description: Where to store the Fluentd tag.
+                          type: string
+                        timestampKey:
+                          description: Name of the attribute which will contain timestamp
+                            of the log event. If nil, timestamp attribute is not added.
+                          type: string
+                        useCompression:
+                          description: Enable log compression for HTTP
+                          type: boolean
+                        useHTTP:
+                          description: Enable HTTP forwarding. If you disable it,
+                            make sure to change the port to 10514 or ssl_port to 10516
+                          type: boolean
+                        useJson:
+                          description: Event format, if true, the event is sent in
+                            json format. Othwerwise, in plain text.
+                          type: boolean
+                        useSSL:
+                          description: If true, the agent initializes a secure connection
+                            to Datadog. In clear TCP otherwise.
+                          type: boolean
+                      type: object
                     elasticsearch:
                       description: out_es plugin
                       properties:

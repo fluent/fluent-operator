@@ -259,7 +259,7 @@ func Test_ClusterCfgOutput2CloudWatch(t *testing.T) {
 
 func Test_ClusterCfgOutput2Datadog(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, nil)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
