@@ -30,9 +30,10 @@ func MakeFluentdPVC(fd fluentdv1alpha1.Fluentd) *corev1.PersistentVolumeClaim {
 			Labels:    labels,
 		},
 		Spec: corev1.PersistentVolumeClaimSpec{
-			AccessModes: bufferPvc.AccessModes,
-			Resources:   bufferPvc.Resources,
-			VolumeMode:  bufferPvc.VolumeMode,
+			AccessModes:      bufferPvc.AccessModes,
+			Resources:        bufferPvc.Resources,
+			VolumeMode:       bufferPvc.VolumeMode,
+			StorageClassName: bufferPvc.StorageClassName,
 		},
 	}
 	return &pvc
