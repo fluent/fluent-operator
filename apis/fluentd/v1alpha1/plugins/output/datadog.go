@@ -2,7 +2,7 @@ package output
 
 import "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
 
-// Data defines the parameters for out_datadog plugin
+// Datadog defines the parameters for out_datadog plugin
 type Datadog struct {
 	// This parameter is required in order to authenticate your fluent agent.
 	ApiKey *plugins.Secret `json:"apiKey,omitempty"`
