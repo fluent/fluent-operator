@@ -162,7 +162,7 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 
 	if o.Datadog != nil {
 		ps.InsertType(string(params.DatadogOutputType))
-		return o.datadogPlugin(ps, loader)
+		return o.datadogPlugin(ps, loader), nil
 	}
 	return o.customOutput(ps, loader), nil
 
@@ -781,11 +781,11 @@ func (o *Output) customOutput(parent *params.PluginStore, loader plugins.SecretL
 	return parent
 }
 
-func (o *Output) datadogPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+func (o *Output) datadogPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
 	if o.Datadog.ApiKey != nil {
-		apiKey, err := loader.LoadSecret(*o.Datadog.ApiKey)
+		apiKey, err := sl.LoadSecret(*o.Datadog.ApiKey)
 		if err != nil {
-			return nil, err
+			return nil
 		}
 		parent.InsertPairs("api_key", apiKey)
 	}
@@ -869,7 +869,7 @@ func (o *Output) datadogPlugin(parent *params.PluginStore, loader plugins.Secret
 	if o.Datadog.HttpProxy != nil {
 		parent.InsertPairs("http_proxy", fmt.Sprint(*o.Datadog.HttpProxy))
 	}
-	return parent, nil
+	return parent
 }
 
 var _ plugins.Plugin = &Output{}
