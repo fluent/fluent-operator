@@ -694,6 +694,16 @@ func (in *FluentdSpec) DeepCopyInto(out *FluentdSpec) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	if in.DefaultFilterSelector != nil {
+		in, out := &in.DefaultFilterSelector, &out.DefaultFilterSelector
+		*out = new(v1.LabelSelector)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.DefaultOutputSelector != nil {
+		in, out := &in.DefaultOutputSelector, &out.DefaultOutputSelector
+		*out = new(v1.LabelSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Replicas != nil {
 		in, out := &in.Replicas, &out.Replicas
 		*out = new(int32)
