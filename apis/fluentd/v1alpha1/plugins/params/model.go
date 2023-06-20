@@ -34,12 +34,12 @@ func (ps *PluginStore) InsertPairs(key, value string) {
 	ps.Store[key] = value
 }
 
-// The @type parameter specifies the type of the plugin.
+// The @type parameter specifies the type of the plugin
 func (ps *PluginStore) InsertType(value string) {
 	ps.InsertPairs("@type", value)
 }
 
-// SetIgnorePath will ignore the buffer path.
+// SetIgnorePath will ignore the buffer path
 func (ps *PluginStore) SetIgnorePath() {
 	ps.IgnorePath = true
 }
@@ -58,7 +58,7 @@ func (ps *PluginStore) InsertChilds(childs ...*PluginStore) {
 	}
 }
 
-// The total hash string for this plugin store.
+// The total hash string for this plugin store
 func (ps *PluginStore) Hash() string {
 	c := NewPluginStore(ps.Name)
 
@@ -78,7 +78,7 @@ func (ps *PluginStore) GetTag() string {
 	return ps.Store["tag"]
 }
 
-// Returns the @label value string of this plugin store.
+// Returns the @label value string of this plugin store
 func (ps *PluginStore) RouteLabel() string {
 	if ps.Name != "route" {
 		return ""
@@ -100,10 +100,10 @@ func (ps *PluginStore) String() string {
 	}
 	var buf bytes.Buffer
 
-	// Handles the head section.
+	// Handles the head directive
 	ps.processHead(&buf)
 
-	// The body needs to be indented by two whitespace characters.
+	// The body needs to be indented by two whitespace characters
 	parentPrefixWhitespaces := ps.PrefixWhitespaces
 	ps.setWhitespaces(parentPrefixWhitespaces + IntervalWhitespaces)
 	ps.processBody(&buf)
@@ -115,7 +115,7 @@ func (ps *PluginStore) String() string {
 		}
 	}
 
-	// The tail must be indented in the same format as head.
+	// The tail must be indented in the same format as head directive
 	ps.setWhitespaces(parentPrefixWhitespaces)
 	ps.processTail(&buf)
 
@@ -126,7 +126,7 @@ func (ps *PluginStore) setWhitespaces(curentWhitespaces string) {
 	ps.PrefixWhitespaces = curentWhitespaces
 }
 
-// processes head, i.e: <match xx>
+// write the head directive to buffer, i.e.: <match xx>
 func (ps *PluginStore) processHead(buf *bytes.Buffer) {
 	var head string
 	switch PluginName(ps.Name) {
@@ -173,11 +173,12 @@ func (ps *PluginStore) processBody(buf *bytes.Buffer) {
 	buf.WriteString(body)
 }
 
-// processes the tail
+// write the tail directive to the buffer, i.e.: </match>
 func (ps *PluginStore) processTail(buf *bytes.Buffer) {
 	buf.WriteString(fmt.Sprintf("%s</%s>\n", ps.PrefixWhitespaces, ps.Name))
 }
 
+// decide to return the head directive with our without a filter - <match> or <match xx>
 func (ps *PluginStore) headFmtSprintf(value string) string {
 	if value != "" {
 		return fmt.Sprintf("%s<%s %s>\n", ps.PrefixWhitespaces, ps.Name, value)
