@@ -15,8 +15,8 @@ Time defines the common parameters for the time plugin
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| timeType | parses/formats value according to this type, default is *string | *string |
-| timeFormat | Process value according to the specified format. This is available only when time_type is *string | *string |
+| timeType | parses/formats value according to this type, default is string | *string |
+| timeFormat | Process value according to the specified format. This is available only when time_type is string | *string |
 | localtime | If true, uses local time. | *bool |
 | utc | If true, uses UTC. | *bool |
 | timezone | Uses the specified timezone. | *string |
