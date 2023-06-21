@@ -214,6 +214,7 @@ CollectorSpec defines the desired state of FluentBit
 | bufferPath | The path where buffer chunks are stored. | *string |
 | ports | Ports represents the pod's ports. | []corev1.ContainerPort |
 | service | Service represents configurations on the fluent-bit service. | CollectorService |
+| schedulerName | SchedulerName represents the desired scheduler for the Fluentbit collector pods | string |
 
 [Back to TOC](#table-of-contents)
 # Decorder
@@ -396,6 +397,7 @@ FluentBitSpec defines the desired state of FluentBit
 | dnsPolicy | Set DNS policy for the pod. Defaults to \"ClusterFirst\". Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'. | corev1.DNSPolicy |
 | metricsPort | MetricsPort is the port used by the metrics server. If this option is set, HttpPort from ClusterFluentBitConfig needs to match this value. Default is 2020. | int32 |
 | service | Service represents configurations on the fluent-bit service. | FluentBitService |
+| schedulerName | SchedulerName represents the desired scheduler for fluent-bit pods. | string |
 
 [Back to TOC](#table-of-contents)
 # InputSpec

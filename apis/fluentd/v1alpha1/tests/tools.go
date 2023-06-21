@@ -399,6 +399,22 @@ spec:
       webIdentityTokenFile: /var/run/secrets/something/token
 `
 
+	FluentdClusterOutput2Datadog    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutput2DatadogRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-datadog
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - datadog:
+      host: http-intake.logs.datadoghq.com
+      port: 443
+      ddSource: kubernetes
+      ddSourcecategory: kubernetes
+`
 	once sync.Once
 )
 
@@ -532,6 +548,7 @@ func init() {
 			ParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
 			ParseIntoObject(FluentdClusterOutputCustomRaw, &FluentdClusterOutputCustom)
 			ParseIntoObject(FluentdClusterOutput2CloudWatchRaw, &FluentdClusterOutput2CloudWatch)
+			ParseIntoObject(FluentdClusterOutput2DatadogRaw, &FluentdClusterOutput2Datadog)
 		},
 	)
 }
