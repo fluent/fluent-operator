@@ -35,7 +35,7 @@ type Datadog struct {
 	// This tells Datadog what integration it is
 	DDSource *string `json:"ddSource,omitempty"`
 	// Multiple value attribute. Can be used to refine the source attribute
-	DDSourceCategory *string `json:"ddSourceCategory,omitempty"`
+	DDSourcecategory *string `json:"ddSourcecategory,omitempty"`
 	// Custom tags with the following format "key1:value1, key2:value2"
 	DDTags *string `json:"ddTags,omitempty"`
 	// Used by Datadog to identify the host submitting the logs.

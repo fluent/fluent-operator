@@ -460,7 +460,7 @@ spec:
                         ddSource:
                           description: This tells Datadog what integration it is
                           type: string
-                        ddSourceCategory:
+                        ddSourcecategory:
                           description: Multiple value attribute. Can be used to refine
                             the source attribute
                           type: string
