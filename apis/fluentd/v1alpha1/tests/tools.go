@@ -411,7 +411,7 @@ spec:
   outputs: 
   - datadog:
       ddSource: kubernetes
-	  ddSourcecategory: kubernetes
+      ddSourcecategory: kubernetes
 `
 	once sync.Once
 )
