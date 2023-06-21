@@ -410,6 +410,8 @@ metadata:
 spec: 
   outputs: 
   - datadog:
+      host: http-intake.logs.datadoghq.com
+      port: 443
       ddSource: kubernetes
       ddSourcecategory: kubernetes
 `
