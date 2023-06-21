@@ -410,8 +410,8 @@ metadata:
 spec: 
   outputs: 
   - datadog:
-      dd_source: kubernetes
-	  dd_sourcecategory: kubernetes
+      ddSource: kubernetes
+	  ddSourcecategory: kubernetes
 `
 	once sync.Once
 )
