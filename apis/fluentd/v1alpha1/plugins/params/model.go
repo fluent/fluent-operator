@@ -11,6 +11,8 @@ import (
 type PluginStore struct {
 	// The plugin name
 	Name string
+	// Plugin routing tag
+	Tag string
 	// The key-value pairs
 	Store map[string]string
 	// The child plugins mounted here
@@ -25,6 +27,15 @@ type PluginStore struct {
 func NewPluginStore(name string) *PluginStore {
 	return &PluginStore{
 		Name:   name,
+		Store:  make(map[string]string),
+		Childs: make([]*PluginStore, 0),
+	}
+}
+
+func NewPluginStoreWithTag(name string, tag string) *PluginStore {
+	return &PluginStore{
+		Name:   name,
+		Tag:    tag,
 		Store:  make(map[string]string),
 		Childs: make([]*PluginStore, 0),
 	}
@@ -60,10 +71,10 @@ func (ps *PluginStore) InsertChilds(childs ...*PluginStore) {
 
 // The total hash string for this plugin store
 func (ps *PluginStore) Hash() string {
-	c := NewPluginStore(ps.Name)
+	c := NewPluginStoreWithTag(ps.Name, ps.Tag)
 
 	for k, v := range ps.Store {
-		if k == "@id" || k == "tag" {
+		if k == "@id" {
 			continue
 		}
 		c.Store[k] = v
@@ -75,7 +86,7 @@ func (ps *PluginStore) Hash() string {
 
 // Returns tag value
 func (ps *PluginStore) GetTag() string {
-	return ps.Store["tag"]
+	return ps.Tag
 }
 
 // Returns the @label value string of this plugin store
@@ -131,18 +142,18 @@ func (ps *PluginStore) processHead(buf *bytes.Buffer) {
 	var head string
 	switch PluginName(ps.Name) {
 	case BufferPlugin:
-		tag, ok := ps.Store[BufferTag]
-		if ok {
+		tag := ps.Tag
+		if tag != "" {
 			head = ps.headFmtSprintf(tag)
 		}
 	case MatchPlugin:
-		head = ps.headFmtSprintf(ps.Store[MatchTag])
+		head = ps.headFmtSprintf(ps.Tag)
 	case FilterPlugin:
-		head = ps.headFmtSprintf(ps.Store[FilterTag])
+		head = ps.headFmtSprintf(ps.Tag)
 	case TransportPlugin:
 		head = ps.headFmtSprintf(ps.Store[ProtocolName])
 	case LabelPlugin:
-		head = ps.headFmtSprintf(ps.Store[LabelTag])
+		head = ps.headFmtSprintf(ps.Tag)
 	default:
 		head = fmt.Sprintf("%s<%s>\n", ps.PrefixWhitespaces, ps.Name)
 	}
@@ -155,10 +166,6 @@ func (ps *PluginStore) processBody(buf *bytes.Buffer) {
 
 	keys := make([]string, 0, len(ps.Store))
 	for k := range ps.Store {
-		// Don't add tag unless it is an input plugin
-		if k == "tag" && ps.Name != "source" {
-			continue
-		}
 		if ps.Name == string(BufferPlugin) && ps.IgnorePath {
 			continue
 		}

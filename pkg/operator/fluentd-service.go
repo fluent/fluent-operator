@@ -6,6 +6,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
+	"github.com/fluent/fluent-operator/v2/pkg/constants"
 )
 
 const (
@@ -52,11 +53,11 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 		if input.Forward != nil {
 			forwardPort := *input.Forward.Port
 			if forwardPort == 0 {
-				forwardPort = DefaultForwardPort
+				forwardPort = constants.DefaultForwardPort
 			}
 
 			forwardContainerPort := corev1.ServicePort{
-				Name:       DefaultForwardName,
+				Name:       constants.DefaultForwardName,
 				Port:       forwardPort,
 				TargetPort: intstr.FromString(FluentdForwardPortName),
 				Protocol:   corev1.ProtocolTCP,
@@ -68,10 +69,10 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 		if input.Http != nil {
 			httpPort := *input.Http.Port
 			if httpPort == 0 {
-				httpPort = DefaultHttpPort
+				httpPort = constants.DefaultHttpPort
 			}
 			httpContainerPort := corev1.ServicePort{
-				Name:       DefaultHttpName,
+				Name:       constants.DefaultHttpName,
 				Port:       httpPort,
 				TargetPort: intstr.FromString(FluentdHttpPortName),
 				Protocol:   corev1.ProtocolTCP,

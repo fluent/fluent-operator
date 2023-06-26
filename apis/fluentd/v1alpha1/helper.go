@@ -12,6 +12,8 @@ import (
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/output"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/params"
 	fluentdRouter "github.com/fluent/fluent-operator/v2/pkg/fluentd/router"
+
+	"github.com/fluent/fluent-operator/v2/pkg/constants"
 )
 
 // +kubebuilder:object:generate=false
@@ -30,6 +32,7 @@ type Renderer interface {
 type PluginResources struct {
 	InputPlugins         []params.PluginStore
 	MainRouterPlugins    params.PluginStore
+	MonitoringFilters    []params.PluginStore
 	LabelPluginResources []params.PluginStore
 }
 
@@ -45,13 +48,39 @@ type CfgResources struct {
 }
 
 // NewGlobalPluginResources represents a combined global fluentd resources
-func NewGlobalPluginResources(globalId string) *PluginResources {
+func NewGlobalPluginResources(globalId string, enablePrometheusMonitoring bool, metricsPort *int32, metricsBind *string) *PluginResources {
 	globalMainRouter := fluentdRouter.NewGlobalRouter(globalId)
-	return &PluginResources{
+	pluginResources := &PluginResources{
 		InputPlugins:         make([]params.PluginStore, 0),
 		MainRouterPlugins:    *globalMainRouter,
+		MonitoringFilters:    make([]params.PluginStore, 0),
 		LabelPluginResources: make([]params.PluginStore, 0),
 	}
+	if enablePrometheusMonitoring {
+		incomingMonitoringFilter := fluentdRouter.NewIncomingMonitoringFilter()
+		outgoingMonitoringMatch := fluentdRouter.NewOutgoingMonitoringMatch()
+
+		var determinedMetricsPort int32
+		if metricsPort == nil {
+			determinedMetricsPort = constants.DefaultMetricsPort
+		} else {
+			determinedMetricsPort = *metricsPort
+		}
+		var determinedMetricsBind string
+		if metricsBind == nil {
+			determinedMetricsBind = constants.DefaultBind
+		} else {
+			determinedMetricsBind = *metricsBind
+		}
+
+		pluginResources.MonitoringFilters = append(pluginResources.MonitoringFilters, *incomingMonitoringFilter, *outgoingMonitoringMatch)
+
+		outputSources := fluentdRouter.NewMetricsExposeSources(determinedMetricsPort, determinedMetricsBind)
+		for _, s := range outputSources {
+			pluginResources.MonitoringFilters = append(pluginResources.MonitoringFilters, *s)
+		}
+	}
+	return pluginResources
 }
 
 func NewCfgResources() *CfgResources {
@@ -237,7 +266,7 @@ func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResourc
 	}
 
 	cfgLabelPlugin := params.NewPluginStore("label")
-	cfgLabelPlugin.InsertPairs("tag", cfgRouteLabel)
+	cfgLabelPlugin.Tag = cfgRouteLabel
 
 	// insert filter plugins of this fluentd config
 	for _, filter := range r.FilterPlugins {
@@ -255,7 +284,7 @@ func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResourc
 	return nil
 }
 
-func (pgr *PluginResources) RenderMainConfig(enableMultiWorkers bool) (string, error) {
+func (pgr *PluginResources) RenderMainConfig(enableMultiWorkers bool, enablePrometheusMetrics bool) (string, error) {
 	if len(pgr.InputPlugins) == 0 && len(pgr.LabelPluginResources) == 0 {
 		return "", fmt.Errorf("no plugins detect")
 	}
@@ -269,6 +298,17 @@ func (pgr *PluginResources) RenderMainConfig(enableMultiWorkers bool) (string, e
 			pluginStore.SetIgnorePath()
 		}
 		buf.WriteString(pluginStore.String())
+	}
+
+	// sort monitoring plugins
+	if enablePrometheusMetrics {
+		monitoringPlugins := ByHashcode(pgr.MonitoringFilters)
+		for _, pluginStore := range monitoringPlugins {
+			if enableMultiWorkers {
+				pluginStore.SetIgnorePath()
+			}
+			buf.WriteString(pluginStore.String())
+		}
 	}
 
 	// sort main routers

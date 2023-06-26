@@ -54,7 +54,12 @@ func (f *Filter) Name() string {
 }
 
 func (f *Filter) Params(loader plugins.SecretLoader) (*params.PluginStore, error) {
-	ps := params.NewPluginStore(f.Name())
+	var ps *params.PluginStore
+	if f.Tag != nil {
+		ps = params.NewPluginStoreWithTag(f.Name(), fmt.Sprint(*f.Tag))
+	} else {
+		ps = params.NewPluginStore(f.Name())
+	}
 
 	if f.Id != nil {
 		ps.InsertPairs("@id", fmt.Sprint(*f.Id))
@@ -62,10 +67,6 @@ func (f *Filter) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 
 	if f.LogLevel != nil {
 		ps.InsertPairs("@log_level", fmt.Sprint(*f.LogLevel))
-	}
-
-	if f.Tag != nil {
-		ps.InsertPairs("tag", fmt.Sprint(*f.Tag))
 	}
 
 	if f.Grep != nil {

@@ -99,6 +99,15 @@ type FluentdSpec struct {
 	SecurityContext *corev1.PodSecurityContext `json:"securityContext,omitempty"`
 	// SchedulerName represents the desired scheduler for fluentd pods.
 	SchedulerName string `json:"schedulerName,omitempty"`
+	// EnablePrometheusMetrics will enable Prometheus metrics from fluentd.
+	EnablePrometheusMetrics bool `json:"enablePrometheusMetrics,omitempty"`
+	// MetricsPort is the port that the Prometheus metrics listener will be exposed on if
+	// metrics are enabled, default is 2021
+	// +kubebuilder:validation:Minimum:=1
+	// +kubebuilder:validation:Maximum:=65535
+	MetricsPort *int32 `json:"metricsPort,omitempty"`
+	// MetricsBind is the host for metrics to listen on, default is "0.0.0.0"
+	MetricsBind *string `json:"metricsBind,omitempty"`
 }
 
 // FluentDService the service of the FluentD

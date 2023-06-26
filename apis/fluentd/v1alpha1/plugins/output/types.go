@@ -72,7 +72,14 @@ func (o *Output) Name() string {
 }
 
 func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error) {
-	ps := params.NewPluginStore(o.Name())
+	var ps *params.PluginStore
+
+	if o.Tag != nil {
+		ps = params.NewPluginStoreWithTag(o.Name(), fmt.Sprint(*o.Tag))
+	} else {
+		ps = params.NewPluginStore(o.Name())
+	}
+
 	childs := make([]*params.PluginStore, 0)
 
 	ps.InsertPairs("@id", fmt.Sprint(*o.Id))
@@ -83,10 +90,6 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 
 	if o.Label != nil {
 		ps.InsertPairs("@label", fmt.Sprint(*o.Label))
-	}
-
-	if o.Tag != nil {
-		ps.InsertPairs("tag", fmt.Sprint(*o.Tag))
 	}
 
 	if o.BufferSection.Buffer != nil {

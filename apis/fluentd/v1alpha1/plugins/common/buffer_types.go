@@ -199,7 +199,7 @@ func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 		ps.InsertPairs("timekey_wait", fmt.Sprint(*b.TimeKeyWait))
 	}
 
-	ps.InsertPairs("tag", b.Tag)
+	ps.Tag = b.Tag
 
 	if b.ChunkLimitSize != nil {
 		ps.InsertPairs("chunk_limit_size", *b.ChunkLimitSize)
