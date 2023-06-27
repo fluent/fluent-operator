@@ -286,6 +286,8 @@ FluentdSpec defines the desired state of Fluentd
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | globalInputs | Fluentd global inputs. | [][[input.Input](plugins/input/input.md)](plugins/[input/input](plugins/input/input/md).md) |
+| defaultFilterSelector | Select cluster filter plugins used to filter for the default cluster output | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| defaultOutputSelector | Select cluster output plugins used to send all logs that did not match a route to the matching outputs | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | disableService | By default will build the related service according to the globalinputs definition. | bool |
 | replicas | Numbers of the Fluentd instance | *int32 |
 | workers | Numbers of the workers in Fluentd instance | *int32 |

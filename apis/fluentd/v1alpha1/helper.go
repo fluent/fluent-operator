@@ -98,6 +98,7 @@ func (pgr *PluginResources) BuildCfgRouter(cfg Renderer) (*fluentdRouter.Route, 
 		return nil, err
 	}
 
+	// Insert the route to the MainRouter
 	pgr.MainRouterPlugins.InsertChilds(routePluginStore)
 
 	return cfgRoute, nil
@@ -105,8 +106,12 @@ func (pgr *PluginResources) BuildCfgRouter(cfg Renderer) (*fluentdRouter.Route, 
 
 // PatchAndFilterClusterLevelResources will combine and patch all the cluster CRs that the fluentdconfig selected,
 // convert the related filter/output pluginstores to the global pluginresources.
-func (pgr *PluginResources) PatchAndFilterClusterLevelResources(sl plugins.SecretLoader, cfgId string,
-	clusterfilters []ClusterFilter, clusteroutputs []ClusterOutput) (*CfgResources, []string) {
+func (pgr *PluginResources) PatchAndFilterClusterLevelResources(
+	sl plugins.SecretLoader,
+	cfgId string,
+	clusterfilters []ClusterFilter,
+	clusteroutputs []ClusterOutput,
+) (*CfgResources, []string) {
 	// To store all filters/outputs plugins that this cfg selected
 	cfgResources := NewCfgResources()
 
@@ -135,8 +140,12 @@ func (pgr *PluginResources) PatchAndFilterClusterLevelResources(sl plugins.Secre
 
 // PatchAndFilterNamespacedLevelResources will combine and patch all the cluster CRs that the fluentdconfig selected,
 // convert the related filter/output pluginstores to the global pluginresources.
-func (pgr *PluginResources) PatchAndFilterNamespacedLevelResources(sl plugins.SecretLoader, cfgId string,
-	filters []Filter, outputs []Output) (*CfgResources, []string) {
+func (pgr *PluginResources) PatchAndFilterNamespacedLevelResources(
+	sl plugins.SecretLoader,
+	cfgId string,
+	filters []Filter,
+	outputs []Output,
+) (*CfgResources, []string) {
 	// To store all filters/outputs plugins that this cfg selected
 	cfgResources := NewCfgResources()
 
@@ -163,8 +172,11 @@ func (pgr *PluginResources) PatchAndFilterNamespacedLevelResources(sl plugins.Se
 	return cfgResources, errs
 }
 
-func (r *CfgResources) filterForFilters(cfgId, namespace, name, crdtype string,
-	sl plugins.SecretLoader, filters []filter.Filter) error {
+func (r *CfgResources) filterForFilters(
+	cfgId, namespace, name, crdtype string,
+	sl plugins.SecretLoader,
+	filters []filter.Filter,
+) error {
 	for n, filter := range filters {
 		filterId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
 		filter.FilterCommon.Id = &filterId
@@ -189,8 +201,11 @@ func (r *CfgResources) filterForFilters(cfgId, namespace, name, crdtype string,
 	return nil
 }
 
-func (r *CfgResources) filterForOutputs(cfgId, namespace, name, crdtype string,
-	sl plugins.SecretLoader, outputs []output.Output) error {
+func (r *CfgResources) filterForOutputs(
+	cfgId, namespace, name, crdtype string,
+	sl plugins.SecretLoader,
+	outputs []output.Output,
+) error {
 	for n, output := range outputs {
 		outputId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
 		output.OutputCommon.Id = &outputId
@@ -218,7 +233,7 @@ func (r *CfgResources) filterForOutputs(cfgId, namespace, name, crdtype string,
 // convert the cfg plugins to a label plugin, appends to the global label plugins
 func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResources) error {
 	if len(r.FilterPlugins) == 0 && len(r.OutputPlugins) == 0 {
-		return errors.New("no filter plugins or output plugins matched")
+		return errors.New("no filter plugins and no output plugins matched")
 	}
 
 	cfgLabelPlugin := params.NewPluginStore("label")
