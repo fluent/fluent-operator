@@ -40,6 +40,8 @@ spec:
         - '-c'
         - set -ex;
           echo CONTAINER_ROOT_DIR=$(docker info -f '{{`{{.DockerRootDir}}`}}' 2> /dev/null) > /fluent-operator/fluent-bit.env
+        resources:
+          {{- toYaml .Values.operator.initcontainer.resources | nindent 10 }}
         volumeMounts:
         - name: env
           mountPath: /fluent-operator
@@ -58,6 +60,8 @@ spec:
         - '-c'
         - set -ex;
           echo CONTAINER_ROOT_DIR={{ .Values.operator.logPath.containerd }} > /fluent-operator/fluent-bit.env
+        resources:
+          {{- toYaml .Values.operator.initcontainer.resources | nindent 10 }}
         volumeMounts:
         - name: env
           mountPath: /fluent-operator
@@ -73,6 +77,8 @@ spec:
         - '-c'
         - set -ex;
           echo CONTAINER_ROOT_DIR={{ .Values.operator.logPath.crio }} > /fluent-operator/fluent-bit.env
+        resources:
+          {{- toYaml .Values.operator.initcontainer.resources | nindent 10 }}
         volumeMounts:
         - name: env
           mountPath: /fluent-operator
