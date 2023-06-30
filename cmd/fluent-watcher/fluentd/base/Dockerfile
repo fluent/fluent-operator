@@ -29,6 +29,7 @@ RUN apk update \
  && gem install elasticsearch -v 7.13.3 \
  && gem install elasticsearch-xpack -v 7.13.3 \
  && gem install fluent-plugin-detect-exceptions -v 0.0.14 \
+ && gem install fluent-plugin-opensearch -v 1.1.0 \
  && gem install \
          fluent-plugin-s3 \
          fluent-plugin-rewrite-tag-filter \
@@ -40,7 +41,6 @@ RUN apk update \
          fluent-plugin-record-modifier \
          fluent-plugin-multi-format-parser \
          fluent-plugin-aws-elasticsearch-service \
-         fluent-plugin-opensearch \
          fluent-plugin-grafana-loki \
  && apk del .build-deps \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem /usr/lib/ruby/gems/3.*/gems/fluentd-*/test
