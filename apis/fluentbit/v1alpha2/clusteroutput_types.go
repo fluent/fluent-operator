@@ -94,6 +94,8 @@ type OutputSpec struct {
 	OpenTelemetry *output.OpenTelemetry `json:"opentelemetry,omitempty"`
 	// PrometheusRemoteWrite_types defines Prometheus Remote Write configuration.
 	PrometheusRemoteWrite *output.PrometheusRemoteWrite `json:"prometheusRemoteWrite,omitempty"`
+	// S3 defines S3 Output configuration.
+	S3 *output.S3 `json:"s3,omitempty"`
 
 	// CustomPlugin defines Custom Output configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`

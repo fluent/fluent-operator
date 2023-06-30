@@ -1333,6 +1333,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.PrometheusRemoteWrite)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.S3 != nil {
+		in, out := &in.S3, &out.S3
+		*out = new(output.S3)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)
