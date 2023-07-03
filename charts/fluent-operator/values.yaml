@@ -14,6 +14,14 @@ operator:
   initcontainer:
     repository: "docker"
     tag: "20.10"
+
+    resources:
+      limits:
+        cpu: 100m
+        memory: 64Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
   container:
     repository: "kubesphere/fluent-operator"
     tag: "latest"
@@ -108,8 +116,8 @@ fluentbit:
   # nodeSelector configuration for Fluent Bit pods. Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
   # Node tolerations applied to Fluent Bit pods. Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  tolerations: 
-  - operator: Exists
+  tolerations:
+    - operator: Exists
   # Priority Class applied to Fluent Bit pods. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
   priorityClassName: ""
   # Environment variables that can be passed to fluentbit pods
@@ -224,9 +232,9 @@ fluentbit:
   kubeedge:
     enable: false
     prometheusRemoteWrite:
-    # Change the host to the address of a cloud-side Prometheus-compatible server that can receive Prometheus remote write data
+      # Change the host to the address of a cloud-side Prometheus-compatible server that can receive Prometheus remote write data
       host: "<cloud-prometheus-service-host>"
-    # Change the port to the port of a cloud-side Prometheus-compatible server that can receive Prometheus remote write data
+      # Change the port to the port of a cloud-side Prometheus-compatible server that can receive Prometheus remote write data
       port: "<cloud-prometheus-service-port>"
 
 fluentd:
