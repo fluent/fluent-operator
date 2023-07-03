@@ -487,6 +487,7 @@ OutputSpec defines the desired state of ClusterOutput
 | opensearch | OpenSearch defines OpenSearch Output configuration. | *[output.OpenSearch](plugins/output/opensearch.md) |
 | opentelemetry | OpenTelemetry defines OpenTelemetry Output configuration. | *[output.OpenTelemetry](plugins/output/opentelemetry.md) |
 | prometheusRemoteWrite | PrometheusRemoteWrite_types defines Prometheus Remote Write configuration. | *[output.PrometheusRemoteWrite](plugins/output/prometheusremotewrite.md) |
+| s3 | S3 defines S3 Output configuration. | *[output.S3](plugins/output/s3.md) |
 | customPlugin | CustomPlugin defines Custom Output configuration. | *custom.CustomPlugin |
 
 [Back to TOC](#table-of-contents)
