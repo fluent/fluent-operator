@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "fluentbit-operator.name" -}}
+{{- define "fluent-operator.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "fluentbit-operator.fullname" -}}
+{{- define "fluent-operator.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -25,18 +25,29 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts
+*/}}
+{{- define "fluent-operator.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "fluentbit-operator.chart" -}}
+{{- define "fluent-operator.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "fluentbit-operator.labels" -}}
-helm.sh/chart: {{ include "fluentbit-operator.chart" . }}
-{{ include "fluentbit-operator.selectorLabels" . }}
+{{- define "fluent-operator.labels" -}}
+helm.sh/chart: {{ include "fluent-operator.chart" . }}
+{{ include "fluent-operator.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,17 +57,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "fluentbit-operator.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "fluentbit-operator.name" . }}
+{{- define "fluent-operator.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "fluent-operator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "fluentbit-operator.serviceAccountName" -}}
+{{- define "fluent-operator.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "fluentbit-operator.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "fluent-operator.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
