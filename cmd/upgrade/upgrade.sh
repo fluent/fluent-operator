@@ -7,7 +7,7 @@ function error_exit {
   exit 1
 }
 
-function converting(){
+function migrate(){
 ## Converting an existing configuration to a new one
 local oldKind=$1
 local newKind=$2
@@ -56,12 +56,12 @@ echo ${cluster_resource_list[i]} | kubectl apply -f - || error_exit "Cannot appl
 done
 }
 
-converting "Input" "ClusterInput"
-converting "Parser" "ClusterParser"
-converting "Filter" "ClusterFilter"
-converting "Output" "ClusterOutput"
-converting "FluentbitConfig" "ClusterFluentBitConfig"
-converting "FluentBit" "FluentBit"
+migrate "Input" "ClusterInput"
+migrate "Parser" "ClusterParser"
+migrate "Filter" "ClusterFilter"
+migrate "Output" "ClusterOutput"
+migrate "FluentbitConfig" "ClusterFluentBitConfig"
+migrate "FluentBit" "FluentBit"
 
 # Determine if Deployment exists
 if kubectl get deployment -n $namespace $FluentbitOperator >/dev/null 2>&1; then
