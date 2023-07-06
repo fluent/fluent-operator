@@ -142,10 +142,7 @@ func (ps *PluginStore) processHead(buf *bytes.Buffer) {
 	var head string
 	switch PluginName(ps.Name) {
 	case BufferPlugin:
-		tag := ps.Tag
-		if tag != "" {
-			head = ps.headFmtSprintf(tag)
-		}
+		head = ps.headFmtSprintf(ps.Tag)
 	case MatchPlugin:
 		head = ps.headFmtSprintf(ps.Tag)
 	case FilterPlugin:
