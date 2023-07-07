@@ -46,6 +46,27 @@ type FluentBitConfigSpec struct {
 	Namespace *string `json:"namespace,omitempty"`
 }
 
+type Storage struct {
+	// Select an optional location in the file system to store streams and chunks of data/
+	Path string `json:"path,omitempty"`
+	// Configure the synchronization mode used to store the data into the file system
+	// +kubebuilder:validation:Enum:=normal;full
+	Sync string `json:"sync,omitempty"`
+	// Enable the data integrity check when writing and reading data from the filesystem
+	// +kubebuilder:validation:Enum:=on;off
+	Checksum string `json:"checksum,omitempty"`
+	// This option configure a hint of maximum value of memory to use when processing these records
+	BacklogMemLimit string `json:"backlogMemLimit,omitempty"`
+	// If the input plugin has enabled filesystem storage type, this property sets the maximum number of Chunks that can be up in memory
+	MaxChunksUp *int64 `json:"maxChunksUp,omitempty"`
+	// If http_server option has been enabled in the Service section, this option registers a new endpoint where internal metrics of the storage layer can be consumed
+	// +kubebuilder:validation:Enum:=on;off
+	Metrics string `json:"metrics,omitempty"`
+	// When enabled, irrecoverable chunks will be deleted during runtime, and any other irrecoverable chunk located in the configured storage path directory will be deleted when Fluent-Bit starts.
+	// +kubebuilder:validation:Enum:=on;off
+	DeleteIrrecoverableChunks string `json:"deleteIrrecoverableChunks,omitempty"`
+}
+
 type Service struct {
 	// If true go to background on start
 	Daemon *bool `json:"daemon,omitempty"`
@@ -80,6 +101,8 @@ type Service struct {
 	LogLevel string `json:"logLevel,omitempty"`
 	// Optional 'parsers' config file (can be multiple)
 	ParsersFile string `json:"parsersFile,omitempty"`
+	// Configure a global environment for the storage layer in Service. It is recommended to configure the volume and volumeMount separately for this storage. The hostPath type should be used for that Volume in Fluentbit daemon set.
+	Storage *Storage `json:"storage,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -148,6 +171,29 @@ func (s *Service) Params() *params.KVs {
 	}
 	if s.ParsersFile != "" {
 		m.Insert("Parsers_File", s.ParsersFile)
+	}
+	if s.Storage != nil {
+		if s.Storage.Path != "" {
+			m.Insert("storage.path", s.Storage.Path)
+		}
+		if s.Storage.Sync != "" {
+			m.Insert("storage.sync", s.Storage.Sync)
+		}
+		if s.Storage.Checksum != "" {
+			m.Insert("storage.checksum", s.Storage.Checksum)
+		}
+		if s.Storage.BacklogMemLimit != "" {
+			m.Insert("storage.backlog.mem_limit", s.Storage.BacklogMemLimit)
+		}
+		if s.Storage.Metrics != "" {
+			m.Insert("storage.metrics", s.Storage.Metrics)
+		}
+		if s.Storage.MaxChunksUp != nil {
+			m.Insert("storage.max_chunks_up", fmt.Sprint(*s.Storage.MaxChunksUp))
+		}
+		if s.Storage.DeleteIrrecoverableChunks != "" {
+			m.Insert("storage.delete_irrecoverable_chunks", s.Storage.DeleteIrrecoverableChunks)
+		}
 	}
 	return m
 }

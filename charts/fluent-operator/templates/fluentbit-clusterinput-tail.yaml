@@ -25,6 +25,10 @@ spec:
     skipLongLines: {{ .Values.fluentbit.input.tail.skipLongLines }}
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
+    storageType: {{ .Values.fluentbit.input.tail.storageType }}
+    {{- if eq .Values.fluentbit.input.tail.storageType "filesystem" }}
+    pauseOnChunksOverlimit: {{ .Values.fluentbit.input.tail.pauseOnChunksOverlimit | quote }}
+    {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

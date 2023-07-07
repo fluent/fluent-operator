@@ -9,6 +9,10 @@ metadata:
 spec:
   service:
     parsersFile: parsers.conf
+{{- if .Values.fluentbit.service.storage }}
+    storage:
+{{ toYaml .Values.fluentbit.service.storage | indent 6 }}
+{{- end }}
   inputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"

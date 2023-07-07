@@ -44,6 +44,12 @@ type Systemd struct {
 	// Remove the leading underscore of the Journald field (key). For example the Journald field _PID becomes the key PID.
 	// +kubebuilder:validation:Enum:=on;off
 	StripUnderscores string `json:"stripUnderscores,omitempty"`
+	// Specify the buffering mechanism to use. It can be memory or filesystem
+	// +kubebuilder:validation:Enum:=filesystem;memory
+	StorageType string `json:"storageType,omitempty"`
+	// Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached.
+	// +kubebuilder:validation:Enum:=on;off
+	PauseOnChunksOverlimit string `json:"pauseOnChunksOverlimit,omitempty"`
 }
 
 func (_ *Systemd) Name() string {
@@ -84,6 +90,12 @@ func (s *Systemd) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if s.StripUnderscores != "" {
 		kvs.Insert("Strip_Underscores", s.StripUnderscores)
+	}
+	if s.StorageType != "" {
+		kvs.Insert("storage.type", s.StorageType)
+	}
+	if s.PauseOnChunksOverlimit != "" {
+		kvs.Insert("storage.pause_on_chunks_overlimit", s.PauseOnChunksOverlimit)
 	}
 
 	return kvs, nil
