@@ -210,7 +210,7 @@ func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 	}
 
 	if b.TotalLimitSize != nil {
-		ps.InsertPairs("chunk_limit_size", *b.TotalLimitSize)
+		ps.InsertPairs("total_limit_size", *b.TotalLimitSize)
 	}
 
 	if b.QueueLimitLength != nil {
@@ -254,7 +254,7 @@ func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 	}
 
 	if b.RetrySecondaryThreshold != nil {
-		ps.InsertPairs("retry_secondary_threshold", fmt.Sprint(*b.RetryTimeout))
+		ps.InsertPairs("retry_secondary_threshold", fmt.Sprint(*b.RetrySecondaryThreshold))
 	}
 
 	if b.RetryType != nil {
