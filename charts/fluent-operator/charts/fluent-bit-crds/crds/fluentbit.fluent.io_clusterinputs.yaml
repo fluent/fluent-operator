@@ -176,12 +176,27 @@ spec:
                       not set, the plugin will use default paths to read local-only
                       logs.
                     type: string
+                  pauseOnChunksOverlimit:
+                    description: Specifies if the input plugin should be paused (stop
+                      ingesting new data) when the storage.max_chunks_up value is
+                      reached.
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   readFromTail:
                     description: Start reading new entries. Skip entries already stored
                       in Journald.
                     enum:
                     - "on"
                     - "off"
+                    type: string
+                  storageType:
+                    description: Specify the buffering mechanism to use. It can be
+                      memory or filesystem
+                    enum:
+                    - filesystem
+                    - memory
                     type: string
                   stripUnderscores:
                     description: Remove the leading underscore of the Journald field
@@ -328,6 +343,14 @@ spec:
                       file as part of the record. The value assigned becomes the key
                       in the map.
                     type: string
+                  pauseOnChunksOverlimit:
+                    description: Specifies if the input plugin should be paused (stop
+                      ingesting new data) when the storage.max_chunks_up value is
+                      reached.
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   readFromHead:
                     description: For new discovered files on start (without a database
                       offset/position), read the content from the head of the file,
@@ -350,6 +373,13 @@ spec:
                       behavior and instruct Fluent Bit to skip long lines and continue
                       processing other lines that fits into the buffer size.
                     type: boolean
+                  storageType:
+                    description: Specify the buffering mechanism to use. It can be
+                      memory or filesystem
+                    enum:
+                    - filesystem
+                    - memory
+                    type: string
                   tag:
                     description: Set a tag (with regex-extract fields) that will be
                       placed on lines read. E.g. kube.<namespace_name>.<pod_name>.<container_name>

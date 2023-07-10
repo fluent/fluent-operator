@@ -134,6 +134,10 @@ fluentbit:
   #   - name: hostSys
   #     hostPath:
   #       path: /sys/
+  # Uncomment the code if you intend to create the volume for buffer storage in case the storage type "filesystem" is being used in the configuration of the fluentbit service.
+  #   - name: hostBuffer
+  #     hostPath:
+  #       path: /tmp/fluent-bit-buffer
   # additionalVolumesMounts:
   #   - mountPath: /host/sys
   #     mountPropagation: HostToContainer
@@ -143,6 +147,11 @@ fluentbit:
   #     mountPropagation: HostToContainer
   #     name: hostProc
   #     readOnly: true
+  # Uncomment the code if you intend to mount the volume for buffer storage in case the storage type "filesystem" is being used in the configuration of the fluentbit service.
+  #   - mountPath: /host/fluent-bit-buffer
+  #     mountPropagation: HostToContainer
+  #     name: hostBuffer
+
 
   namespaceFluentBitCfgSelector: {}
 
@@ -160,6 +169,9 @@ fluentbit:
       path: "/var/log/containers/*.log"
       skipLongLines: true
       readFromHead: false
+      # Use storageType as "filesystem" if you want to use filesystem as the buffering mechanism for tail input.
+      storageType: memory
+      pauseOnChunksOverlimit: "off"
     systemd:
       enable: true
       systemdFilter:
@@ -168,6 +180,9 @@ fluentbit:
       path: "/var/log/journal"
       includeKubelet: true
       stripUnderscores: "off"
+      # Use storageType as "filesystem" if you want to use filesystem as the buffering mechanism for systemd input.
+      storageType: memory
+      pauseOnChunksOverlimit: "off"
     nodeExporterMetrics: {}
     # uncomment below nodeExporterMetrics section if you want to collect node exporter metrics
   #   nodeExporterMetrics:
@@ -213,6 +228,17 @@ fluentbit:
     # You can configure the opensearch-related configuration here
     stdout:
       enable: false
+  service:
+    storage: {}
+# Remove the above storage section and uncomment below section if you want to configure file-system as storage for buffer
+#    storage:
+#      path: "/host/fluent-bit-buffer/"
+#      backlogMemLimit: "50MB"
+#      checksum: "off"
+#      deleteIrrecoverableChunks: "on"
+#      maxChunksUp: 128
+#      metrics: "on"
+#      sync: normal
 
   # Configure the default filters in FluentBit.
   # The `filter` will filter and parse the collected log information and output the logs into a uniform format. You can choose whether to turn this on or not.

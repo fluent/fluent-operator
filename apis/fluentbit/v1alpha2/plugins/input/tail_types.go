@@ -93,6 +93,12 @@ type Tail struct {
 	// This will help to reassembly multiline messages originally split by Docker or CRI
 	//Specify one or Multiline Parser definition to apply to the content.
 	MultilineParser string `json:"multilineParser,omitempty"`
+	// Specify the buffering mechanism to use. It can be memory or filesystem
+	// +kubebuilder:validation:Enum:=filesystem;memory
+	StorageType string `json:"storageType,omitempty"`
+	// Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached.
+	// +kubebuilder:validation:Enum:=on;off
+	PauseOnChunksOverlimit string `json:"pauseOnChunksOverlimit,omitempty"`
 }
 
 func (_ *Tail) Name() string {
@@ -178,6 +184,12 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if t.MultilineParser != "" {
 		kvs.Insert("multiline.parser", t.MultilineParser)
+	}
+	if t.StorageType != "" {
+		kvs.Insert("storage.type", t.StorageType)
+	}
+	if t.PauseOnChunksOverlimit != "" {
+		kvs.Insert("storage.pause_on_chunks_overlimit", t.PauseOnChunksOverlimit)
 	}
 	return kvs, nil
 }

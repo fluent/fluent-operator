@@ -1310,7 +1310,7 @@ spec:
                 x-kubernetes-map-type: atomic
               defaultOutputSelector:
                 description: Select cluster output plugins used to send all logs that
-                  did not match a route to the matching outputs
+                  did not match any route to the matching outputs
                 properties:
                   matchExpressions:
                     description: matchExpressions is a list of label selector requirements.

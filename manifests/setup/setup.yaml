@@ -1462,6 +1462,58 @@ spec:
                   parsersFile:
                     description: Optional 'parsers' config file (can be multiple)
                     type: string
+                  storage:
+                    description: Configure a global environment for the storage layer
+                      in Service. It is recommended to configure the volume and volumeMount
+                      separately for this storage. The hostPath type should be used
+                      for that Volume in Fluentbit daemon set.
+                    properties:
+                      backlogMemLimit:
+                        description: This option configure a hint of maximum value
+                          of memory to use when processing these records
+                        type: string
+                      checksum:
+                        description: Enable the data integrity check when writing
+                          and reading data from the filesystem
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      deleteIrrecoverableChunks:
+                        description: When enabled, irrecoverable chunks will be deleted
+                          during runtime, and any other irrecoverable chunk located
+                          in the configured storage path directory will be deleted
+                          when Fluent-Bit starts.
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      maxChunksUp:
+                        description: If the input plugin has enabled filesystem storage
+                          type, this property sets the maximum number of Chunks that
+                          can be up in memory
+                        format: int64
+                        type: integer
+                      metrics:
+                        description: If http_server option has been enabled in the
+                          Service section, this option registers a new endpoint where
+                          internal metrics of the storage layer can be consumed
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      path:
+                        description: Select an optional location in the file system
+                          to store streams and chunks of data/
+                        type: string
+                      sync:
+                        description: Configure the synchronization mode used to store
+                          the data into the file system
+                        enum:
+                        - normal
+                        - full
+                        type: string
+                    type: object
                 type: object
             type: object
         type: object
@@ -1826,12 +1878,27 @@ spec:
                       not set, the plugin will use default paths to read local-only
                       logs.
                     type: string
+                  pauseOnChunksOverlimit:
+                    description: Specifies if the input plugin should be paused (stop
+                      ingesting new data) when the storage.max_chunks_up value is
+                      reached.
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   readFromTail:
                     description: Start reading new entries. Skip entries already stored
                       in Journald.
                     enum:
                     - "on"
                     - "off"
+                    type: string
+                  storageType:
+                    description: Specify the buffering mechanism to use. It can be
+                      memory or filesystem
+                    enum:
+                    - filesystem
+                    - memory
                     type: string
                   stripUnderscores:
                     description: Remove the leading underscore of the Journald field
@@ -1978,6 +2045,14 @@ spec:
                       file as part of the record. The value assigned becomes the key
                       in the map.
                     type: string
+                  pauseOnChunksOverlimit:
+                    description: Specifies if the input plugin should be paused (stop
+                      ingesting new data) when the storage.max_chunks_up value is
+                      reached.
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   readFromHead:
                     description: For new discovered files on start (without a database
                       offset/position), read the content from the head of the file,
@@ -2000,6 +2075,13 @@ spec:
                       behavior and instruct Fluent Bit to skip long lines and continue
                       processing other lines that fits into the buffer size.
                     type: boolean
+                  storageType:
+                    description: Specify the buffering mechanism to use. It can be
+                      memory or filesystem
+                    enum:
+                    - filesystem
+                    - memory
+                    type: string
                   tag:
                     description: Set a tag (with regex-extract fields) that will be
                       placed on lines read. E.g. kube.<namespace_name>.<pod_name>.<container_name>
@@ -3859,6 +3941,10 @@ spec:
                         description: Hostname to be used for TLS SNI extension
                         type: string
                     type: object
+                  totalLimitSize:
+                    description: Limit the maximum number of Chunks in the filesystem
+                      for the current output logical destination.
+                    type: string
                   traceError:
                     description: When enabled print the elasticsearch API calls to
                       stdout when elasticsearch returns an error
@@ -4227,116 +4313,116 @@ spec:
               s3:
                 description: S3 defines S3 Output configuration.
                 properties:
-                  auto_retry_requests:
+                  AutoRetryRequests:
                     description: Immediately retry failed requests to AWS services
                       once.
                     type: boolean
-                  bucket:
+                  Bucket:
                     description: S3 Bucket name
                     type: string
-                  canned_acl:
+                  CannedAcl:
                     description: Predefined Canned ACL Policy for S3 objects.
                     type: string
-                  compression:
+                  Compression:
                     description: Compression type for S3 objects.
                     type: string
-                  content_type:
+                  ContentType:
                     description: A standard MIME type for the S3 object; this will
                       be set as the Content-Type HTTP header.
                     type: string
-                  endpoint:
+                  Endpoint:
                     description: Custom endpoint for the S3 API.
                     type: string
-                  external_id:
+                  ExternalId:
                     description: Specify an external ID for the STS API, can be used
                       with the role_arn parameter if your role requires an external
                       ID.
                     type: string
-                  json_date_format:
+                  JsonDateFormat:
                     description: 'Specify the format of the date. Supported formats
                       are double, epoch, iso8601 (eg: 2018-05-30T09:39:52.000681Z)
                       and java_sql_timestamp (eg: 2018-05-30 09:39:52.000681)'
                     type: string
-                  json_date_key:
+                  JsonDateKey:
                     description: Specify the name of the time key in the output record.
                       To disable the time key just set the value to false.
                     type: string
-                  log_key:
+                  LogKey:
                     description: By default, the whole log record will be sent to
                       S3. If you specify a key name with this option, then only the
                       value of that key will be sent to S3.
                     type: string
-                  preserve_data_ordering:
+                  PreserveDataOrdering:
                     description: Normally, when an upload request fails, there is
                       a high chance for the last received chunk to be swapped with
                       a later chunk, resulting in data shuffling. This feature prevents
                       this shuffling by using a queue logic for uploads.
                     type: boolean
-                  region:
+                  Region:
                     description: The AWS region of your S3 bucket
                     type: string
-                  retry_limit:
+                  RetryLimit:
                     description: Integer value to set the maximum number of retries
                       allowed.
                     format: int32
                     type: integer
-                  role_arn:
+                  RoleArn:
                     description: ARN of an IAM role to assume
                     type: string
-                  s3_key_format:
+                  S3KeyFormat:
                     description: Format string for keys in S3.
                     type: string
-                  s3_key_format_tag_delimiters:
+                  S3KeyFormatTagDelimiters:
                     description: A series of characters which will be used to split
                       the tag into 'parts' for use with the s3_key_format option.
                     type: string
-                  send_content_md5:
+                  SendContentMd5:
                     description: Send the Content-MD5 header with PutObject and UploadPart
                       requests, as is required when Object Lock is enabled.
                     type: boolean
-                  static_file_path:
+                  StaticFilePath:
                     description: Disables behavior where UUID string is automatically
                       appended to end of S3 key name when $UUID is not provided in
                       s3_key_format. $UUID, time formatters, $TAG, and other dynamic
                       key formatters all work as expected while this feature is set
                       to true.
                     type: boolean
-                  storage_class:
+                  StorageClass:
                     description: Specify the storage class for S3 objects. If this
                       option is not specified, objects will be stored with the default
                       'STANDARD' storage class.
                     type: string
-                  store_dir:
+                  StoreDir:
                     description: Directory to locally buffer data before sending.
                     type: string
-                  store_dir_limit_size:
+                  StoreDirLimitSize:
                     description: The size of the limitation for disk usage in S3.
                     type: string
-                  sts_endpoint:
+                  StsEndpoint:
                     description: Custom endpoint for the STS API.
                     type: string
-                  total_file_size:
+                  TotalFileSize:
                     description: Specifies the size of files in S3. Minimum size is
                       1M. With use_put_object On the maximum size is 1G. With multipart
                       upload mode, the maximum size is 50G.
                     type: string
-                  upload_chunk_size:
+                  UploadChunkSize:
                     description: 'The size of each ''part'' for multipart uploads.
                       Max: 50M'
                     type: string
-                  upload_timeout:
+                  UploadTimeout:
                     description: Whenever this amount of time has elapsed, Fluent
                       Bit will complete an upload and create a new file in S3. For
                       example, set this value to 60m and you will get a new file every
                       hour.
                     type: string
-                  use_put_object:
+                  UsePutObject:
                     description: Use the S3 PutObject API, instead of the multipart
                       upload API.
                     type: boolean
                 required:
-                - bucket
-                - region
+                - Bucket
+                - Region
                 type: object
               splunk:
                 description: Splunk defines Splunk Output Configuration
@@ -19376,7 +19462,7 @@ spec:
                 x-kubernetes-map-type: atomic
               defaultOutputSelector:
                 description: Select cluster output plugins used to send all logs that
-                  did not match a route to the matching outputs
+                  did not match any route to the matching outputs
                 properties:
                   matchExpressions:
                     description: matchExpressions is a list of label selector requirements.
@@ -24488,6 +24574,10 @@ spec:
                         description: Hostname to be used for TLS SNI extension
                         type: string
                     type: object
+                  totalLimitSize:
+                    description: Limit the maximum number of Chunks in the filesystem
+                      for the current output logical destination.
+                    type: string
                   traceError:
                     description: When enabled print the elasticsearch API calls to
                       stdout when elasticsearch returns an error
@@ -24856,116 +24946,116 @@ spec:
               s3:
                 description: S3 defines S3 Output configuration.
                 properties:
-                  auto_retry_requests:
+                  AutoRetryRequests:
                     description: Immediately retry failed requests to AWS services
                       once.
                     type: boolean
-                  bucket:
+                  Bucket:
                     description: S3 Bucket name
                     type: string
-                  canned_acl:
+                  CannedAcl:
                     description: Predefined Canned ACL Policy for S3 objects.
                     type: string
-                  compression:
+                  Compression:
                     description: Compression type for S3 objects.
                     type: string
-                  content_type:
+                  ContentType:
                     description: A standard MIME type for the S3 object; this will
                       be set as the Content-Type HTTP header.
                     type: string
-                  endpoint:
+                  Endpoint:
                     description: Custom endpoint for the S3 API.
                     type: string
-                  external_id:
+                  ExternalId:
                     description: Specify an external ID for the STS API, can be used
                       with the role_arn parameter if your role requires an external
                       ID.
                     type: string
-                  json_date_format:
+                  JsonDateFormat:
                     description: 'Specify the format of the date. Supported formats
                       are double, epoch, iso8601 (eg: 2018-05-30T09:39:52.000681Z)
                       and java_sql_timestamp (eg: 2018-05-30 09:39:52.000681)'
                     type: string
-                  json_date_key:
+                  JsonDateKey:
                     description: Specify the name of the time key in the output record.
                       To disable the time key just set the value to false.
                     type: string
-                  log_key:
+                  LogKey:
                     description: By default, the whole log record will be sent to
                       S3. If you specify a key name with this option, then only the
                       value of that key will be sent to S3.
                     type: string
-                  preserve_data_ordering:
+                  PreserveDataOrdering:
                     description: Normally, when an upload request fails, there is
                       a high chance for the last received chunk to be swapped with
                       a later chunk, resulting in data shuffling. This feature prevents
                       this shuffling by using a queue logic for uploads.
                     type: boolean
-                  region:
+                  Region:
                     description: The AWS region of your S3 bucket
                     type: string
-                  retry_limit:
+                  RetryLimit:
                     description: Integer value to set the maximum number of retries
                       allowed.
                     format: int32
                     type: integer
-                  role_arn:
+                  RoleArn:
                     description: ARN of an IAM role to assume
                     type: string
-                  s3_key_format:
+                  S3KeyFormat:
                     description: Format string for keys in S3.
                     type: string
-                  s3_key_format_tag_delimiters:
+                  S3KeyFormatTagDelimiters:
                     description: A series of characters which will be used to split
                       the tag into 'parts' for use with the s3_key_format option.
                     type: string
-                  send_content_md5:
+                  SendContentMd5:
                     description: Send the Content-MD5 header with PutObject and UploadPart
                       requests, as is required when Object Lock is enabled.
                     type: boolean
-                  static_file_path:
+                  StaticFilePath:
                     description: Disables behavior where UUID string is automatically
                       appended to end of S3 key name when $UUID is not provided in
                       s3_key_format. $UUID, time formatters, $TAG, and other dynamic
                       key formatters all work as expected while this feature is set
                       to true.
                     type: boolean
-                  storage_class:
+                  StorageClass:
                     description: Specify the storage class for S3 objects. If this
                       option is not specified, objects will be stored with the default
                       'STANDARD' storage class.
                     type: string
-                  store_dir:
+                  StoreDir:
                     description: Directory to locally buffer data before sending.
                     type: string
-                  store_dir_limit_size:
+                  StoreDirLimitSize:
                     description: The size of the limitation for disk usage in S3.
                     type: string
-                  sts_endpoint:
+                  StsEndpoint:
                     description: Custom endpoint for the STS API.
                     type: string
-                  total_file_size:
+                  TotalFileSize:
                     description: Specifies the size of files in S3. Minimum size is
                       1M. With use_put_object On the maximum size is 1G. With multipart
                       upload mode, the maximum size is 50G.
                     type: string
-                  upload_chunk_size:
+                  UploadChunkSize:
                     description: 'The size of each ''part'' for multipart uploads.
                       Max: 50M'
                     type: string
-                  upload_timeout:
+                  UploadTimeout:
                     description: Whenever this amount of time has elapsed, Fluent
                       Bit will complete an upload and create a new file in S3. For
                       example, set this value to 60m and you will get a new file every
                       hour.
                     type: string
-                  use_put_object:
+                  UsePutObject:
                     description: Use the S3 PutObject API, instead of the multipart
                       upload API.
                     type: boolean
                 required:
-                - bucket
-                - region
+                - Bucket
+                - Region
                 type: object
               splunk:
                 description: Splunk defines Splunk Output Configuration

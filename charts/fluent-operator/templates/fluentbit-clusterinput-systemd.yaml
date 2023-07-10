@@ -25,6 +25,10 @@ spec:
 {{- toYaml .Values.fluentbit.input.systemd.systemdFilter.filters | nindent 6 }}
       {{- end }}
 {{- end }}
+    storageType: {{ .Values.fluentbit.input.systemd.storageType }}
+   {{- if eq .Values.fluentbit.input.systemd.storageType "filesystem" }}
+    pauseOnChunksOverlimit: {{ .Values.fluentbit.input.systemd.pauseOnChunksOverlimit | quote }}
+   {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

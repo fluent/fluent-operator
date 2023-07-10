@@ -94,6 +94,8 @@ type OpenSearch struct {
 	// Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0.
 	Workers      *int32 `json:"Workers,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
+	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+	TotalLimitSize string `json:"totalLimitSize,omitempty"`
 }
 
 // Name implement Section() method
@@ -214,6 +216,9 @@ func (o *OpenSearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 			return nil, err
 		}
 		kvs.Merge(tls)
+	}
+	if o.TotalLimitSize != "" {
+		kvs.Insert("storage.total_limit_size", o.TotalLimitSize)
 	}
 	return kvs, nil
 }
