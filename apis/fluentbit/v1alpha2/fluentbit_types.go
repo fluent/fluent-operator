@@ -41,6 +41,9 @@ type FluentBitSpec struct {
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy,omitempty"`
 	// Fluent Bit image pull secret
 	ImagePullSecrets []corev1.LocalObjectReference `json:"imagePullSecrets,omitempty"`
+	// MountPropagation option for internal mounts
+	// +kubebuilder:validation:Enum:=None;HostToContainer;Bidirectional
+	InternalMountPropagation *corev1.MountPropagationMode `json:"internalMountPropagation,omitempty"`
 	// Storage for position db. You will use it if tail input is enabled.
 	PositionDB corev1.VolumeSource `json:"positionDB,omitempty"`
 	// Container log path

@@ -369,6 +369,7 @@ FluentBitSpec defines the desired state of FluentBit
 | command | Fluent Bit Watcher command. | []string |
 | imagePullPolicy | Fluent Bit image pull policy. | corev1.PullPolicy |
 | imagePullSecrets | Fluent Bit image pull secret | []corev1.LocalObjectReference |
+| internalMountPropagation | MountPropagation option for internal mounts | *corev1.MountPropagationMode |
 | positionDB | Storage for position db. You will use it if tail input is enabled. | [corev1.VolumeSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#volume-v1-core) |
 | containerLogRealPath | Container log path | string |
 | resources | Compute Resources required by container. | corev1.ResourceRequirements |
