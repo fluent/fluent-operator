@@ -1,3 +1,38 @@
+## 2.4.0 / 2023-07-19
+### Features
+- Feat: add scheduler support for fluentbit collector (#776)
+- Users can upgrade fluentbit-operator to fluent-operator using the script (#779)
+- Feat: adds the fluentd output plugin for Datadog (#803)
+- Feat: add DefaultFilterSelector and DefaultOutputSelector to fluentd (#804)
+- Feat: add S3 output plugin for Fluent Bit (#819)
+- Support file system as storage layer in service section of fluenbit (#825)
+
+### ENHANCEMENT
+- Introduce stripUnderscores in fluent-operator helm values for fluentbit Input Systemd (#782)
+- Add options in FluentOperator helm chart to add more systemdFilter in Fluentbit Systemd Input and a condition on systemdFilter to enable/disable (#785)
+- Add podSecurityContext for fluentbit in fluent operator helm chart (#788)
+- Rename field podSecurityContext to securityContext in Fluent Operator Deployment (#790)
+- Add fluent operator security context at container level (#792)
+- Add security context for fluenbit container (#796)
+- Specify init container resources for fluent-operator deployment (#817)
+- Update fluentd base Dockerfile (#820)
+- MountPropagation option for internal mounts (#834)
+- Fluent-bit upgrade to v2.1.7 (#836)
+- build(deps): Bump golang from 1.20.4 to 1.20.6 in /docs/best-practice/forwarding-logs-via-http (#831)
+- build(deps): Bump golang from 1.20.5-alpine3.17 to 1.20.6-alpine3.17 in /cmd/fluent-manager (#830)
+- build(deps): Bump k8s.io/apimachinery from 0.27.2 to 0.27.3 (#828)
+- build(deps): Bump golang from 1.20.4-alpine3.17 to 1.20.5-alpine3.17 in /cmd/fluent-manager (#783)
+- build(deps): Bump github.com/onsi/gomega from 1.27.7 to 1.27.8 (#794)
+- build(deps): Bump github.com/go-openapi/errors from 0.20.3 to 0.20.4 (#795)
+
+### BUGFIX 
+- Fix: resource deletion and adoption for 3 controllers (#777)
+- Fix: Correct fluentd prase TimeFormat config key (#780)
+- Fixes #798 storageClassName field not taken into account (#799)
+- Fix: plugins document index (#822)
+- Update the _helpers.tpl file (#823)
+- Fix: incorrect field names in fluentd buffer plugin (#824)
+
 ## 2.3.0 / 2023-06-05
 ### Features
 - Feat: Adding influxdb plugin (#690)
