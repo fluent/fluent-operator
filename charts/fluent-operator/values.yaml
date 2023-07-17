@@ -268,10 +268,16 @@ fluentd:
   crdsEnable: true
   enable: false
   name: fluentd
+  # Valid modes include "collector" and "agent".
+  # The "collector" mode will deploy Fluentd as a StatefulSet as before.
+  # The new "agent" mode will deploy Fluentd as a DaemonSet.
+  mode: "collector"
   port: 24224
   image:
     repository: "kubesphere/fluentd"
     tag: "v1.15.3"
+  # Numbers of the Fluentd instance
+  # Applicable when the mode is "collector", and will be ignored when the mode is "agent"
   replicas: 1
   forward:
     port: 24224
