@@ -71,7 +71,7 @@ fluentbit:
   enable: true
   image:
     repository: "kubesphere/fluent-bit"
-    tag: "v2.1.6"
+    tag: "v2.1.7"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
   resources:
