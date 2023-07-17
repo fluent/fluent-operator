@@ -13996,6 +13996,13 @@ spec:
                   - name
                   type: object
                 type: array
+              internalMountPropagation:
+                description: MountPropagation option for internal mounts
+                enum:
+                - None
+                - HostToContainer
+                - Bidirectional
+                type: string
               labels:
                 additionalProperties:
                   type: string

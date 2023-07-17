@@ -25,6 +25,11 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 		metricsPort = 2020
 	}
 
+	internalMountPropagation := corev1.MountPropagationNone
+	if fb.Spec.InternalMountPropagation != nil {
+		internalMountPropagation = *fb.Spec.InternalMountPropagation
+	}
+
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        fb.Name,
@@ -115,9 +120,10 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 							},
 							VolumeMounts: []corev1.VolumeMount{
 								{
-									Name:      "varlibcontainers",
-									ReadOnly:  true,
-									MountPath: logPath,
+									Name:             "varlibcontainers",
+									ReadOnly:         true,
+									MountPath:        logPath,
+									MountPropagation: &internalMountPropagation,
 								},
 								{
 									Name:      "config",
@@ -125,14 +131,16 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 									MountPath: "/fluent-bit/config",
 								},
 								{
-									Name:      "varlogs",
-									ReadOnly:  true,
-									MountPath: "/var/log/",
+									Name:             "varlogs",
+									ReadOnly:         true,
+									MountPath:        "/var/log/",
+									MountPropagation: &internalMountPropagation,
 								},
 								{
-									Name:      "systemd",
-									ReadOnly:  true,
-									MountPath: "/var/log/journal",
+									Name:             "systemd",
+									ReadOnly:         true,
+									MountPath:        "/var/log/journal",
+									MountPropagation: &internalMountPropagation,
 								},
 							},
 							Resources:       fb.Spec.Resources,
