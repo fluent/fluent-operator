@@ -129,7 +129,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		sl := plugins.NewSecretLoader(r.Client, fd.Namespace, r.Log)
 
 		// gpr acts as a global resource to store the related plugin resources
-		gpr := fluentdv1alpha1.NewGlobalPluginResources("main")
+		gpr := fluentdv1alpha1.NewGlobalPluginResources("main", fd.Spec.EnablePrometheusMetrics, fd.Spec.MetricsPort, fd.Spec.MetricsBind)
 
 		// Each cluster/namespace scope fluentd configs will generate their own filters/outputs plugins with their own cfgId/cfgLabel,
 		// and they will finally be combined into one fluentd config file
@@ -205,8 +205,8 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 				workers = *fd.Spec.Workers
 			}
 
-			// Create or update the secret of the fluentd instance in its namespace
-			mainAppCfg, err = gpr.RenderMainConfig(bool(workers > 1))
+			// Create or update the secret of the fluentd instance in its namespace.
+			mainAppCfg, err = gpr.RenderMainConfig(bool(workers > 1), fd.Spec.EnablePrometheusMetrics)
 			if err != nil {
 				return ctrl.Result{}, err
 			}

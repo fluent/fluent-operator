@@ -8,27 +8,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
-)
-
-const (
-	SecretVolName    = "config"
-	FluentdMountPath = "/fluentd/etc"
-	BufferMountPath  = "/buffers"
-
-	MetricsName = "metrics"
-
-	MetricsPort int32 = 2021
-
-	DefaultForwardPort int32 = 24424
-	DefaultHttpPort    int32 = 9880
-	// 101 is the fsGroup that fluentd runs as in the kubesphere image
-	DefaultFsGroup int64 = 101
-
-	DefaultForwardName = "forward"
-	DefaultHttpName    = "http"
-
-	InputForwardType = "forward"
-	InputHttpType    = "http"
+	"github.com/fluent/fluent-operator/v2/pkg/constants"
 )
 
 func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
@@ -53,7 +33,7 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 		}
 	}
 
-	defaultFsGroup := DefaultFsGroup
+	defaultFsGroup := constants.DefaultFsGroup
 
 	sts := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
@@ -79,7 +59,7 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 					ImagePullSecrets:   fd.Spec.ImagePullSecrets,
 					Volumes: []corev1.Volume{
 						{
-							Name: SecretVolName,
+							Name: constants.SecretVolName,
 							VolumeSource: corev1.VolumeSource{
 								Secret: &corev1.SecretVolumeSource{
 									SecretName: fmt.Sprintf("%s-config", fd.Name),
@@ -96,16 +76,16 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 							Ports:           ports,
 							VolumeMounts: []corev1.VolumeMount{
 								{
-									Name:      SecretVolName,
+									Name:      constants.SecretVolName,
 									ReadOnly:  true,
-									MountPath: FluentdMountPath,
+									MountPath: constants.FluentdMountPath,
 								},
 							},
 							Resources: fd.Spec.Resources,
 							Env: []corev1.EnvVar{
 								{
 									Name:  "BUFFER_PATH",
-									Value: BufferMountPath,
+									Value: constants.BufferMountPath,
 								},
 							},
 						},
@@ -168,7 +148,7 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 
 			sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
 				Name:      bufferVolName,
-				MountPath: BufferMountPath,
+				MountPath: constants.BufferMountPath,
 			})
 			return &sts
 		}
@@ -183,7 +163,7 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 
 			sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
 				Name:      bufferVolName,
-				MountPath: BufferMountPath,
+				MountPath: constants.BufferMountPath,
 			})
 
 			return &sts
@@ -195,7 +175,7 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 
 		sts.Spec.Template.Spec.Containers[0].VolumeMounts = append(sts.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
 			Name:      fmt.Sprintf("%s-buffer-pvc", fd.Name),
-			MountPath: BufferMountPath,
+			MountPath: constants.BufferMountPath,
 		})
 	}
 	return &sts
@@ -204,8 +184,8 @@ func MakeStatefulset(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 func makeStatefulsetPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 	ports := []corev1.ContainerPort{
 		{
-			Name:          MetricsName,
-			ContainerPort: MetricsPort,
+			Name:          constants.MetricsName,
+			ContainerPort: constants.DefaultMetricsPort,
 			Protocol:      corev1.ProtocolTCP,
 		},
 	}
@@ -216,10 +196,10 @@ func makeStatefulsetPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 		if input.Forward != nil {
 			forwardPort := *input.Forward.Port
 			if forwardPort == 0 {
-				forwardPort = DefaultForwardPort
+				forwardPort = constants.DefaultForwardPort
 			}
 			ports = append(ports, corev1.ContainerPort{
-				Name:          DefaultForwardName,
+				Name:          constants.DefaultForwardName,
 				ContainerPort: forwardPort,
 				Protocol:      corev1.ProtocolTCP,
 			})
@@ -228,10 +208,10 @@ func makeStatefulsetPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 		if input.Http != nil {
 			httpPort := *input.Http.Port
 			if httpPort == 0 {
-				httpPort = DefaultHttpPort
+				httpPort = constants.DefaultHttpPort
 			}
 			ports = append(ports, corev1.ContainerPort{
-				Name:          DefaultHttpName,
+				Name:          constants.DefaultHttpName,
 				ContainerPort: httpPort,
 				Protocol:      corev1.ProtocolTCP,
 			})

@@ -85,9 +85,73 @@ func (r *Route) NewRoutePlugin() (*params.PluginStore, error) {
 
 // NewGlobalRouter will create a global router to store routes
 func NewGlobalRouter(id string) *params.PluginStore {
-	ps := params.NewPluginStore("match")
+	ps := params.NewPluginStoreWithTag("match", "**")
 	ps.InsertPairs("@id", id)
 	ps.InsertPairs("@type", "label_router")
-	ps.InsertPairs("tag", "**")
 	return ps
+}
+
+// NewIncomingMonitoringFilter will create a top-level filter to capture Prometheus metrics
+func NewIncomingMonitoringFilter() *params.PluginStore {
+	filterPs := params.NewPluginStoreWithTag("filter", "**")
+	filterPs.InsertType("prometheus")
+
+	metricPs := params.NewPluginStore("metric")
+	metricPs.InsertPairs("name", "fluentd_input_status_num_records_total")
+	metricPs.InsertPairs("type", "counter")
+	metricPs.InsertPairs("desc", "Total number of incoming records")
+
+	labelsPs := params.NewPluginStore("labels")
+	labelsPs.InsertPairs("tag", "${tag}")
+	labelsPs.InsertPairs("hostname", "${hostname}")
+
+	metricPs.InsertChilds(labelsPs)
+
+	filterPs.InsertChilds(metricPs)
+
+	return filterPs
+}
+
+func NewOutgoingMonitoringMatch() *params.PluginStore {
+	matchPs := params.NewPluginStoreWithTag("match", "**")
+	matchPs.InsertType("copy")
+
+	storePs := params.NewPluginStore("store")
+	storePs.InsertType("prometheus")
+
+	metricPs := params.NewPluginStore("metric")
+	metricPs.InsertPairs("name", "fluentd_output_status_num_records_total")
+	metricPs.InsertPairs("type", "counter")
+	metricPs.InsertPairs("desc", "Total number of outgoing records")
+
+	labelsPs := params.NewPluginStore("labels")
+	labelsPs.InsertPairs("tag", "${tag}")
+	labelsPs.InsertPairs("hostname", "${hostname}")
+
+	metricPs.InsertChilds(labelsPs)
+
+	storePs.InsertChilds(metricPs)
+
+	matchPs.InsertChilds(storePs)
+
+	return matchPs
+}
+
+func NewMetricsExposeSources(metricsPort int32, metricsBind string) []*params.PluginStore {
+	metricsSourcePs := params.NewPluginStore("source")
+	metricsSourcePs.InsertType("prometheus")
+	metricsSourcePs.InsertPairs("bind", metricsBind)
+	metricsSourcePs.InsertPairs("port", fmt.Sprint(metricsPort))
+	metricsSourcePs.InsertPairs("metrics_path", "/metrics")
+
+	outputMonitorPs := params.NewPluginStore("source")
+	outputMonitorPs.InsertType("prometheus_output_monitor")
+	outputMonitorPs.InsertPairs("interval", fmt.Sprint(10))
+
+	outputMonitorLabelsPs := params.NewPluginStore("labels")
+	outputMonitorLabelsPs.InsertPairs("hostname", "${hostname}")
+
+	outputMonitorPs.InsertChilds(outputMonitorLabelsPs)
+
+	return []*params.PluginStore{metricsSourcePs, outputMonitorPs}
 }

@@ -98,7 +98,7 @@ func (i *Input) tailPlugin(parent *params.PluginStore, loader plugins.SecretLoad
 	parent.InsertChilds(childs...)
 
 	if tailModel.Tag != "" {
-		parent.InsertPairs("tag", fmt.Sprint(tailModel.Tag))
+		parent.Tag = fmt.Sprint(tailModel.Tag)
 	}
 
 	if tailModel.Path != "" {
@@ -232,7 +232,7 @@ func (i *Input) forwardPlugin(parent *params.PluginStore, loader plugins.SecretL
 	}
 
 	if forwardModel.Tag != nil {
-		parent.InsertPairs("tag", fmt.Sprint(*forwardModel.Tag))
+		parent.Tag = fmt.Sprint(*forwardModel.Tag)
 	}
 
 	if forwardModel.AddTagPrefix != nil {

@@ -21,7 +21,7 @@ func Test_Cfg2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ES}
@@ -34,7 +34,7 @@ func Test_Cfg2ES(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-namespaced-cfg-output-es.cfg"))).To(Equal(config))
@@ -47,7 +47,7 @@ func Test_ClusterCfgInputTail(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, FluentdInputTail.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdConfig1)
@@ -58,7 +58,7 @@ func Test_ClusterCfgInputTail(t *testing.T) {
 	g.Expect(err).NotTo(HaveOccurred())
 
 	for i := 0; i < maxRuntimes; i++ {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-global-cfg-input-tail.cfg"))).To(Equal(config))
@@ -70,7 +70,7 @@ func Test_ClusterCfgOutput2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
@@ -84,7 +84,7 @@ func Test_ClusterCfgOutput2ES(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-es.cfg"))).To(Equal(config))
@@ -97,7 +97,7 @@ func Test_Cfg2OpenSearch(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clusterOutputsForCluster := []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2OpenSearch}
@@ -110,7 +110,7 @@ func Test_Cfg2OpenSearch(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-namespaced-cfg-output-opensearch.cfg"))).To(Equal(config))
 
@@ -122,7 +122,7 @@ func Test_ClusterCfgOutput2OpenSearch(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
@@ -136,7 +136,7 @@ func Test_ClusterCfgOutput2OpenSearch(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		//fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-opensearch.cfg"))).To(Equal(config))
@@ -149,7 +149,7 @@ func Test_ClusterCfgOutput2Kafka(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
@@ -163,7 +163,7 @@ func Test_ClusterCfgOutput2Kafka(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-kafka.cfg"))).To(Equal(config))
@@ -176,7 +176,7 @@ func Test_ClusterCfgOutput2Loki(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
@@ -190,7 +190,7 @@ func Test_ClusterCfgOutput2Loki(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-loki.cfg"))).To(Equal(config))
@@ -203,7 +203,7 @@ func Test_MixedCfgs2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
@@ -222,7 +222,7 @@ func Test_MixedCfgs2ES(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-es.cfg"))).To(Equal(config))
@@ -235,7 +235,7 @@ func Test_ClusterCfgOutput2CloudWatch(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
@@ -249,7 +249,7 @@ func Test_ClusterCfgOutput2CloudWatch(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-cloudwatch.cfg")))).To(Equal(config))
 
@@ -261,7 +261,7 @@ func Test_ClusterCfgOutput2Datadog(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
@@ -275,7 +275,7 @@ func Test_ClusterCfgOutput2Datadog(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-datadog.cfg")))).To(Equal(config))
 
@@ -287,7 +287,7 @@ func Test_MixedCfgs2OpenSearch(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
@@ -306,7 +306,7 @@ func Test_MixedCfgs2OpenSearch(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-opensearch.cfg"))).To(Equal(config))
@@ -319,7 +319,7 @@ func Test_MixedCfgs2MultiTenant(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig2)
@@ -343,7 +343,7 @@ func Test_MixedCfgs2MultiTenant(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-multi-tenant-output.cfg"))).To(Equal(config))
@@ -356,7 +356,7 @@ func Test_OutputWithBuffer(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
@@ -370,7 +370,7 @@ func Test_OutputWithBuffer(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-buffer-example.cfg"))).To(Equal(config))
@@ -559,7 +559,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 		},
 	}
 
-	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main", false, nil, nil)
 	psr.CombineGlobalInputsPlugins(sl, GlobalInputs)
 
 	clustercfgRouter, err := psr.BuildCfgRouter(&clustercfg)
@@ -577,7 +577,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 	// we should not see any permutations in serialized config
 	i := 0
 	for i < maxRuntimes {
-		config, errs := psr.RenderMainConfig(false)
+		config, errs := psr.RenderMainConfig(false, false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/duplicate-removal-cr-specs.cfg"))).To(Equal(config))

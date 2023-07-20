@@ -1358,6 +1358,10 @@ spec:
                 description: By default will build the related service according to
                   the globalinputs definition.
                 type: boolean
+              enablePrometheusMetrics:
+                description: EnablePrometheusMetrics will enable Prometheus metrics
+                  from fluentd.
+                type: boolean
               envVars:
                 description: EnvVars represent environment variables that can be passed
                   to fluentd pods.
@@ -2243,6 +2247,17 @@ spec:
                 - debug
                 - trace
                 type: string
+              metricsBind:
+                description: MetricsBind is the host for metrics to listen on, default
+                  is "0.0.0.0"
+                type: string
+              metricsPort:
+                description: MetricsPort is the port that the Prometheus metrics listener
+                  will be exposed on if metrics are enabled, default is 2021
+                format: int32
+                maximum: 65535
+                minimum: 1
+                type: integer
               nodeSelector:
                 additionalProperties:
                   type: string
