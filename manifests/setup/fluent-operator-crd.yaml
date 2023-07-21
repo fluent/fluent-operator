@@ -4133,6 +4133,31 @@ spec:
                       server listening for traces, e.g: /v1/traces'
                     type: string
                 type: object
+              prometheusExporter:
+                description: PrometheusExporter_types defines Prometheus exporter
+                  configuration to expose metrics from Fluent Bit.
+                properties:
+                  addLabels:
+                    additionalProperties:
+                      type: string
+                    description: This allows you to add custom labels to all metrics
+                      exposed through the prometheus exporter. You may have multiple
+                      of these fields
+                    type: object
+                  host:
+                    description: 'IP address or hostname of the target HTTP Server,
+                      default: 0.0.0.0'
+                    type: string
+                  port:
+                    description: This is the port Fluent Bit will bind to when hosting
+                      prometheus metrics.
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                required:
+                - host
+                type: object
               prometheusRemoteWrite:
                 description: PrometheusRemoteWrite_types defines Prometheus Remote
                   Write configuration.
@@ -24765,6 +24790,31 @@ spec:
                     description: 'Specify an optional HTTP URI for the target web
                       server listening for traces, e.g: /v1/traces'
                     type: string
+                type: object
+              prometheusExporter:
+                description: PrometheusExporter_types defines Prometheus exporter
+                  configuration to expose metrics from Fluent Bit.
+                properties:
+                  addLabels:
+                    additionalProperties:
+                      type: string
+                    description: This allows you to add custom labels to all metrics
+                      exposed through the prometheus exporter. You may have multiple
+                      of these fields
+                    type: object
+                  host:
+                    description: 'IP address or hostname of the target HTTP Server,
+                      default: 0.0.0.0'
+                    type: string
+                  port:
+                    description: This is the port Fluent Bit will bind to when hosting
+                      prometheus metrics.
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                required:
+                - host
                 type: object
               prometheusRemoteWrite:
                 description: PrometheusRemoteWrite_types defines Prometheus Remote

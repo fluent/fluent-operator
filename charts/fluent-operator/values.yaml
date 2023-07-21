@@ -191,6 +191,12 @@ fluentbit:
   #     path:
   #       procfs: /host/proc
   #       sysfs: /host/sys
+    fluentBitMetrics: {}
+    # uncomment below fluentBitMetrics section if you want to collect fluentBit metrics
+#    fluentBitMetrics:
+#      scrapeInterval: "2"
+#      scrapeOnStart: true
+#      tag: "fb.metrics"
 
   # Configure the output plugin parameter in FluentBit.
   # You can set enable to true to output logs to the specified location.
@@ -228,6 +234,15 @@ fluentbit:
     # You can configure the opensearch-related configuration here
     stdout:
       enable: false
+    # Uncomment the following section to enable Prometheus metrics exporter.
+    prometheusMetricsExporter: {}
+#    prometheusMetricsExporter:
+#      match: "fb.metrics"
+#      metricsExporter:
+#        host: "0.0.0.0"
+#        port: 2020
+#        addLabels:
+#          app: "fluentbit"
   service:
     storage: {}
 # Remove the above storage section and uncomment below section if you want to configure file-system as storage for buffer
