@@ -23,6 +23,8 @@ type ClusterFluentBitConfigExpansion interface{}
 
 type ClusterInputExpansion interface{}
 
+type ClusterMultilineParserExpansion interface{}
+
 type ClusterOutputExpansion interface{}
 
 type ClusterParserExpansion interface{}
@@ -34,6 +36,8 @@ type FilterExpansion interface{}
 type FluentBitExpansion interface{}
 
 type FluentBitConfigExpansion interface{}
+
+type MultilineParserExpansion interface{}
 
 type OutputExpansion interface{}
 
