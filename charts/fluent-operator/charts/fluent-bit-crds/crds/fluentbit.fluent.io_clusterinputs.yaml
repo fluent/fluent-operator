@@ -80,6 +80,39 @@ spec:
                   tag:
                     type: string
                 type: object
+              forward:
+                description: Forward defines forward  input plugin configuration
+                properties:
+                  bufferMaxSize:
+                    description: Specify maximum buffer memory size used to recieve
+                      a forward message. Provide value in bytes.
+                    type: integer
+                  bufferchunkSize:
+                    type: integer
+                  listen:
+                    type: string
+                  port:
+                    format: int32
+                    type: integer
+                  tag:
+                    description: in_forward uses the tag value for incoming logs.
+                      If not set it uses tag from incoming log.
+                    type: string
+                  tagPrefix:
+                    description: Adds the prefix to incoming event's tag
+                    type: string
+                  threaded:
+                    description: Threaded mechanism allows input plugin to run in
+                      a separate thread which helps to desaturate the main pipeline.
+                    type: string
+                  unixPath:
+                    description: Specify the path to unix socket to recieve a forward
+                      message. If set, Listen and port are ignnored.
+                    type: string
+                  unixPerm:
+                    description: Set the permission of unix socket file.
+                    type: string
+                type: object
               logLevel:
                 enum:
                 - "off"
