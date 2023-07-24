@@ -105,17 +105,44 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{}, err
 	}
 
-	// Deploy Fluentd Statefulset
-	sts := operator.MakeStatefulset(fd)
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sts, r.mutate(sts, &fd)); err != nil {
-		return ctrl.Result{}, err
+	var err error
+	if fd.Spec.Mode == "agent" {
+		// Deploy Fluentd DaemonSet
+		ds := operator.MakeFluentdDaemonSet(fd)
+		_, err = controllerutil.CreateOrPatch(ctx, r.Client, ds, r.mutate(ds, &fd))
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+		sts := appsv1.StatefulSet{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      fd.Name,
+				Namespace: fd.Namespace,
+			},
+		}
+		if err = r.Delete(ctx, &sts); err != nil && !errors.IsNotFound(err) {
+			return ctrl.Result{}, err
+		}
+	} else {
+		// Deploy Fluentd StatefulSet
+		sts := operator.MakeStatefulSet(fd)
+		_, err = controllerutil.CreateOrPatch(ctx, r.Client, sts, r.mutate(sts, &fd))
+		ds := appsv1.DaemonSet{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      fd.Name,
+				Namespace: fd.Namespace,
+			},
+		}
+		if err = r.Delete(ctx, &ds); err != nil && !errors.IsNotFound(err) {
+			return ctrl.Result{}, err
+		}
 	}
-
 	// Deploy Fluentd Service
 	if !fd.Spec.DisableService {
 		svc := operator.MakeFluentdService(fd)
-		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, &fd)); err != nil {
-			return ctrl.Result{}, err
+		if len(svc.Spec.Ports) > 0 {
+			if _, err = controllerutil.CreateOrPatch(ctx, r.Client, svc, r.mutate(svc, &fd)); err != nil {
+				return ctrl.Result{}, err
+			}
 		}
 	}
 
@@ -127,6 +154,22 @@ func (r *FluentdReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		// Grab the job object, extract the owner.
 		sec := rawObj.(*corev1.Secret)
 		owner := metav1.GetControllerOf(sec)
+		if owner == nil {
+			return nil
+		}
+
+		if owner.APIVersion != fluentdApiGVStr || owner.Kind != "Fluentd" {
+			return nil
+		}
+		return []string{owner.Name}
+	}); err != nil {
+		return err
+	}
+
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.DaemonSet{}, fluentdOwnerKey, func(rawObj client.Object) []string {
+		// grab the job object, extract the owner.
+		ds := rawObj.(*appsv1.DaemonSet)
+		owner := metav1.GetControllerOf(ds)
 		if owner == nil {
 			return nil
 		}
@@ -174,6 +217,7 @@ func (r *FluentdReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&fluentdv1alpha1.Fluentd{}).
 		Owns(&corev1.ServiceAccount{}).
+		Owns(&appsv1.DaemonSet{}).
 		Owns(&appsv1.StatefulSet{}).
 		Owns(&corev1.Service{}).
 		Complete(r)
