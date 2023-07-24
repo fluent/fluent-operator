@@ -1328,6 +1328,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.OpenTelemetry)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.PrometheusExporter != nil {
+		in, out := &in.PrometheusExporter, &out.PrometheusExporter
+		*out = new(output.PrometheusExporter)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.PrometheusRemoteWrite != nil {
 		in, out := &in.PrometheusRemoteWrite, &out.PrometheusRemoteWrite
 		*out = new(output.PrometheusRemoteWrite)
