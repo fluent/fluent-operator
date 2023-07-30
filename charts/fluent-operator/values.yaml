@@ -191,6 +191,12 @@ fluentbit:
   #     path:
   #       procfs: /host/proc
   #       sysfs: /host/sys
+    fluentBitMetrics: {}
+    # uncomment below fluentBitMetrics section if you want to collect fluentBit metrics
+#    fluentBitMetrics:
+#      scrapeInterval: "2"
+#      scrapeOnStart: true
+#      tag: "fb.metrics"
 
   # Configure the output plugin parameter in FluentBit.
   # You can set enable to true to output logs to the specified location.
@@ -228,6 +234,15 @@ fluentbit:
     # You can configure the opensearch-related configuration here
     stdout:
       enable: false
+    # Uncomment the following section to enable Prometheus metrics exporter.
+    prometheusMetricsExporter: {}
+#    prometheusMetricsExporter:
+#      match: "fb.metrics"
+#      metricsExporter:
+#        host: "0.0.0.0"
+#        port: 2020
+#        addLabels:
+#          app: "fluentbit"
   service:
     storage: {}
 # Remove the above storage section and uncomment below section if you want to configure file-system as storage for buffer
@@ -268,10 +283,16 @@ fluentd:
   crdsEnable: true
   enable: false
   name: fluentd
+  # Valid modes include "collector" and "agent".
+  # The "collector" mode will deploy Fluentd as a StatefulSet as before.
+  # The new "agent" mode will deploy Fluentd as a DaemonSet.
+  mode: "collector"
   port: 24224
   image:
     repository: "kubesphere/fluentd"
     tag: "v1.15.3"
+  # Numbers of the Fluentd instance
+  # Applicable when the mode is "collector", and will be ignored when the mode is "agent"
   replicas: 1
   forward:
     port: 24224

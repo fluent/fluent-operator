@@ -11,4 +11,5 @@ var (
 	fluentdOwnerKey   = ".fluentd.metadata.controller"
 	fluentbitApiGVStr = fluentbitv1alpha2.SchemeGroupVersion.String()
 	fluentdApiGVStr   = fluentdv1alpha1.SchemeGroupVersion.String()
+	fluentdAgentMode  = "agent"
 )

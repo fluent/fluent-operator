@@ -43,6 +43,7 @@ type FluentdSpec struct {
 	// By default will build the related service according to the globalinputs definition.
 	DisableService bool `json:"disableService,omitempty"`
 	// Numbers of the Fluentd instance
+	// Applicable when the mode is "collector", and will be ignored when the mode is "agent"
 	Replicas *int32 `json:"replicas,omitempty"`
 	// Numbers of the workers in Fluentd instance
 	Workers *int32 `json:"workers,omitempty"`
@@ -92,6 +93,7 @@ type FluentdSpec struct {
 	// claims in a way that maintains the identity of a pod. Every claim in
 	// this list must have at least one matching (by name) volumeMount in one
 	// container in the template.
+	// Applicable when the mode is "collector", and will be ignored when the mode is "agent"
 	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty"`
 	// Service represents configurations on the fluentd service.
 	Service FluentDService `json:"service,omitempty"`
@@ -99,6 +101,15 @@ type FluentdSpec struct {
 	SecurityContext *corev1.PodSecurityContext `json:"securityContext,omitempty"`
 	// SchedulerName represents the desired scheduler for fluentd pods.
 	SchedulerName string `json:"schedulerName,omitempty"`
+	// Mode to determine whether to run Fluentd as collector or agent.
+	// +kubebuilder:validation:Enum:=collector;agent
+	// +kubebuilder:default:=collector
+	Mode string `json:"mode,omitempty"`
+	// ContainerSecurityContext represents the security context for the fluentd container.
+	ContainerSecurityContext *corev1.SecurityContext `json:"containerSecurityContext,omitempty"`
+	// Storage for position db. You will use it if tail input is enabled.
+	// Applicable when the mode is "agent", and will be ignored when the mode is "collector"
+	PositionDB corev1.VolumeSource `json:"positionDB,omitempty"`
 }
 
 // FluentDService the service of the FluentD

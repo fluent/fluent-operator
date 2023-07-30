@@ -1,0 +1,14 @@
+{{- if .Values.fluentbit.enable -}}
+{{- if .Values.fluentbit.input.fluentBitMetrics -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterInput
+metadata:
+  name: fluentbit-metrics
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  fluentBitMetrics:
+{{ toYaml .Values.fluentbit.input.fluentBitMetrics | indent 4}}
+{{- end }}
+{{- end }}
