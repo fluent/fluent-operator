@@ -280,8 +280,8 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(sl plugins.SecretLoader, inpu
 func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, parsers ClusterParserList, nsParserLists []ParserList,
 	nsClusterParserLists []ClusterParserList) (string, error) {
 	var buf bytes.Buffer
-
-	parserSections, err := parsers.Load(sl)
+	existingParsers := make(map[string]bool)
+	parserSections, err := parsers.Load(sl, existingParsers)
 	if err != nil {
 		return "", err
 	}
@@ -304,7 +304,7 @@ func (cfg ClusterFluentBitConfig) RenderParserConfig(sl plugins.SecretLoader, pa
 	}
 
 	for _, item := range nsClusterParserLists {
-		nsClusterParserSections, err := item.Load(sl)
+		nsClusterParserSections, err := item.Load(sl, existingParsers)
 		if err != nil {
 			return "", err
 		}
