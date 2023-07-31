@@ -142,6 +142,14 @@ var fluentbitExpected = `[Input]
     Tag    logs.foo.bar
     scrape_interval    2
     scrape_on_start    true
+[Input]
+    Name    forward
+    Alias    input1_alias
+    Port    433
+    Listen    0.0.0.0
+    Buffer_Chunk_Size    1M
+    Buffer_Max_Size    6M
+    threaded    on
 `
 
 func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
@@ -176,9 +184,28 @@ func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
 			},
 		},
 	}
-
+	inputObj2 := &ClusterInput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterInput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "input1",
+			Labels: labels,
+		},
+		Spec: InputSpec{
+			Alias: "input1_alias",
+			Forward: &input.Forward{
+				Port:            ptrInt32(int32(433)),
+				Listen:          "0.0.0.0",
+				BufferChunkSize: "1M",
+				BufferMaxSize:   "6M",
+				Threaded:        "on",
+			},
+		},
+	}
 	inputs := ClusterInputList{
-		Items: []ClusterInput{*inputObj1},
+		Items: []ClusterInput{*inputObj1, *inputObj2},
 	}
 
 	i := 0

@@ -1071,7 +1071,7 @@ func (in *InputSpec) DeepCopyInto(out *InputSpec) {
 	if in.Forward != nil {
 		in, out := &in.Forward, &out.Forward
 		*out = new(input.Forward)
-		**out = **in
+		(*in).DeepCopyInto(*out)
 	}
 }
 
