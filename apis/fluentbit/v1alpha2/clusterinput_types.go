@@ -53,6 +53,8 @@ type InputSpec struct {
 	FluentBitMetrics *input.FluentbitMetrics `json:"fluentBitMetrics,omitempty"`
 	// CustomPlugin defines Custom Input configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
+	// Forward defines forward  input plugin configuration
+	Forward *input.Forward `json:"forward,omitempty"`
 }
 
 // +kubebuilder:object:root=true
