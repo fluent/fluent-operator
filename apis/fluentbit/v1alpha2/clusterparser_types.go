@@ -88,12 +88,14 @@ func (a ParserByName) Len() int           { return len(a) }
 func (a ParserByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ParserByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
-func (list ClusterParserList) Load(sl plugins.SecretLoader) (string, error) {
+func (list ClusterParserList) Load(sl plugins.SecretLoader, existingParsers map[string]bool) (string, error) {
 	var buf bytes.Buffer
 
 	sort.Sort(ParserByName(list.Items))
-
 	for _, item := range list.Items {
+		if existingParsers[item.Name] {
+			continue
+		}
 		merge := func(p plugins.Plugin) error {
 			if p == nil || reflect.ValueOf(p).IsNil() {
 				return nil
@@ -117,6 +119,7 @@ func (list ClusterParserList) Load(sl plugins.SecretLoader) (string, error) {
 					buf.WriteString(fmt.Sprintf("    Decode_Field_As    %s\n", decorder.DecodeFieldAs))
 				}
 			}
+			existingParsers[item.Name] = true
 			return nil
 		}
 
