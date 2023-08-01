@@ -3,9 +3,8 @@ package output
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
-
 	"strconv"
+	"strings"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
@@ -513,6 +512,18 @@ func (o *Output) s3Plugin(parent *params.PluginStore, loader plugins.SecretLoade
 	}
 	if o.S3.S3Bucket != nil {
 		parent.InsertPairs("s3_bucket", fmt.Sprint(*o.S3.S3Bucket))
+	}
+	if o.S3.S3Region != nil {
+		parent.InsertPairs("s3_region", fmt.Sprint(*o.S3.S3Region))
+	}
+	if o.S3.S3Endpoint != nil {
+		parent.InsertPairs("s3_endpoint", fmt.Sprint(*o.S3.S3Endpoint))
+	}
+	if o.S3.ForcePathStyle != nil {
+		parent.InsertPairs("force_path_style", fmt.Sprint(*o.S3.ForcePathStyle))
+	}
+	if o.S3.TimeSliceFormat != nil {
+		parent.InsertPairs("time_slice_format", fmt.Sprint(*o.S3.TimeSliceFormat))
 	}
 	if o.S3.Path != nil {
 		parent.InsertPairs("path", fmt.Sprint(*o.S3.Path))
