@@ -894,6 +894,11 @@ func (in *FluentBitSpec) DeepCopyInto(out *FluentBitSpec) {
 		*out = make([]v1.LocalObjectReference, len(*in))
 		copy(*out, *in)
 	}
+	if in.InternalMountPropagation != nil {
+		in, out := &in.InternalMountPropagation, &out.InternalMountPropagation
+		*out = new(v1.MountPropagationMode)
+		**out = **in
+	}
 	in.PositionDB.DeepCopyInto(&out.PositionDB)
 	in.Resources.DeepCopyInto(&out.Resources)
 	if in.NodeSelector != nil {

@@ -6829,6 +6829,10 @@ spec:
                         awsSecKey:
                           description: The AWS secret key.
                           type: string
+                        forcePathStyle:
+                          description: This prevents AWS SDK from breaking endpoint
+                            URL
+                          type: boolean
                         path:
                           description: The path prefix of the files on S3.
                           type: string
@@ -6837,6 +6841,9 @@ spec:
                           type: string
                         s3Bucket:
                           description: The Amazon S3 bucket name.
+                          type: string
+                        s3Endpoint:
+                          description: The endpoint URL (like "http://localhost:9000/")
                           type: string
                         s3ObjectKeyFormat:
                           description: The actual S3 path. This is interpolated to
@@ -6855,6 +6862,9 @@ spec:
                           - lzo
                           - json
                           - txt
+                          type: string
+                        timeSliceFormat:
+                          description: This timestamp is added to each file name
                           type: string
                       type: object
                     stdout:
@@ -29208,6 +29218,10 @@ spec:
                         awsSecKey:
                           description: The AWS secret key.
                           type: string
+                        forcePathStyle:
+                          description: This prevents AWS SDK from breaking endpoint
+                            URL
+                          type: boolean
                         path:
                           description: The path prefix of the files on S3.
                           type: string
@@ -29216,6 +29230,9 @@ spec:
                           type: string
                         s3Bucket:
                           description: The Amazon S3 bucket name.
+                          type: string
+                        s3Endpoint:
+                          description: The endpoint URL (like "http://localhost:9000/")
                           type: string
                         s3ObjectKeyFormat:
                           description: The actual S3 path. This is interpolated to
@@ -29234,6 +29251,9 @@ spec:
                           - lzo
                           - json
                           - txt
+                          type: string
+                        timeSliceFormat:
+                          description: This timestamp is added to each file name
                           type: string
                       type: object
                     stdout:
