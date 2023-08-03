@@ -156,6 +156,10 @@ spec:
                           description: Parse defines various parameters for the parse
                             plugin
                           properties:
+                            customPatternPath:
+                              description: Path to the file that includes custom grok
+                                patterns.
+                              type: string
                             estimateCurrentEvent:
                               description: If true, use Fluent::Eventnow(current time)
                                 as a timestamp when time_key is specified.
@@ -163,6 +167,43 @@ spec:
                             expression:
                               description: Specifies the regular expression for matching
                                 logs. Regular expression also supports i and m suffix.
+                              type: string
+                            grok:
+                              description: Grok Sections
+                              items:
+                                properties:
+                                  keepTimeKey:
+                                    description: If true, keep time field in the record.
+                                    type: boolean
+                                  name:
+                                    description: The name of this grok section.
+                                    type: string
+                                  pattern:
+                                    description: The pattern of grok. Required parameter.
+                                    type: string
+                                  timeFormat:
+                                    description: Process value using specified format.
+                                      This is available only when time_type is string
+                                    type: string
+                                  timeKey:
+                                    description: Specify time field for event time.
+                                      If the event doesn't have this field, current
+                                      time is used.
+                                    type: string
+                                  timeZone:
+                                    description: Use specified timezone. one can parse/format
+                                      the time value in the specified timezone.
+                                    type: string
+                                type: object
+                              type: array
+                            grokFailureKey:
+                              description: The key has grok failure reason.
+                              type: string
+                            grokPattern:
+                              description: The pattern of grok.
+                              type: string
+                            grokPatternSeries:
+                              description: Specify grok pattern series set.
                               type: string
                             id:
                               description: The @id parameter specifies a unique name
@@ -177,6 +218,10 @@ spec:
                             logLevel:
                               description: The @log_level parameter specifies the
                                 plugin-specific logging level
+                              type: string
+                            multiLineStartRegexp:
+                              description: The regexp to match beginning of multiline.
+                                This is only for "multiline_grok".
                               type: string
                             timeFormat:
                               description: Process value according to the specified
@@ -223,6 +268,8 @@ spec:
                               - json
                               - multiline
                               - none
+                              - grok
+                              - multiline_grok
                               type: string
                             types:
                               description: 'Specify types for converting field into
