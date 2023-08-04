@@ -39,6 +39,10 @@ func (c *FakeFluentbitV1alpha2) ClusterInputs() v1alpha2.ClusterInputInterface {
 	return &FakeClusterInputs{c}
 }
 
+func (c *FakeFluentbitV1alpha2) ClusterMultilineParsers() v1alpha2.ClusterMultilineParserInterface {
+	return &FakeClusterMultilineParsers{c}
+}
+
 func (c *FakeFluentbitV1alpha2) ClusterOutputs() v1alpha2.ClusterOutputInterface {
 	return &FakeClusterOutputs{c}
 }
@@ -61,6 +65,10 @@ func (c *FakeFluentbitV1alpha2) FluentBits(namespace string) v1alpha2.FluentBitI
 
 func (c *FakeFluentbitV1alpha2) FluentBitConfigs(namespace string) v1alpha2.FluentBitConfigInterface {
 	return &FakeFluentBitConfigs{c, namespace}
+}
+
+func (c *FakeFluentbitV1alpha2) MultilineParsers(namespace string) v1alpha2.MultilineParserInterface {
+	return &FakeMultilineParsers{c, namespace}
 }
 
 func (c *FakeFluentbitV1alpha2) Outputs(namespace string) v1alpha2.OutputInterface {
