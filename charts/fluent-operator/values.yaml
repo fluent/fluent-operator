@@ -97,6 +97,8 @@ fluentbit:
   imagePullSecrets: []
   # - name: "image-pull-secret"
   secrets: []
+  # fluent-bit daemonset use host network
+  hostNetwork: false 
   # Pod security context for Fluent Bit pods. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   podSecurityContext: {}
   # Security context for Fluent Bit container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/

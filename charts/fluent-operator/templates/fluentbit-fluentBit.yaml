@@ -19,6 +19,9 @@ spec:
 {{- toYaml .Values.fluentbit.resources | nindent 4  }}
   fluentBitConfigName: fluent-bit-config
   {{- if .Values.fluentbit.namespaceFluentBitCfgSelector }}
+{{- if .Values.fluentbit.hostNetwork }}
+  hostNetwork: {{ .Values.fluentbit.hostNetwork }}
+{{- end }}
   namespaceFluentBitCfgSelector:
 {{ toYaml .Values.fluentbit.namespaceFluentBitCfgSelector | indent 4  }}
   {{- end }}
