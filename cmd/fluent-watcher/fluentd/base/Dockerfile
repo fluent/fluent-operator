@@ -32,6 +32,7 @@ RUN apk update \
  && gem install fluent-plugin-opensearch -v 1.1.0 \
  && gem install \
          fluent-plugin-s3 \
+         fluent-plugin-grok-parser \
          fluent-plugin-rewrite-tag-filter \
          fluent-plugin-oss \
          fluent-plugin-dedot_filter \
