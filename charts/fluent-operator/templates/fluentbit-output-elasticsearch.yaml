@@ -16,6 +16,9 @@ spec:
 {{- if .Values.fluentbit.output.es.path }}
     path: {{ .Values.fluentbit.output.es.path }}
 {{- end }}
+{{- if .Values.fluentbit.output.es.suppressTypeName }}
+    suppressTypeName: {{ .Values.fluentbit.output.es.suppressTypeName | default "Off" | quote }}
+{{- end }}
 {{- if .Values.fluentbit.output.es.bufferSize }}
     bufferSize: {{ .Values.fluentbit.output.es.bufferSize }}
 {{- end }}
