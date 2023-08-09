@@ -209,6 +209,7 @@ fluentbit:
       host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
       port: 9200
       logstashPrefix: ks-logstash-log
+    #      suppressTypeName: "On"
     #      path: ""
     #      bufferSize: "4KB"
     #      index: "fluent-bit"
