@@ -37,6 +37,7 @@ RUN apk update \
  && gem install fluent-plugin-detect-exceptions -v 0.0.14 \
  && gem install \
          fluent-plugin-s3 \
+         fluent-plugin-grok-parser \
          fluent-plugin-rewrite-tag-filter \
          fluent-plugin-oss \
          fluent-plugin-dedot_filter \
