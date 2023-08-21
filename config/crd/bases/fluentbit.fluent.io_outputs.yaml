@@ -49,17 +49,26 @@ spec:
                     type: string
                   autoCreateContainer:
                     description: Creates container if ContainerName is not set.
-                    type: boolean
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   blobType:
                     description: Specify the desired blob type. Must be `appendblob`
                       or `blockblob`
+                    enum:
+                    - appendblob
+                    - blockblob
                     type: string
                   containerName:
                     description: Name of the container that will contain the blobs
                     type: string
                   emulatorMode:
                     description: Optional toggle to use an Azure emulator
-                    type: boolean
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   endpoint:
                     description: HTTP Service of the endpoint (if using EmulatorMode)
                     type: string
@@ -98,7 +107,10 @@ spec:
                   tls:
                     description: Enable/Disable TLS Encryption. Azure services require
                       TLS to be enabled.
-                    type: boolean
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                 required:
                 - accountName
                 - containerName
