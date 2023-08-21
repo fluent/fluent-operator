@@ -9,6 +9,7 @@ metadata:
 spec:
   service:
     parsersFile: parsers.conf
+    httpServer: true
 {{- if .Values.fluentbit.service.storage }}
     storage:
 {{ toYaml .Values.fluentbit.service.storage | indent 6 }}

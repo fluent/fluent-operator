@@ -8,6 +8,7 @@ spec:
   service:
     # To use parser, you must enable parsersFile by setting its value to parsers.conf
     parsersFile: parsers.conf
+    httpServer: true
   inputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"

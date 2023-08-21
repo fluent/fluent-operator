@@ -167,7 +167,7 @@ fluentbit:
     tail:
       enable: true
       refreshIntervalSeconds: 10
-      memBufLimit: 5MB
+      memBufLimit: 100MB
       path: "/var/log/containers/*.log"
       skipLongLines: true
       readFromHead: false
@@ -209,6 +209,8 @@ fluentbit:
       host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
       port: 9200
       logstashPrefix: ks-logstash-log
+      bufferSize: 20MB
+      traceError: true
     #      suppressTypeName: "On"
     #      path: ""
     #      bufferSize: "4KB"
