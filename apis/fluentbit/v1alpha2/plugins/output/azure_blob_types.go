@@ -34,7 +34,7 @@ type AzureBlob struct {
 
 // Name implement Section() method
 func (_ *AzureBlob) Name() string {
-	return "azureblob"
+	return "azure_blob"
 }
 
 // Params implement Section() method
@@ -57,19 +57,31 @@ func (o *AzureBlob) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("blob_type", o.BlobType)
 	}
 	if o.AutoCreateContainer != nil {
-		kvs.Insert("auto_create_container", fmt.Sprint(*o.AutoCreateContainer))
+		if *o.AutoCreateContainer {
+			kvs.Insert("auto_create_container", "on")
+		} else {
+			kvs.Insert("auto_create_container", "off")
+		}
 	}
 	if o.Path != "" {
 		kvs.Insert("path", o.Path)
 	}
 	if o.EmulatorMode != nil {
-		kvs.Insert("emulator_mode", fmt.Sprint(*o.EmulatorMode))
+		if *o.EmulatorMode {
+			kvs.Insert("emulator_mode", "on")
+		} else {
+			kvs.Insert("emulator_mode", "off")
+		}
 	}
 	if o.Endpoint != "" {
 		kvs.Insert("endpoint", o.Endpoint)
 	}
 	if o.TLS != nil {
-		kvs.Insert("tls", fmt.Sprint(*o.TLS))
+		if *o.TLS {
+			kvs.Insert("tls", "on")
+		} else {
+			kvs.Insert("tls", "off")
+		}
 	}
 	return kvs, nil
 }
