@@ -11,7 +11,7 @@ spec:
     path: /var/log/containers/*.log
     parser: docker
     refreshIntervalSeconds: 10
-    memBufLimit: 5MB
+    memBufLimit: 100MB
     skipLongLines: true
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
