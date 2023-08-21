@@ -246,52 +246,47 @@ fluentbit:
 #        addLabels:
 #          app: "fluentbit"
     
-#    # Loki output. Uncomment to produce a ClusterOutput, to be encapsulated in fluentbit config
-#    # See https://github.com/fluent/fluent-operator/blob/master/docs/plugins/fluentbit/output/loki.md
-#    loki:
-#      host: 127.0.0.1
-#      port: 3100
-#      # The following three keys need an entry in 
-#      # Either, give http{User,Password},tenantID string values specifying them directly
-#      httpUser: myuser
-#      httpPassword: mypass
-#      tenantID: mytenant
-#      # Or give them as reference to secrets that you have installed into your kubernetes cluster
-#      httpUser:
-#        valueFrom:
-#          secretKeyRef:
-#            key: value
-#            name: husersecret
-#            optional: true
-#      httpPassword:
-#        valueFrom:
-#          secretKeyRef:
-#            key: value
-#            name: hpasssecret
-#            optional: true
-#      tenantID:
-#        valueFrom:
-#          secretKeyRef:
-#            key: value
-#            name: tenantsecret
-#            optional: true
-#      labels:
-#        - test=me
-#        - once=twice
-#      labelKeys:
-#        - one
-#        - two
-#        - three
-#      removeKeys:
-#        - 'on'
-#        - tw
-#        - th
-#      labelMapPath: /here/it/is
-#      dropSingleKey: off
-#      lineFormat: abc
-#      autoKubernetesLabels: on
-#      tenantIDKey: tidkey
-#      tls:
+    # Loki fluentbit ClusterOutput, to be encapsulated in fluentbit config
+    # See https://github.com/fluent/fluent-operator/blob/master/docs/plugins/fluentbit/output/loki.md
+    # See https://docs.fluentbit.io/manual/pipeline/outputs/loki
+    loki:
+      # Switch for generation of fluentbit loki ClusterOutput (and loki basic auth http user and pass secrets if required)
+      enable: false   # Bool
+      host: 127.0.0.1 # String
+      port: 3100      # Int
+      # Either, give http{User,Password},tenantID string values specifying them directly
+      httpUser: myuser
+      httpPassword: mypass
+      tenantID: ''
+      # Or give {http{User,Password},tenantID} as reference to secrets that you have manually installed into your kubernetes cluster
+      #httpUser:
+      #  valueFrom:
+      #    secretKeyRef:
+      #      key: value
+      #      name: husersecret
+      #      optional: true
+      #httpPassword:
+      #  valueFrom:
+      #    secretKeyRef:
+      #      key: value
+      #      name: hpasssecret
+      #      optional: true
+      #tenantID:
+      #  valueFrom:
+      #    secretKeyRef:
+      #      key: value
+      #      name: tenantsecret
+      #      optional: true
+      #
+      #labels: []      # String list of <name>=<value>
+      #labelKeys: []   # String list of <key>
+      #removeKeys: []  # String list of <key> 
+      #labelMapPath: '' # String, path to file, ex /here/it/is
+      #dropSingleKey: off
+      #lineFormat: '' # String
+      #autoKubernetesLabels: on
+      #tenantIDKey:   # String
+      #tls: {}        # *plugins.TLS fluentbit docs
 
   service:
     storage: {}

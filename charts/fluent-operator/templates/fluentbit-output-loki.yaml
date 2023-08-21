@@ -1,6 +1,7 @@
 {{ if .Values.Kubernetes -}}
 {{ if .Values.fluentbit.enable -}}
 {{ if .Values.fluentbit.output.loki -}}
+{{ if .Values.fluentbit.output.loki.enable -}}
 
 {{ with .Values.fluentbit.output.loki -}}
 {{/* 
@@ -113,6 +114,7 @@ spec:
 
 {{ end -}}
 
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
