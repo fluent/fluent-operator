@@ -26,7 +26,7 @@ spec:
   logLevel: {{ .Values.fluentd.logLevel }}
   {{- end }}
   {{- if .Values.fluentd.extras }}
-  {{ .Values.fluentd.extras | toYaml . | nindent 2 }}
+  {{ .Values.fluentd.extras | toYaml | nindent 2 }}
   {{- end }}
 {{- end }}
 {{- end }}
