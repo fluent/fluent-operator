@@ -33,20 +33,10 @@ func (in *AzureBlob) DeepCopyInto(out *AzureBlob) {
 		*out = new(plugins.Secret)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.AutoCreateContainer != nil {
-		in, out := &in.AutoCreateContainer, &out.AutoCreateContainer
-		*out = new(bool)
-		**out = **in
-	}
-	if in.EmulatorMode != nil {
-		in, out := &in.EmulatorMode, &out.EmulatorMode
-		*out = new(bool)
-		**out = **in
-	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
-		*out = new(bool)
-		**out = **in
+		*out = new(plugins.TLS)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
