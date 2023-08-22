@@ -30,8 +30,7 @@ type AzureBlob struct {
 	// HTTP Service of the endpoint (if using EmulatorMode)
 	Endpoint string `json:"endpoint,omitempty"`
 	// Enable/Disable TLS Encryption. Azure services require TLS to be enabled.
-	// +kubebuilder:validation:Enum:=on;off
-	TLS string `json:"tls,omitempty"`
+	*plugins.TLS `json:"tls,omitempty"`
 }
 
 // Name implement Section() method
@@ -70,8 +69,12 @@ func (o *AzureBlob) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.Endpoint != "" {
 		kvs.Insert("endpoint", o.Endpoint)
 	}
-	if o.TLS != "" {
-		kvs.Insert("tls", o.TLS)
+	if o.TLS != nil {
+		tls, err := o.TLS.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(tls)
 	}
 	return kvs, nil
 }
