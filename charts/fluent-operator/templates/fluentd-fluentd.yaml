@@ -13,6 +13,10 @@ spec:
         port: {{ .Values.fluentd.port }}
   replicas: {{ .Values.fluentd.replicas }}
   image: {{ .Values.fluentd.image.repository }}:{{ .Values.fluentd.image.tag }}
+  {{- if .Values.fluentd.imagePullSecrets }}
+  imagePullSecrets:
+  {{ toYaml .Values.fluentd.imagePullSecrets | indent 4 }}
+  {{- end }}
   mode: {{ .Values.fluentd.mode }}
   resources:
   {{- toYaml .Values.fluentd.resources | nindent 4  }}
