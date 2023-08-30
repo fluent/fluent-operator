@@ -287,9 +287,9 @@ FluentdSpec defines the desired state of Fluentd
 | ----- | ----------- | ------ |
 | globalInputs | Fluentd global inputs. | [][[input.Input](plugins/input/input.md)](plugins/[input/input](plugins/input/input/md).md) |
 | defaultFilterSelector | Select cluster filter plugins used to filter for the default cluster output | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
-| defaultOutputSelector | Select cluster output plugins used to send all logs that did not match a route to the matching outputs | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| defaultOutputSelector | Select cluster output plugins used to send all logs that did not match any route to the matching outputs | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | disableService | By default will build the related service according to the globalinputs definition. | bool |
-| replicas | Numbers of the Fluentd instance | *int32 |
+| replicas | Numbers of the Fluentd instance Applicable when the mode is \"collector\", and will be ignored when the mode is \"agent\" | *int32 |
 | workers | Numbers of the workers in Fluentd instance | *int32 |
 | logLevel | Global logging verbosity | string |
 | image | Fluentd image. | string |
@@ -310,10 +310,13 @@ FluentdSpec defines the desired state of Fluentd
 | rbacRules | RBACRules represents additional rbac rules which will be applied to the fluentd clusterrole. | []rbacv1.PolicyRule |
 | volumes | List of volumes that can be mounted by containers belonging to the pod. | []corev1.Volume |
 | volumeMounts | Pod volumes to mount into the container's filesystem. Cannot be updated. | []corev1.VolumeMount |
-| volumeClaimTemplates | volumeClaimTemplates is a list of claims that pods are allowed to reference. The StatefulSet controller is responsible for mapping network identities to claims in a way that maintains the identity of a pod. Every claim in this list must have at least one matching (by name) volumeMount in one container in the template. | []corev1.PersistentVolumeClaim |
+| volumeClaimTemplates | volumeClaimTemplates is a list of claims that pods are allowed to reference. The StatefulSet controller is responsible for mapping network identities to claims in a way that maintains the identity of a pod. Every claim in this list must have at least one matching (by name) volumeMount in one container in the template. Applicable when the mode is \"collector\", and will be ignored when the mode is \"agent\" | []corev1.PersistentVolumeClaim |
 | service | Service represents configurations on the fluentd service. | FluentDService |
 | securityContext | PodSecurityContext represents the security context for the fluentd pods. | *corev1.PodSecurityContext |
 | schedulerName | SchedulerName represents the desired scheduler for fluentd pods. | string |
+| mode | Mode to determine whether to run Fluentd as collector or agent. | string |
+| containerSecurityContext | ContainerSecurityContext represents the security context for the fluentd container. | *corev1.SecurityContext |
+| positionDB | Storage for position db. You will use it if tail input is enabled. Applicable when the mode is \"agent\", and will be ignored when the mode is \"collector\" | [corev1.VolumeSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#volume-v1-core) |
 
 [Back to TOC](#table-of-contents)
 # FluentdStatus
