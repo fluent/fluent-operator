@@ -419,6 +419,8 @@ InputSpec defines the desired state of ClusterInput
 | fluentBitMetrics | FluentBitMetrics defines Fluent Bit Metrics Input configuration. | *[input.FluentbitMetrics](plugins/input/fluentbitmetrics.md) |
 | customPlugin | CustomPlugin defines Custom Input configuration. | *custom.CustomPlugin |
 | forward | Forward defines forward  input plugin configuration | *[input.Forward](plugins/input/forward.md) |
+| openTelemetry | OpenTelemetry defines forward  input plugin configuration | *[input.OpenTelemetry](plugins/input/opentelemetry.md) |
+
 
 [Back to TOC](#table-of-contents)
 # NamespacedFluentBitCfgSpec
