@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -19,22 +17,25 @@ type AzureBlob struct {
 	// Name of the container that will contain the blobs
 	ContainerName string `json:"containerName"`
 	// Specify the desired blob type. Must be `appendblob` or `blockblob`
+	// +kubebuilder:validation:Enum:=appendblob;blockblob
 	BlobType string `json:"blobType,omitempty"`
 	// Creates container if ContainerName is not set.
-	AutoCreateContainer *bool `json:"autoCreateContainer,omitempty"`
+	// +kubebuilder:validation:Enum:=on;off
+	AutoCreateContainer string `json:"autoCreateContainer,omitempty"`
 	// Optional path to store the blobs.
 	Path string `json:"path,omitempty"`
 	// Optional toggle to use an Azure emulator
-	EmulatorMode *bool `json:"emulatorMode,omitempty"`
+	// +kubebuilder:validation:Enum:=on;off
+	EmulatorMode string `json:"emulatorMode,omitempty"`
 	// HTTP Service of the endpoint (if using EmulatorMode)
 	Endpoint string `json:"endpoint,omitempty"`
 	// Enable/Disable TLS Encryption. Azure services require TLS to be enabled.
-	TLS *bool `json:"tls,omitempty"`
+	*plugins.TLS `json:"tls,omitempty"`
 }
 
 // Name implement Section() method
 func (_ *AzureBlob) Name() string {
-	return "azureblob"
+	return "azure_blob"
 }
 
 // Params implement Section() method
@@ -56,20 +57,24 @@ func (o *AzureBlob) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.BlobType != "" {
 		kvs.Insert("blob_type", o.BlobType)
 	}
-	if o.AutoCreateContainer != nil {
-		kvs.Insert("auto_create_container", fmt.Sprint(*o.AutoCreateContainer))
+	if o.AutoCreateContainer != "" {
+		kvs.Insert("auto_create_container", o.AutoCreateContainer)
 	}
 	if o.Path != "" {
 		kvs.Insert("path", o.Path)
 	}
-	if o.EmulatorMode != nil {
-		kvs.Insert("emulator_mode", fmt.Sprint(*o.EmulatorMode))
+	if o.EmulatorMode != "" {
+		kvs.Insert("emulator_mode", o.EmulatorMode)
 	}
 	if o.Endpoint != "" {
 		kvs.Insert("endpoint", o.Endpoint)
 	}
 	if o.TLS != nil {
-		kvs.Insert("tls", fmt.Sprint(*o.TLS))
+		tls, err := o.TLS.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(tls)
 	}
 	return kvs, nil
 }

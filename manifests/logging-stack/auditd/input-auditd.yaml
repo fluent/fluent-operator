@@ -10,6 +10,6 @@ spec:
     tag: auditd
     path: /var/log/audit/audit.log
     refreshIntervalSeconds: 10
-    memBufLimit: 5MB
+    memBufLimit: 100MB
     db: /tail/auditd.db
     dbSync: Normal

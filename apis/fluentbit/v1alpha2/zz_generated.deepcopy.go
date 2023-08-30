@@ -1358,6 +1358,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.S3)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Gelf != nil {
+		in, out := &in.Gelf, &out.Gelf
+		*out = new(output.Gelf)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)

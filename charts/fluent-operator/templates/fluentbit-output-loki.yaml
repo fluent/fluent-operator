@@ -1,0 +1,120 @@
+{{ if .Values.Kubernetes -}}
+{{ if .Values.fluentbit.enable -}}
+{{ if .Values.fluentbit.output.loki -}}
+{{ if .Values.fluentbit.output.loki.enable -}}
+
+{{ with .Values.fluentbit.output.loki -}}
+{{/* 
+When http{User,Password} or tenantID is a string, make a secret for them
+When these keys are objects, they specify a secret to use generated elsewhere, assumed to exist in the k8s cluster 
+*/}}
+{{ $userSecret := "loki-http-auth" -}}
+{{ $passSecret := "loki-http-pass" -}}
+{{ $tenantIDSecret := "loki-tenant-id" -}}
+
+{{ range $k, $v := dict $userSecret .httpUser $passSecret .httpPassword $tenantIDSecret .tenantID -}}
+{{ if kindIs "string" $v -}}
+---
+secretapiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $k |quote }}
+type: Opaque
+data:
+  value: {{ $v | quote }}
+{{ end -}}
+{{ end -}}
+
+---
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  name: loki
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  matchRegex: (?:kube|service)\.(.*)
+  loki:
+    {{ if .host }}host: {{ .host | quote }}{{ end }}
+    {{ if .port }}port: {{ .port }}{{ end }}
+    {{- if ne .autoKubernetesLabels nil }}
+    autoKubernetesLabels: {{ .autoKubernetesLabels | quote }}
+    {{- end }}
+    {{- if .labelMapPath }}
+    labelMapPath: {{ .labelMapPath }}
+    {{- end }}
+    {{- if ne .dropSingleKey nil }}
+    dropSingleKey: {{ .dropSingleKey | quote }}
+    {{- end }}
+    {{- if .lineFormat }}
+    lineFormat: {{ .lineFormat }}
+    {{- end }}
+    {{- if .tenantIDKey }}
+    tenantIDKey: {{ .tenantIDKey }}
+    {{- end }}
+
+    {{- if .httpUser }}
+    httpUser: 
+      {{- if kindIs "string" .httpUser }}
+      valueFrom:
+        secretKeyRef:
+          key: 'value'
+          name: {{ $userSecret }}
+          optional: false
+        {{- else }}
+{{ .httpUser | toYaml | indent 6 }}
+      {{- end }}
+    {{- end }}
+
+    {{- if .httpPassword }}
+    httpPassword: 
+      {{- if kindIs "string" .httpPassword }}
+      valueFrom:
+        secretKeyRef:
+          key: 'value'
+          name: {{ $passSecret }}
+          optional: false
+      {{- else }}
+{{ .httpPassword | toYaml | indent 6 }}
+      {{- end }}
+    {{- end }}
+
+    {{- if .tenantID }}
+    tenantID: 
+      {{- if kindIs "string" .tenantID }}
+      valueFrom:
+        secretKeyRef:
+          key: 'value'
+          name: {{ $tenantIDSecret }}
+          optional: false
+      {{- else }}
+{{ .tenantID | toYaml | indent 6 }}
+      {{- end }}
+    {{- end }}
+
+    {{- if .labels }}
+    labels:
+{{ .labels | toYaml | indent 6 }}
+    {{ end -}}
+    
+    {{ if .labelKeys -}}
+    labelKeys:
+{{ .labelKeys | toYaml | indent 6 }}
+    {{ end -}}
+
+    {{ if .removeKeys -}}
+    removeKeys:
+{{ .removeKeys | toYaml | indent 6 }}
+    {{ end -}}
+    
+    {{ if .tls -}}
+{{ .tls | toYaml | indent 6 }}
+    {{ end -}}
+
+{{ end -}}
+
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
