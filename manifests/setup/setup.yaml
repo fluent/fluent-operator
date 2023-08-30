@@ -1905,7 +1905,7 @@ spec:
                       plugin.
                     type: string
                 type: object
-              opentelemetry:
+              openTelemetry:
                 description: OpenTelemetry defines forward  input plugin configuration
                 properties:
                   bufferChunkSize:

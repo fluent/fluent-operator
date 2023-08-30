@@ -56,7 +56,7 @@ type InputSpec struct {
 	// Forward defines forward  input plugin configuration
 	Forward *input.Forward `json:"forward,omitempty"`
 	// OpenTelemetry defines forward  input plugin configuration
-	OpenTelemetry *input.OpenTelemetry `json:"opentelemetry,omitempty"`
+	OpenTelemetry *input.OpenTelemetry `json:"openTelemetry,omitempty"`
 }
 
 // +kubebuilder:object:root=true

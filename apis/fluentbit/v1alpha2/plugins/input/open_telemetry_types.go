@@ -25,7 +25,7 @@ type OpenTelemetry struct {
 	RawTraces *bool `json:"rawTraces,omitempty"`
 	// Specify the maximum buffer size in KB to receive a JSON message(default 4M).
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
-	bufferMaxSize string `json:"bufferMaxSize,omitempty"`
+	BufferMaxSize string `json:"bufferMaxSize,omitempty"`
 	// This sets the chunk size for incoming incoming JSON messages. These chunks are then stored/managed in the space available by buffer_max_size(default 512K).
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferChunkSize string `json:"bufferChunkSize,omitempty"`
@@ -52,8 +52,8 @@ func (ot *OpenTelemetry) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	if ot.RawTraces != nil {
 		kvs.Insert("raw_traces", fmt.Sprint(*ot.RawTraces))
 	}
-	if ot.bufferMaxSize != "" {
-		kvs.Insert("buffer_max_size", ot.bufferMaxSize)
+	if ot.BufferMaxSize != "" {
+		kvs.Insert("buffer_max_size", ot.BufferMaxSize)
 	}
 	if ot.BufferChunkSize != "" {
 		kvs.Insert("buffer_chunk_size", ot.BufferChunkSize)
