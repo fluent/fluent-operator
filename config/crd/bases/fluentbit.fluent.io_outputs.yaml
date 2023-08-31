@@ -435,6 +435,12 @@ spec:
                     description: If you are using Elastic's Elasticsearch Service
                       you can specify the cloud_id of the cluster running.
                     type: string
+                  compress:
+                    description: Set payload compression mechanism. Option available
+                      is 'gzip'
+                    enum:
+                    - gzip
+                    type: string
                   currentTimeIndex:
                     description: Use current time for index generation instead of
                       message record
