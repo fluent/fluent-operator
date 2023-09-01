@@ -80,5 +80,9 @@ spec:
   securityContext:
 {{ toYaml .Values.fluentbit.podSecurityContext | nindent 4 }}
   {{- end }}
+  {{- if .Values.fluentbit.serviceAccountAnnotations }}
+  serviceAccountAnnotations:
+{{ toYaml .Values.fluentbit.serviceAccountAnnotations | indent 4 }}
+  {{- end }}
 {{- end }}
 {{- end }}
