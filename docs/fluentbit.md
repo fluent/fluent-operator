@@ -420,6 +420,7 @@ InputSpec defines the desired state of ClusterInput
 | customPlugin | CustomPlugin defines Custom Input configuration. | *custom.CustomPlugin |
 | forward | Forward defines forward  input plugin configuration | *[input.Forward](plugins/input/forward.md) |
 | openTelemetry | OpenTelemetry defines forward  input plugin configuration | *[input.OpenTelemetry](plugins/input/opentelemetry.md) |
+| http | HTTP defines forward  input plugin configuration | *[input.OpenTelemetry](plugins/input/opentelemetry.md) |
 
 [Back to TOC](#table-of-contents)
 # NamespacedFluentBitCfgSpec
@@ -493,6 +494,7 @@ OutputSpec defines the desired state of ClusterOutput
 | prometheusExporter | PrometheusExporter_types defines Prometheus exporter configuration to expose metrics from Fluent Bit. | *[output.PrometheusExporter](plugins/output/prometheusexporter.md) |
 | prometheusRemoteWrite | PrometheusRemoteWrite_types defines Prometheus Remote Write configuration. | *[output.PrometheusRemoteWrite](plugins/output/prometheusremotewrite.md) |
 | s3 | S3 defines S3 Output configuration. | *[output.S3](plugins/output/s3.md) |
+| gelf | Gelf defines GELF Output configuration. | *[output.Gelf](plugins/output/gelf.md) |
 | customPlugin | CustomPlugin defines Custom Output configuration. | *custom.CustomPlugin |
 
 [Back to TOC](#table-of-contents)

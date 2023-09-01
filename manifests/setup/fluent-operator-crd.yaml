@@ -1872,6 +1872,42 @@ spec:
                     description: Set the permission of unix socket file.
                     type: string
                 type: object
+              http:
+                description: HTTP defines forward  input plugin configuration
+                properties:
+                  bufferChunkSize:
+                    description: This sets the chunk size for incoming incoming JSON
+                      messages. These chunks are then stored/managed in the space
+                      available by buffer_max_size(default 512K).
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  bufferMaxSize:
+                    description: Specify the maximum buffer size in KB to receive
+                      a JSON message(default 4M).
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  listen:
+                    description: The address to listen on,default 0.0.0.0
+                    type: string
+                  port:
+                    description: The port for Fluent Bit to listen on.default 4318.
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  rawTraces:
+                    description: Route trace data as a log message(default false).
+                    type: boolean
+                  successfulResponseCode:
+                    description: It allows to set successful response code. 200, 201
+                      and 204 are supported(default 201).
+                    format: int32
+                    type: integer
+                  tagKey:
+                    description: Specify the key name to overwrite a tag. If set,
+                      the tag will be overwritten by a value of the key.
+                    type: string
+                type: object
               logLevel:
                 enum:
                 - "off"
@@ -2270,17 +2306,26 @@ spec:
                     type: string
                   autoCreateContainer:
                     description: Creates container if ContainerName is not set.
-                    type: boolean
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   blobType:
                     description: Specify the desired blob type. Must be `appendblob`
                       or `blockblob`
+                    enum:
+                    - appendblob
+                    - blockblob
                     type: string
                   containerName:
                     description: Name of the container that will contain the blobs
                     type: string
                   emulatorMode:
                     description: Optional toggle to use an Azure emulator
-                    type: boolean
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   endpoint:
                     description: HTTP Service of the endpoint (if using EmulatorMode)
                     type: string
@@ -2319,7 +2364,69 @@ spec:
                   tls:
                     description: Enable/Disable TLS Encryption. Azure services require
                       TLS to be enabled.
-                    type: boolean
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                                x-kubernetes-map-type: atomic
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
                 required:
                 - accountName
                 - containerName
@@ -2584,6 +2691,12 @@ spec:
                   cloudID:
                     description: If you are using Elastic's Elasticsearch Service
                       you can specify the cloud_id of the cluster running.
+                    type: string
+                  compress:
+                    description: Set payload compression mechanism. Option available
+                      is 'gzip'
+                    enum:
+                    - gzip
                     type: string
                   currentTimeIndex:
                     description: Use current time for index generation instead of
@@ -3059,6 +3172,121 @@ spec:
                             type: object
                             x-kubernetes-map-type: atomic
                         type: object
+                    type: object
+                type: object
+              gelf:
+                description: Gelf defines GELF Output configuration.
+                properties:
+                  compress:
+                    description: If transport protocol is udp, it defines if UDP packets
+                      should be compressed.
+                    type: boolean
+                  fullMessageKey:
+                    description: FullMessageKey is the key to use as the long message
+                      that can i.e. contain a backtrace.
+                    type: string
+                  host:
+                    description: IP address or hostname of the target Graylog server.
+                    type: string
+                  hostKey:
+                    description: HostKey is the key which its value is used as the
+                      name of the host, source or application that sent this message.
+                    type: string
+                  levelKey:
+                    description: LevelKey is the key to be used as the log level.
+                    type: string
+                  mode:
+                    description: The protocol to use (tls, tcp or udp).
+                    enum:
+                    - tls
+                    - tcp
+                    - udp
+                    type: string
+                  packetSize:
+                    description: If transport protocol is udp, it sets the size of
+                      packets to be sent.
+                    format: int32
+                    type: integer
+                  port:
+                    description: The port that the target Graylog server is listening
+                      on.
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  shortMessageKey:
+                    description: ShortMessageKey is the key to use as the short message.
+                    type: string
+                  timestampKey:
+                    description: TimestampKey is the key which its value is used as
+                      the timestamp of the message.
+                    type: string
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                                x-kubernetes-map-type: atomic
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
                     type: object
                 type: object
               http:
@@ -24800,17 +25028,26 @@ spec:
                     type: string
                   autoCreateContainer:
                     description: Creates container if ContainerName is not set.
-                    type: boolean
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   blobType:
                     description: Specify the desired blob type. Must be `appendblob`
                       or `blockblob`
+                    enum:
+                    - appendblob
+                    - blockblob
                     type: string
                   containerName:
                     description: Name of the container that will contain the blobs
                     type: string
                   emulatorMode:
                     description: Optional toggle to use an Azure emulator
-                    type: boolean
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   endpoint:
                     description: HTTP Service of the endpoint (if using EmulatorMode)
                     type: string
@@ -24849,7 +25086,69 @@ spec:
                   tls:
                     description: Enable/Disable TLS Encryption. Azure services require
                       TLS to be enabled.
-                    type: boolean
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                                x-kubernetes-map-type: atomic
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
                 required:
                 - accountName
                 - containerName
@@ -25114,6 +25413,12 @@ spec:
                   cloudID:
                     description: If you are using Elastic's Elasticsearch Service
                       you can specify the cloud_id of the cluster running.
+                    type: string
+                  compress:
+                    description: Set payload compression mechanism. Option available
+                      is 'gzip'
+                    enum:
+                    - gzip
                     type: string
                   currentTimeIndex:
                     description: Use current time for index generation instead of
@@ -25589,6 +25894,121 @@ spec:
                             type: object
                             x-kubernetes-map-type: atomic
                         type: object
+                    type: object
+                type: object
+              gelf:
+                description: Gelf defines GELF Output configuration.
+                properties:
+                  compress:
+                    description: If transport protocol is udp, it defines if UDP packets
+                      should be compressed.
+                    type: boolean
+                  fullMessageKey:
+                    description: FullMessageKey is the key to use as the long message
+                      that can i.e. contain a backtrace.
+                    type: string
+                  host:
+                    description: IP address or hostname of the target Graylog server.
+                    type: string
+                  hostKey:
+                    description: HostKey is the key which its value is used as the
+                      name of the host, source or application that sent this message.
+                    type: string
+                  levelKey:
+                    description: LevelKey is the key to be used as the log level.
+                    type: string
+                  mode:
+                    description: The protocol to use (tls, tcp or udp).
+                    enum:
+                    - tls
+                    - tcp
+                    - udp
+                    type: string
+                  packetSize:
+                    description: If transport protocol is udp, it sets the size of
+                      packets to be sent.
+                    format: int32
+                    type: integer
+                  port:
+                    description: The port that the target Graylog server is listening
+                      on.
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  shortMessageKey:
+                    description: ShortMessageKey is the key to use as the short message.
+                    type: string
+                  timestampKey:
+                    description: TimestampKey is the key which its value is used as
+                      the timestamp of the message.
+                    type: string
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                                x-kubernetes-map-type: atomic
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
                     type: object
                 type: object
               http:

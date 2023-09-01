@@ -98,6 +98,8 @@ type OutputSpec struct {
 	PrometheusRemoteWrite *output.PrometheusRemoteWrite `json:"prometheusRemoteWrite,omitempty"`
 	// S3 defines S3 Output configuration.
 	S3 *output.S3 `json:"s3,omitempty"`
+	// Gelf defines GELF Output configuration.
+	Gelf *output.Gelf `json:"gelf,omitempty"`
 
 	// CustomPlugin defines Custom Output configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
