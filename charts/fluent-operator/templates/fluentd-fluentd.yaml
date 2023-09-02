@@ -29,6 +29,9 @@ spec:
   {{- if .Values.fluentd.logLevel }}
   logLevel: {{ .Values.fluentd.logLevel }}
   {{- end }}
+  {{- with .Values.fluentd.priorityClassName }}
+  priorityClassName: {{ . }}
+  {{- end }}
   {{- if .Values.fluentd.extras }}
   {{ .Values.fluentd.extras | toYaml | nindent 2 }}
   {{- end }}
