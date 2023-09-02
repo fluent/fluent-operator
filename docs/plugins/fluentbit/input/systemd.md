@@ -15,3 +15,5 @@ The Systemd input plugin allows to collect log messages from the Journald daemon
 | systemdFilterType | Define the filter type when Systemd_Filter is specified multiple times. Allowed values are And and Or. With And a record is matched only when all of the Systemd_Filter have a match. With Or a record is matched when any of the Systemd_Filter has a match. | string |
 | readFromTail | Start reading new entries. Skip entries already stored in Journald. | string |
 | stripUnderscores | Remove the leading underscore of the Journald field (key). For example the Journald field _PID becomes the key PID. | string |
+| storageType | Specify the buffering mechanism to use. It can be memory or filesystem | string |
+| pauseOnChunksOverlimit | Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached. | string |

@@ -8,7 +8,7 @@
 When http{User,Password} or tenantID is a string, make a secret for them
 When these keys are objects, they specify a secret to use generated elsewhere, assumed to exist in the k8s cluster 
 */}}
-{{ $userSecret := "loki-http-user" -}}
+{{ $userSecret := "loki-http-auth" -}}
 {{ $passSecret := "loki-http-pass" -}}
 {{ $tenantIDSecret := "loki-tenant-id" -}}
 

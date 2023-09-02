@@ -23,6 +23,9 @@ type Elasticsearch struct {
 	// This option defines such path on the fluent-bit side.
 	// It simply adds a path prefix in the indexing HTTP POST URI.
 	Path string `json:"path,omitempty"`
+	// Set payload compression mechanism. Option available is 'gzip'
+	// +kubebuilder:validation:Enum=gzip
+	Compress string `json:"compress,omitempty"`
 	// Specify the buffer size used to read the response from the Elasticsearch HTTP service.
 	// This option is useful for debugging purposes where is required to read full responses,
 	// note that response size grows depending of the number of records inserted.
@@ -113,6 +116,9 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if es.Path != "" {
 		kvs.Insert("Path", es.Path)
+	}
+	if es.Compress != "" {
+		kvs.Insert("Compress", es.Compress)
 	}
 	if es.BufferSize != "" {
 		kvs.Insert("Buffer_Size", es.BufferSize)

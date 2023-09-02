@@ -71,7 +71,7 @@ fluentbit:
   enable: true
   image:
     repository: "kubesphere/fluent-bit"
-    tag: "v2.1.7"
+    tag: "v2.1.8"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
   resources:
@@ -91,6 +91,9 @@ fluentbit:
   # Specify additional custom labels for fluentbit-pods
   labels: {}
 
+  # Specify additional custom annotations for fluentbit-serviceaccount
+  serviceAccountAnnotations: {}
+
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
@@ -98,7 +101,7 @@ fluentbit:
   # - name: "image-pull-secret"
   secrets: []
   # fluent-bit daemonset use host network
-  hostNetwork: false 
+  hostNetwork: false
   # Pod security context for Fluent Bit pods. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   podSecurityContext: {}
   # Security context for Fluent Bit container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -167,7 +170,7 @@ fluentbit:
     tail:
       enable: true
       refreshIntervalSeconds: 10
-      memBufLimit: 5MB
+      memBufLimit: 100MB
       path: "/var/log/containers/*.log"
       skipLongLines: true
       readFromHead: false
@@ -209,6 +212,9 @@ fluentbit:
       host: "<Elasticsearch url like elasticsearch-logging-data.kubesphere-logging-system.svc>"
       port: 9200
       logstashPrefix: ks-logstash-log
+      bufferSize: 20MB
+      traceError: true
+    #      suppressTypeName: "On"
     #      path: ""
     #      bufferSize: "4KB"
     #      index: "fluent-bit"
@@ -352,7 +358,13 @@ fluentd:
       cpu: 100m
       memory: 128Mi
   schedulerName: ""
+  ## Reference to one or more secrets to be used when pulling images
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  imagePullSecrets: []
+  # - name: "image-pull-secret"
   logLevel: ""
+  priorityClassName: ""
+  extras: {}
   # Configure the output plugin parameter in Fluentd.
   # Fluentd is disabled by default, if you enable it make sure to also set up an output to use.
   output:

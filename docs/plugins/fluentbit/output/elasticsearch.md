@@ -8,6 +8,7 @@ Elasticsearch is the es output plugin, allows to ingest your records into an Ela
 | host | IP address or hostname of the target Elasticsearch instance | string |
 | port | TCP port of the target Elasticsearch instance | *int32 |
 | path | Elasticsearch accepts new data on HTTP query path \"/_bulk\". But it is also possible to serve Elasticsearch behind a reverse proxy on a subpath. This option defines such path on the fluent-bit side. It simply adds a path prefix in the indexing HTTP POST URI. | string |
+| compress | Set payload compression mechanism. Option available is 'gzip' | string |
 | bufferSize | Specify the buffer size used to read the response from the Elasticsearch HTTP service. This option is useful for debugging purposes where is required to read full responses, note that response size grows depending of the number of records inserted. To set an unlimited amount of memory set this value to False, otherwise the value must be according to the Unit Size specification. | string |
 | pipeline | Newer versions of Elasticsearch allows setting up filters called pipelines. This option allows defining which pipeline the database should use. For performance reasons is strongly suggested parsing and filtering on Fluent Bit side, avoid pipelines. | string |
 | awsAuth | Enable AWS Sigv4 Authentication for Amazon ElasticSearch Service. | string |
