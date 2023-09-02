@@ -8,9 +8,7 @@ metadata:
     config.fluentd.fluent.io/enabled: "true"
 spec:
   watchedNamespaces:
-  {{- range .Values.fluentd.watchedNamespaces }}
-  - {{ . }}
-  {{- end }}
+    {{- toYaml .Values.fluentd.watchedNamespaces | nindent 4 }}
   clusterFilterSelector:
     matchLabels:
       filter.fluentd.fluent.io/enabled: "true"
