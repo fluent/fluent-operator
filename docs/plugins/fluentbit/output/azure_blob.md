@@ -9,8 +9,8 @@ Azure Blob is the Azure Blob output plugin, allows to ingest your records into A
 | sharedKey | Specify the Azure Storage Shared Key to authenticate against the storage account | *[plugins.Secret](../secret.md) |
 | containerName | Name of the container that will contain the blobs | string |
 | blobType | Specify the desired blob type. Must be `appendblob` or `blockblob` | string |
-| autoCreateContainer | Creates container if ContainerName is not set. | *bool |
+| autoCreateContainer | Creates container if ContainerName is not set. | string |
 | path | Optional path to store the blobs. | string |
-| emulatorMode | Optional toggle to use an Azure emulator | *bool |
+| emulatorMode | Optional toggle to use an Azure emulator | string |
 | endpoint | HTTP Service of the endpoint (if using EmulatorMode) | string |
-| tls | Enable/Disable TLS Encryption. Azure services require TLS to be enabled. | *bool |
+| tls | Enable/Disable TLS Encryption. Azure services require TLS to be enabled. | *[plugins.TLS](../tls.md) |
