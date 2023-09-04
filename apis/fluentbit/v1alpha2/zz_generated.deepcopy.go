@@ -1085,7 +1085,7 @@ func (in *InputSpec) DeepCopyInto(out *InputSpec) {
 	}
 	if in.HTTP != nil {
 		in, out := &in.HTTP, &out.HTTP
-		*out = new(input.OpenTelemetry)
+		*out = new(input.HTTP)
 		(*in).DeepCopyInto(*out)
 	}
 }
