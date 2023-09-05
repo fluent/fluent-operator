@@ -59,6 +59,8 @@ type InputSpec struct {
 	OpenTelemetry *input.OpenTelemetry `json:"openTelemetry,omitempty"`
 	// HTTP defines forward  input plugin configuration
 	HTTP *input.HTTP `json:"http,omitempty"`
+	// MQTT defines forward  input plugin configuration
+	MQTT *input.MQTT `json:"mqtt,omitempty"`
 }
 
 // +kubebuilder:object:root=true

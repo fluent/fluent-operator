@@ -236,6 +236,20 @@ spec:
                 - debug
                 - trace
                 type: string
+              mqtt:
+                description: MQTT defines forward  input plugin configuration
+                properties:
+                  listen:
+                    description: 'Listener network interface, default: 0.0.0.0'
+                    type: string
+                  port:
+                    description: 'TCP port where listening for connections, default:
+                      1883'
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                type: object
               nodeExporterMetrics:
                 description: NodeExporterMetrics defines Node Exporter Metrics Input
                   configuration.
