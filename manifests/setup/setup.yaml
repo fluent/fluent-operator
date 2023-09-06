@@ -1873,7 +1873,7 @@ spec:
                     type: string
                 type: object
               http:
-                description: HTTP defines forward  input plugin configuration
+                description: HTTP defines the HTTP input plugin configuration
                 properties:
                   bufferChunkSize:
                     description: This sets the chunk size for incoming incoming JSON
@@ -1986,7 +1986,7 @@ spec:
                 - trace
                 type: string
               mqtt:
-                description: MQTT defines forward  input plugin configuration
+                description: MQTT defines the MQTT input plugin configuration
                 properties:
                   listen:
                     description: 'Listener network interface, default: 0.0.0.0'
@@ -2024,7 +2024,8 @@ spec:
                     type: string
                 type: object
               openTelemetry:
-                description: OpenTelemetry defines forward  input plugin configuration
+                description: OpenTelemetry defines the OpenTelemetry input plugin
+                  configuration
                 properties:
                   bufferChunkSize:
                     description: This sets the chunk size for incoming incoming JSON
