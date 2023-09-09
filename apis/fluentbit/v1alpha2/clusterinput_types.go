@@ -55,10 +55,12 @@ type InputSpec struct {
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 	// Forward defines forward  input plugin configuration
 	Forward *input.Forward `json:"forward,omitempty"`
-	// OpenTelemetry defines forward  input plugin configuration
+	// OpenTelemetry defines the OpenTelemetry input plugin configuration
 	OpenTelemetry *input.OpenTelemetry `json:"openTelemetry,omitempty"`
-	// HTTP defines forward  input plugin configuration
+	// HTTP defines the HTTP input plugin configuration
 	HTTP *input.HTTP `json:"http,omitempty"`
+	// MQTT defines the MQTT input plugin configuration
+	MQTT *input.MQTT `json:"mqtt,omitempty"`
 }
 
 // +kubebuilder:object:root=true
