@@ -11,3 +11,4 @@ spec:
     hostPath:
       path: /var/lib/fluent-bit/
   fluentBitConfigName: fluentbitconfig-sample
+  disableLogVolumes: false
