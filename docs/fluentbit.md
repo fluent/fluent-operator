@@ -422,6 +422,7 @@ InputSpec defines the desired state of ClusterInput
 | openTelemetry | OpenTelemetry defines the OpenTelemetry input plugin configuration | *[input.OpenTelemetry](plugins/input/opentelemetry.md) |
 | http | HTTP defines the HTTP input plugin configuration | *[input.HTTP](plugins/input/http.md) |
 | mqtt | MQTT defines the MQTT input plugin configuration | *[input.MQTT](plugins/input/mqtt.md) |
+| collectd | Collectd defines the Collectd input plugin configuration | *[input.Collectd](plugins/input/collectd.md) |
 
 [Back to TOC](#table-of-contents)
 # NamespacedFluentBitCfgSpec

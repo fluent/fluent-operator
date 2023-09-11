@@ -61,6 +61,8 @@ type InputSpec struct {
 	HTTP *input.HTTP `json:"http,omitempty"`
 	// MQTT defines the MQTT input plugin configuration
 	MQTT *input.MQTT `json:"mqtt,omitempty"`
+	// Collectd defines the Collectd input plugin configuration
+	Collectd *input.Collectd `json:"collectd,omitempty"`
 }
 
 // +kubebuilder:object:root=true
