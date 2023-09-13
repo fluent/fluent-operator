@@ -1,7 +1,7 @@
 ## 2.5.0 / 2023-09-13
 ### Features
 - Feat: add support to run Fluentd as a DaemonSet (#839)
-- Feat: add support for prometheus expoter output plugin for fluentbit (#840)
+- Feat: Add Prometheus exporter output plugin for Fluent Bit (#840)
 - Feat: adding forward input plugin configuration (#843)
 - Feat: support fluentd grok parser plugin (#861) 
 - Feat: add gelf output plugin to fluentbit (#882) 
