@@ -6,7 +6,7 @@
 - Feat: support fluentd grok parser plugin (#861) 
 - Feat: add gelf output plugin to fluentbit (#882) 
 - Feat: add fluentbit opentelemetry plugin (#890) 
-- Feat: added serviceAccountAnnotations to FluentBit resource (#898) 
+- Feat: Add serviceAccount Annotations to FluentBit resource (#898) 
 - Feat: Add Helm priorityClassName mapping to Fluentd (#902) 
 - Feat: add fluentbit http plugin (#904) 
 - Feat: add fluentbit mqtt plugin (#911) 
