@@ -19,7 +19,7 @@
 - Bump fluentbit to 2.1.8. (#867) 
 - Added SuppressTypeName option to helm, as newer ES needs it for bulk operation (#869) 
 - Adjusting the parameters of fluentbit (#880) @wenchajun
-- Adding an extras section to the chart allowing new and less used features of the CRD to be used from the chart (#889)
+- Add an extras section to the chart allowing new and less used features of the CRD to be used from the chart (#889)
 - Add ImagePullSecret for fluentd (#891) 
 - Add compress in fluentbit output es (#899)
 - Expose ports on collector statefulset (#917) 
