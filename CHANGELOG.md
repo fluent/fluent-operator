@@ -2,7 +2,7 @@
 ### Features
 - Feat: add support to run Fluentd as a DaemonSet (#839)
 - Feat: Add Prometheus exporter output plugin for Fluent Bit (#840)
-- Feat: adding forward input plugin configuration (#843)
+- Feat: Add Fluent Bit forward input plugin (#843)
 - Feat: support fluentd grok parser plugin (#861) 
 - Feat: add gelf output plugin to fluentbit (#882) 
 - Feat: add fluentbit opentelemetry plugin (#890) 
