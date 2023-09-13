@@ -1790,6 +1790,22 @@ spec:
                 description: A user friendly alias name for this input plugin. Used
                   in metrics for distinction of each configured input.
                 type: string
+              collectd:
+                description: Collectd defines the Collectd input plugin configuration
+                properties:
+                  listen:
+                    description: 'Set the address to listen to, default: 0.0.0.0'
+                    type: string
+                  port:
+                    description: 'Set the port to listen to, default: 25826'
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  typesDB:
+                    description: 'Set the data specification file,default: /usr/share/collectd/types.db'
+                    type: string
+                type: object
               customPlugin:
                 description: CustomPlugin defines Custom Input configuration.
                 properties:
