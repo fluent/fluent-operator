@@ -1,3 +1,41 @@
+## 2.5.0 / 2023-09-13
+### Features
+- Feat: add support to run Fluentd as DaemonSet (#839)
+- Feat: add support for prometheus expoter output plugin for fluentbit (#840)
+- Feat: adding forward input plugin configuration (#843)
+- Feat: support fluentd grok parser plugin (#861) 
+- Feat: add gelf output plugin to fluentbit (#882) 
+- Feat: add fluentbit opentelemetry plugin (#890) 
+- Feat: added serviceAccountAnnotations to FluentBit resource (#898) 
+- Feat: added Helm priorityClassName mapping to fluentd (#902) 
+- Feat: add fluentbit http plugin (#904) 
+- Feat: add fluentbit mqtt plugin (#911) 
+- Feat: add fluentbit collectd plugin (#914) 
+
+### ENHANCEMENT
+- Remove Duplicate Cluster parsers in Fluent-bit config. (#853) 
+- Add option to configure hostNetwork daemonset propertie (#863)
+- Helm chart generation of ClusterOutput for loki (#865) (#906)
+- Bump fluentbit to 2.1.8. (#867) 
+- Added SuppressTypeName option to helm, as newer ES needs it for bulk operation (#869) 
+- Adjusting the parameters of fluentbit (#880) @wenchajun
+- Adding an extras section to the chart allowing new and less used features of the CRD to be used from the chart (#889)
+- Add ImagePullSecret for fluentd (#891) 
+- Add compress in fluentbit output es (#899)
+- Expose ports on collector statefulset (#917) 
+- build(deps): Bump github.com/onsi/gomega from 1.27.8 to 1.27.10 (#844) 
+- build(deps): Bump k8s.io/apimachinery from 0.27.3 to 0.27.4 (#847) 
+- build(deps): Bump helm/kind-action from 1.7.0 to 1.8.0 (#859) 
+- build(deps): Bump golang from 1.20.6-alpine3.17 to 1.20.7-alpine3.17 in /cmd/fluent-manager (#860) 
+- build(deps): Bump github.com/go-kit/kit from 0.12.0 to 0.13.0 (#896) 
+- build(deps): Bump golang from 1.20.7-alpine3.17 to 1.21.1-alpine3.17 in /cmd/fluent-manager (#913) 
+
+### BUGFIX 
+- Fix: Fluentd's s3 output plugin is compatible with minio (#858) 
+- Fix: add hostNetwork option (#866) 
+- Fix azure blob name & boolean parameters. (#887) 
+- Fix: fluentd watchedNamespaces Helm mapping (#901) 
+
 ## 2.4.0 / 2023-07-19
 ### Features
 - Feat: add scheduler support for fluentbit collector (#776)
