@@ -17,7 +17,7 @@
 - Add option to configure hostNetwork daemonset propertie (#863)
 - Helm chart generation of ClusterOutput for loki (#865) (#906)
 - Bump fluentbit to 2.1.8. (#867) 
-- Added SuppressTypeName option to helm, as newer ES needs it for bulk operation (#869) 
+- Add SuppressTypeName option to helm, as newer ES needs it for bulk operation (#869) 
 - Adjusting the parameters of fluentbit (#880) @wenchajun
 - Add an extras section to the chart allowing new and less used features of the CRD to be used from the chart (#889)
 - Add ImagePullSecret for fluentd (#891) 
