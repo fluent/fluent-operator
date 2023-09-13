@@ -24,7 +24,7 @@ operator:
         memory: 64Mi
   container:
     repository: "kubesphere/fluent-operator"
-    tag: "latest"
+    tag: "v2.5.0"
   # nodeSelector configuration for Fluent Operator. Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
   # Node tolerations applied to Fluent Operator. Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
