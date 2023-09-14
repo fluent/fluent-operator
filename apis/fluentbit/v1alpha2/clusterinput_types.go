@@ -63,7 +63,7 @@ type InputSpec struct {
 	MQTT *input.MQTT `json:"mqtt,omitempty"`
 	// Collectd defines the Collectd input plugin configuration
 	Collectd *input.Collectd `json:"collectd,omitempty"`
-	// Collectd defines the Collectd input plugin configuration
+	// Nginx defines the Nginx input plugin configuration
 	Nginx *input.Nginx `json:"nginx,omitempty"`
 }
 

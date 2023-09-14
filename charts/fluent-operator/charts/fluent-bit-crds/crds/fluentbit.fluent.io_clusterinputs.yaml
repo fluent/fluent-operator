@@ -267,7 +267,7 @@ spec:
                     type: integer
                 type: object
               nginx:
-                description: Collectd defines the Collectd input plugin configuration
+                description: Nginx defines the Nginx input plugin configuration
                 properties:
                   host:
                     description: 'Name of the target host or IP address to check,
