@@ -63,6 +63,8 @@ type InputSpec struct {
 	MQTT *input.MQTT `json:"mqtt,omitempty"`
 	// Collectd defines the Collectd input plugin configuration
 	Collectd *input.Collectd `json:"collectd,omitempty"`
+	// StatsD defines the StatsD input plugin configuration
+	StatsD *input.StatsD `json:"statsd,omitempty"`
 }
 
 // +kubebuilder:object:root=true
