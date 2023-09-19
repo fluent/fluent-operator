@@ -400,6 +400,7 @@ FluentBitSpec defines the desired state of FluentBit
 | metricsPort | MetricsPort is the port used by the metrics server. If this option is set, HttpPort from ClusterFluentBitConfig needs to match this value. Default is 2020. | int32 |
 | service | Service represents configurations on the fluent-bit service. | FluentBitService |
 | schedulerName | SchedulerName represents the desired scheduler for fluent-bit pods. | string |
+| disableLogVolumes | DisableLogVolumes removes the hostPath mounts for varlibcontainers, varlogs and systemd. | bool |
 
 [Back to TOC](#table-of-contents)
 # InputSpec

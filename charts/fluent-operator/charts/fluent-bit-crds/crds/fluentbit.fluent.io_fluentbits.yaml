@@ -1043,6 +1043,10 @@ spec:
                         type: string
                     type: object
                 type: object
+              disableLogVolumes:
+                description: DisableLogVolumes removes the hostPath mounts for varlibcontainers,
+                  varlogs and systemd.
+                type: boolean
               disableService:
                 description: DisableService tells if the fluentbit service should
                   be deployed.
