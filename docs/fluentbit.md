@@ -423,6 +423,7 @@ InputSpec defines the desired state of ClusterInput
 | http | HTTP defines the HTTP input plugin configuration | *[input.HTTP](plugins/input/http.md) |
 | mqtt | MQTT defines the MQTT input plugin configuration | *[input.MQTT](plugins/input/mqtt.md) |
 | collectd | Collectd defines the Collectd input plugin configuration | *[input.Collectd](plugins/input/collectd.md) |
+| statsd | StatsD defines the StatsD input plugin configuration | *[input.StatsD](plugins/input/statsd.md) |
 
 [Back to TOC](#table-of-contents)
 # NamespacedFluentBitCfgSpec
