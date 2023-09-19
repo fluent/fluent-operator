@@ -384,6 +384,7 @@ FluentBitSpec defines the desired state of FluentBit
 | priorityClassName | PriorityClassName represents the pod's priority class. | string |
 | volumes | List of volumes that can be mounted by containers belonging to the pod. | []corev1.Volume |
 | volumesMounts | Pod volumes to mount into the container's filesystem. | []corev1.VolumeMount |
+| disableLogVolumes | DisableLogVolumes removes the hostPath mounts for varlibcontainers, varlogs and systemd. | bool |
 | annotations | Annotations to add to each Fluentbit pod. | map[string]string |
 | serviceAccountAnnotations | Annotations to add to the Fluentbit service account | map[string]string |
 | labels | Labels to add to each FluentBit pod | map[string]string |
@@ -400,7 +401,6 @@ FluentBitSpec defines the desired state of FluentBit
 | metricsPort | MetricsPort is the port used by the metrics server. If this option is set, HttpPort from ClusterFluentBitConfig needs to match this value. Default is 2020. | int32 |
 | service | Service represents configurations on the fluent-bit service. | FluentBitService |
 | schedulerName | SchedulerName represents the desired scheduler for fluent-bit pods. | string |
-| disableLogVolumes | DisableLogVolumes removes the hostPath mounts for varlibcontainers, varlogs and systemd. | bool |
 
 [Back to TOC](#table-of-contents)
 # InputSpec
@@ -425,6 +425,7 @@ InputSpec defines the desired state of ClusterInput
 | mqtt | MQTT defines the MQTT input plugin configuration | *[input.MQTT](plugins/input/mqtt.md) |
 | collectd | Collectd defines the Collectd input plugin configuration | *[input.Collectd](plugins/input/collectd.md) |
 | statsd | StatsD defines the StatsD input plugin configuration | *[input.StatsD](plugins/input/statsd.md) |
+| nginx | Nginx defines the Nginx input plugin configuration | *[input.Nginx](plugins/input/nginx.md) |
 
 [Back to TOC](#table-of-contents)
 # NamespacedFluentBitCfgSpec

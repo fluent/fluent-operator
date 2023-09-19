@@ -2015,6 +2015,27 @@ spec:
                     minimum: 1
                     type: integer
                 type: object
+              nginx:
+                description: Nginx defines the Nginx input plugin configuration
+                properties:
+                  host:
+                    description: 'Name of the target host or IP address to check,
+                      default: localhost'
+                    type: string
+                  nginxPlus:
+                    description: 'Turn on NGINX plus mode,default: true'
+                    type: boolean
+                  port:
+                    description: 'Port of the target nginx service to connect to,
+                      default: 80'
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  statusURL:
+                    description: 'The URL of the Stub Status Handler,default: /status'
+                    type: string
+                type: object
               nodeExporterMetrics:
                 description: NodeExporterMetrics defines Node Exporter Metrics Input
                   configuration.
