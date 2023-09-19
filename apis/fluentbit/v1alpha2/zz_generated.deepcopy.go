@@ -1101,6 +1101,9 @@ func (in *InputSpec) DeepCopyInto(out *InputSpec) {
 	if in.Nginx != nil {
 		in, out := &in.Nginx, &out.Nginx
 		*out = new(input.Nginx)
+	if in.StatsD != nil {
+		in, out := &in.StatsD, &out.StatsD
+		*out = new(input.StatsD)
 		(*in).DeepCopyInto(*out)
 	}
 }

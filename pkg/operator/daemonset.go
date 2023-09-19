@@ -25,10 +25,8 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 		metricsPort = 2020
 	}
 
-	internalMountPropagation := corev1.MountPropagationNone
-	if fb.Spec.InternalMountPropagation != nil {
-		internalMountPropagation = *fb.Spec.InternalMountPropagation
-	}
+	fbVolumeMounts := makeVolumeMounts(fb, logPath)
+	fbVolumes := makeVolumes(fb, logPath)
 
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
@@ -51,41 +49,8 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 				Spec: corev1.PodSpec{
 					ServiceAccountName: fb.Name,
 					ImagePullSecrets:   fb.Spec.ImagePullSecrets,
-					Volumes: []corev1.Volume{
-						{
-							Name: "varlibcontainers",
-							VolumeSource: corev1.VolumeSource{
-								HostPath: &corev1.HostPathVolumeSource{
-									Path: logPath,
-								},
-							},
-						},
-						{
-							Name: "config",
-							VolumeSource: corev1.VolumeSource{
-								Secret: &corev1.SecretVolumeSource{
-									SecretName: fb.Spec.FluentBitConfigName,
-								},
-							},
-						},
-						{
-							Name: "varlogs",
-							VolumeSource: corev1.VolumeSource{
-								HostPath: &corev1.HostPathVolumeSource{
-									Path: "/var/log",
-								},
-							},
-						},
-						{
-							Name: "systemd",
-							VolumeSource: corev1.VolumeSource{
-								HostPath: &corev1.HostPathVolumeSource{
-									Path: "/var/log/journal",
-								},
-							},
-						},
-					},
-					InitContainers: fb.Spec.InitContainers,
+					InitContainers:     fb.Spec.InitContainers,
+					Volumes:            fbVolumes,
 					Containers: []corev1.Container{
 						{
 							Name:            "fluent-bit",
@@ -118,31 +83,7 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 									},
 								},
 							},
-							VolumeMounts: []corev1.VolumeMount{
-								{
-									Name:             "varlibcontainers",
-									ReadOnly:         true,
-									MountPath:        logPath,
-									MountPropagation: &internalMountPropagation,
-								},
-								{
-									Name:      "config",
-									ReadOnly:  true,
-									MountPath: "/fluent-bit/config",
-								},
-								{
-									Name:             "varlogs",
-									ReadOnly:         true,
-									MountPath:        "/var/log/",
-									MountPropagation: &internalMountPropagation,
-								},
-								{
-									Name:             "systemd",
-									ReadOnly:         true,
-									MountPath:        "/var/log/journal",
-									MountPropagation: &internalMountPropagation,
-								},
-							},
+							VolumeMounts:    fbVolumeMounts,
 							Resources:       fb.Spec.Resources,
 							SecurityContext: fb.Spec.ContainerSecurityContext,
 						},
@@ -189,13 +130,6 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 		ds.Spec.Template.Spec.SchedulerName = fb.Spec.SchedulerName
 	}
 
-	if fb.Spec.Volumes != nil {
-		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, fb.Spec.Volumes...)
-	}
-	if fb.Spec.VolumesMounts != nil {
-		ds.Spec.Template.Spec.Containers[0].VolumeMounts = append(ds.Spec.Template.Spec.Containers[0].VolumeMounts, fb.Spec.VolumesMounts...)
-	}
-
 	// Mount Position DB
 	if fb.Spec.PositionDB != (corev1.VolumeSource{}) {
 		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, corev1.Volume{
@@ -226,4 +160,99 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 	}
 
 	return &ds
+}
+
+func makeVolumeMounts(fb fluentbitv1alpha2.FluentBit, logPath string) []corev1.VolumeMount {
+	internalMountPropagation := corev1.MountPropagationNone
+	if fb.Spec.InternalMountPropagation != nil {
+		internalMountPropagation = *fb.Spec.InternalMountPropagation
+	}
+
+	volumeMounts := []corev1.VolumeMount{
+		{
+			Name:      "config",
+			ReadOnly:  true,
+			MountPath: "/fluent-bit/config",
+		},
+	}
+
+	if !fb.Spec.DisableLogVolumes {
+		logVolumes := []corev1.VolumeMount{
+			{
+				Name:             "varlibcontainers",
+				ReadOnly:         true,
+				MountPath:        logPath,
+				MountPropagation: &internalMountPropagation,
+			},
+
+			{
+				Name:             "varlogs",
+				ReadOnly:         true,
+				MountPath:        "/var/log/",
+				MountPropagation: &internalMountPropagation,
+			},
+			{
+				Name:             "systemd",
+				ReadOnly:         true,
+				MountPath:        "/var/log/journal",
+				MountPropagation: &internalMountPropagation,
+			},
+		}
+		volumeMounts = append(volumeMounts, logVolumes...)
+	}
+
+	if fb.Spec.VolumesMounts != nil {
+		volumeMounts = append(volumeMounts, fb.Spec.VolumesMounts...)
+	}
+
+	return volumeMounts
+}
+
+func makeVolumes(fb fluentbitv1alpha2.FluentBit, logPath string) []corev1.Volume {
+
+	volumes := []corev1.Volume{
+		{
+			Name: "config",
+			VolumeSource: corev1.VolumeSource{
+				Secret: &corev1.SecretVolumeSource{
+					SecretName: fb.Spec.FluentBitConfigName,
+				},
+			},
+		},
+	}
+
+	if !fb.Spec.DisableLogVolumes {
+		logVolumes := []corev1.Volume{
+			{
+				Name: "varlibcontainers",
+				VolumeSource: corev1.VolumeSource{
+					HostPath: &corev1.HostPathVolumeSource{
+						Path: logPath,
+					},
+				},
+			},
+			{
+				Name: "varlogs",
+				VolumeSource: corev1.VolumeSource{
+					HostPath: &corev1.HostPathVolumeSource{
+						Path: "/var/log",
+					},
+				},
+			},
+			{
+				Name: "systemd",
+				VolumeSource: corev1.VolumeSource{
+					HostPath: &corev1.HostPathVolumeSource{
+						Path: "/var/log/journal",
+					},
+				},
+			},
+		}
+		volumes = append(volumes, logVolumes...)
+	}
+
+	if fb.Spec.Volumes != nil {
+		volumes = append(volumes, fb.Spec.Volumes...)
+	}
+	return volumes
 }

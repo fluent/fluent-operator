@@ -65,6 +65,8 @@ type InputSpec struct {
 	Collectd *input.Collectd `json:"collectd,omitempty"`
 	// Nginx defines the Nginx input plugin configuration
 	Nginx *input.Nginx `json:"nginx,omitempty"`
+	// StatsD defines the StatsD input plugin configuration
+	StatsD *input.StatsD `json:"statsd,omitempty"`
 }
 
 // +kubebuilder:object:root=true

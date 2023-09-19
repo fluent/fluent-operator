@@ -400,6 +400,7 @@ FluentBitSpec defines the desired state of FluentBit
 | metricsPort | MetricsPort is the port used by the metrics server. If this option is set, HttpPort from ClusterFluentBitConfig needs to match this value. Default is 2020. | int32 |
 | service | Service represents configurations on the fluent-bit service. | FluentBitService |
 | schedulerName | SchedulerName represents the desired scheduler for fluent-bit pods. | string |
+| disableLogVolumes | DisableLogVolumes removes the hostPath mounts for varlibcontainers, varlogs and systemd. | bool |
 
 [Back to TOC](#table-of-contents)
 # InputSpec
@@ -424,6 +425,7 @@ InputSpec defines the desired state of ClusterInput
 | mqtt | MQTT defines the MQTT input plugin configuration | *[input.MQTT](plugins/input/mqtt.md) |
 | collectd | Collectd defines the Collectd input plugin configuration | *[input.Collectd](plugins/input/collectd.md) |
 | nginx | Nginx defines the Nginx input plugin configuration | *[input.Nginx](plugins/input/nginx.md) |
+| statsd | StatsD defines the StatsD input plugin configuration | *[input.StatsD](plugins/input/statsd.md) |
 
 [Back to TOC](#table-of-contents)
 # NamespacedFluentBitCfgSpec

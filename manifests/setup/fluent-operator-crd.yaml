@@ -2124,6 +2124,20 @@ spec:
                       plugin
                     type: string
                 type: object
+              statsd:
+                description: StatsD defines the StatsD input plugin configuration
+                properties:
+                  listen:
+                    description: 'Listener network interface, default: 0.0.0.0'
+                    type: string
+                  port:
+                    description: 'UDP port where listening for connections, default:
+                      8125'
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                type: object
               systemd:
                 description: Systemd defines Systemd Input configuration.
                 properties:
@@ -13161,6 +13175,10 @@ spec:
                         type: string
                     type: object
                 type: object
+              disableLogVolumes:
+                description: DisableLogVolumes removes the hostPath mounts for varlibcontainers,
+                  varlogs and systemd.
+                type: boolean
               disableService:
                 description: DisableService tells if the fluentbit service should
                   be deployed.
