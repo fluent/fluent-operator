@@ -40,7 +40,7 @@ type Syslog struct {
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	ReceiveBufferSize string `json:"receiveBufferSize,omitempty"`
 	// Specify the key where the source address will be injected.
-	sourceAddressKey string `json:"sourceAddressKey,omitempty"`
+	SourceAddressKey string `json:"sourceAddressKey,omitempty"`
 }
 
 func (_ *Syslog) Name() string {
@@ -77,8 +77,8 @@ func (s *Syslog) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	if s.ReceiveBufferSize != "" {
 		kvs.Insert("Receive_Buffer_Size", s.ReceiveBufferSize)
 	}
-	if s.sourceAddressKey != "" {
-		kvs.Insert("Source_Address_Key", s.sourceAddressKey)
+	if s.SourceAddressKey != "" {
+		kvs.Insert("Source_Address_Key", s.SourceAddressKey)
 	}
 
 	return kvs, nil

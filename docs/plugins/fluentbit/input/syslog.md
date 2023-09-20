@@ -14,3 +14,4 @@ Syslog input plugins allows to collect Syslog messages through a Unix socket ser
 | bufferChunkSize | By default the buffer to store the incoming Syslog messages, do not allocate the maximum memory allowed, instead it allocate memory when is required. The rounds of allocations are set by Buffer_Chunk_Size. If not set, Buffer_Chunk_Size is equal to 32000 bytes (32KB). | string |
 | bufferMaxSize | Specify the maximum buffer size to receive a Syslog message. If not set, the default size will be the value of Buffer_Chunk_Size. | string |
 | receiveBufferSize | Specify the maximum socket receive buffer size. If not set, the default value is OS-dependant, but generally too low to accept thousands of syslog messages per second without loss on udp or unix_udp sockets. Note that on Linux the value is capped by sysctl net.core.rmem_max. | string |
+| sourceAddressKey | Specify the key where the source address will be injected. | string |
