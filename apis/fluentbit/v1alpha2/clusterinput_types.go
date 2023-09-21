@@ -67,6 +67,8 @@ type InputSpec struct {
 	StatsD *input.StatsD `json:"statsd,omitempty"`
 	// Nginx defines the Nginx input plugin configuration
 	Nginx *input.Nginx `json:"nginx,omitempty"`
+	// Syslog defines the Syslog input plugin configuration
+	Syslog *input.Syslog `json:"syslog,omitempty"`
 }
 
 // +kubebuilder:object:root=true

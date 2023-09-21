@@ -426,6 +426,7 @@ InputSpec defines the desired state of ClusterInput
 | collectd | Collectd defines the Collectd input plugin configuration | *[input.Collectd](plugins/input/collectd.md) |
 | statsd | StatsD defines the StatsD input plugin configuration | *[input.StatsD](plugins/input/statsd.md) |
 | nginx | Nginx defines the Nginx input plugin configuration | *[input.Nginx](plugins/input/nginx.md) |
+| syslog | Syslog defines the Syslog input plugin configuration | *[input.Syslog](plugins/input/syslog.md) |
 
 [Back to TOC](#table-of-contents)
 # NamespacedFluentBitCfgSpec
