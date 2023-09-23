@@ -2451,6 +2451,45 @@ spec:
                     description: Set a regex to exctract fields from the file
                     type: string
                 type: object
+              tcp:
+                description: TCP defines the TCP input plugin configuration
+                properties:
+                  bufferSize:
+                    description: Specify the maximum buffer size in KB to receive
+                      a JSON message. If not set, the default size will be the value
+                      of Chunk_Size.
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  chunkSize:
+                    description: By default the buffer to store the incoming JSON
+                      messages, do not allocate the maximum memory allowed, instead
+                      it allocate memory when is required. The rounds of allocations
+                      are set by Chunk_Size in KB. If not set, Chunk_Size is equal
+                      to 32 (32KB).
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  format:
+                    description: Specify the expected payload format. It support the
+                      options json and none. When using json, it expects JSON maps,
+                      when is set to none, it will split every record using the defined
+                      Separator (option below).
+                    type: string
+                  listen:
+                    description: Listener network interface,default 0.0.0.0
+                    type: string
+                  port:
+                    description: TCP port where listening for connections,default
+                      5170
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  separator:
+                    description: When the expected Format is set to none, Fluent Bit
+                      needs a separator string to split the records. By default it
+                      uses the breakline character (LF or 0x10).
+                    type: string
+                type: object
             type: object
         type: object
     served: true

@@ -69,6 +69,8 @@ type InputSpec struct {
 	Nginx *input.Nginx `json:"nginx,omitempty"`
 	// Syslog defines the Syslog input plugin configuration
 	Syslog *input.Syslog `json:"syslog,omitempty"`
+	// TCP defines the TCP input plugin configuration
+	TCP *input.TCP `json:"tcp,omitempty"`
 }
 
 // +kubebuilder:object:root=true
