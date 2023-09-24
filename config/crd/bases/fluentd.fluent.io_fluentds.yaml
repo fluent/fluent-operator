@@ -2168,7 +2168,7 @@ spec:
                         rate:
                           description: It configures how many events to generate per
                             second.
-                          format: int32
+                          format: int64
                           type: integer
                         sample:
                           description: The sample data to be generated. It should
@@ -2179,7 +2179,7 @@ spec:
                         size:
                           description: The number of events in the event stream of
                             each emit.
-                          format: int32
+                          format: int64
                           type: integer
                         tag:
                           description: The tag of the event. The value is the tag
