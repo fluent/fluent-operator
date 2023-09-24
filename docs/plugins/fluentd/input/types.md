@@ -18,3 +18,4 @@ Input defines all available input plugins and their parameters
 | forward | in_forward plugin | *Forward |
 | http | in_http plugin | *Http |
 | tail | in_tail plugin | *Tail |
+| sample| in_sample plugin | *Sample |
