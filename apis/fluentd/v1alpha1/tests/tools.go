@@ -35,6 +35,29 @@ spec:
       config.fluentd.fluent.io/enabled: "true"
 `
 
+	FluentdInputSample    fluentdv1alpha1.Fluentd
+	FluentdInputSampleRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+  name: fluentd
+  namespace: fluent
+  labels:
+    app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - sample:
+      sample: '{"hello": "world"}'
+      tag: "foo.bar"
+      rate: 10
+      size: 10
+      auto_increment_key: "id"
+  replicas: 1
+  image: kubesphere/fluentd:v1.15.3
+  fluentdCfgSelector:
+  matchLabels:
+    config.fluentd.fluent.io/enabled: "true"
+`
 	FluentdInputTail    fluentdv1alpha1.Fluentd
 	FluentdInputTailRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -532,6 +555,7 @@ func init() {
 		func() {
 			ParseIntoObject(FluentdRaw, &Fluentd)
 			ParseIntoObject(FluentdInputTailRaw, &FluentdInputTail)
+			ParseIntoObject(FluentdInputSampleRaw, &FluentdInputSample)
 			ParseIntoObject(FluentdClusterOutputTagRaw, &FluentdClusterOutputTag)
 			ParseIntoObject(FluentdClusterFluentdConfig1Raw, &FluentdClusterFluentdConfig1)
 			ParseIntoObject(FluentdClusterFluentdConfig2Raw, &FluentdClusterFluentdConfig2)
