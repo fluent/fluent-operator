@@ -55,8 +55,8 @@ spec:
   replicas: 1
   image: kubesphere/fluentd:v1.15.3
   fluentdCfgSelector:
-  matchLabels:
-    config.fluentd.fluent.io/enabled: "true"
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
 `
 	FluentdInputTail    fluentdv1alpha1.Fluentd
 	FluentdInputTailRaw = `
