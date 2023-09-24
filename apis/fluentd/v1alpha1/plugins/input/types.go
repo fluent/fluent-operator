@@ -29,6 +29,8 @@ type Input struct {
 	Http *Http `json:"http,omitempty"`
 	// in_tail plugin
 	Tail *Tail `json:"tail,omitempty"`
+	// in_sample plugin
+	Sample *Sample `json:"sample,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -76,6 +78,11 @@ func (i *Input) Params(loader plugins.SecretLoader) (*params.PluginStore, error)
 	if i.Tail != nil {
 		ps.InsertType(string(params.TailInputType))
 		return i.tailPlugin(ps, loader), nil
+	}
+
+	if i.Sample != nil {
+		ps.InsertType(string(params.SampleInputType))
+		return i.samplePlugin(ps, loader), nil
 	}
 
 	return nil, errors.New("you must define an input plugin")
@@ -326,6 +333,26 @@ func (i *Input) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoad
 		parent.InsertPairs("responds_with_empty_img", fmt.Sprint(*httpModel.RespondsWithEmptyImg))
 	}
 
+	return parent
+}
+
+func (i *Input) samplePlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+	sampleModel := i.Sample
+	if sampleModel.Tag != nil {
+		parent.InsertPairs("tag", fmt.Sprint(*sampleModel.Tag))
+	}
+	if sampleModel.Rate != nil {
+		parent.InsertPairs("rate", fmt.Sprint(*sampleModel.Rate))
+	}
+	if sampleModel.Size != nil {
+		parent.InsertPairs("size", fmt.Sprint(*sampleModel.Size))
+	}
+	if sampleModel.AutoIncrementKey != nil {
+		parent.InsertPairs("auto_increment_key", fmt.Sprint(*sampleModel.AutoIncrementKey))
+	}
+	if sampleModel.Sample != nil {
+		parent.InsertPairs("sample", fmt.Sprint(*sampleModel.Sample))
+	}
 	return parent
 }
 
