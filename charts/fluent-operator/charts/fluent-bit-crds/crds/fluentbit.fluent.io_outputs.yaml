@@ -2230,6 +2230,114 @@ spec:
                       server listening for traces, e.g: /v1/traces'
                     type: string
                 type: object
+              oracleLogAnalytics:
+                description: OracleLogAnalytics defines OracleLogAnalytics Output
+                  configuration
+                properties:
+                  Workers:
+                    format: int32
+                    type: integer
+                  auth:
+                    properties:
+                      configFileLocation:
+                        type: string
+                      profileName:
+                        type: string
+                    type: object
+                  globalMetadata:
+                    additionalProperties:
+                      type: string
+                    type: object
+                  logEntityId:
+                    type: string
+                  logEntityType:
+                    type: string
+                  logEventMetadata:
+                    additionalProperties:
+                      type: string
+                    type: object
+                  logGroupId:
+                    type: string
+                  logPath:
+                    type: string
+                  logSetId:
+                    type: string
+                  logSourceName:
+                    type: string
+                  objectStorageNamespace:
+                    type: string
+                  ociConfigInRecord:
+                    type: boolean
+                  profileName:
+                    type: string
+                  tls:
+                    description: Fluent Bit provides integrated support for Transport
+                      Layer Security (TLS) and it predecessor Secure Sockets Layer
+                      (SSL) respectively.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: 'Set TLS debug verbosity level. It accept the
+                          following values: 0 (No debug), 1 (Error), 2 (State change),
+                          3 (Informational) and 4 Verbose'
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      TODO: Add other useful fields. apiVersion, kind,
+                                      uid?'
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                                x-kubernetes-map-type: atomic
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                type: object
               prometheusExporter:
                 description: PrometheusExporter_types defines Prometheus exporter
                   configuration to expose metrics from Fluent Bit.
