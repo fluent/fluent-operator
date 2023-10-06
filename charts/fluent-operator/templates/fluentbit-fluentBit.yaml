@@ -10,6 +10,9 @@ spec:
 {{- if .Values.fluentbit.hostNetwork }}
   hostNetwork: {{ .Values.fluentbit.hostNetwork }}
 {{- end }}
+{{- if .Values.fluentbit.dnsPolicy }}
+  dnsPolicy: {{ .Values.fluentbit.dnsPolicy }}
+{{- end }}
   image: {{ .Values.fluentbit.image.repository }}:{{ .Values.fluentbit.image.tag }}
   {{- if .Values.fluentbit.imagePullSecrets }}
   imagePullSecrets:
