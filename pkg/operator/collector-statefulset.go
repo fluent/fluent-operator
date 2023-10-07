@@ -120,7 +120,7 @@ func MakefbStatefulset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 	if co.Spec.Ports != nil {
 		statefulset.Spec.Template.Spec.Containers[0].Ports = append(statefulset.Spec.Template.Spec.Containers[0].Ports, co.Spec.Ports...)
 	}
-	
+
 	// Mount Secrets
 	for _, secret := range co.Spec.Secrets {
 		statefulset.Spec.Template.Spec.Volumes = append(statefulset.Spec.Template.Spec.Volumes, corev1.Volume{

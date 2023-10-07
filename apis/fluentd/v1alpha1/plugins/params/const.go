@@ -50,6 +50,7 @@ const (
 	HttpInputType    InputType = "http"
 	ForwardInputType InputType = "forward"
 	TailInputType    InputType = "tail"
+	SampleInputType  InputType = "sample"
 
 	// Enums the supported filter types
 	RecordTransformerFilterType FilterType = "record_transformer"
