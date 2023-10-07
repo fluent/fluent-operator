@@ -9,7 +9,7 @@ type Sample struct {
 	// It configures how many events to generate per second.
 	Rate *int64 `json:"rate,omitempty"`
 	// If specified, each generated event has an auto-incremented key field.
-	AutoIncrementKey *string `json:"auto_increment_key,omitempty"`
+	AutoIncrementKey *string `json:"autoIncrementKey,omitempty"`
 	// The sample data to be generated. It should be either an array of JSON hashes or a single JSON hash. If it is an array of JSON hashes, the hashes in the array are cycled through in order.
 	Sample *string `json:"sample,omitempty"`
 }
