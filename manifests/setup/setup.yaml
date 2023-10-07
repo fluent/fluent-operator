@@ -20959,7 +20959,7 @@ spec:
                     sample:
                       description: in_sample plugin
                       properties:
-                        auto_increment_key:
+                        autoIncrementKey:
                           description: If specified, each generated event has an auto-incremented
                             key field.
                           type: string
