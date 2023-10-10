@@ -12,6 +12,7 @@ spec:
     - opensearch:
         host: {{ .Values.fluentd.output.opensearch.host }}
         port: {{ .Values.fluentd.output.opensearch.port }}
+        scheme: {{ .Values.fluentd.output.opensearch.scheme }}
         logstashFormat: true
         logstashPrefix: {{ .Values.fluentd.output.opensearch.logstashPrefix }}
       {{- if .Values.fluentd.output.opensearch.buffer }}
