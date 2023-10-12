@@ -20,6 +20,9 @@ spec:
   filterSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
+  parserSelector:
+    matchLabels:
+      fluentbit.fluent.io/enabled: "true"
   outputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
