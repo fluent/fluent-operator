@@ -16,6 +16,10 @@ spec:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
       node-role.kubernetes.io/edge: "true"
+  parserSelector:
+    matchLabels:
+      fluentbit.fluent.io/enabled: "true"
+      node-role.kubernetes.io/edge: "true"
   outputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
