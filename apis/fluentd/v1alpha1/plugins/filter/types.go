@@ -164,7 +164,10 @@ func (f *Filter) recordTransformerPlugin(parent *params.PluginStore, loader plug
 			parent.InsertPairs("enable_ruby", fmt.Sprint(*f.RecordTransformer.EnableRuby))
 		}
 		if f.RecordTransformer.AutoTypeCast != nil {
-			parent.InsertPairs("renew_record", fmt.Sprint(*f.RecordTransformer.AutoTypeCast))
+			parent.InsertPairs("auto_typecast", fmt.Sprint(*f.RecordTransformer.AutoTypeCast))
+		}
+		if f.RecordTransformer.RenewRecord != nil {
+			parent.InsertPairs("renew_record", fmt.Sprint(*f.RecordTransformer.RenewRecord))
 		}
 		if f.RecordTransformer.RenewTimeKey != nil {
 			parent.InsertPairs("renew_time_key", fmt.Sprint(*f.RecordTransformer.RenewTimeKey))
