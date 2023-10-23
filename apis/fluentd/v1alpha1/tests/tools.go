@@ -199,6 +199,25 @@ spec:
         value: ${record["kubernetes"]["namespace_name"]}
 `
 
+	FluentdClusterRecordTransformerFilter fluentdv1alpha1.ClusterFilter
+	FluentdClusterRecordTransformerRaw    = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFilter
+metadata:
+  name: fluentd-filter
+  labels:
+    filter.fluentd.fluent.io/enabled: "true"
+spec:
+  filters:
+  - recordTransformer:
+      enableRuby: true
+      autoTypeCast: true
+      renewRecord: true
+      records:
+      - key: kubernetes_ns
+        value: ${record["kubernetes"]["namespace_name"]}
+`
+
 	FluentdClusterOutputBuffer    fluentdv1alpha1.ClusterOutput
 	FluentdClusterOutputBufferRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -562,6 +581,7 @@ func init() {
 			ParseIntoObject(FluentdConfigUser1Raw, &FluentdConfigUser1)
 			ParseIntoObject(FluentdConfig1Raw, &FluentdConfig1)
 			ParseIntoObject(FluentdClusterFilter1Raw, &FluentdClusterFilter1)
+			ParseIntoObject(FluentdClusterRecordTransformerRaw, &FluentdClusterRecordTransformerFilter)
 			ParseIntoObject(FluentdClusterOutputClusterRaw, &FluentdClusterOutputCluster)
 			ParseIntoObject(FluentdClusterOutputLogOperatorRaw, &FluentdClusterOutputLogOperator)
 			ParseIntoObject(FluentdClusterOutputBufferRaw, &FluentdClusterOutputBuffer)

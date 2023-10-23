@@ -607,3 +607,30 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 		i++
 	}
 }
+
+func Test_RecordTransformer(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
+
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
+	g.Expect(err).NotTo(HaveOccurred())
+	clusterFilters := []fluentdv1alpha1.ClusterFilter{FluentdClusterRecordTransformerFilter}
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputCluster}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), clusterFilters, clusterOutputs)
+	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	// we should not see any permutations in serialized config
+	i := 0
+	for i < maxRuntimes {
+		config, errs := psr.RenderMainConfig(false)
+		// fmt.Println(config)
+		g.Expect(errs).NotTo(HaveOccurred())
+		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-filter-recordTransformer.cfg"))).To(Equal(config))
+
+		i++
+	}
+}
