@@ -19,3 +19,4 @@ Input defines all available input plugins and their parameters
 | http | in_http plugin | *Http |
 | tail | in_tail plugin | *Tail |
 | sample | in_sample plugin | *Sample |
+| customPlugin | Custom plugin type | *custom.CustomPlugin |

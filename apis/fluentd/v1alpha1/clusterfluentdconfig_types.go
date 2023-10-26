@@ -50,6 +50,8 @@ type ClusterFluentdConfigSpec struct {
 	ClusterFilterSelector *metav1.LabelSelector `json:"clusterFilterSelector,omitempty"`
 	// Select cluster output plugins
 	ClusterOutputSelector *metav1.LabelSelector `json:"clusterOutputSelector,omitempty"`
+	// Select cluster input plugins
+	ClusterInputSelector *metav1.LabelSelector `json:"clusterInputSelector,omitempty"`
 }
 
 // ClusterFluentdConfigStatus defines the observed state of ClusterFluentdConfig

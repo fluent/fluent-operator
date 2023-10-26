@@ -29,10 +29,12 @@ type FluentdV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	ClusterFiltersGetter
 	ClusterFluentdConfigsGetter
+	ClusterInputsGetter
 	ClusterOutputsGetter
 	FiltersGetter
 	FluentdsGetter
 	FluentdConfigsGetter
+	InputsGetter
 	OutputsGetter
 }
 
@@ -49,6 +51,10 @@ func (c *FluentdV1alpha1Client) ClusterFluentdConfigs() ClusterFluentdConfigInte
 	return newClusterFluentdConfigs(c)
 }
 
+func (c *FluentdV1alpha1Client) ClusterInputs() ClusterInputInterface {
+	return newClusterInputs(c)
+}
+
 func (c *FluentdV1alpha1Client) ClusterOutputs() ClusterOutputInterface {
 	return newClusterOutputs(c)
 }
@@ -63,6 +69,10 @@ func (c *FluentdV1alpha1Client) Fluentds(namespace string) FluentdInterface {
 
 func (c *FluentdV1alpha1Client) FluentdConfigs(namespace string) FluentdConfigInterface {
 	return newFluentdConfigs(c, namespace)
+}
+
+func (c *FluentdV1alpha1Client) Inputs(namespace string) InputInterface {
+	return newInputs(c, namespace)
 }
 
 func (c *FluentdV1alpha1Client) Outputs(namespace string) OutputInterface {

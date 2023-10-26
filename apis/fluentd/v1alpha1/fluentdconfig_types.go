@@ -41,10 +41,14 @@ type FluentdConfigSpec struct {
 	FilterSelector *metav1.LabelSelector `json:"filterSelector,omitempty"`
 	// Select namespaced output plugins
 	OutputSelector *metav1.LabelSelector `json:"outputSelector,omitempty"`
+	// Select cluster input plugins
+	InputSelector *metav1.LabelSelector `json:"inputSelector,omitempty"`
 	// Select cluster filter plugins
 	ClusterFilterSelector *metav1.LabelSelector `json:"clusterFilterSelector,omitempty"`
 	// Select cluster output plugins
 	ClusterOutputSelector *metav1.LabelSelector `json:"clusterOutputSelector,omitempty"`
+	// Select cluster input plugins
+	ClusterInputSelector *metav1.LabelSelector `json:"clusterInputSelector,omitempty"`
 }
 
 // FluentdConfigStatus defines the observed state of FluentdConfig

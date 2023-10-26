@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
+	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/custom"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/params"
 )
 
@@ -31,6 +32,8 @@ type Input struct {
 	Tail *Tail `json:"tail,omitempty"`
 	// in_sample plugin
 	Sample *Sample `json:"sample,omitempty"`
+	// Custom plugin type
+	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -83,6 +86,12 @@ func (i *Input) Params(loader plugins.SecretLoader) (*params.PluginStore, error)
 	if i.Sample != nil {
 		ps.InsertType(string(params.SampleInputType))
 		return i.samplePlugin(ps, loader), nil
+	}
+
+	if i.CustomPlugin != nil {
+		customPs, _ := i.CustomPlugin.Params(loader)
+		ps.Content = customPs.Content
+		return ps, nil
 	}
 
 	return nil, errors.New("you must define an input plugin")
