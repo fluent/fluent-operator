@@ -67,17 +67,20 @@ metadata:
 name: fluentd
 namespace: fluent
 labels:
-app.kubernetes.io/name: fluentd
+  app.kubernetes.io/name: fluentd
 spec:
 globalInputs:
-- monitorAgent:
-  bind: 0.0.0.0
-  port: 24220
+- sample:
+    sample: '{"hello": "world"}'
+    tag: "foo.bar"
+    rate: 10
+    size: 10
+    autoIncrementKey: "id"
 replicas: 1
 image: kubesphere/fluentd:v1.15.3
 fluentdCfgSelector:
-matchLabels:
-  config.fluentd.fluent.io/enabled: "true"
+  matchLabels:
+    config.fluentd.fluent.io/enabled: "true"
 `
 
 	FluentdInputTail    fluentdv1alpha1.Fluentd
