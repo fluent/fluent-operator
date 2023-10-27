@@ -70,12 +70,9 @@ labels:
   app.kubernetes.io/name: fluentd
 spec:
 globalInputs:
-- sample:
-    sample: '{"hello": "world"}'
-    tag: "foo.bar"
-    rate: 10
-    size: 10
-    autoIncrementKey: "id"
+- monitor_agent:
+    bind: 0.0.0.0
+    port: 24220
 replicas: 1
 image: kubesphere/fluentd:v1.15.3
 fluentdCfgSelector:
