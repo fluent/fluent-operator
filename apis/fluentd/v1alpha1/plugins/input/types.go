@@ -32,7 +32,9 @@ type Input struct {
 	Tail *Tail `json:"tail,omitempty"`
 	// in_sample plugin
 	Sample *Sample `json:"sample,omitempty"`
-	// Custom plugin type
+	// monitor_agent plugin
+	MonitorAgent *MonitorAgent `json:"monitorAgent,omitempty"`
+    // Custom plugin type
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }
 
@@ -88,10 +90,15 @@ func (i *Input) Params(loader plugins.SecretLoader) (*params.PluginStore, error)
 		return i.samplePlugin(ps, loader), nil
 	}
 
+<<<<<<< HEAD
 	if i.CustomPlugin != nil {
 		customPs, _ := i.CustomPlugin.Params(loader)
 		ps.Content = customPs.Content
 		return ps, nil
+=======
+	if i.MonitorAgent != nil {
+		ps.InsertType(string(params.MonitorAgentType))
+>>>>>>> 44fcf92 (Add fluentd monitor_agent input plugin.)
 	}
 
 	return nil, errors.New("you must define an input plugin")
@@ -361,6 +368,29 @@ func (i *Input) samplePlugin(parent *params.PluginStore, loader plugins.SecretLo
 	}
 	if sampleModel.Sample != nil {
 		parent.InsertPairs("sample", fmt.Sprint(*sampleModel.Sample))
+	}
+	return parent
+}
+
+func (i *Input) monitorAgentPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+	monitorAgentModel := i.MonitorAgent
+	if monitorAgentModel.Port != nil {
+		parent.InsertPairs("port", fmt.Sprint(*monitorAgentModel.Tag))
+	}
+	if monitorAgentModel.Bind != nil {
+		parent.InsertPairs("bind", fmt.Sprint(*monitorAgentModel.Tag))
+	}
+	if monitorAgentModel.Tag != nil {
+		parent.InsertPairs("tag", fmt.Sprint(*monitorAgentModel.Tag))
+	}
+	if monitorAgentModel.EmitInterval != nil {
+		parent.InsertPairs("emitInterval", fmt.Sprint(*monitorAgentModel.Tag))
+	}
+	if monitorAgentModel.IncludeConfig != nil {
+		parent.InsertPairs("includeConfig", fmt.Sprint(*monitorAgentModel.Tag))
+	}
+	if monitorAgentModel.IncludeRetry != nil {
+		parent.InsertPairs("includeRetry", fmt.Sprint(*monitorAgentModel.Tag))
 	}
 	return parent
 }

@@ -51,6 +51,7 @@ const (
 	ForwardInputType InputType = "forward"
 	TailInputType    InputType = "tail"
 	SampleInputType  InputType = "sample"
+	MonitorAgentType InputType = "monitorAgent"
 
 	// Enums the supported filter types
 	RecordTransformerFilterType FilterType = "record_transformer"
