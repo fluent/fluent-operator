@@ -46,6 +46,7 @@ RUN apt-get update \
          fluent-plugin-aws-elasticsearch-service \
          fluent-plugin-opensearch \
          fluent-plugin-datadog \
+         fluent-plugin-prometheus \
  && wget -O /tmp/jemalloc-4.5.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/4.5.0/jemalloc-4.5.0.tar.bz2 \
  && cd /tmp && tar -xjf jemalloc-4.5.0.tar.bz2 && cd jemalloc-4.5.0/ \
  && ./configure && make \
