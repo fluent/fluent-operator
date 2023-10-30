@@ -32,10 +32,10 @@ type Input struct {
 	Tail *Tail `json:"tail,omitempty"`
 	// in_sample plugin
 	Sample *Sample `json:"sample,omitempty"`
-	// monitor_agent plugin
-	MonitorAgent *MonitorAgent `json:"monitorAgent,omitempty"`
     // Custom plugin type
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
+	// monitor_agent plugin
+	MonitorAgent *MonitorAgent `json:"monitorAgent,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -98,7 +98,11 @@ func (i *Input) Params(loader plugins.SecretLoader) (*params.PluginStore, error)
 =======
 	if i.MonitorAgent != nil {
 		ps.InsertType(string(params.MonitorAgentType))
+<<<<<<< HEAD
 >>>>>>> 44fcf92 (Add fluentd monitor_agent input plugin.)
+=======
+		return i.monitorAgentPlugin(ps, loader), nil
+>>>>>>> cc07ec3 (Fix the input plugin.)
 	}
 
 	return nil, errors.New("you must define an input plugin")
