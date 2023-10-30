@@ -69,15 +69,19 @@ namespace: fluent
 labels:
   app.kubernetes.io/name: fluentd
 spec:
-globalInputs:
-- monitor_agent:
-    bind: 0.0.0.0
-    port: 24220
-replicas: 1
-image: kubesphere/fluentd:v1.15.3
-fluentdCfgSelector:
-  matchLabels:
-    config.fluentd.fluent.io/enabled: "true"
+  globalInputs:
+  - monitor_agent:
+      bind: 0.0.0.0
+      port: 24220
+	  tag: test
+	  emit_interval: 5
+	  include_config: true
+	  include_retry: true
+  replicas: 1
+  image: kubesphere/fluentd:v1.15.3
+  fluentdCfgSelector:
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
 `
 
 	FluentdInputTail    fluentdv1alpha1.Fluentd
