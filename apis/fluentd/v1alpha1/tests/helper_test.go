@@ -105,7 +105,6 @@ func Test_ClusterCfgInputMonitorAgent(t *testing.T) {
 
 	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
-		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-global-cfg-input-monitorAgent.cfg"))).To(Equal(config))
 	}
