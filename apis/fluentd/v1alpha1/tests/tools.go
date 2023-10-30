@@ -72,7 +72,7 @@ spec:
   globalInputs:
   - monitor_agent:
       bind: 0.0.0.0
-      port: 24220
+	  port: 24220
 	  tag: test
 	  emit_interval: 5
 	  include_config: true
