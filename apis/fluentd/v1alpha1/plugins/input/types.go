@@ -379,22 +379,22 @@ func (i *Input) samplePlugin(parent *params.PluginStore, loader plugins.SecretLo
 func (i *Input) monitorAgentPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
 	monitorAgentModel := i.MonitorAgent
 	if monitorAgentModel.Port != nil {
-		parent.InsertPairs("port", fmt.Sprint(*monitorAgentModel.Tag))
+		parent.InsertPairs("port", fmt.Sprint(*monitorAgentModel.Port))
 	}
 	if monitorAgentModel.Bind != nil {
-		parent.InsertPairs("bind", fmt.Sprint(*monitorAgentModel.Tag))
+		parent.InsertPairs("bind", fmt.Sprint(*monitorAgentModel.Bind))
 	}
 	if monitorAgentModel.Tag != nil {
 		parent.InsertPairs("tag", fmt.Sprint(*monitorAgentModel.Tag))
 	}
 	if monitorAgentModel.EmitInterval != nil {
-		parent.InsertPairs("emitInterval", fmt.Sprint(*monitorAgentModel.Tag))
+		parent.InsertPairs("emit_interval", fmt.Sprint(*monitorAgentModel.EmitInterval))
 	}
 	if monitorAgentModel.IncludeConfig != nil {
-		parent.InsertPairs("includeConfig", fmt.Sprint(*monitorAgentModel.Tag))
+		parent.InsertPairs("include_config", fmt.Sprint(*monitorAgentModel.IncludeConfig))
 	}
 	if monitorAgentModel.IncludeRetry != nil {
-		parent.InsertPairs("includeRetry", fmt.Sprint(*monitorAgentModel.Tag))
+		parent.InsertPairs("include_retry", fmt.Sprint(*monitorAgentModel.IncludeRetry))
 	}
 	return parent
 }

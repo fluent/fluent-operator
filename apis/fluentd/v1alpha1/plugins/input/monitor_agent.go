@@ -9,9 +9,9 @@ type MonitorAgent struct {
 	// If you set this parameter, this plugin emits metrics as records.
 	Tag *string `json:"tag,omitempty"`
 	// The interval time between event emits. This will be used when "tag" is configured.
-	EmitInterval *int64 `json:"emitInterval,omitempty"`
+	EmitInterval *int64 `json:"emit_interval,omitempty"`
 	// You can set this option to false to remove the config field from the response.
-	IncludeConfig *bool `json:"includeConfig,omitempty"`
+	IncludeConfig *bool `json:"include_config,omitempty"`
 	// You can set this option to false to remove the retry field from the response.
-	IncludeRetry *bool `json:"includeRetry,omitempty"`
+	IncludeRetry *bool `json:"include_retry,omitempty"`
 }

@@ -72,11 +72,11 @@ spec:
   globalInputs:
   - monitor_agent:
       bind: 0.0.0.0
-	  port: 24220
-	  tag: test
-	  emit_interval: 5
-	  include_config: true
-	  include_retry: true
+      port: 24220
+      tag: example
+      emit_interval: 5
+      include_config: true
+      include_retry: true
   replicas: 1
   image: kubesphere/fluentd:v1.15.3
   fluentdCfgSelector:
