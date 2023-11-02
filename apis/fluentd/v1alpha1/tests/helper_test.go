@@ -99,7 +99,7 @@ func Test_ClusterCfgInputMonitorAgent(t *testing.T) {
 	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdConfig1)
 	g.Expect(err).NotTo(HaveOccurred())
 	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputTag}
-	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterFilter{}, clusterOutputs)
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterInput{}, []fluentdv1alpha1.ClusterFilter{}, clusterOutputs)
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
