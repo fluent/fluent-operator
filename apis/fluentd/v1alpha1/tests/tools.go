@@ -70,7 +70,7 @@ labels:
   app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-  - monitor_agent:
+  - monitorAgent:
       bind: 0.0.0.0
       port: 24220
       tag: example
