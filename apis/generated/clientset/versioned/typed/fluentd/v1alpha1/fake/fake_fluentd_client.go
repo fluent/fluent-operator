@@ -35,6 +35,10 @@ func (c *FakeFluentdV1alpha1) ClusterFluentdConfigs() v1alpha1.ClusterFluentdCon
 	return &FakeClusterFluentdConfigs{c}
 }
 
+func (c *FakeFluentdV1alpha1) ClusterInputs() v1alpha1.ClusterInputInterface {
+	return &FakeClusterInputs{c}
+}
+
 func (c *FakeFluentdV1alpha1) ClusterOutputs() v1alpha1.ClusterOutputInterface {
 	return &FakeClusterOutputs{c}
 }
@@ -49,6 +53,10 @@ func (c *FakeFluentdV1alpha1) Fluentds(namespace string) v1alpha1.FluentdInterfa
 
 func (c *FakeFluentdV1alpha1) FluentdConfigs(namespace string) v1alpha1.FluentdConfigInterface {
 	return &FakeFluentdConfigs{c, namespace}
+}
+
+func (c *FakeFluentdV1alpha1) Inputs(namespace string) v1alpha1.InputInterface {
+	return &FakeInputs{c, namespace}
 }
 
 func (c *FakeFluentdV1alpha1) Outputs(namespace string) v1alpha1.OutputInterface {

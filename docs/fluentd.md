@@ -10,6 +10,9 @@ This Document documents the types introduced by the fluentd Operator.
 * [ClusterFluentdConfigList](#clusterfluentdconfiglist)
 * [ClusterFluentdConfigSpec](#clusterfluentdconfigspec)
 * [ClusterFluentdConfigStatus](#clusterfluentdconfigstatus)
+* [ClusterInput](#clusterinput)
+* [ClusterInputList](#clusterinputlist)
+* [ClusterInputSpec](#clusterinputspec)
 * [ClusterOutput](#clusteroutput)
 * [ClusterOutputList](#clusteroutputlist)
 * [ClusterOutputSpec](#clusteroutputspec)
@@ -25,6 +28,9 @@ This Document documents the types introduced by the fluentd Operator.
 * [FluentdList](#fluentdlist)
 * [FluentdSpec](#fluentdspec)
 * [FluentdStatus](#fluentdstatus)
+* [Input](#input)
+* [InputList](#inputlist)
+* [InputSpec](#inputspec)
 * [Output](#output)
 * [OutputList](#outputlist)
 * [OutputSpec](#outputspec)
@@ -112,6 +118,7 @@ ClusterFluentdConfigSpec defines the desired state of ClusterFluentdConfig
 | watchedLabels | Use this field to filter the logs, will make no effect if EnableFilterKubernetes is set false. | map[string]string |
 | clusterFilterSelector | Select cluster filter plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | clusterOutputSelector | Select cluster output plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| clusterInputSelector | Select cluster input plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 
 [Back to TOC](#table-of-contents)
 # ClusterFluentdConfigStatus
@@ -123,6 +130,39 @@ ClusterFluentdConfigStatus defines the observed state of ClusterFluentdConfig
 | ----- | ----------- | ------ |
 | messages | Messages defines the plugin errors which is selected by this fluentdconfig | string |
 | state | The state of this fluentd config | StatusState |
+
+[Back to TOC](#table-of-contents)
+# ClusterInput
+
+ClusterInput is the Schema for the clusterinputs API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | ClusterInputSpec |
+| status |  | ClusterInputStatus |
+
+[Back to TOC](#table-of-contents)
+# ClusterInputList
+
+ClusterInputList contains a list of ClusterInput
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []ClusterInput |
+
+[Back to TOC](#table-of-contents)
+# ClusterInputSpec
+
+ClusterInputSpec defines the desired state of ClusterInput
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| inputs |  | [][[input.Input](plugins/input/input.md)](plugins/[input/input](plugins/input/input/md).md) |
 
 [Back to TOC](#table-of-contents)
 # ClusterOutput
@@ -252,8 +292,10 @@ FluentdConfigSpec defines the desired state of FluentdConfig
 | watchedLabels | Use this field to filter the logs, will make no effect if EnableFilterKubernetes is set false. | map[string]string |
 | filterSelector | Select namespaced filter plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | outputSelector | Select namespaced output plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| inputSelector | Select cluster input plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | clusterFilterSelector | Select cluster filter plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | clusterOutputSelector | Select cluster output plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| clusterInputSelector | Select cluster input plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 
 [Back to TOC](#table-of-contents)
 # FluentdConfigStatus
@@ -286,6 +328,7 @@ FluentdSpec defines the desired state of Fluentd
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | globalInputs | Fluentd global inputs. | [][[input.Input](plugins/input/input.md)](plugins/[input/input](plugins/input/input/md).md) |
+| defaultInputSelector | Select cluster input plugins used to gather the default cluster output | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | defaultFilterSelector | Select cluster filter plugins used to filter for the default cluster output | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | defaultOutputSelector | Select cluster output plugins used to send all logs that did not match any route to the matching outputs | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | disableService | By default will build the related service according to the globalinputs definition. | bool |
@@ -328,6 +371,39 @@ FluentdStatus defines the observed state of Fluentd
 | ----- | ----------- | ------ |
 | messages | Messages defines the plugin errors which is selected by this fluentdconfig | string |
 | state | The state of this fluentd | StatusState |
+
+[Back to TOC](#table-of-contents)
+# Input
+
+Input is the Schema for the inputs API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | InputSpec |
+| status |  | InputStatus |
+
+[Back to TOC](#table-of-contents)
+# InputList
+
+InputList contains a list of Input
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []Input |
+
+[Back to TOC](#table-of-contents)
+# InputSpec
+
+InputSpec defines the desired state of Input
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| inputs |  | [][[input.Input](plugins/input/input.md)](plugins/[input/input](plugins/input/input/md).md) |
 
 [Back to TOC](#table-of-contents)
 # Output

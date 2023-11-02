@@ -36,6 +36,8 @@ const (
 type FluentdSpec struct {
 	// Fluentd global inputs.
 	GlobalInputs []input.Input `json:"globalInputs,omitempty"`
+	// Select cluster input plugins used to gather the default cluster output
+	DefaultInputSelector *metav1.LabelSelector `json:"defaultInputSelector,omitempty"`
 	// Select cluster filter plugins used to filter for the default cluster output
 	DefaultFilterSelector *metav1.LabelSelector `json:"defaultFilterSelector,omitempty"`
 	// Select cluster output plugins used to send all logs that did not match any route to the matching outputs

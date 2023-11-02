@@ -21,6 +21,8 @@ type ClusterFilterExpansion interface{}
 
 type ClusterFluentdConfigExpansion interface{}
 
+type ClusterInputExpansion interface{}
+
 type ClusterOutputExpansion interface{}
 
 type FilterExpansion interface{}
@@ -28,5 +30,7 @@ type FilterExpansion interface{}
 type FluentdExpansion interface{}
 
 type FluentdConfigExpansion interface{}
+
+type InputExpansion interface{}
 
 type OutputExpansion interface{}
