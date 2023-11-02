@@ -74,9 +74,9 @@ spec:
       bind: 0.0.0.0
       port: 24220
       tag: example
-      emit_interval: 5
-      include_config: true
-      include_retry: true
+      emitInterval: 5
+      includeConfig: true
+      includeRetry: true
   replicas: 1
   image: kubesphere/fluentd:v1.15.3
   fluentdCfgSelector:
