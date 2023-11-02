@@ -319,7 +319,7 @@ func (i *Input) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoad
 	}
 
 	if httpModel.KeepLiveTimeout != nil {
-		parent.InsertPairs("keepLive_timeout", fmt.Sprint(*httpModel.KeepLiveTimeout))
+		parent.InsertPairs("keepalive_timeout", fmt.Sprint(*httpModel.KeepLiveTimeout))
 	}
 
 	if httpModel.AddHttpHeaders != nil {
