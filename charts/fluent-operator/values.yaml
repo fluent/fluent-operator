@@ -358,6 +358,10 @@ fluentd:
       cpu: 100m
       memory: 128Mi
   schedulerName: ""
+  # Environment variables that can be passed to fluentd pods
+  envVars: []
+  #  - name: FOO
+  #    value: "bar"
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
