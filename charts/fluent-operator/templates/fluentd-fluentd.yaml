@@ -23,6 +23,10 @@ spec:
   fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
+  {{- if .Values.fluentd.envVars }}
+  envVars:
+  {{- toYaml .Values.fluentd.envVars | nindent 4 }}
+  {{- end }}
   {{- if .Values.fluentd.schedulerName }}
   schedulerName: {{ .Values.fluentd.schedulerName }}
   {{- end }}
