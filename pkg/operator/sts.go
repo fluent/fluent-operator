@@ -108,6 +108,8 @@ func MakeStatefulSet(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 									Value: BufferMountPath,
 								},
 							},
+							ReadinessProbe: fd.Spec.ReadinessProbe,
+							LivenessProbe:  fd.Spec.LivenessProbe,
 						},
 					},
 					NodeSelector: fd.Spec.NodeSelector,

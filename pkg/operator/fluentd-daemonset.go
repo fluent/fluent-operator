@@ -107,6 +107,8 @@ func MakeFluentdDaemonSet(fd fluentdv1alpha1.Fluentd) *appsv1.DaemonSet {
 								},
 							},
 							SecurityContext: fd.Spec.ContainerSecurityContext,
+							LivenessProbe:   fd.Spec.LivenessProbe,
+							ReadinessProbe:  fd.Spec.ReadinessProbe,
 						},
 					},
 					NodeSelector: fd.Spec.NodeSelector,
