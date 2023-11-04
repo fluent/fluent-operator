@@ -112,6 +112,10 @@ type FluentdSpec struct {
 	// Storage for position db. You will use it if tail input is enabled.
 	// Applicable when the mode is "agent", and will be ignored when the mode is "collector"
 	PositionDB corev1.VolumeSource `json:"positionDB,omitempty"`
+	// LivenessProbe represents the liveness probe for the fluentd container.
+	LivenessProbe *corev1.Probe `json:"livenessProbe,omitempty"`
+	// ReadinessProbe represents the readiness probe for the fluentd container.
+	ReadinessProbe *corev1.Probe `json:"readinessProbe,omitempty"`
 }
 
 // FluentDService the service of the FluentD
