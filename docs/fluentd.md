@@ -360,6 +360,8 @@ FluentdSpec defines the desired state of Fluentd
 | mode | Mode to determine whether to run Fluentd as collector or agent. | string |
 | containerSecurityContext | ContainerSecurityContext represents the security context for the fluentd container. | *corev1.SecurityContext |
 | positionDB | Storage for position db. You will use it if tail input is enabled. Applicable when the mode is \"agent\", and will be ignored when the mode is \"collector\" | [corev1.VolumeSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#volume-v1-core) |
+| livenessProbe | LivenessProbe represents the liveness probe for the fluentd container. | *corev1.Probe |
+| readinessProbe | ReadinessProbe represents the readiness probe for the fluentd container. | *corev1.Probe |
 
 [Back to TOC](#table-of-contents)
 # FluentdStatus
