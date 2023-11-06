@@ -34,6 +34,8 @@ type Input struct {
 	Sample *Sample `json:"sample,omitempty"`
 	// Custom plugin type
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
+	// monitor_agent plugin
+	MonitorAgent *MonitorAgent `json:"monitorAgent,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -92,6 +94,11 @@ func (i *Input) Params(loader plugins.SecretLoader) (*params.PluginStore, error)
 		customPs, _ := i.CustomPlugin.Params(loader)
 		ps.Content = customPs.Content
 		return ps, nil
+	}
+
+	if i.MonitorAgent != nil {
+		ps.InsertType(string(params.MonitorAgentType))
+		return i.monitorAgentPlugin(ps, loader), nil
 	}
 
 	return nil, errors.New("you must define an input plugin")
@@ -361,6 +368,29 @@ func (i *Input) samplePlugin(parent *params.PluginStore, loader plugins.SecretLo
 	}
 	if sampleModel.Sample != nil {
 		parent.InsertPairs("sample", fmt.Sprint(*sampleModel.Sample))
+	}
+	return parent
+}
+
+func (i *Input) monitorAgentPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+	monitorAgentModel := i.MonitorAgent
+	if monitorAgentModel.Port != nil {
+		parent.InsertPairs("port", fmt.Sprint(*monitorAgentModel.Port))
+	}
+	if monitorAgentModel.Bind != nil {
+		parent.InsertPairs("bind", fmt.Sprint(*monitorAgentModel.Bind))
+	}
+	if monitorAgentModel.Tag != nil {
+		parent.InsertPairs("tag", fmt.Sprint(*monitorAgentModel.Tag))
+	}
+	if monitorAgentModel.EmitInterval != nil {
+		parent.InsertPairs("emit_interval", fmt.Sprint(*monitorAgentModel.EmitInterval))
+	}
+	if monitorAgentModel.IncludeConfig != nil {
+		parent.InsertPairs("include_config", fmt.Sprint(*monitorAgentModel.IncludeConfig))
+	}
+	if monitorAgentModel.IncludeRetry != nil {
+		parent.InsertPairs("include_retry", fmt.Sprint(*monitorAgentModel.IncludeRetry))
 	}
 	return parent
 }

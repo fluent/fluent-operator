@@ -1,6 +1,7 @@
 package cfgrender
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -88,6 +89,27 @@ func Test_ClusterCfgInputSample(t *testing.T) {
 	}
 }
 
+func Test_ClusterCfgInputMonitorAgent(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr.CombineGlobalInputsPlugins(sl, FluentdInputMonitorAgent.Spec.GlobalInputs)
+
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdConfig1)
+	g.Expect(err).NotTo(HaveOccurred())
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputTag}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterInput{}, []fluentdv1alpha1.ClusterFilter{}, clusterOutputs)
+	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	for i := 0; i < maxRuntimes; i++ {
+		config, errs := psr.RenderMainConfig(false)
+		g.Expect(errs).NotTo(HaveOccurred())
+		g.Expect(string(getExpectedCfg("./expected/fluentd-global-cfg-input-monitorAgent.cfg"))).To(Equal(config))
+	}
+}
+
 func Test_ClusterCfgOutput2ES(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
@@ -107,7 +129,7 @@ func Test_ClusterCfgOutput2ES(t *testing.T) {
 	i := 0
 	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
-		// fmt.Println(config)
+		fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-es.cfg"))).To(Equal(config))
 
