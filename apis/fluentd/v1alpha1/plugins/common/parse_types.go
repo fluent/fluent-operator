@@ -92,7 +92,7 @@ func (p *Parse) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 		ps.InsertPairs("estimate_current_event", fmt.Sprint(*p.EstimateCurrentEvent))
 	}
 	if p.KeepTimeKey != nil {
-		ps.InsertPairs("keep_timeout", fmt.Sprint(*p.KeepTimeKey))
+		ps.InsertPairs("keep_time_key", fmt.Sprint(*p.KeepTimeKey))
 	}
 	if p.Timeout != nil {
 		ps.InsertPairs("timeout", fmt.Sprint(*p.Timeout))
