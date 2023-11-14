@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
@@ -120,7 +121,16 @@ func (pgr *PluginResources) PatchAndFilterClusterLevelResources(
 	cfgResources := NewCfgResources()
 
 	errs := make([]string, 0)
-
+	// sort all the CRs by metadata.name
+	sort.SliceStable(clusterInputs[:], func(i, j int) bool {
+		return clusterInputs[i].Name < clusterInputs[j].Name
+	})
+	sort.SliceStable(clusterfilters[:], func(i, j int) bool {
+		return clusterfilters[i].Name < clusterfilters[j].Name
+	})
+	sort.SliceStable(clusteroutputs[:], func(i, j int) bool {
+		return clusteroutputs[i].Name < clusteroutputs[j].Name
+	})
 	// List all inputs matching the label selector.
 	for _, i := range clusterInputs {
 		// patch filterId
