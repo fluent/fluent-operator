@@ -35,7 +35,7 @@
 - Fix(doc): Fluentbit splunk output docs (#935) @Macbet
 - Fix: Add parserSelector to clusterFluentBitConfig chart templates (#956) 
 - Fix: fd record transformer parameters (#960)
-- Fix: Fix fluentd in_http plugin keepalive_timeout option (#968) 
+- Fix: fluentd in_http plugin keepalive_timeout option (#968) 
 - Fix: fluentd parser keep_time_key (#987) 
 
 ## 2.5.0 / 2023-09-13
