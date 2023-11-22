@@ -38,6 +38,7 @@ This page describes the release process and the currently planned schedule for u
 | v2.3.0           | 2023-06-05                                 | Elon Cheng (GitHub: @wenchajun)         |
 | v2.4.0           | 2023-07-19                                 | Elon Cheng (GitHub: @wenchajun)         |
 | v2.5.0           | 2023-09-13                                 | Elon Cheng (GitHub: @wenchajun)         |
+| v2.6.0           | 2023-11-22                                 | Elon Cheng (GitHub: @wenchajun)         |
 
 # How to cut a new release
 
