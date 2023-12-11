@@ -405,6 +405,30 @@ func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.
 		parent.InsertPairs("password", pwd)
 	}
 
+	if o.Elasticsearch.SslVerify != nil {
+		parent.InsertPairs("ssl_verify", fmt.Sprint(*o.Elasticsearch.SslVerify))
+	}
+
+	if o.Elasticsearch.CAFile != nil {
+		parent.InsertPairs("ca_file", fmt.Sprint(*o.Elasticsearch.CAFile))
+	}
+
+	if o.Elasticsearch.ClientCert != nil {
+		parent.InsertPairs("client_cert", fmt.Sprint(*o.Elasticsearch.ClientCert))
+	}
+
+	if o.Elasticsearch.ClientKey != nil {
+		parent.InsertPairs("client_key", fmt.Sprint(*o.Elasticsearch.ClientKey))
+	}
+
+	if o.Elasticsearch.ClientKeyPassword != nil {
+		pwd, err := loader.LoadSecret(*o.Elasticsearch.ClientKeyPassword)
+		if err != nil {
+			return nil, err
+		}
+		parent.InsertPairs("client_key_pass", pwd)
+	}
+
 	if o.Elasticsearch.Scheme != nil {
 		parent.InsertPairs("scheme", fmt.Sprint(*o.Elasticsearch.Scheme))
 	}

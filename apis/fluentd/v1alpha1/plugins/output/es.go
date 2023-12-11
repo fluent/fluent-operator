@@ -26,4 +26,14 @@ type Elasticsearch struct {
 	User *plugins.Secret `json:"user,omitempty"`
 	// Optional, The login credentials to connect to Elasticsearch
 	Password *plugins.Secret `json:"password,omitempty"`
+	// Optional, Force certificate validation
+	SslVerify *bool `json:"sslVerify,omitempty"`
+	// Optional, Absolute path to CA certificate file
+	CAFile *string `json:"caFile,omitempty"`
+	// Optional, Absolute path to client Certificate file
+	ClientCert *string `json:"clientCert,omitempty"`
+	// Optional, Absolute path to client private Key file
+	ClientKey *string `json:"clientKey,omitempty"`
+	// Optional, password for ClientKey file
+	ClientKeyPassword *plugins.Secret `json:"clientKeyPassword,omitempty"`
 }

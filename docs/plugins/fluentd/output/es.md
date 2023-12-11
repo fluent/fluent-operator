@@ -15,3 +15,8 @@ Elasticsearch defines the parameters for out_es output plugin
 | logstashPrefix | LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash). | *string |
 | user | Optional, The login credentials to connect to Elasticsearch | *[plugins.Secret](../secret.md) |
 | password | Optional, The login credentials to connect to Elasticsearch | *[plugins.Secret](../secret.md) |
+| sslVerify | Optional, Force certificate validation | *bool |
+| caFile | Optional, Absolute path to CA certificate file | *string |
+| clientCert | Optional, Absolute path to client Certificate file | *string |
+| clientKey | Optional, Absolute path to client private Key file | *string |
+| clientKeyPassword | Optional, password for ClientKey file | *[plugins.Secret](../secret.md) |
