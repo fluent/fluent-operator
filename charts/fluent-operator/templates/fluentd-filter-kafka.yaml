@@ -13,7 +13,7 @@ spec:
         enableRuby: true
         records:
           - key: {{ .Values.fluentd.output.kafka.topicKey }}
-            value: ${record["kubernetes"]["namespace_name"]
+            value: ${record["kubernetes"]["namespace_name"]}
 {{- end }}
 {{- end }}
 {{- end }}
