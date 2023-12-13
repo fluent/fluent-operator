@@ -150,6 +150,12 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 				return ctrl.Result{}, fmt.Errorf(strings.Join(errs, ","))
 			}
 
+			err = gpr.IdentifyCopyAndPatchOutput(cfgResouces)
+			if err != nil {
+				r.Log.Info("IdentifyCopy and PatchOutput namespace level resources failed", "config", "default", "err", strings.Join(errs, ","))
+				return ctrl.Result{}, fmt.Errorf(strings.Join(errs, ","))
+			}
+
 			// WithCfgResources will collect all plugins to generate main config
 			err = gpr.WithCfgResources("@default", cfgResouces)
 			if err != nil {
@@ -302,6 +308,15 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 			continue
 		}
 
+		err = gpr.IdentifyCopyAndPatchOutput(cfgResouces)
+		if err != nil {
+			r.Log.Info("Patch and filter cluster level resources failed", "config", cfg.Name, "err", strings.Join(errs, ","))
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, strings.Join(errs, ", ")); err != nil {
+				return err
+			}
+			continue
+		}
+
 		// WithCfgResources will collect all plugins to generate main config
 		var msg string
 		err = gpr.WithCfgResources(cfgRouterLabel, cfgResouces)
@@ -394,6 +409,15 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, cfgs fluen
 		cfgResouces.InputPlugins = append(cfgResouces.InputPlugins, clustercfgResouces.InputPlugins...)
 		cfgResouces.FilterPlugins = append(cfgResouces.FilterPlugins, clustercfgResouces.FilterPlugins...)
 		cfgResouces.OutputPlugins = append(cfgResouces.OutputPlugins, clustercfgResouces.OutputPlugins...)
+
+		err = gpr.IdentifyCopyAndPatchOutput(cfgResouces)
+		if err != nil {
+			r.Log.Info("Patch and filter namespace level resources failed", "config", cfg.Name, "err", strings.Join(errs, ","))
+			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, strings.Join(errs, ", ")); err != nil {
+				return err
+			}
+			continue
+		}
 
 		// WithCfgResources will collect all plugins to generate main config
 		var msg string

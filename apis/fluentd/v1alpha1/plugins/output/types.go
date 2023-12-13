@@ -51,6 +51,8 @@ type Output struct {
 	CloudWatch *CloudWatch `json:"cloudWatch,omitempty"`
 	// datadog plugin
 	Datadog *Datadog `json:"datadog,omitempty"`
+	// copy plugin
+	Copy *Copy `json:"copy,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -163,6 +165,12 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 		ps.InsertType(string(params.DatadogOutputType))
 		return o.datadogPlugin(ps, loader), nil
 	}
+
+	if o.Copy != nil {
+		ps.InsertType(string(params.CopyOutputType))
+		return o.copyPlugin(ps, loader), nil
+	}
+
 	return o.customOutput(ps, loader), nil
 
 }
@@ -903,6 +911,13 @@ func (o *Output) datadogPlugin(parent *params.PluginStore, sl plugins.SecretLoad
 
 	if o.Datadog.HttpProxy != nil {
 		parent.InsertPairs("http_proxy", fmt.Sprint(*o.Datadog.HttpProxy))
+	}
+	return parent
+}
+
+func (o *Output) copyPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
+	if o.Copy.CopyMode != nil {
+		parent.InsertPairs("copy_mode", fmt.Sprint(*o.Copy.CopyMode))
 	}
 	return parent
 }

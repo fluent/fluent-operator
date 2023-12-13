@@ -25,3 +25,4 @@ Output defines all available output plugins and their parameters
 | customPlugin | Custom plugin type | *custom.CustomPlugin |
 | cloudWatch | out_cloudwatch plugin | *CloudWatch |
 | datadog | datadog plugin | *Datadog |
+| copy | copy plugin | *Copy |

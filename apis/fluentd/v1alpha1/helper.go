@@ -292,6 +292,48 @@ func (r *CfgResources) filterForOutputs(
 	return nil
 }
 
+// IdentifyCopyAndPatchOutput patches up the controller with the Manager
+func (pgr *PluginResources) IdentifyCopyAndPatchOutput(cfgResources *CfgResources) error {
+	// patched structure for OutputPlugins
+	patchedOutputPlugins := []params.PluginStore{}
+	// copyOutputs stores the id if the output is a `copy`
+	copyOutputs := map[string]int{}
+	// outputs stores the id if the output is not a `copy`
+	outputs := map[string][]int{}
+
+	// Iterate over cfgResources.OutputPlugins to identify Copy output
+	for id, ps := range cfgResources.OutputPlugins {
+		if ps.Store["@type"] == string(params.CopyOutputType) {
+			// We store last output when 2 output with the same tag
+			copyOutputs[ps.Store["tag"]] = id
+		} else {
+			outputs[ps.Store["tag"]] = append(outputs[ps.Store["tag"]], id)
+		}
+	}
+
+	// Patch the outputs
+	for k, output := range outputs {
+		// Does it exist a copy output for this tag ?
+		if c, ok := copyOutputs[k]; ok {
+			// Yes, so we patch
+			for _, id := range output {
+				o := cfgResources.OutputPlugins[id]
+				o.Name = "store"
+				cfgResources.OutputPlugins[c].InsertChilds(&o)
+			}
+			patchedOutputPlugins = append(patchedOutputPlugins, cfgResources.OutputPlugins[c])
+		} else {
+			// No, we don't patch
+			for _, id := range output {
+				o := cfgResources.OutputPlugins[id]
+				patchedOutputPlugins = append(patchedOutputPlugins, o)
+			}
+		}
+	}
+	cfgResources.OutputPlugins = patchedOutputPlugins
+	return nil
+}
+
 // convert the cfg plugins to a label plugin, appends to the global label plugins
 func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResources) error {
 	if len(r.InputPlugins) == 0 && len(r.FilterPlugins) == 0 && len(r.OutputPlugins) == 0 {
