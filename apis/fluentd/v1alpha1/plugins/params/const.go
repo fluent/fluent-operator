@@ -70,6 +70,7 @@ const (
 	LokiOutputType          OutputType = "loki"
 	CloudWatchOutputType    OutputType = "cloudwatch_logs"
 	DatadogOutputType       OutputType = "datadog"
+	CopyOutputType          OutputType = "copy"
 )
 
 var (

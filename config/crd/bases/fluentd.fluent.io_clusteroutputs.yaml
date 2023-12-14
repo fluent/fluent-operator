@@ -405,6 +405,21 @@ spec:
                           description: Web identity token file
                           type: string
                       type: object
+                    copy:
+                      description: copy plugin
+                      properties:
+                        copyMode:
+                          description: CopyMode defines how to pass the events to
+                            <store> plugins.
+                          enum:
+                          - no_copy
+                          - shallow
+                          - deep
+                          - marshal
+                          type: string
+                      required:
+                      - copyMode
+                      type: object
                     customPlugin:
                       description: Custom plugin type
                       properties:

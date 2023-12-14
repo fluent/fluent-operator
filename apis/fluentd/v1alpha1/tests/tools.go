@@ -188,6 +188,28 @@ spec:
     matchLabels:
       output.fluentd.fluent.io/enabled: "true"
 `
+
+	FluentdConfig2    fluentdv1alpha1.FluentdConfig
+	FluentdConfig2Raw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: FluentdConfig
+metadata:
+  name: fluentd-config
+  namespace: fluent
+  labels:
+    config.fluentd.fluent.io/enabled: "true"
+spec:
+  filterSelector:
+    matchLabels:
+      filter.fluentd.fluent.io/enabled: "true"
+  clusterOutputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "loki"
+  outputSelector:
+    matchLabels:
+      output.fluentd.fluent.io/enabled: "es"
+`
+
 	FluentdConfigUser1    fluentdv1alpha1.FluentdConfig
 	FluentdConfigUser1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -450,6 +472,85 @@ spec:
       logstashFormat: true
       logstashPrefix: ks-logstash-log-user1
 `
+
+	FluentdOutputMixedCopy1    fluentdv1alpha1.Output
+	FluentdOutputMixedCopy1Raw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-mixed-copy-es-1
+  namespace: fluent
+  labels:
+    output.fluentd.fluent.io/enabled: "es"
+spec: 
+  outputs:
+  - copy:
+      copyMode: no_copy
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9243
+      indexName: fluentd-mixed-copy-es-1
+      scheme: https
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9243
+      indexName: fluentd-mixed-copy-es-2
+      scheme: https
+`
+
+	FluentdOutputMixedCopy2    fluentdv1alpha1.Output
+	FluentdOutputMixedCopy2Raw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-mixed-copy-es-2
+  namespace: fluent
+  labels:
+    output.fluentd.fluent.io/enabled: "es"
+spec: 
+  outputs:
+  - copy:
+      copyMode: no_copy
+    tag: mixed2
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9243
+      indexName: fluentd-mixed-copy-es-3
+      scheme: https
+    tag: mixed2
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9243
+      indexName: fluentd-mixed-copy-es-4
+      scheme: https
+    tag: mixed2
+`
+
+	FluentdOutputMixedCopy3    fluentdv1alpha1.Output
+	FluentdOutputMixedCopy3Raw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-mixed-copy-es-3
+  namespace: fluent
+  labels:
+    output.fluentd.fluent.io/enabled: "es"
+spec:
+  outputs:
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9243
+      indexName: fluentd-mixed-copy-es-5
+      scheme: https
+    tag: mixed3
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9243
+      indexName: fluentd-mixed-copy-es-6
+      scheme: https
+    tag: mixed3
+`
+
 	FluentdClusterOutput2CloudWatch    fluentdv1alpha1.ClusterOutput
 	FluentdClusterOutput2CloudWatchRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -482,6 +583,36 @@ spec:
       port: 443
       ddSource: kubernetes
       ddSourcecategory: kubernetes
+`
+	FluentdClusterOutputCopy2StdoutAndLoki    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutputCopy2StdoutAndLokiRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-copy-stdout-and-loki
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec:
+  outputs: 
+  - copy:
+      copyMode: no_copy
+  - stdout: {}
+  - loki:
+      url: http://loki-logging-data.kubesphere-logging-system.svc:3100
+      extractKubernetesLabels: true
+      labels:
+        - key11=value11
+        - key12 = value12
+        - key13
+      labelKeys:
+        - key21
+        - key22
+      removeKeys:
+        - key31
+        - key32
+      dropSingleKey: true
+      includeThreadLabel: true
+      insecure: true
 `
 	once sync.Once
 )
@@ -607,6 +738,7 @@ func init() {
 			ParseIntoObject(FluentdClusterFluentdConfig2Raw, &FluentdClusterFluentdConfig2)
 			ParseIntoObject(FluentdConfigUser1Raw, &FluentdConfigUser1)
 			ParseIntoObject(FluentdConfig1Raw, &FluentdConfig1)
+			ParseIntoObject(FluentdConfig2Raw, &FluentdConfig2)
 			ParseIntoObject(FluentdClusterFilter1Raw, &FluentdClusterFilter1)
 			ParseIntoObject(FluentdClusterRecordTransformerRaw, &FluentdClusterRecordTransformerFilter)
 			ParseIntoObject(FluentdClusterOutputClusterRaw, &FluentdClusterOutputCluster)
@@ -620,6 +752,10 @@ func init() {
 			ParseIntoObject(FluentdClusterOutputCustomRaw, &FluentdClusterOutputCustom)
 			ParseIntoObject(FluentdClusterOutput2CloudWatchRaw, &FluentdClusterOutput2CloudWatch)
 			ParseIntoObject(FluentdClusterOutput2DatadogRaw, &FluentdClusterOutput2Datadog)
+			ParseIntoObject(FluentdClusterOutputCopy2StdoutAndLokiRaw, &FluentdClusterOutputCopy2StdoutAndLoki)
+			ParseIntoObject(FluentdOutputMixedCopy1Raw, &FluentdOutputMixedCopy1)
+			ParseIntoObject(FluentdOutputMixedCopy2Raw, &FluentdOutputMixedCopy2)
+			ParseIntoObject(FluentdOutputMixedCopy3Raw, &FluentdOutputMixedCopy3)
 		},
 	)
 }
