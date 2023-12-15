@@ -20,4 +20,4 @@ Input defines all available input plugins and their parameters
 | tail | in_tail plugin | *Tail |
 | sample | in_sample plugin | *Sample |
 | customPlugin | Custom plugin type | *custom.CustomPlugin |
-| monitor_agent | monitor_agent plugin | *MonitorAgent |
+| monitorAgent | monitor_agent plugin | *MonitorAgent |
