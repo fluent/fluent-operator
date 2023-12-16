@@ -528,6 +528,34 @@ spec:
                       description: The @log_level parameter specifies the plugin-specific
                         logging level
                       type: string
+                    monitorAgent:
+                      description: monitor_agent plugin
+                      properties:
+                        bind:
+                          description: The bind address to listen to.
+                          type: string
+                        emitInterval:
+                          description: The interval time between event emits. This
+                            will be used when "tag" is configured.
+                          format: int64
+                          type: integer
+                        includeConfig:
+                          description: You can set this option to false to remove
+                            the config field from the response.
+                          type: boolean
+                        includeRetry:
+                          description: You can set this option to false to remove
+                            the retry field from the response.
+                          type: boolean
+                        port:
+                          description: The port to listen to.
+                          format: int64
+                          type: integer
+                        tag:
+                          description: If you set this parameter, this plugin emits
+                            metrics as records.
+                          type: string
+                      type: object
                     sample:
                       description: in_sample plugin
                       properties:
