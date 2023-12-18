@@ -41,8 +41,8 @@ Once installed, the Fluent Operator provides the following features:
 		- [Fluent Operator Walkthrough](#fluent-operator-walkthrough)
 		- [Collect Kubernetes logs](#collect-kubernetes-logs)
 			- [Deploy the Kubernetes logging stack with YAML](#deploy-the-kubernetes-logging-stack-with-yaml)
-			- [Deploy the Kubernetes logging stack with Helm](#deploy-the-kubernetes-logging-stack-with-helm)
-		- [Collect auditd logs](#collect-auditd-logs)
+			- [Deploy the Kubernetes logging pipeline with Helm](#deploy-the-kubernetes-logging-pipeline-with-helm)
+		- [Collect audit logs](#collect-audit-logs)
 		- [Fluentd](#fluentd-1)
 	- [Plugins](#plugins)
 		- [Fluent Bit](#fluent-bit-1)
@@ -52,7 +52,7 @@ Once installed, the Fluent Operator provides the following features:
 		- [Monitoring](#monitoring)
 		- [Custom Parser](#custom-parser)
 		- [Misc](#misc)
-        - [Custom Plugin](#custom-plugin)
+		- [Custom Plugin](#custom-plugin)
 	- [Roadmap](#roadmap)
 	- [Development](#development)
 		- [Requirements](#requirements)
@@ -130,7 +130,7 @@ Kubernetes v1.16.13+ is necessary for running Fluent Operator.
 Install the latest stable version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/release-2.6/manifests/setup/setup.yaml
+kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/release-2.7/manifests/setup/setup.yaml
 
 # You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch 
 # and then use command below to install to another namespace

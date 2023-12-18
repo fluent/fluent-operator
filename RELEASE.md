@@ -4,41 +4,42 @@ This page describes the release process and the currently planned schedule for u
 
 ## Release schedule
 
-| release series | date  (year-month-day) | release shepherd                            |
-|----------------|--------------------------------------------|---------------------------------------------|
-| v0.1.0           | 2020-02-17                                 | Guangzhe Huang (GitHub: @huanggze) |
-| v0.2.0           | 2020-08-27                                 | Guangzhe Huang (GitHub: @huanggze)         |
-| v0.3.0           | 2020-11-10                                 | Guangzhe Huang (GitHub: @huanggze)     |
-| v0.4.0           | 2021-04-01                                 | Wanjun Lei (GitHub: @wanjunlei) |
-| v0.5.0           | 2021-04-14                                 | Wanjun Lei (GitHub: @wanjunlei)         |
-| v0.6.0           | 2021-06-03                                 | Wanjun Lei (GitHub: @wanjunlei)         |
-| v0.6.1           | 2021-06-11                                 | Benjamin Huo (GitHub: @benjaminhuo)         |
-| v0.6.2           | 2021-06-11                                 | Benjamin Huo (GitHub: @benjaminhuo)     |
-| v0.7.0           | 2021-06-29                                 | Wanjun Lei (GitHub: @wanjunlei)         |
-| v0.7.1           | 2021-07-09                                 | Wanjun Lei (GitHub: @wanjunlei)         |
-| v0.8.0           | 2021-07-23                                 | Wanjun Lei (GitHub: @wanjunlei)         |
-| v0.9.0           | 2021-08-13                                 | Wanjun Lei (GitHub: @wanjunlei)         |
-| v0.10.0          | 2021-08-20                                 | Wanjun Lei (GitHub: @wanjunlei)         |
-| v0.11.0          | 2021-09-01                                 | Wanjun Lei (GitHub: @wanjunlei)         |
-| v0.12.0          | 2021-09-13                                 | Wanjun Lei (GitHub: @wanjunlei)         |
-| v0.13.0          | 2022-03-14                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v1.0.0           | 2022-03-25                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v1.0.1           | 2022-05-12                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v1.0.2           | 2022-05-17                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v1.1.0           | 2022-06-15                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v1.5.0           | 2022-09-24                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v1.5.1           | 2022-09-30                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v1.6.0           | 2022-10-25                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v1.6.1           | 2022-10-31                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v1.7.0           | 2022-11-23                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v2.0.0           | 2023-02-03                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v2.0.1           | 2023-02-08                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v2.1.0           | 2023-03-13                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v2.2.0           | 2023-04-07                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v2.3.0           | 2023-06-05                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v2.4.0           | 2023-07-19                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v2.5.0           | 2023-09-13                                 | Elon Cheng (GitHub: @wenchajun)         |
-| v2.6.0           | 2023-11-22                                 | Elon Cheng (GitHub: @wenchajun)         |
+| release series | date  (year-month-day) | release shepherd                      |
+| -------------- | ---------------------- | ------------------------------------- |
+| v0.1.0         | 2020-02-17             | Guangzhe Huang (GitHub: @huanggze)    |
+| v0.2.0         | 2020-08-27             | Guangzhe Huang (GitHub: @huanggze)    |
+| v0.3.0         | 2020-11-10             | Guangzhe Huang (GitHub: @huanggze)    |
+| v0.4.0         | 2021-04-01             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.5.0         | 2021-04-14             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.6.0         | 2021-06-03             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.6.1         | 2021-06-11             | Benjamin Huo (GitHub: @benjaminhuo)   |
+| v0.6.2         | 2021-06-11             | Benjamin Huo (GitHub: @benjaminhuo)   |
+| v0.7.0         | 2021-06-29             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.7.1         | 2021-07-09             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.8.0         | 2021-07-23             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.9.0         | 2021-08-13             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.10.0        | 2021-08-20             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.11.0        | 2021-09-01             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.12.0        | 2021-09-13             | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.13.0        | 2022-03-14             | Elon Cheng (GitHub: @wenchajun)       |
+| v1.0.0         | 2022-03-25             | Elon Cheng (GitHub: @wenchajun)       |
+| v1.0.1         | 2022-05-12             | Elon Cheng (GitHub: @wenchajun)       |
+| v1.0.2         | 2022-05-17             | Elon Cheng (GitHub: @wenchajun)       |
+| v1.1.0         | 2022-06-15             | Elon Cheng (GitHub: @wenchajun)       |
+| v1.5.0         | 2022-09-24             | Elon Cheng (GitHub: @wenchajun)       |
+| v1.5.1         | 2022-09-30             | Elon Cheng (GitHub: @wenchajun)       |
+| v1.6.0         | 2022-10-25             | Elon Cheng (GitHub: @wenchajun)       |
+| v1.6.1         | 2022-10-31             | Elon Cheng (GitHub: @wenchajun)       |
+| v1.7.0         | 2022-11-23             | Elon Cheng (GitHub: @wenchajun)       |
+| v2.0.0         | 2023-02-03             | Elon Cheng (GitHub: @wenchajun)       |
+| v2.0.1         | 2023-02-08             | Elon Cheng (GitHub: @wenchajun)       |
+| v2.1.0         | 2023-03-13             | Elon Cheng (GitHub: @wenchajun)       |
+| v2.2.0         | 2023-04-07             | Elon Cheng (GitHub: @wenchajun)       |
+| v2.3.0         | 2023-06-05             | Elon Cheng (GitHub: @wenchajun)       |
+| v2.4.0         | 2023-07-19             | Elon Cheng (GitHub: @wenchajun)       |
+| v2.5.0         | 2023-09-13             | Elon Cheng (GitHub: @wenchajun)       |
+| v2.6.0         | 2023-11-22             | Elon Cheng (GitHub: @wenchajun)       |
+| v2.7.0         | 2023-12-19             | Anthony Treuillier (GitHub: @antrema) |
 
 # How to cut a new release
 
