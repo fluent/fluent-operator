@@ -1,3 +1,20 @@
+## 2.7.0 / 2023-12-19
+### Features
+- Feat: Add copy output plugin for fluentd #1017 (#1018) @antrema
+
+### ENHANCEMENT
+- Update fluentd-filter-kafka.yaml (#1016) @blackshy
+- build(deps): Bump alpine in /cmd/fluent-watcher/fluentd (#1014) @dependabot
+- build(deps): Bump golang in /cmd/fluent-manager (#1009) @dependabot
+- build(deps): Bump helm/chart-testing-action from 2.6.0 to 2.6.1 (#1006) @dependabot
+- build(deps): Bump golang in /docs/best-practice/forwarding-logs-via-http (#1004) @dependabot
+- build(deps): Bump github.com/onsi/gomega from 1.28.0 to 1.30.0 (#1002) @dependabot
+
+### BUGFIX 
+- fix: Add SSL/TLS settings feature for fluentd output Elasticsearch #418 (#1011) @antrema
+- fix: Add RBAC permissions for input and clusterinput (#1019) @MisterMX
+- fix: missing CRD entries and documentation #1020 (#1022) @antrema
+
 ## 2.6.0 / 2023-11-22
 ### Features
 - Feat: Add fluentbit nginx  plugin (#924) 
