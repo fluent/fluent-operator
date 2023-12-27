@@ -107,8 +107,9 @@ spec:
     removeKeys:
 {{ .removeKeys | toYaml | indent 6 }}
     {{ end -}}
-    
-    {{ if .tls -}}
+
+    {{ if .tls }}
+    tls:
 {{ .tls | toYaml | indent 6 }}
     {{ end -}}
 
