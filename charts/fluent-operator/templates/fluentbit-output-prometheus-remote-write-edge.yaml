@@ -9,8 +9,8 @@ metadata:
 spec:
   match: kubeedge.metrics.*
   prometheusRemoteWrite:
-    host: {{ .Values.fluentbit.edge.prometheusRemoteWrite.host }}
-    port: {{ .Values.fluentbit.edge.prometheusRemoteWrite.port }}
+    host: {{ .Values.fluentbit.kubeedge.prometheusRemoteWrite.host }}
+    port: {{ .Values.fluentbit.kubeedge.prometheusRemoteWrite.port }}
     uri: /api/v1/write
     addLabels : 
       app : fluentbit
