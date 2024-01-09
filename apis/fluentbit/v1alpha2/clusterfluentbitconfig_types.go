@@ -42,7 +42,7 @@ type FluentBitConfigSpec struct {
 	// Select parser plugins
 	ParserSelector metav1.LabelSelector `json:"parserSelector,omitempty"`
 	// Select multiline parser plugins
-	MultilineParserSelector metav1.LabelSelector `json:"multilineparserSelector,omitempty"`
+	MultilineParserSelector metav1.LabelSelector `json:"multilineParserSelector,omitempty"`
 	// If namespace is defined, then the configmap and secret for fluent-bit is in this namespace.
 	// If it is not defined, it is in the namespace of the fluentd-operator
 	Namespace *string `json:"namespace,omitempty"`
