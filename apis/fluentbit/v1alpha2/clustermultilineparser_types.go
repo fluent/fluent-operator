@@ -19,17 +19,18 @@ package v1alpha2
 import (
 	"bytes"
 	"fmt"
+	"reflect"
+	"sort"
+
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/multilineparser"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"reflect"
-	"sort"
 )
 
 // +kubebuilder:object:generate:=true
 
 type MultilineParserSpec struct {
-	MultilineParser *multilineparser.MultilineParser `json:",inline"`
+	*multilineparser.MultilineParser `json:",inline"`
 }
 
 // +kubebuilder:object:root=true
