@@ -27,4 +27,14 @@ type S3 struct {
 	ProxyUri *string `json:"proxyUri,omitempty"`
 	// Verify the SSL certificate of the endpoint.
 	SslVerifyPeer *bool `json:"sslVerifyPeer,omitempty"`
+	// the following parameters are for S3 kms https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
+	UseServerSideEncryption *string `json:"useServerSideEncryption,omitempty"`
+	// The AWS KMS enctyption algorithm.
+	SseCustomerAlgorithm *string `json:"sseCustomerAlgorithm,omitempty"`
+	// The AWS KMS key ID.
+	SsekmsKeyId *string `json:"ssekmsKeyId,omitempty"`
+	// The AWS KMS key.
+	SseCustomerKey *string `json:"sseCustomerKey,omitempty"`
+	// The AWS KMS key MD5.
+	SseCustomerKeyMd5 *string `json:"sseCustomerKeyMd5,omitempty"`
 }
