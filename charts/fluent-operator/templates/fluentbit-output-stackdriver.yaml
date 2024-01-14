@@ -1,0 +1,18 @@
+{{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
+{{- if .Values.fluentbit.output.stackdriver -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  name: stackdriver
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  matchRegex: (?:kube|service)\.(.*)
+  stackdriver:
+{{ toYaml .Values.fluentbit.output.stackdriver | indent 4}}
+{{- end }}
+{{- end }}
+{{- end }}
+

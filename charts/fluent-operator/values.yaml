@@ -293,6 +293,8 @@ fluentbit:
       #autoKubernetesLabels: on
       #tenantIDKey:   # String
       #tls: {}        # *plugins.TLS fluentbit docs
+    stackdriver: {}
+    # You can configure the opensearch-related configuration here
 
   service:
     storage: {}
