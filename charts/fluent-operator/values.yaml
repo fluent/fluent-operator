@@ -294,7 +294,7 @@ fluentbit:
       #tenantIDKey:   # String
       #tls: {}        # *plugins.TLS fluentbit docs
     stackdriver: {}
-    # You can configure the opensearch-related configuration here
+    # You can configure the stackdriver configuration here
 
   service:
     storage: {}
