@@ -7506,6 +7506,18 @@ spec:
                         s3Region:
                           description: The Amazon S3 region name
                           type: string
+                        sseCustomerAlgorithm:
+                          description: The AWS KMS enctyption algorithm.
+                          type: string
+                        sseCustomerKey:
+                          description: The AWS KMS key.
+                          type: string
+                        sseCustomerKeyMd5:
+                          description: The AWS KMS key MD5.
+                          type: string
+                        ssekmsKeyId:
+                          description: The AWS KMS key ID.
+                          type: string
                         sslVerifyPeer:
                           description: Verify the SSL certificate of the endpoint.
                           type: boolean
@@ -7519,6 +7531,9 @@ spec:
                           type: string
                         timeSliceFormat:
                           description: This timestamp is added to each file name
+                          type: string
+                        useServerSideEncryption:
+                          description: the following parameters are for S3 kms https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
                           type: string
                       type: object
                     stdout:
@@ -30778,6 +30793,18 @@ spec:
                         s3Region:
                           description: The Amazon S3 region name
                           type: string
+                        sseCustomerAlgorithm:
+                          description: The AWS KMS enctyption algorithm.
+                          type: string
+                        sseCustomerKey:
+                          description: The AWS KMS key.
+                          type: string
+                        sseCustomerKeyMd5:
+                          description: The AWS KMS key MD5.
+                          type: string
+                        ssekmsKeyId:
+                          description: The AWS KMS key ID.
+                          type: string
                         sslVerifyPeer:
                           description: Verify the SSL certificate of the endpoint.
                           type: boolean
@@ -30791,6 +30818,9 @@ spec:
                           type: string
                         timeSliceFormat:
                           description: This timestamp is added to each file name
+                          type: string
+                        useServerSideEncryption:
+                          description: the following parameters are for S3 kms https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
                           type: string
                       type: object
                     stdout:

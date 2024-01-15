@@ -572,6 +572,21 @@ func (o *Output) s3Plugin(parent *params.PluginStore, loader plugins.SecretLoade
 	if o.S3.SslVerifyPeer != nil {
 		parent.InsertPairs("ssl_verify_peer", fmt.Sprint(*o.S3.SslVerifyPeer))
 	}
+	if o.S3.UseServerSideEncryption != nil {
+		parent.InsertPairs("use_server_side_encryption", fmt.Sprint(*o.S3.UseServerSideEncryption))
+	}
+	if o.S3.SseCustomerAlgorithm != nil {
+		parent.InsertPairs("sse_customer_algorithm", fmt.Sprint(*o.S3.SseCustomerAlgorithm))
+	}
+	if o.S3.SsekmsKeyId != nil {
+		parent.InsertPairs("ssekms_key_id", fmt.Sprint(*o.S3.SsekmsKeyId))
+	}
+	if o.S3.SseCustomerKey != nil {
+		parent.InsertPairs("sse_customer_key", fmt.Sprint(*o.S3.SseCustomerKey))
+	}
+	if o.S3.SseCustomerKeyMd5 != nil {
+		parent.InsertPairs("sse_customer_key_md5", fmt.Sprint(*o.S3.SseCustomerKeyMd5))
+	}
 	return parent
 }
 
