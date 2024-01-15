@@ -35,6 +35,7 @@
   - [opentelemetry](output/opentelemetry.md)
   - [prometheus remote write](output/prometheus-remote-write.md)
   - [splunk](output/splunk.md)
+  - [stackdriver](output/stackdriver.md)
   - [stdout](output/stdout.md)
   - [syslog](output/syslog.md)
   - [tcp](output/tcp.md)
