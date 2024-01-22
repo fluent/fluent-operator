@@ -489,13 +489,14 @@ spec:
                           type: boolean
                         emitterMemBufLimit:
                           default: 10
-                          description: Set a limit on the amount of memory the emitter
-                            can consume if the outputs provide backpressure. The default
-                            for this limit is 10M. The pipeline will pause once the
-                            buffer exceeds the value of this setting. For example,
-                            if the value is set to 10M then the pipeline will pause
-                            if the buffer exceeds 10M. The pipeline will remain paused
-                            until the output drains the buffer below the 10M limit.
+                          description: Set a limit on the amount of memory in MB the
+                            emitter can consume if the outputs provide backpressure.
+                            The default for this limit is 10M. The pipeline will pause
+                            once the buffer exceeds the value of this setting. For
+                            example, if the value is set to 10MB then the pipeline
+                            will pause if the buffer exceeds 10M. The pipeline will
+                            remain paused until the output drains the buffer below
+                            the 10M limit.
                           type: integer
                         emitterName:
                           description: Name for the emitter input instance which re-emits
@@ -11479,13 +11480,14 @@ spec:
                           type: boolean
                         emitterMemBufLimit:
                           default: 10
-                          description: Set a limit on the amount of memory the emitter
-                            can consume if the outputs provide backpressure. The default
-                            for this limit is 10M. The pipeline will pause once the
-                            buffer exceeds the value of this setting. For example,
-                            if the value is set to 10M then the pipeline will pause
-                            if the buffer exceeds 10M. The pipeline will remain paused
-                            until the output drains the buffer below the 10M limit.
+                          description: Set a limit on the amount of memory in MB the
+                            emitter can consume if the outputs provide backpressure.
+                            The default for this limit is 10M. The pipeline will pause
+                            once the buffer exceeds the value of this setting. For
+                            example, if the value is set to 10MB then the pipeline
+                            will pause if the buffer exceeds 10M. The pipeline will
+                            remain paused until the output drains the buffer below
+                            the 10M limit.
                           type: integer
                         emitterName:
                           description: Name for the emitter input instance which re-emits

@@ -2,6 +2,7 @@ package filter
 
 import (
 	"fmt"
+
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -35,7 +36,7 @@ type Multi struct {
 	// +kubebuilder:validation:Enum:=memory;filesystem
 	// +kubebuilder:default:=memory
 	EmitterType string `json:"emitterType,omitempty"`
-	// Set a limit on the amount of memory the emitter can consume if the outputs provide backpressure. The default for this limit is 10M. The pipeline will pause once the buffer exceeds the value of this setting. For example, if the value is set to 10M then the pipeline will pause if the buffer exceeds 10M. The pipeline will remain paused until the output drains the buffer below the 10M limit.
+	// Set a limit on the amount of memory in MB the emitter can consume if the outputs provide backpressure. The default for this limit is 10M. The pipeline will pause once the buffer exceeds the value of this setting. For example, if the value is set to 10MB then the pipeline will pause if the buffer exceeds 10M. The pipeline will remain paused until the output drains the buffer below the 10M limit.
 	// +kubebuilder:default:=10
 	EmitterMemBufLimit int `json:"emitterMemBufLimit,omitempty"`
 }
@@ -73,7 +74,7 @@ func (m *Multiline) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 			kvs.Insert("emitter_storage.type", m.Multi.EmitterType)
 		}
 		if m.Multi.EmitterMemBufLimit != 0 {
-			kvs.Insert("emitter_mem_buf_limit", fmt.Sprint(m.Multi.EmitterMemBufLimit))
+			kvs.Insert("emitter_mem_buf_limit", fmt.Sprintf("%dMB", m.Multi.EmitterMemBufLimit))
 		}
 	}
 	return kvs, nil
