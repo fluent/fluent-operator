@@ -2,10 +2,10 @@ package filter
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -49,7 +49,7 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs.Insert("call", l.Call)
 
 	if l.TypeIntKey != nil && len(l.TypeIntKey) > 0 {
-		kvs.Insert("type_int_key", utils.ConcatString(l.TypeIntKey, " "))
+		kvs.Insert("type_int_key", strings.Join(l.TypeIntKey, " "))
 	}
 
 	if l.ProtectedMode != nil {

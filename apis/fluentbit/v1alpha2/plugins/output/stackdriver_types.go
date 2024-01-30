@@ -2,9 +2,10 @@ package output
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
 )
 
 // +kubebuilder:object:generate:=true
@@ -117,7 +118,7 @@ func (o *Stackdriver) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("labels_key", o.LabelsKey)
 	}
 	if o.Labels != nil && len(o.Labels) > 0 {
-		kvs.Insert("labels", utils.ConcatString(o.Labels, ","))
+		kvs.Insert("labels", strings.Join(o.Labels, ","))
 	}
 	if o.LogNameKey != "" {
 		kvs.Insert("log_name_key", o.LogNameKey)
@@ -138,7 +139,7 @@ func (o *Stackdriver) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("custom_k8s_regex", o.CustomK8sRegex)
 	}
 	if o.ResourceLabels != nil && len(o.ResourceLabels) > 0 {
-		kvs.Insert("resource_labels", utils.ConcatString(o.ResourceLabels, ","))
+		kvs.Insert("resource_labels", strings.Join(o.ResourceLabels, ","))
 	}
 	return kvs, nil
 }

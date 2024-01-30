@@ -10,7 +10,6 @@ import (
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/custom"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/params"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
 )
 
 // OutputCommon defines the common parameters for output plugin
@@ -634,7 +633,7 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 		}
 	}
 	if o.Loki.RemoveKeys != nil && len(o.Loki.RemoveKeys) > 0 {
-		parent.InsertPairs("remove_keys", utils.ConcatString(o.Loki.RemoveKeys, ","))
+		parent.InsertPairs("remove_keys", strings.Join(o.Loki.RemoveKeys, ","))
 	}
 	if o.Loki.LabelKeys != nil && len(o.Loki.LabelKeys) > 0 {
 		ps := params.NewPluginStore("label")
