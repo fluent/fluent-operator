@@ -23,7 +23,6 @@ import (
 	v1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -34,9 +33,9 @@ type FakeClusterFluentBitConfigs struct {
 	Fake *FakeFluentbitV1alpha2
 }
 
-var clusterfluentbitconfigsResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "clusterfluentbitconfigs"}
+var clusterfluentbitconfigsResource = v1alpha2.SchemeGroupVersion.WithResource("clusterfluentbitconfigs")
 
-var clusterfluentbitconfigsKind = schema.GroupVersionKind{Group: "fluentbit.fluent.io", Version: "v1alpha2", Kind: "ClusterFluentBitConfig"}
+var clusterfluentbitconfigsKind = v1alpha2.SchemeGroupVersion.WithKind("ClusterFluentBitConfig")
 
 // Get takes name of the clusterFluentBitConfig, and returns the corresponding clusterFluentBitConfig object, and an error if there is any.
 func (c *FakeClusterFluentBitConfigs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.ClusterFluentBitConfig, err error) {

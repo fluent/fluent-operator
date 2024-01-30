@@ -23,7 +23,6 @@ import (
 	v1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -35,9 +34,9 @@ type FakeInputs struct {
 	ns   string
 }
 
-var inputsResource = schema.GroupVersionResource{Group: "fluentd.fluent.io", Version: "v1alpha1", Resource: "inputs"}
+var inputsResource = v1alpha1.SchemeGroupVersion.WithResource("inputs")
 
-var inputsKind = schema.GroupVersionKind{Group: "fluentd.fluent.io", Version: "v1alpha1", Kind: "Input"}
+var inputsKind = v1alpha1.SchemeGroupVersion.WithKind("Input")
 
 // Get takes name of the input, and returns the corresponding input object, and an error if there is any.
 func (c *FakeInputs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Input, err error) {

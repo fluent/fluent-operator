@@ -23,7 +23,6 @@ import (
 	v1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -34,9 +33,9 @@ type FakeClusterFilters struct {
 	Fake *FakeFluentdV1alpha1
 }
 
-var clusterfiltersResource = schema.GroupVersionResource{Group: "fluentd.fluent.io", Version: "v1alpha1", Resource: "clusterfilters"}
+var clusterfiltersResource = v1alpha1.SchemeGroupVersion.WithResource("clusterfilters")
 
-var clusterfiltersKind = schema.GroupVersionKind{Group: "fluentd.fluent.io", Version: "v1alpha1", Kind: "ClusterFilter"}
+var clusterfiltersKind = v1alpha1.SchemeGroupVersion.WithKind("ClusterFilter")
 
 // Get takes name of the clusterFilter, and returns the corresponding clusterFilter object, and an error if there is any.
 func (c *FakeClusterFilters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.ClusterFilter, err error) {

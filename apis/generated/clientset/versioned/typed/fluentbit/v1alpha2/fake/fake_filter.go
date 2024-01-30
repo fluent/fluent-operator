@@ -23,7 +23,6 @@ import (
 	v1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -35,9 +34,9 @@ type FakeFilters struct {
 	ns   string
 }
 
-var filtersResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "filters"}
+var filtersResource = v1alpha2.SchemeGroupVersion.WithResource("filters")
 
-var filtersKind = schema.GroupVersionKind{Group: "fluentbit.fluent.io", Version: "v1alpha2", Kind: "Filter"}
+var filtersKind = v1alpha2.SchemeGroupVersion.WithKind("Filter")
 
 // Get takes name of the filter, and returns the corresponding filter object, and an error if there is any.
 func (c *FakeFilters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Filter, err error) {

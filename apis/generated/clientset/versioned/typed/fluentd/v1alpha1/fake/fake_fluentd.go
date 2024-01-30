@@ -23,7 +23,6 @@ import (
 	v1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -35,9 +34,9 @@ type FakeFluentds struct {
 	ns   string
 }
 
-var fluentdsResource = schema.GroupVersionResource{Group: "fluentd.fluent.io", Version: "v1alpha1", Resource: "fluentds"}
+var fluentdsResource = v1alpha1.SchemeGroupVersion.WithResource("fluentds")
 
-var fluentdsKind = schema.GroupVersionKind{Group: "fluentd.fluent.io", Version: "v1alpha1", Kind: "Fluentd"}
+var fluentdsKind = v1alpha1.SchemeGroupVersion.WithKind("Fluentd")
 
 // Get takes name of the fluentd, and returns the corresponding fluentd object, and an error if there is any.
 func (c *FakeFluentds) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Fluentd, err error) {

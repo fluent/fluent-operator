@@ -23,7 +23,6 @@ import (
 	v1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -35,9 +34,9 @@ type FakeCollectors struct {
 	ns   string
 }
 
-var collectorsResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "collectors"}
+var collectorsResource = v1alpha2.SchemeGroupVersion.WithResource("collectors")
 
-var collectorsKind = schema.GroupVersionKind{Group: "fluentbit.fluent.io", Version: "v1alpha2", Kind: "Collector"}
+var collectorsKind = v1alpha2.SchemeGroupVersion.WithKind("Collector")
 
 // Get takes name of the collector, and returns the corresponding collector object, and an error if there is any.
 func (c *FakeCollectors) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Collector, err error) {
