@@ -22,6 +22,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 
@@ -35,8 +36,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
-	"sigs.k8s.io/controller-runtime/pkg/source"
-	"strings"
 
 	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
 )
@@ -334,14 +333,14 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&fluentbitv1alpha2.FluentBit{}).
 		Owns(&corev1.Secret{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterFluentBitConfig{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.FluentBitConfig{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterInput{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterFilter{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterOutput{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.ClusterParser{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.Filter{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.Output{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentbitv1alpha2.Parser{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.ClusterFluentBitConfig{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.FluentBitConfig{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.ClusterInput{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.ClusterFilter{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.ClusterOutput{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.ClusterParser{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.Filter{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.Output{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.Parser{}, &handler.EnqueueRequestForObject{}).
 		Complete(r)
 }
