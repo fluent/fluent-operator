@@ -17,11 +17,11 @@ limitations under the License.
 package v1alpha2
 
 import (
+	"slices"
+
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -146,7 +146,7 @@ const FluentBitFinalizerName = "fluentbit.fluent.io"
 
 // HasFinalizer returns true if the item has the specified finalizer
 func (fb *FluentBit) HasFinalizer(finalizerName string) bool {
-	return utils.ContainString(fb.ObjectMeta.Finalizers, finalizerName)
+	return slices.Contains(fb.ObjectMeta.Finalizers, finalizerName)
 }
 
 // AddFinalizer adds the specified finalizer
@@ -156,7 +156,7 @@ func (fb *FluentBit) AddFinalizer(finalizerName string) {
 
 // RemoveFinalizer removes the specified finalizer
 func (fb *FluentBit) RemoveFinalizer(finalizerName string) {
-	fb.ObjectMeta.Finalizers = utils.RemoveString(fb.ObjectMeta.Finalizers, finalizerName)
+	fb.ObjectMeta.Finalizers = slices.DeleteFunc(fb.ObjectMeta.Finalizers, func(s string) bool { return s == finalizerName })
 }
 
 // +kubebuilder:object:root=true

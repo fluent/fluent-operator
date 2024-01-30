@@ -2,10 +2,10 @@ package output
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
 )
 
 // +kubebuilder:object:generate:=true
@@ -90,16 +90,16 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("tenant_id", id)
 	}
 	if l.Labels != nil && len(l.Labels) > 0 {
-		kvs.Insert("labels", utils.ConcatString(l.Labels, ","))
+		kvs.Insert("labels", strings.Join(l.Labels, ","))
 	}
 	if l.LabelKeys != nil && len(l.LabelKeys) > 0 {
-		kvs.Insert("label_keys", utils.ConcatString(l.LabelKeys, ","))
+		kvs.Insert("label_keys", strings.Join(l.LabelKeys, ","))
 	}
 	if l.LabelMapPath != "" {
 		kvs.Insert("label_map_path", l.LabelMapPath)
 	}
 	if l.RemoveKeys != nil && len(l.RemoveKeys) > 0 {
-		kvs.Insert("remove_keys", utils.ConcatString(l.RemoveKeys, ","))
+		kvs.Insert("remove_keys", strings.Join(l.RemoveKeys, ","))
 	}
 	if l.DropSingleKey != "" {
 		kvs.Insert("drop_single_key", l.DropSingleKey)

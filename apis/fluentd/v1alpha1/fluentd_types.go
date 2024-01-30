@@ -17,8 +17,9 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"slices"
+
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/input"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -172,7 +173,7 @@ const FluentdFinalizerName = "fluentd.fluent.io"
 
 // HasFinalizer returns true if the item has the specified finalizer
 func (fd *Fluentd) HasFinalizer(finalizerName string) bool {
-	return utils.ContainString(fd.ObjectMeta.Finalizers, finalizerName)
+	return slices.Contains(fd.ObjectMeta.Finalizers, finalizerName)
 }
 
 // AddFinalizer adds the specified finalizer
@@ -182,7 +183,7 @@ func (fd *Fluentd) AddFinalizer(finalizerName string) {
 
 // RemoveFinalizer removes the specified finalizer
 func (fd *Fluentd) RemoveFinalizer(finalizerName string) {
-	fd.ObjectMeta.Finalizers = utils.RemoveString(fd.ObjectMeta.Finalizers, finalizerName)
+	fd.ObjectMeta.Finalizers = slices.DeleteFunc(fd.ObjectMeta.Finalizers, func(s string) bool { return s == finalizerName })
 }
 
 // +kubebuilder:object:root=true
