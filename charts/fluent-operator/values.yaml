@@ -171,6 +171,7 @@ fluentbit:
       enable: true
       refreshIntervalSeconds: 10
       memBufLimit: 100MB
+      bufferMaxSize: ""
       path: "/var/log/containers/*.log"
       skipLongLines: true
       readFromHead: false
