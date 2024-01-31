@@ -32,13 +32,19 @@ func main() {
 	var watchPath string
 	var poll bool
 	var pollInterval time.Duration
-
 	flag.StringVar(&binPath, "b", defaultBinPath, "The fluent bit binary path.")
 	flag.StringVar(&configPath, "c", defaultCfgPath, "The config file path.")
 	flag.StringVar(&externalPluginPath, "e", "", "Path to external plugin (shared lib)")
 	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
 	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
 	flag.DurationVar(&pollInterval, "poll-interval", defaultPollInterval, "Poll interval if using poll watcher.")
+
+	// Deprecated flags to be removed in one of the next releases.
+	var exitOnFailure bool
+	var flbTerminationTimeout time.Duration
+	flag.BoolVar(&exitOnFailure, "exit-on-failure", false, "Deprecated: This has no effect anymore.")
+	flag.DurationVar(&flbTerminationTimeout, "flb-timeout", 0, "Deprecated: This has no effect anymore.")
+
 	flag.Parse()
 
 	signalCtx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -46,6 +52,13 @@ func main() {
 
 	logger := log.NewLogfmtLogger(os.Stdout)
 	logger = log.With(logger, "time", log.TimestampFormat(time.Now, time.RFC3339))
+
+	if exitOnFailure {
+		level.Warn(logger).Log("--exit-on-failure is deprecated. The process will exit no matter what if fluent-bit exits so this can safely be removed.")
+	}
+	if flbTerminationTimeout > 0 {
+		level.Warn(logger).Log("--flb-timeout is deprecated. Consider setting the terminationGracePeriod field on the `(Cluster)FluentBit` instance.")
+	}
 
 	// First, launch the fluent-bit process.
 	args := []string{"--enable-hot-reload", "-c", configPath}
