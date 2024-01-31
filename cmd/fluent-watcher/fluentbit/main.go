@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -113,7 +114,7 @@ func main() {
 
 	// Always try to gracefully shut down fluent-bit. This will allow `cmd.Wait` above to finish
 	// and thus allow `grp.Wait` below to return.
-	if err := cmd.Process.Signal(syscall.SIGTERM); err != nil {
+	if err := cmd.Process.Signal(syscall.SIGTERM); err != nil && !errors.Is(err, os.ErrProcessDone) {
 		_ = level.Error(logger).Log("msg", "Failed to send SIGTERM to fluent-bit", "error", err)
 		// Do not exit on error here. The process might've died and that's okay.
 	}
