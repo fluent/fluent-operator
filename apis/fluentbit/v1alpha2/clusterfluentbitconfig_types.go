@@ -170,7 +170,15 @@ func (s *Service) Params() *params.KVs {
 		m.Insert("Log_Level", s.LogLevel)
 	}
 	if s.ParsersFile != "" {
-		m.Insert("Parsers_File", s.ParsersFile)
+		if s.ParsersFile == "parsers.conf" {
+			// For backwards compatibility, if the "usual" parsers.conf is
+			// configured, actually write the fully-qualified path  in order
+			// to not break hot-reload.
+			// See https://github.com/fluent/fluent-bit/issues/8275.
+			m.Insert("Parsers_File", "/fluent-bit/etc/parsers.conf")
+		} else {
+			m.Insert("Parsers_File", s.ParsersFile)
+		}
 	}
 	if s.Storage != nil {
 		if s.Storage.Path != "" {

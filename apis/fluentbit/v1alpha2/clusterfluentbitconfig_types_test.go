@@ -19,7 +19,7 @@ var expected = `[Service]
     Grace    30
     Http_Server    true
     Log_Level    info
-    Parsers_File    parsers.conf
+    Parsers_File    /fluent-bit/etc/parsers.conf
 [Input]
     Name    tail
     Alias    input0_alias
@@ -104,7 +104,7 @@ var expectedK8s = `[Service]
     Grace    30
     Http_Server    true
     Log_Level    info
-    Parsers_File    parsers.conf
+    Parsers_File    /fluent-bit/etc/parsers.conf
 [Input]
     Name    tail
     Path    /var/log/containers/*.log
