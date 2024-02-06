@@ -72,6 +72,13 @@ func (ps *PluginStore) Hash() string {
 		c.Store[k] = v
 	}
 
+	// Custom plugins don't have stored properties but only contain the config
+	// as plain text.
+	// Set the content here to avoid generating the same hash code for all
+	// custom plugins resulting in only one custom plugin being ever set for
+	// one config.
+	c.Content = ps.Content
+
 	c.InsertChilds(ps.Childs...)
 	return utils.HashCode(c.String())
 }
