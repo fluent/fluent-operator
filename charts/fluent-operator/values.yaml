@@ -99,6 +99,7 @@ fluentbit:
   ##
   imagePullSecrets: []
   # - name: "image-pull-secret"
+  logLevel: ""
   secrets: []
   # fluent-bit daemonset use host network
   hostNetwork: false
