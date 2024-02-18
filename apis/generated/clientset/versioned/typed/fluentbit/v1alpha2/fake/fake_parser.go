@@ -23,7 +23,6 @@ import (
 	v1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -35,9 +34,9 @@ type FakeParsers struct {
 	ns   string
 }
 
-var parsersResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "parsers"}
+var parsersResource = v1alpha2.SchemeGroupVersion.WithResource("parsers")
 
-var parsersKind = schema.GroupVersionKind{Group: "fluentbit.fluent.io", Version: "v1alpha2", Kind: "Parser"}
+var parsersKind = v1alpha2.SchemeGroupVersion.WithKind("Parser")
 
 // Get takes name of the parser, and returns the corresponding parser object, and an error if there is any.
 func (c *FakeParsers) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Parser, err error) {

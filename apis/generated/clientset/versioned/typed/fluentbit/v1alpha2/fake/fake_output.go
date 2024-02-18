@@ -23,7 +23,6 @@ import (
 	v1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -35,9 +34,9 @@ type FakeOutputs struct {
 	ns   string
 }
 
-var outputsResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "outputs"}
+var outputsResource = v1alpha2.SchemeGroupVersion.WithResource("outputs")
 
-var outputsKind = schema.GroupVersionKind{Group: "fluentbit.fluent.io", Version: "v1alpha2", Kind: "Output"}
+var outputsKind = v1alpha2.SchemeGroupVersion.WithKind("Output")
 
 // Get takes name of the output, and returns the corresponding output object, and an error if there is any.
 func (c *FakeOutputs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.Output, err error) {

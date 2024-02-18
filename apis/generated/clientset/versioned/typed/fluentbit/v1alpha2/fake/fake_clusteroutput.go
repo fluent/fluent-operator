@@ -23,7 +23,6 @@ import (
 	v1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
-	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
@@ -34,9 +33,9 @@ type FakeClusterOutputs struct {
 	Fake *FakeFluentbitV1alpha2
 }
 
-var clusteroutputsResource = schema.GroupVersionResource{Group: "fluentbit.fluent.io", Version: "v1alpha2", Resource: "clusteroutputs"}
+var clusteroutputsResource = v1alpha2.SchemeGroupVersion.WithResource("clusteroutputs")
 
-var clusteroutputsKind = schema.GroupVersionKind{Group: "fluentbit.fluent.io", Version: "v1alpha2", Kind: "ClusterOutput"}
+var clusteroutputsKind = v1alpha2.SchemeGroupVersion.WithKind("ClusterOutput")
 
 // Get takes name of the clusterOutput, and returns the corresponding clusterOutput object, and an error if there is any.
 func (c *FakeClusterOutputs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha2.ClusterOutput, err error) {
