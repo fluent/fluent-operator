@@ -22,6 +22,9 @@ spec:
     {{- end }}
     refreshIntervalSeconds: {{ .Values.fluentbit.input.tail.refreshIntervalSeconds }}
     memBufLimit: {{ .Values.fluentbit.input.tail.memBufLimit }}
+    {{- if .Values.fluentbit.input.tail.bufferMaxSize }}
+    bufferMaxSize: {{ .Values.fluentbit.input.tail.bufferMaxSize }}
+    {{- end }}
     skipLongLines: {{ .Values.fluentbit.input.tail.skipLongLines }}
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
