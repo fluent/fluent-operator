@@ -486,24 +486,11 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
                         emitterName:
-                          description: When the filter emits a record under the new
-                            Tag, there is an internal emitter plugin that takes care
-                            of the job. Since this emitter expose metrics as any other
-                            component of the pipeline, you can use this property to
-                            configure an optional name for it.
                           type: string
                         emitterStorageType:
-                          description: Specify the emitter buffering mechanism to use. It can be
-                            memory or filesystem
-                          enum:
-                          - filesystem
-                          - memory
-                          type: string
-                        emitterMemBufLimit:
-                          description: Set a limit of memory that Emitter plugin can use when
-                            appending data to the Engine. If the limit is reach, it will
-                            be paused; when the data is flushed it resumes.
                           type: string
                         keyContent:
                           description: Key name that holds the content to process.
@@ -659,6 +646,8 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
                         emitterName:
                           description: When the filter emits a record under the new
                             Tag, there is an internal emitter plugin that takes care
@@ -667,16 +656,6 @@ spec:
                             configure an optional name for it.
                           type: string
                         emitterStorageType:
-                          description: Specify the emitter buffering mechanism to use. It can be
-                            memory or filesystem
-                          enum:
-                          - filesystem
-                          - memory
-                          type: string
-                        emitterMemBufLimit:
-                          description: Set a limit of memory that Emitter plugin can use when
-                            appending data to the Engine. If the limit is reach, it will
-                            be paused; when the data is flushed it resumes.
                           type: string
                         retryLimit:
                           description: 'RetryLimit describes how many times fluent-bit

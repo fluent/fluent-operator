@@ -18,7 +18,7 @@ type RewriteTag struct {
 	// When the filter emits a record under the new Tag, there is an internal emitter
 	// plugin that takes care of the job. Since this emitter expose metrics as any other
 	// component of the pipeline, you can use this property to configure an optional name for it.
-	EmitterName string `json:"emitterName,omitempty"`
+	EmitterName        string `json:"emitterName,omitempty"`
 	EmitterMemBufLimit string `json:"emitterMemBufLimit,omitempty"`
 	EmitterStorageType string `json:"emitterStorageType,omitempty"`
 }

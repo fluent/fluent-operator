@@ -484,6 +484,12 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
+                        emitterName:
+                          type: string
+                        emitterStorageType:
+                          type: string
                         keyContent:
                           description: Key name that holds the content to process.
                             Note that a Multiline Parser definition can already specify
@@ -638,12 +644,16 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
                         emitterName:
                           description: When the filter emits a record under the new
                             Tag, there is an internal emitter plugin that takes care
                             of the job. Since this emitter expose metrics as any other
                             component of the pipeline, you can use this property to
                             configure an optional name for it.
+                          type: string
+                        emitterStorageType:
                           type: string
                         retryLimit:
                           description: 'RetryLimit describes how many times fluent-bit
@@ -2888,7 +2898,32 @@ spec:
                 properties:
                   apikey:
                     description: Your Datadog API key.
-                    type: string
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
                   compress:
                     description: Compress  the payload in GZIP format. Datadog supports
                       and recommends setting this to gzip.
@@ -11473,6 +11508,12 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
+                        emitterName:
+                          type: string
+                        emitterStorageType:
+                          type: string
                         keyContent:
                           description: Key name that holds the content to process.
                             Note that a Multiline Parser definition can already specify
@@ -11627,12 +11668,16 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
                         emitterName:
                           description: When the filter emits a record under the new
                             Tag, there is an internal emitter plugin that takes care
                             of the job. Since this emitter expose metrics as any other
                             component of the pipeline, you can use this property to
                             configure an optional name for it.
+                          type: string
+                        emitterStorageType:
                           type: string
                         retryLimit:
                           description: 'RetryLimit describes how many times fluent-bit
@@ -26242,7 +26287,32 @@ spec:
                 properties:
                   apikey:
                     description: Your Datadog API key.
-                    type: string
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind,
+                                  uid?'
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
                   compress:
                     description: Compress  the payload in GZIP format. Datadog supports
                       and recommends setting this to gzip.
