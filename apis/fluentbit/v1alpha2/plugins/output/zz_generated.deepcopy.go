@@ -118,6 +118,11 @@ func (in *DataDog) DeepCopyInto(out *DataDog) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.APIKey != nil {
+		in, out := &in.APIKey, &out.APIKey
+		*out = new(plugins.Secret)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.IncludeTagKey != nil {
 		in, out := &in.IncludeTagKey, &out.IncludeTagKey
 		*out = new(bool)

@@ -8,7 +8,7 @@ DataDog output plugin allows you to ingest your logs into Datadog. <br /> **For 
 | host | Host is the Datadog server where you are sending your logs. | string |
 | tls | TLS controls whether to use end-to-end security communications security protocol. Datadog recommends setting this to on. | *bool |
 | compress | Compress  the payload in GZIP format. Datadog supports and recommends setting this to gzip. | string |
-| apikey | Your Datadog API key. | string |
+| apikey | Your Datadog API key. | *[plugins.Secret](../secret.md) |
 | proxy | Specify an HTTP Proxy. | string |
 | provider | To activate the remapping, specify configuration flag provider. | string |
 | json_date_key | Date key name for output. | string |
