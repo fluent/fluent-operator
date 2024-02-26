@@ -1,0 +1,90 @@
+---
+    name: Reusable workflow to clone a Docker image from one registry to another
+    on:
+      workflow_call:
+        inputs:
+          source_image: 
+            description: The source image to clone
+            required: true
+            type: string
+          source_registry:
+            description: The source registry
+            required: true
+            type: string
+          target_image:
+            description: The target image to clone
+            required: true
+            type: string
+          target_registry:
+            description: 'The target registry'
+            required: true
+            type: string
+          platforms:
+            description: 'The platforms to clone'
+            required: false
+            type: string
+            default: '["linux/arm64", "linux/amd64"]'
+        secrets: 
+          source_registry_token:
+            description: The Github token or similar to authenticate with for the registry.
+            required: true
+          target_registry_token:
+            description: The Github token or similar to authenticate with for the registry.
+            required: true
+          source_registry_username:
+            description: The source registry username
+            required: true
+          target_registry_username:
+            description: The target registry username
+            required: true
+    
+    
+    jobs:
+      check-image-exists:
+        strategy:
+          matrix:
+            platform: ${{ fromJson(inputs.platforms) }}
+        runs-on: ubuntu-latest
+        steps:
+          - name: Login to source container registry ${{ inputs.source_registry }}
+            uses: docker/login-action@v3
+            with:
+              registry: ${{ inputs.source_registry }}
+              username: ${{ secrets.source_registry_username }}
+              password: ${{ secrets.source_registry_token }}
+    
+          - name: Login to target container registry ${{ inputs.target_registry }}
+            uses: docker/login-action@v3
+            with:
+              registry: ${{ inputs.target_registry }}
+              username: ${{ secrets.target_registry_username }}
+              password: ${{ secrets.target_registry_token }}
+          
+          - name: Pull the source image; verify it exists
+            run: 
+              docker pull "$SOURCE_IMAGE" --platform=${{ matrix.platform }}
+            env:
+              SOURCE_IMAGE: ${{ inputs.source_registry }}/${{ inputs.source_image }}
+            shell: bash
+    
+      push-image:
+        needs: check-image-exists
+        runs-on: ubuntu-latest
+        steps:
+          - name: Promote container images from ${{ inputs.source_registry }} to ${{ inputs.target_registry }}
+            run: |
+              echo "Promoting $SOURCE_IMAGE to $RELEASE_IMAGE"
+              docker run --rm  \
+                quay.io/skopeo/stable:latest \
+                copy \
+                  --all \
+                  --retry-times 10 \
+                  --src-no-creds \
+                  --dest-creds "$RELEASE_CREDS" \
+                  "docker://$SOURCE_IMAGE" \
+                  "docker://$RELEASE_IMAGE"
+            env:
+              SOURCE_IMAGE: ${{ inputs.source_registry }}/${{ inputs.source_image }}
+              RELEASE_IMAGE: ${{ inputs.target_registry }}/${{ inputs.target_image }}
+              RELEASE_CREDS: ${{ secrets.target_registry_username }}:${{ secrets.target_registry_token }}
+    
