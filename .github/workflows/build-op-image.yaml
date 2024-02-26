@@ -19,7 +19,6 @@ on:
       - "Makefile"
 
 env:
-
   FO_IMG: "kubesphere/fluent-operator:${{ github.ref_name }}"        # kubesphere/fluent-operator:v0.1.0
 
   FO_IMG_GHCR: "${{ github.repository }}/fluent-operator:${{ github.ref_name }}"   # kubesphere/fluent-operator:v0.1.0
