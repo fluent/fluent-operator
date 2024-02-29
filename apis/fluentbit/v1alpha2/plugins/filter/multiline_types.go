@@ -22,6 +22,9 @@ type Multi struct {
 	//Key name that holds the content to process.
 	//Note that a Multiline Parser definition can already specify the key_content to use, but this option allows to overwrite that value for the purpose of the filter.
 	KeyContent string `json:"keyContent,omitempty"`
+	EmitterName string `json:"emitterName,omitempty"`
+	EmitterMemBufLimit string `json:"emitterMemBufLimit,omitempty"`
+	EmitterStorageType string `json:"emitterStorageType,omitempty"`
 }
 
 func (_ *Multiline) Name() string {
@@ -41,6 +44,15 @@ func (m *Multiline) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		if m.Multi.KeyContent != "" {
 			kvs.Insert("multiline.key_content", m.Multi.KeyContent)
 		}
+    	if m.Multi.EmitterName != "" {
+		    kvs.Insert("Emitter_Name", m.Multi.EmitterName)
+	    }
+	    if m.Multi.EmitterMemBufLimit != "" {
+		    kvs.Insert("Emitter_Mem_Buf_Limit", m.Multi.EmitterMemBufLimit)
+	    }
+	    if m.Multi.EmitterStorageType != "" {
+		    kvs.Insert("Emitter_Storage.type", m.Multi.EmitterStorageType)
+	    }
 	}
 	return kvs, nil
 }

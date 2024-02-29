@@ -19,6 +19,8 @@ type RewriteTag struct {
 	// plugin that takes care of the job. Since this emitter expose metrics as any other
 	// component of the pipeline, you can use this property to configure an optional name for it.
 	EmitterName string `json:"emitterName,omitempty"`
+	EmitterMemBufLimit string `json:"emitterMemBufLimit,omitempty"`
+	EmitterStorageType string `json:"emitterStorageType,omitempty"`
 }
 
 func (_ *RewriteTag) Name() string {
@@ -36,6 +38,12 @@ func (r *RewriteTag) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if r.EmitterName != "" {
 		kvs.Insert("Emitter_Name", r.EmitterName)
+	}
+	if r.EmitterMemBufLimit != "" {
+		kvs.Insert("Emitter_Mem_Buf_Limit", r.EmitterMemBufLimit)
+	}
+	if r.EmitterStorageType != "" {
+		kvs.Insert("Emitter_Storage.type", r.EmitterStorageType)
 	}
 	return kvs, nil
 }
