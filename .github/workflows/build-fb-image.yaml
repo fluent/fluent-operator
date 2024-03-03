@@ -8,19 +8,28 @@ on:
       - 'v*'
     paths:
       - ".github/workflows/build-fb-image.yaml"
+      - ".github/workflows/scan-docker-image-action.yaml"
       - "cmd/fluent-watcher/fluentbit/**"
       - "cmd/fluent-watcher/hooks/**"
       - "pkg/filenotify/**"
 
 env:
-  FB_IMG: 'kubesphere/fluent-bit:v2.2.2'
-  FB_IMG_DEBUG: 'kubesphere/fluent-bit:v2.2.2-debug'
+  FB_IMG: "kubesphere/fluent-bit:${{ github.ref_name }}"                # kubesphere/fluent-bit:v2.2.2
+  FB_IMG_DEBUG: "kubesphere/fluent-bit:${{ github.ref_name }}-debug"    # kubesphere/fluent-bit:v2.2.2-debug
+
+  FB_IMG_GHCR: "${{ github.repository }}/fluent-bit:${{ github.ref_name }}"              # fluent/fluent-operator/fluent-bit:v2.2.2
+  FB_IMG_DEBUG_GHCR: "${{ github.repository }}/fluent-bit:${{ github.ref_name }}-debug"  # fluent/fluent-operator/fluent-bit:v2.2.2-debug
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     name: Build Image for Fluent Bit
+    outputs:
+      FB_IMG: ${{ env.FB_IMG }}
+      FB_IMG_DEBUG: ${{ env.FB_IMG_DEBUG }}
+      FB_IMG_GHCR: ${{env.FB_IMG_GHCR}}
+      FB_IMG_DEBUG_GHCR: ${{ env.FB_IMG_DEBUG_GHCR }}
     steps:
       - name: Install Go
         uses: actions/setup-go@v4
@@ -36,18 +45,100 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
+          registry: docker.io
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
-
+      
       - name: Build and Push Image for Fluent Bit
-        run: |
-          make build-fb -e FB_IMG=${{ env.FB_IMG }}
-          make build-fb-debug -e FB_IMG_DEBUG=${{ env.FB_IMG_DEBUG }}
+        id: docker-build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./cmd/fluent-watcher/fluentbit/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.FB_IMG}}
+      
+      - name: Build and Push Debug Image for Fluent Bit
+        id: docker-build-debug
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./cmd/fluent-watcher/fluentbit/Dockerfile.debug
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ env.FB_IMG_DEBUG }}
+        
+  scan-docker-image:
+    name: Scan Docker Image
+    needs: 
+      - build
+    uses: ./.github/workflows/scan-docker-image-action.yaml
+    with:
+      source_image: ${{ needs.build.outputs.FB_IMG }}
+      source_registry: docker.io
+      platforms: '["linux/arm64", "linux/amd64"]'
+    secrets:
+      registry_username: ${{ secrets.REGISTRY_USER }}
+      registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+  
+  release-image-to-gchr:
+    name: Release Image to GitHub Container Registry
+    uses: ./.github/workflows/clone-docker-image-action.yaml
+    needs: 
+      - scan-docker-image
+      - build
+    with:
+      source_image: ${{ needs.build.outputs.FB_IMG }}
+      source_registry: docker.io
+      target_image: ${{ needs.build.outputs.FB_IMG_GHCR }}
+      target_registry: ghcr.io
+      platforms: "['linux/arm64', 'linux/amd64']"
+    secrets:
+      source_registry_username:  ${{ secrets.REGISTRY_USER }}
+      target_registry_username: ${{ github.actor }}
+      source_registry_token: ${{ secrets.REGISTRY_PASSWORD }}
+      target_registry_token: ${{ secrets.GITHUB_TOKEN }}
+
+  scan-debug-image:
+    name: Scan Debug Image
+    needs: 
+      - build
+    uses: ./.github/workflows/scan-docker-image-action.yaml
+    with:
+      source_image: ${{ needs.build.outputs.FB_IMG_DEBUG }}
+      source_registry: docker.io
+      platforms: '["linux/arm64", "linux/amd64"]'
+    secrets:
+      registry_username: ${{ secrets.REGISTRY_USER }}
+      registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+      
+
+  release-debug-image-to-gchr:
+    name: Release Debug Image to GitHub Container Registry
+    uses: ./.github/workflows/clone-docker-image-action.yaml
+    needs: 
+      - scan-debug-image
+      - build
+    with:
+      source_image: ${{ needs.build.outputs.FB_IMG_DEBUG }}
+      source_registry: docker.io
+      target_image: ${{ needs.build.outputs.FB_IMG_DEBUG_GHCR }}
+      target_registry: ghcr.io
+      platforms: "['linux/arm64', 'linux/amd64']"
+    secrets:
+      source_registry_username:  ${{ secrets.REGISTRY_USER }}
+      target_registry_username: ${{ github.actor }}
+      source_registry_token: ${{ secrets.REGISTRY_PASSWORD }}
+      target_registry_token: ${{ secrets.GITHUB_TOKEN }}
