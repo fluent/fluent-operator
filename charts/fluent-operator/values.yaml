@@ -64,6 +64,9 @@ operator:
   # setting fluentbit.crdsEnable or fluentd.crdsEnable values to false.
   # By default all CRDs are deployed.
   disableComponentControllers: ""
+  # Extra arguments given to the controller flags
+  extraArgs: []
+    # - --watch-namespaces=logging
 
 fluentbit:
   # Installs a sub chart carrying the CRDs for the fluent-bit controller. The sub chart is enabled by default.

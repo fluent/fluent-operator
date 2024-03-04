@@ -98,9 +98,11 @@ spec:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.namespace
-        {{- with .Values.operator.disableComponentControllers }}
-        args: ["--disable-component-controllers","{{ . }}"]
-        {{- end }}
+        args:
+          {{- with .Values.operator.extraArgs }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          - --disable-component-controllers={{ .Values.operator.disableComponentControllers | quote }}
         volumeMounts:
         - name: env
           mountPath: /fluent-operator
