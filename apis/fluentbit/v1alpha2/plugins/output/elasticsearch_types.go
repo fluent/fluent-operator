@@ -85,6 +85,8 @@ type Elasticsearch struct {
 	GenerateID *bool `json:"generateID,omitempty"`
 	// If set, _id will be the value of the key from incoming record and Generate_ID option is ignored.
 	IdKey string `json:"idKey,omitempty"`
+	// Operation to use to write in bulk requests.
+	WriteOperation string `json:"writeOperation,omitempty"`
 	// When enabled, replace field name dots with underscore, required by Elasticsearch 2.0-2.3.
 	ReplaceDots *bool `json:"replaceDots,omitempty"`
 	// When enabled print the elasticsearch API calls to stdout (for diag only)
@@ -196,6 +198,9 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if es.IdKey != "" {
 		kvs.Insert("ID_KEY", es.IdKey)
+	}
+	if es.WriteOperation != "" {
+		kvs.Insert("Write_Operation", es.WriteOperation)
 	}
 	if es.ReplaceDots != nil {
 		kvs.Insert("Replace_Dots", fmt.Sprint(*es.ReplaceDots))
