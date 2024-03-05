@@ -228,6 +228,7 @@ fluentbit:
     #      logstashFormat: true
     #      replaceDots: false
     #      enableTLS: false
+    #      writeOperation: upsert
     #      tls:
     #        verify: On
     #        debug: 1
@@ -256,7 +257,7 @@ fluentbit:
 #        port: 2020
 #        addLabels:
 #          app: "fluentbit"
-    
+
     # Loki fluentbit ClusterOutput, to be encapsulated in fluentbit config
     # See https://github.com/fluent/fluent-operator/blob/master/docs/plugins/fluentbit/output/loki.md
     # See https://docs.fluentbit.io/manual/pipeline/outputs/loki
@@ -291,7 +292,7 @@ fluentbit:
       #
       #labels: []      # String list of <name>=<value>
       #labelKeys: []   # String list of <key>
-      #removeKeys: []  # String list of <key> 
+      #removeKeys: []  # String list of <key>
       #labelMapPath: '' # String, path to file, ex /here/it/is
       #dropSingleKey: off
       #lineFormat: '' # String
