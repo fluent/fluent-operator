@@ -24,7 +24,7 @@ jobs:
     name: Build amd64 Image for Fluentd
     steps:
       - name: Install Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: 1.21
 
@@ -55,7 +55,7 @@ jobs:
     name: Build arm64 Image for Fluentd
     steps:
       - name: Install Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: 1.21
 
