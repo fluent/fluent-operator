@@ -20,6 +20,10 @@ env:
   DOCKER_IMAGE: 'fluent-bit'
   GITHUB_IMAGE: '${{ github.repository }}/fluent-bit'
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-prod-image-metadata:
     runs-on: ubuntu-latest
