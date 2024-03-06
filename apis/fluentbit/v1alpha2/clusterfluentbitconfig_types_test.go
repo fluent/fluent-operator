@@ -52,6 +52,15 @@ var expected = `[Service]
     Rename    rk2    r2v
     Rename    rk3    r3v
 [Output]
+    Name    es
+    Match    *
+    Alias    output_elasticsearch_alias
+    Host    https://example2.com
+    Port    9200
+    Index    my_index
+    Type    my_type
+    Write_Operation    upsert
+[Output]
     Name    http
     Match    logs.foo.bar
     Alias    output_http_alias
@@ -126,6 +135,13 @@ var expectedK8s = `[Service]
     Host    foo.bar
     Port    9200
     Index    foo-index
+[Output]
+    Name    es
+    Match    acbd18db4cc2f85cedef654fccc4a4d8.kube.*
+    Host    foo.bar
+    Port    9200
+    Index    foo-index
+    Write_Operation    update
 `
 
 var labels = map[string]string{
@@ -323,6 +339,28 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		},
 	}
 
+	elasticSearchOutput := ClusterOutput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterOutput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "elasticsearch_output_0",
+			Labels: labels,
+		},
+		Spec: OutputSpec{
+			Alias: "output_elasticsearch_alias",
+			Match: "*",
+			Elasticsearch: &output.Elasticsearch{
+				Host:           "https://example2.com",
+				Port:           ptrInt32(int32(9200)),
+				Index:          "my_index",
+				Type:           "my_type",
+				WriteOperation: "upsert",
+			},
+		},
+	}
+
 	kafkaOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
@@ -340,7 +378,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	}
 
 	outputs := ClusterOutputList{
-		Items: []ClusterOutput{syslogOut, httpOutput, openSearchOutput, kafkaOutput},
+		Items: []ClusterOutput{syslogOut, httpOutput, openSearchOutput, elasticSearchOutput, kafkaOutput},
 	}
 
 	var nsFilterList []FilterList
@@ -437,9 +475,31 @@ func TestRenderMainConfigK8s(t *testing.T) {
 			},
 		},
 	}
+
+	outputObjEs := &Output{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "Output",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "output1",
+			Namespace: "foo",
+			Labels:    labels,
+		},
+		Spec: OutputSpec{
+			Match: "kube.*",
+			Elasticsearch: &output.Elasticsearch{
+				Host:           "foo.bar",
+				Port:           ptrInt32(9200),
+				Index:          "foo-index",
+				WriteOperation: "update",
+			},
+		},
+	}
+
 	nsOutputList := []OutputList{
 		{
-			Items: []Output{*outputObj},
+			Items: []Output{*outputObj, *outputObjEs},
 		},
 	}
 	var rewriteTagCfg []string

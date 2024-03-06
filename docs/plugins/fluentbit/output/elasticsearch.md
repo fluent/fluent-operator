@@ -32,6 +32,7 @@ Elasticsearch is the es output plugin, allows to ingest your records into an Ela
 | tagKey | When Include_Tag_Key is enabled, this property defines the key name for the tag. | string |
 | generateID | When enabled, generate _id for outgoing records. This prevents duplicate records when retrying ES. | *bool |
 | idKey | If set, _id will be the value of the key from incoming record and Generate_ID option is ignored. | string |
+| writeOperation | Operation to use to write in bulk requests. | string |
 | replaceDots | When enabled, replace field name dots with underscore, required by Elasticsearch 2.0-2.3. | *bool |
 | traceOutput | When enabled print the elasticsearch API calls to stdout (for diag only) | *bool |
 | traceError | When enabled print the elasticsearch API calls to stdout when elasticsearch returns an error | *bool |
