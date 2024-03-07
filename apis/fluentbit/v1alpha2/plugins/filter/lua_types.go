@@ -3,7 +3,7 @@ package filter
 import (
 	"strconv"
 	"strings"
-    "regexp"
+	"regexp"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
@@ -21,7 +21,7 @@ type Lua struct {
 	// Lua function name that will be triggered to do filtering.
 	// It's assumed that the function is declared inside the Script defined above.
 	Call string `json:"call"`
-    // Inline LUA code instead of loading from a path via script.
+	// Inline LUA code instead of loading from a path via script.
 	Code string `json:"code"`
 	// If these keys are matched, the fields are converted to integer.
 	// If more than one key, delimit by space.
@@ -49,26 +49,26 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		return kvs, err
 	}
 
-    if l.Code != "" {
-        var singleLineLua string = ""
-        var lineTrim = ""
-        for _, line := range strings.Split(strings.TrimSuffix(l.Code, "\n"), "\n") {
-            lineTrim = strings.TrimSpace(line)
-            if lineTrim != "" {
-              operator, _ := regexp.MatchString("^function |^if |^for |^else|^elseif |^end|--[[]+", lineTrim)
-              if operator {
-                singleLineLua = singleLineLua + lineTrim + " "
-              } else {
-                singleLineLua = singleLineLua + lineTrim + "; "
-              }
-            }
-        }
-        kvs.Insert("code", singleLineLua)
-    }
+	if l.Code != "" {
+		var singleLineLua string = ""
+		var lineTrim = ""
+		for _, line := range strings.Split(strings.TrimSuffix(l.Code, "\n"), "\n") {
+			lineTrim = strings.TrimSpace(line)
+			if lineTrim != "" {
+				operator, _ := regexp.MatchString("^function |^if |^for |^else|^elseif |^end|--[[]+", lineTrim)
+				if operator {
+					singleLineLua = singleLineLua + lineTrim + " "
+				} else {
+					singleLineLua = singleLineLua + lineTrim + "; "
+				}
+			}
+		}
+		kvs.Insert("code", singleLineLua)
+	}
 
-    if l.Script.Key != "" {
-	    kvs.Insert("script", "/fluent-bit/config/"+l.Script.Key)
-    }
+	if l.Script.Key != "" {
+		kvs.Insert("script", "/fluent-bit/config/"+l.Script.Key)
+	}
 
 	kvs.Insert("call", l.Call)
 
