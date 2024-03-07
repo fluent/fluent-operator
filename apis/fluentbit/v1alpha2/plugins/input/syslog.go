@@ -51,10 +51,10 @@ func (s *Syslog) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 
 	if s.Mode != "" {
-		kvs.Insert("Mode", s.Path)
+		kvs.Insert("Mode", s.Mode)
 	}
 	if s.Listen != "" {
-		kvs.Insert("Listen", s.Path)
+		kvs.Insert("Listen", s.Listen)
 	}
 	if s.Port != nil {
 		kvs.Insert("Port", fmt.Sprint(*s.Port))
@@ -72,7 +72,7 @@ func (s *Syslog) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("Buffer_Chunk_Size", s.BufferChunkSize)
 	}
 	if s.BufferMaxSize != "" {
-		kvs.Insert("Buffer_Max_Size", s.BufferChunkSize)
+		kvs.Insert("Buffer_Max_Size", s.BufferMaxSize)
 	}
 	if s.ReceiveBufferSize != "" {
 		kvs.Insert("Receive_Buffer_Size", s.ReceiveBufferSize)
