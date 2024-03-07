@@ -103,6 +103,10 @@ type Service struct {
 	ParsersFile string `json:"parsersFile,omitempty"`
 	// Configure a global environment for the storage layer in Service. It is recommended to configure the volume and volumeMount separately for this storage. The hostPath type should be used for that Volume in Fluentbit daemon set.
 	Storage *Storage `json:"storage,omitempty"`
+	// Per-namespace re-emitter configuration
+	EmitterName string `json:"emitterName,omitempty"`
+	EmitterMemBufLimit string `json:"emitterMemBufLimit,omitempty"`
+	EmitterStorageType string `json:"emitterStorageType,omitempty"`
 }
 
 // +kubebuilder:object:root=true
