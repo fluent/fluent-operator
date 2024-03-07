@@ -31,6 +31,8 @@ type NamespacedFluentBitCfgSpec struct {
 	OutputSelector metav1.LabelSelector `json:"outputSelector,omitempty"`
 	// Select parser plugins
 	ParserSelector metav1.LabelSelector `json:"parserSelector,omitempty"`
+	// Service defines the global behaviour of the Fluent Bit engine.
+	Service *Service `json:"service,omitempty"`
 	// Select cluster level parser config
 	ClusterParserSelector metav1.LabelSelector `json:"clusterParserSelector,omitempty"`
 }
