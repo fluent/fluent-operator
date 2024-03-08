@@ -217,6 +217,30 @@ spec:
                     type: object
                 type: object
                 x-kubernetes-map-type: atomic
+              service:
+                description: Service defines the namespaced behaviour of the Fluent Bit
+                  engine.
+                properties:
+                  emitterName:
+                    description: When the filter emits a record under the new
+                      Tag, there is an internal emitter plugin that takes care
+                      of the job. Since this emitter expose metrics as any other
+                      component of the pipeline, you can use this property to
+                      configure an optional name for it.
+                    type: string
+                  emitterStorageType:
+                    description: Specify the emitter buffering mechanism to use. It can be
+                      memory or filesystem
+                    enum:
+                    - filesystem
+                    - memory
+                    type: string
+                  emitterMemBufLimit:
+                    description: Set a limit of memory that Emitter plugin can use when
+                      appending data to the Engine. If the limit is reach, it will
+                      be paused; when the data is flushed it resumes.
+                    type: string
+                type: object
             type: object
         type: object
     served: true
