@@ -3,11 +3,12 @@ name: Building Fluent Operator image
 on:
   push:
     branches:
-      - 'master'
+      - "master"
     tags:
-      - 'v*'
+      - "v*"
     paths:
       - ".github/workflows/build-op-image.yaml"
+      - ".github/workflows/clone-docker-image-action.yaml"
       - "apis/**"
       - "cmd/fluent-manager/**"
       - "controllers/**"
@@ -18,41 +19,129 @@ on:
       - "pkg/fluentd/utils/**"
       - "Makefile"
 
+  pull_request:
+    branches:
+      - "master"
+    paths:
+      - ".github/workflows/build-op-image.yaml"
+      - ".github/workflows/clone-docker-image-action.yaml"
+      - "apis/**"
+      - "cmd/fluent-manager/**"
+      - "controllers/**"
+      - "hack/**"
+      - "manifests/setup/setup.yaml"
+      - "pkg/fluentd/router/**"
+      - "pkg/fluentd/operator/**"
+      - "pkg/fluentd/utils/**"
+
 env:
-  REGISTRY_REPO: 'kubesphere'
+  DOCKER_REPO: "kubesphere"
+  DOCKER_IMAGE: "fluent-operator"
+  GITHUB_IMAGE: "${{ github.repository }}/fluent-operator"
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
+  build-image-metadata:
+    runs-on: ubuntu-latest
+    name: Build Image Metadata
+    outputs:
+      IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
+      DOCKER_IMG_NAME: ${{ steps.set-outputs.outputs.DOCKER_IMG_NAME }}
+      version: ${{ steps.image-metadata.outputs.version }}
+      tags: ${{ steps.image-metadata.outputs.tags }}
+      labels: ${{ steps.image-metadata.outputs.labels }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+            
+      - name: docker metadata
+        id: image-metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
+          tags: |
+            raw,latest
+            type=ref,event=branch
+            type=ref,event=pr
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Set outputs
+        id: set-outputs
+        run: |
+          echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
+          echo "DOCKER_IMG_NAME=${{env.DOCKER_REPO}}/${{ env.DOCKER_IMAGE }}" >> $GITHUB_OUTPUT
+
   operator-build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     name: Build Image for Fluent Operator
+    needs: 
+      - build-image-metadata
     steps:
-      - name: Install Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.21
-
-      - uses: actions/cache@v3
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.REGISTRY_USER }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        id: buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and Push Image for Fluent Operator
-        run: |
-          tag=$(cat VERSION | tr -d " \t\n\r")
-          make build-op -e FO_IMG=${{ env.REGISTRY_REPO }}/fluent-operator:$tag
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./cmd/fluent-manager/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ needs.build-image-metadata.outputs.tags }}
+          labels: ${{ needs.build-image-metadata.outputs.labels }}
+
+  scan-operator-image:
+    name: Scan Docker Image
+    needs: 
+      - operator-build
+      - build-image-metadata
+    uses: ./.github/workflows/scan-docker-image-action.yaml
+    with:
+      source_image: "${{ needs.build-image-metadata.outputs.IMG_NAME }}:${{ needs.build-image-metadata.outputs.version }}"
+      source_registry: ghcr.io
+      platforms: "['linux/arm64', 'linux/amd64']"
+    secrets:
+      registry_username: ${{ github.actor }}
+      registry_password: ${{ secrets.GITHUB_TOKEN }}
+
+  release-image-to-docker-hub:
+    if: ${{ github.event_name != 'pull_request' }}
+    name: Release Image to Docker Hub
+    uses: ./.github/workflows/clone-docker-image-action.yaml
+    needs: 
+      - operator-build
+      - scan-operator-image
+      - build-image-metadata
+    with:
+      source_image: "${{ needs.build-image-metadata.outputs.IMG_NAME }}:${{ needs.build-image-metadata.outputs.version }}"
+      source_registry: ghcr.io
+      target_image: "${{ needs.build-image-metadata.outputs.DOCKER_IMG_NAME }}:${{ needs.build-image-metadata.outputs.version }}"
+      target_registry: docker.io
+      platforms: "['linux/arm64', 'linux/amd64']"
+    secrets:
+      source_registry_username:  ${{ github.actor }}
+      source_registry_token: ${{ secrets.GITHUB_TOKEN }}
+      target_registry_username: ${{ secrets.REGISTRY_USER }}
+      target_registry_token: ${{ secrets.REGISTRY_PASSWORD }}
