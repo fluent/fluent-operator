@@ -22,6 +22,17 @@ on:
   pull_request:
     branches:
       - "master"
+    paths:
+      - ".github/workflows/build-op-image.yaml"
+      - ".github/workflows/clone-docker-image-action.yaml"
+      - "apis/**"
+      - "cmd/fluent-manager/**"
+      - "controllers/**"
+      - "hack/**"
+      - "manifests/setup/setup.yaml"
+      - "pkg/fluentd/router/**"
+      - "pkg/fluentd/operator/**"
+      - "pkg/fluentd/utils/**"
 
 env:
   DOCKER_REPO: "kubesphere"

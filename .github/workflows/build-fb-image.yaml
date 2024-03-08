@@ -14,6 +14,11 @@ on:
   pull_request:
     branches:
       - "master"
+    paths:
+      - ".github/workflows/build-fb-image.yaml"
+      - "cmd/fluent-watcher/fluentbit/**"
+      - "cmd/fluent-watcher/hooks/**"
+      - "pkg/filenotify/**"
 
 env:
   DOCKER_REPO: 'kubesphere'
