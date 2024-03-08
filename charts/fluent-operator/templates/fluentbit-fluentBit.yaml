@@ -87,5 +87,8 @@ spec:
   serviceAccountAnnotations:
 {{ toYaml .Values.fluentbit.serviceAccountAnnotations | indent 4 }}
   {{- end }}
+{{- if .Values.fluentbit.disableLogVolumes }}
+  disableLogVolumes: {{ .Values.fluentbit.disableLogVolumes }}
+{{- end }}
 {{- end }}
 {{- end }}

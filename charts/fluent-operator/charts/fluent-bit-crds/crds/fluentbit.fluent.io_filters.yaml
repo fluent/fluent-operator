@@ -289,6 +289,9 @@ spec:
                             do filtering. It's assumed that the function is declared
                             inside the Script defined above.
                           type: string
+                        code:
+                          description: Inline LUA code instead of loading from a path via script.
+                          type: string
                         protectedMode:
                           description: If enabled, Lua script will be executed in
                             protected mode. It prevents to crash when invalid Lua
@@ -341,7 +344,6 @@ spec:
                           type: array
                       required:
                       - call
-                      - script
                       type: object
                     modify:
                       description: Modify defines Modify Filter configuration.

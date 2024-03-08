@@ -310,7 +310,17 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(cfg fluentbitv1alph
 	buf.WriteString(fmt.Sprintf("    Name    rewrite_tag\n"))
 	buf.WriteString(fmt.Sprintf("    Match    %s\n", tag))
 	buf.WriteString(fmt.Sprintf("    Rule    $kubernetes['namespace_name'] ^(%s)$ %x.$TAG false\n", cfg.Namespace, md5.Sum([]byte(cfg.Namespace))))
-	buf.WriteString(fmt.Sprintf("    Emitter_Name    re_emitted_%x\n", md5.Sum([]byte(cfg.Namespace))))
+	if cfg.Spec.Service.EmitterName != "" {
+		buf.WriteString(fmt.Sprintf("    Emitter_Name    %s\n", cfg.Spec.Service.EmitterName))
+	} else {
+		buf.WriteString(fmt.Sprintf("    Emitter_Name    re_emitted_%x\n", md5.Sum([]byte(cfg.Namespace))))
+	}
+	if cfg.Spec.Service.EmitterStorageType != "" {
+		buf.WriteString(fmt.Sprintf("    Emitter_Storage.type    %s\n", cfg.Spec.Service.EmitterStorageType))
+	}
+	if cfg.Spec.Service.EmitterMemBufLimit != "" {
+		buf.WriteString(fmt.Sprintf("    Emitter_Mem_Buf_Limit    %s\n", cfg.Spec.Service.EmitterMemBufLimit))
+	}
 	return buf.String()
 }
 
