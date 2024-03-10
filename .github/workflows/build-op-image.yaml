@@ -137,7 +137,7 @@ jobs:
     with:
       source_image: "${{ needs.build-image-metadata.outputs.IMG_NAME }}:${{ needs.build-image-metadata.outputs.version }}"
       source_registry: ghcr.io
-      target_image: "${{ needs.build-image-metadata.outputs.DOCKER_IMG_NAME }}:${{ needs.build-image-metadata.outputs.version }}"
+      target_image: "${{ needs.build-image-metadata.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
       platforms: "['linux/arm64', 'linux/amd64']"
     secrets:

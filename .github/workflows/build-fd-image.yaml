@@ -216,11 +216,13 @@ jobs:
       - build-arm64-base-image-metadata
       - build-arm64-base
     with:
-      source_image: "${{ needs.build-arm64-base-image-metadata.outputs.IMG_NAME }}:${{ needs.build-arm64-base-image-metadata.outputs.version }}"
+      source_image: "${{ needs.build-arm64-base-image-metadata.outputs.IMG_NAME }}"
       source_registry: ghcr.io
-      target_image: "${{ needs.build-arm64-base-image-metadata.outputs.DOCKER_IMG_NAME }}:${{ needs.build-arm64-base-image-metadata.outputs.version }}"
+      target_image: "${{ needs.build-arm64-base-image-metadata.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
       platforms: "['linux/arm64']"
+      is_latest: false
+      suffix: "-arm64-base"
     secrets:
       source_registry_username:  ${{ github.actor }}
       source_registry_token: ${{ secrets.GITHUB_TOKEN }}
@@ -301,8 +303,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
-          flavor: |
-            latest=false
           tags: |
             raw,latest
             type=ref,event=branch
@@ -347,11 +347,12 @@ jobs:
       - prod-image-manifest
       - scan-image
     with:
-      source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
+      source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}"
       source_registry: ghcr.io
-      target_image: "${{ needs.prod-image-manifest.outputs.DOCKER_IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
+      target_image: "${{ needs.prod-image-manifest.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
       platforms: "['linux/arm64', 'linux/amd64']"
+      is_latest: true
     secrets:
       source_registry_username:  ${{ github.actor }}
       source_registry_token: ${{ secrets.GITHUB_TOKEN }}

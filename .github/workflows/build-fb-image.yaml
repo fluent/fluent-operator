@@ -43,7 +43,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
             
-      - name: docker metadata
+      - name: docker metadata for building
         id: image-metadata
         uses: docker/metadata-action@v5
         with:
@@ -210,9 +210,10 @@ jobs:
     with:
       source_image: "${{ needs.build-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-prod-image-metadata.outputs.version }}"
       source_registry: ghcr.io
-      target_image: "${{ needs.build-prod-image-metadata.outputs.DOCKER_IMG_NAME }}:${{ needs.build-prod-image-metadata.outputs.version }}"
+      target_image: "${{ needs.build-prod-image-metadata.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
       platforms: "['linux/arm64', 'linux/amd64']"
+      is_latest: true
     secrets:
       source_registry_username:  ${{ github.actor }}
       source_registry_token: ${{ secrets.GITHUB_TOKEN }}
@@ -229,9 +230,11 @@ jobs:
     with:
       source_image: "${{ needs.build-debug-image-metadata.outputs.IMG_NAME }}:${{ needs.build-debug-image-metadata.outputs.version }}"
       source_registry: ghcr.io
-      target_image: "${{ needs.build-debug-image-metadata.outputs.DOCKER_IMG_NAME }}:${{ needs.build-debug-image-metadata.outputs.version }}"
+      target_image: "${{ needs.build-debug-image-metadata.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
       platforms: "['linux/arm64', 'linux/amd64']"
+      is_latest: false
+      suffix: "-debug"
     secrets:
       source_registry_username:  ${{ github.actor }}
       source_registry_token: ${{ secrets.GITHUB_TOKEN }}
