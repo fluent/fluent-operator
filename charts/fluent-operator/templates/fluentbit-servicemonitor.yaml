@@ -1,0 +1,20 @@
+{{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
+{{- if .Values.fluentbit.serviceMonitor -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fluent-bit
+  labels:
+    app.kubernetes.io/name: fluent-bit
+spec:
+  endpoints:
+    - port: metrics
+      path: /api/v2/metrics/prometheus
+      interval: 30s
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fluent-bit
+{{- end }}
+{{- end }}
+{{- end }}
