@@ -72,6 +72,7 @@ fluentbit:
   # Installs a sub chart carrying the CRDs for the fluent-bit controller. The sub chart is enabled by default.
   crdsEnable: true
   enable: true
+  serviceMonitor: false
   image:
     repository: "kubesphere/fluent-bit"
     tag: "v2.2.2"
