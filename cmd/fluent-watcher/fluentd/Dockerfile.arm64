@@ -15,7 +15,7 @@ RUN apk add curl --no-cache
 RUN curl -sL -o qemu-6.0.0.balena1-aarch64.tar.gz https://github.com/balena-io/qemu/releases/download/v6.0.0%2Bbalena1/qemu-6.0.0.balena1-aarch64.tar.gz && echo "$QEMU_DOWNLOAD_SHA256 *qemu-6.0.0.balena1-aarch64.tar.gz" | sha256sum -c - | tar zxvf qemu-6.0.0.balena1-aarch64.tar.gz -C . && mv qemu-6.0.0+balena1-aarch64/qemu-aarch64-static .
 
 # Fluentd main image
-FROM arm64v8/ruby:3.2-slim-bullseye
+FROM arm64v8/ruby:3.3-slim-bullseye
 COPY --from=builderqemu /go/qemu-aarch64-static /usr/bin/
 LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.15.3"
 ENV TINI_VERSION=0.18.0
