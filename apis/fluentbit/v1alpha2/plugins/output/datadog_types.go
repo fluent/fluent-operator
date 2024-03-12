@@ -21,7 +21,7 @@ type DataDog struct {
 	// Datadog supports and recommends setting this to gzip.
 	Compress string `json:"compress,omitempty"`
 	// Your Datadog API key.
-	APIKey string `json:"apikey,omitempty"`
+	APIKey *plugins.Secret `json:"apikey,omitempty"`
 	// Specify an HTTP Proxy.
 	Proxy string `json:"proxy,omitempty"`
 	// To activate the remapping, specify configuration flag provider.
@@ -61,8 +61,12 @@ func (s *DataDog) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if s.Compress != "" {
 		kvs.Insert("compress", s.Compress)
 	}
-	if s.APIKey != "" {
-		kvs.Insert("apikey", s.APIKey)
+	if s.APIKey != nil {
+		apiKey, err := sl.LoadSecret(*s.APIKey)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Insert("apikey", apiKey)
 	}
 	if s.Proxy != "" {
 		kvs.Insert("proxy", s.Proxy)

@@ -488,6 +488,12 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
+                        emitterName:
+                          type: string
+                        emitterStorageType:
+                          type: string
                         keyContent:
                           description: Key name that holds the content to process.
                             Note that a Multiline Parser definition can already specify
@@ -642,12 +648,16 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
                         emitterName:
                           description: When the filter emits a record under the new
                             Tag, there is an internal emitter plugin that takes care
                             of the job. Since this emitter expose metrics as any other
                             component of the pipeline, you can use this property to
                             configure an optional name for it.
+                          type: string
+                        emitterStorageType:
                           type: string
                         retryLimit:
                           description: 'RetryLimit describes how many times fluent-bit
