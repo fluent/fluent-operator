@@ -649,6 +649,18 @@ spec:
                             component of the pipeline, you can use this property to
                             configure an optional name for it.
                           type: string
+                        emitterStorageType:
+                          description: Specify the emitter buffering mechanism to use. It can be
+                            memory or filesystem
+                          enum:
+                          - filesystem
+                          - memory
+                          type: string
+                        emitterMemBufLimit:
+                          description: Set a limit of memory that Emitter plugin can use when
+                            appending data to the Engine. If the limit is reach, it will
+                            be paused; when the data is flushed it resumes.
+                          type: string
                         retryLimit:
                           description: 'RetryLimit describes how many times fluent-bit
                             should retry to send data to a specific output. If set
