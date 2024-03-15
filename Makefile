@@ -122,7 +122,7 @@ build-fd-arm64-base: prepare-build
 
 # Use docker buildx to build arm64 Fluentd container image
 build-fd-arm64: prepare-build
-	docker buildx build --push --platform linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.arm64.quick . -t ${FD_IMG}${ARCH}
+	docker buildx build --push --platform linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.arm64.quick . -t ${FD_IMG}${ARCH} --build-arg ${FD_IMG_BASE} --build-arg ${FD_IMG_BASE_TAG}
 
 # Prepare for arm64 building
 prepare-build:
