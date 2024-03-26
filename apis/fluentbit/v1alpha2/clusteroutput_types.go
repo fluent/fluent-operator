@@ -100,7 +100,8 @@ type OutputSpec struct {
 	S3 *output.S3 `json:"s3,omitempty"`
 	// Gelf defines GELF Output configuration.
 	Gelf *output.Gelf `json:"gelf,omitempty"`
-
+	// OracleLogAnalytics defines OracleLogAnalytics Output configuration
+	OracleLogAnalytics *output.OracleLogAnalytics `json:"oracleLogAnalytics,omitempty"`
 	// CustomPlugin defines Custom Output configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }
