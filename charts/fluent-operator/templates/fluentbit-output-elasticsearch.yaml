@@ -36,6 +36,8 @@ spec:
     logstashFormat: {{ .Values.fluentbit.output.es.logstashFormat | default true }}
     logstashPrefix: {{ .Values.fluentbit.output.es.logstashPrefix | default "ks-logstash-log" | quote }}
     replaceDots: {{ .Values.fluentbit.output.es.replaceDots | default false }}
+    writeOperation: {{ .Values.fluentbit.output.es.writeOperation | default "create" | quote }}
+    traceError: {{ .Values.fluentbit.output.es.traceError | default false }}
     generateID: true
     timeKey: "@timestamp"
 {{- if .Values.fluentbit.output.es.enableTLS }}
