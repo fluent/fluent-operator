@@ -484,11 +484,45 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        buffer:
+                          default: false
+                          type: boolean
+                        emitterMemBufLimit:
+                          default: 10
+                          description: Set a limit on the amount of memory in MB the
+                            emitter can consume if the outputs provide backpressure.
+                            The default for this limit is 10M. The pipeline will pause
+                            once the buffer exceeds the value of this setting. For
+                            example, if the value is set to 10MB then the pipeline
+                            will pause if the buffer exceeds 10M. The pipeline will
+                            remain paused until the output drains the buffer below
+                            the 10M limit.
+                          type: integer
+                        emitterName:
+                          description: Name for the emitter input instance which re-emits
+                            the completed records at the beginning of the pipeline.
+                          type: string
+                        emitterType:
+                          default: memory
+                          description: The storage type for the emitter input instance.
+                            This option supports the values memory (default) and filesystem.
+                          enum:
+                          - memory
+                          - filesystem
+                          type: string
+                        flushMs:
+                          default: 2000
+                          type: integer
                         keyContent:
                           description: Key name that holds the content to process.
                             Note that a Multiline Parser definition can already specify
                             the key_content to use, but this option allows to overwrite
                             that value for the purpose of the filter.
+                          type: string
+                        mode:
+                          enum:
+                          - parser
+                          - partial_message
                           type: string
                         parser:
                           description: Specify one or multiple Multiline Parsing definitions
@@ -1340,6 +1374,51 @@ spec:
                     type: object
                 type: object
                 x-kubernetes-map-type: atomic
+              multilineParserSelector:
+                description: Select multiline parser plugins
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: A label selector requirement is a selector that
+                        contains values, a key, and an operator that relates the key
+                        and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: operator represents a key's relationship to
+                            a set of values. Valid operators are In, NotIn, Exists
+                            and DoesNotExist.
+                          type: string
+                        values:
+                          description: values is an array of string values. If the
+                            operator is In or NotIn, the values array must be non-empty.
+                            If the operator is Exists or DoesNotExist, the values
+                            array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: matchLabels is a map of {key,value} pairs. A single
+                      {key,value} in the matchLabels map is equivalent to an element
+                      of matchExpressions, whose key field is "key", the operator
+                      is "In", and the values array contains only "value". The requirements
+                      are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
               namespace:
                 description: If namespace is defined, then the configmap and secret
                   for fluent-bit is in this namespace. If it is not defined, it is
@@ -1509,6 +1588,11 @@ spec:
                   parsersFile:
                     description: Optional 'parsers' config file (can be multiple)
                     type: string
+                  parsersFiles:
+                    description: backward compatible
+                    items:
+                      type: string
+                    type: array
                   storage:
                     description: Configure a global environment for the storage layer
                       in Service. It is recommended to configure the volume and volumeMount
@@ -11473,11 +11557,45 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        buffer:
+                          default: false
+                          type: boolean
+                        emitterMemBufLimit:
+                          default: 10
+                          description: Set a limit on the amount of memory in MB the
+                            emitter can consume if the outputs provide backpressure.
+                            The default for this limit is 10M. The pipeline will pause
+                            once the buffer exceeds the value of this setting. For
+                            example, if the value is set to 10MB then the pipeline
+                            will pause if the buffer exceeds 10M. The pipeline will
+                            remain paused until the output drains the buffer below
+                            the 10M limit.
+                          type: integer
+                        emitterName:
+                          description: Name for the emitter input instance which re-emits
+                            the completed records at the beginning of the pipeline.
+                          type: string
+                        emitterType:
+                          default: memory
+                          description: The storage type for the emitter input instance.
+                            This option supports the values memory (default) and filesystem.
+                          enum:
+                          - memory
+                          - filesystem
+                          type: string
+                        flushMs:
+                          default: 2000
+                          type: integer
                         keyContent:
                           description: Key name that holds the content to process.
                             Note that a Multiline Parser definition can already specify
                             the key_content to use, but this option allows to overwrite
                             that value for the purpose of the filter.
+                          type: string
+                        mode:
+                          enum:
+                          - parser
+                          - partial_message
                           type: string
                         parser:
                           description: Specify one or multiple Multiline Parsing definitions
@@ -12238,6 +12356,51 @@ spec:
           spec:
             description: NamespacedFluentBitCfgSpec defines the desired state of FluentBit
             properties:
+              clusterMultilineParserSelector:
+                description: Select cluster level multiline parser config
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: A label selector requirement is a selector that
+                        contains values, a key, and an operator that relates the key
+                        and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: operator represents a key's relationship to
+                            a set of values. Valid operators are In, NotIn, Exists
+                            and DoesNotExist.
+                          type: string
+                        values:
+                          description: values is an array of string values. If the
+                            operator is In or NotIn, the values array must be non-empty.
+                            If the operator is Exists or DoesNotExist, the values
+                            array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: matchLabels is a map of {key,value} pairs. A single
+                      {key,value} in the matchLabels map is equivalent to an element
+                      of matchExpressions, whose key field is "key", the operator
+                      is "In", and the values array contains only "value". The requirements
+                      are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
               clusterParserSelector:
                 description: Select cluster level parser config
                 properties:
@@ -12285,6 +12448,51 @@ spec:
                 x-kubernetes-map-type: atomic
               filterSelector:
                 description: Select filter plugins
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: A label selector requirement is a selector that
+                        contains values, a key, and an operator that relates the key
+                        and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: operator represents a key's relationship to
+                            a set of values. Valid operators are In, NotIn, Exists
+                            and DoesNotExist.
+                          type: string
+                        values:
+                          description: values is an array of string values. If the
+                            operator is In or NotIn, the values array must be non-empty.
+                            If the operator is Exists or DoesNotExist, the values
+                            array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: matchLabels is a map of {key,value} pairs. A single
+                      {key,value} in the matchLabels map is equivalent to an element
+                      of matchExpressions, whose key field is "key", the operator
+                      is "In", and the values array contains only "value". The requirements
+                      are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
+              multilineParserSelector:
+                description: Select multiline parser plugins
                 properties:
                   matchExpressions:
                     description: matchExpressions is a list of label selector requirements.
