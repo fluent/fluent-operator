@@ -261,6 +261,44 @@ var expectedMultilineParsers = `[MULTILINE_PARSER]
     Rule    "cont" "/^\s+at.*/" "cont"
 `
 
+var expectedParsers = `[PARSER]
+    Name    clusterparser0
+    Format    json
+    Time_Key    time
+    Time_Format    %Y-%m-%dT%H:%M:%S %z
+[PARSER]
+    Name    parser0-4087ca5ebba883e13a4369122e716be7
+    Format    regex
+    Regex    .*
+    Time_Key    time
+    Time_Format    %Y-%m-%dT%H:%M:%S %z
+[PARSER]
+    Name    clusterparser1
+    Format    ltsv
+    Time_Key    time
+    Time_Format    [%d/%b/%Y:%H:%M:%S %z]
+    Types    status:integer size:integer
+`
+
+var expectedMultilineParsers = `[MULTILINE_PARSER]
+    Name    clustermultilineparser0
+    Type    regex
+    Parser    go
+    Key_Content    log
+[MULTILINE_PARSER]
+    Name    multilineparser0
+    Type    regex
+    Flush_Timeout    1000
+    Rule    "start_state" "/(Dec \d+ \d+\:\d+\:\d+)(.*)/" "cont"
+    Rule    "cont" "/^\s+at.*/" "cont"
+[MULTILINE_PARSER]
+    Name    clustermultilineparser1
+    Type    regex
+    Flush_Timeout    500
+    Rule    "start_state" "/^(\d+ \d+\:\d+\:\d+)(.*)/" "cont"
+    Rule    "cont" "/^\s+at.*/" "cont"
+`
+
 var labels = map[string]string{
 	"label0": "lv0",
 	"label1": "lv1",

@@ -203,6 +203,11 @@ func (s *Service) Params() *params.KVs {
 			m.Insert("Parsers_File", parserFile)
 		}
 	}
+	if len(s.ParsersFiles) != 0 {
+		for _, parserFile := range s.ParsersFiles {
+			m.Insert("Parsers_File", parserFile)
+		}
+	}
 	if s.Storage != nil {
 		if s.Storage.Path != "" {
 			m.Insert("storage.path", s.Storage.Path)
