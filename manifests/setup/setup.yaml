@@ -287,6 +287,10 @@ spec:
                             do filtering. It's assumed that the function is declared
                             inside the Script defined above.
                           type: string
+                        code:
+                          description: Inline LUA code instead of loading from a path
+                            via script.
+                          type: string
                         protectedMode:
                           description: If enabled, Lua script will be executed in
                             protected mode. It prevents to crash when invalid Lua
@@ -339,6 +343,7 @@ spec:
                           type: array
                       required:
                       - call
+                      - code
                       - script
                       type: object
                     modify:
@@ -484,11 +489,45 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        buffer:
+                          default: false
+                          type: boolean
+                        emitterMemBufLimit:
+                          default: 10
+                          description: Set a limit on the amount of memory in MB the
+                            emitter can consume if the outputs provide backpressure.
+                            The default for this limit is 10M. The pipeline will pause
+                            once the buffer exceeds the value of this setting. For
+                            example, if the value is set to 10MB then the pipeline
+                            will pause if the buffer exceeds 10M. The pipeline will
+                            remain paused until the output drains the buffer below
+                            the 10M limit.
+                          type: integer
+                        emitterName:
+                          description: Name for the emitter input instance which re-emits
+                            the completed records at the beginning of the pipeline.
+                          type: string
+                        emitterType:
+                          default: memory
+                          description: The storage type for the emitter input instance.
+                            This option supports the values memory (default) and filesystem.
+                          enum:
+                          - memory
+                          - filesystem
+                          type: string
+                        flushMs:
+                          default: 2000
+                          type: integer
                         keyContent:
                           description: Key name that holds the content to process.
                             Note that a Multiline Parser definition can already specify
                             the key_content to use, but this option allows to overwrite
                             that value for the purpose of the filter.
+                          type: string
+                        mode:
+                          enum:
+                          - parser
+                          - partial_message
                           type: string
                         parser:
                           description: Specify one or multiple Multiline Parsing definitions
@@ -638,12 +677,16 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
                         emitterName:
                           description: When the filter emits a record under the new
                             Tag, there is an internal emitter plugin that takes care
                             of the job. Since this emitter expose metrics as any other
                             component of the pipeline, you can use this property to
                             configure an optional name for it.
+                          type: string
+                        emitterStorageType:
                           type: string
                         retryLimit:
                           description: 'RetryLimit describes how many times fluent-bit
@@ -1340,6 +1383,51 @@ spec:
                     type: object
                 type: object
                 x-kubernetes-map-type: atomic
+              multilineParserSelector:
+                description: Select multiline parser plugins
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: A label selector requirement is a selector that
+                        contains values, a key, and an operator that relates the key
+                        and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: operator represents a key's relationship to
+                            a set of values. Valid operators are In, NotIn, Exists
+                            and DoesNotExist.
+                          type: string
+                        values:
+                          description: values is an array of string values. If the
+                            operator is In or NotIn, the values array must be non-empty.
+                            If the operator is Exists or DoesNotExist, the values
+                            array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: matchLabels is a map of {key,value} pairs. A single
+                      {key,value} in the matchLabels map is equivalent to an element
+                      of matchExpressions, whose key field is "key", the operator
+                      is "In", and the values array contains only "value". The requirements
+                      are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
               namespace:
                 description: If namespace is defined, then the configmap and secret
                   for fluent-bit is in this namespace. If it is not defined, it is
@@ -1442,6 +1530,13 @@ spec:
                   daemon:
                     description: If true go to background on start
                     type: boolean
+                  emitterMemBufLimit:
+                    type: string
+                  emitterName:
+                    description: Per-namespace re-emitter configuration
+                    type: string
+                  emitterStorageType:
+                    type: string
                   flushSeconds:
                     description: Interval to flush output
                     format: int64
@@ -1509,6 +1604,11 @@ spec:
                   parsersFile:
                     description: Optional 'parsers' config file (can be multiple)
                     type: string
+                  parsersFiles:
+                    description: backward compatible
+                    items:
+                      type: string
+                    type: array
                   storage:
                     description: Configure a global environment for the storage layer
                       in Service. It is recommended to configure the volume and volumeMount
@@ -3200,6 +3300,9 @@ spec:
                     type: boolean
                   type:
                     description: Type name
+                    type: string
+                  writeOperation:
+                    description: Operation to use to write in bulk requests.
                     type: string
                 type: object
               file:
@@ -11276,6 +11379,10 @@ spec:
                             do filtering. It's assumed that the function is declared
                             inside the Script defined above.
                           type: string
+                        code:
+                          description: Inline LUA code instead of loading from a path
+                            via script.
+                          type: string
                         protectedMode:
                           description: If enabled, Lua script will be executed in
                             protected mode. It prevents to crash when invalid Lua
@@ -11328,6 +11435,7 @@ spec:
                           type: array
                       required:
                       - call
+                      - code
                       - script
                       type: object
                     modify:
@@ -11473,11 +11581,45 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        buffer:
+                          default: false
+                          type: boolean
+                        emitterMemBufLimit:
+                          default: 10
+                          description: Set a limit on the amount of memory in MB the
+                            emitter can consume if the outputs provide backpressure.
+                            The default for this limit is 10M. The pipeline will pause
+                            once the buffer exceeds the value of this setting. For
+                            example, if the value is set to 10MB then the pipeline
+                            will pause if the buffer exceeds 10M. The pipeline will
+                            remain paused until the output drains the buffer below
+                            the 10M limit.
+                          type: integer
+                        emitterName:
+                          description: Name for the emitter input instance which re-emits
+                            the completed records at the beginning of the pipeline.
+                          type: string
+                        emitterType:
+                          default: memory
+                          description: The storage type for the emitter input instance.
+                            This option supports the values memory (default) and filesystem.
+                          enum:
+                          - memory
+                          - filesystem
+                          type: string
+                        flushMs:
+                          default: 2000
+                          type: integer
                         keyContent:
                           description: Key name that holds the content to process.
                             Note that a Multiline Parser definition can already specify
                             the key_content to use, but this option allows to overwrite
                             that value for the purpose of the filter.
+                          type: string
+                        mode:
+                          enum:
+                          - parser
+                          - partial_message
                           type: string
                         parser:
                           description: Specify one or multiple Multiline Parsing definitions
@@ -11627,12 +11769,16 @@ spec:
                         alias:
                           description: Alias for the plugin
                           type: string
+                        emitterMemBufLimit:
+                          type: string
                         emitterName:
                           description: When the filter emits a record under the new
                             Tag, there is an internal emitter plugin that takes care
                             of the job. Since this emitter expose metrics as any other
                             component of the pipeline, you can use this property to
                             configure an optional name for it.
+                          type: string
+                        emitterStorageType:
                           type: string
                         retryLimit:
                           description: 'RetryLimit describes how many times fluent-bit
@@ -12238,6 +12384,51 @@ spec:
           spec:
             description: NamespacedFluentBitCfgSpec defines the desired state of FluentBit
             properties:
+              clusterMultilineParserSelector:
+                description: Select cluster level multiline parser config
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: A label selector requirement is a selector that
+                        contains values, a key, and an operator that relates the key
+                        and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: operator represents a key's relationship to
+                            a set of values. Valid operators are In, NotIn, Exists
+                            and DoesNotExist.
+                          type: string
+                        values:
+                          description: values is an array of string values. If the
+                            operator is In or NotIn, the values array must be non-empty.
+                            If the operator is Exists or DoesNotExist, the values
+                            array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: matchLabels is a map of {key,value} pairs. A single
+                      {key,value} in the matchLabels map is equivalent to an element
+                      of matchExpressions, whose key field is "key", the operator
+                      is "In", and the values array contains only "value". The requirements
+                      are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
               clusterParserSelector:
                 description: Select cluster level parser config
                 properties:
@@ -12285,6 +12476,51 @@ spec:
                 x-kubernetes-map-type: atomic
               filterSelector:
                 description: Select filter plugins
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: A label selector requirement is a selector that
+                        contains values, a key, and an operator that relates the key
+                        and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: operator represents a key's relationship to
+                            a set of values. Valid operators are In, NotIn, Exists
+                            and DoesNotExist.
+                          type: string
+                        values:
+                          description: values is an array of string values. If the
+                            operator is In or NotIn, the values array must be non-empty.
+                            If the operator is Exists or DoesNotExist, the values
+                            array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: matchLabels is a map of {key,value} pairs. A single
+                      {key,value} in the matchLabels map is equivalent to an element
+                      of matchExpressions, whose key field is "key", the operator
+                      is "In", and the values array contains only "value". The requirements
+                      are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
+              multilineParserSelector:
+                description: Select multiline parser plugins
                 properties:
                   matchExpressions:
                     description: matchExpressions is a list of label selector requirements.
@@ -12418,6 +12654,145 @@ spec:
                     type: object
                 type: object
                 x-kubernetes-map-type: atomic
+              service:
+                description: Service defines the global behaviour of the Fluent Bit
+                  engine.
+                properties:
+                  daemon:
+                    description: If true go to background on start
+                    type: boolean
+                  emitterMemBufLimit:
+                    type: string
+                  emitterName:
+                    description: Per-namespace re-emitter configuration
+                    type: string
+                  emitterStorageType:
+                    type: string
+                  flushSeconds:
+                    description: Interval to flush output
+                    format: int64
+                    type: integer
+                  graceSeconds:
+                    description: Wait time on exit
+                    format: int64
+                    type: integer
+                  hcErrorsCount:
+                    description: 'the error count to meet the unhealthy requirement,
+                      this is a sum for all output plugins in a defined HC_Period,
+                      example for output error: [2022/02/16 10:44:10] [ warn] [engine]
+                      failed to flush chunk ''1-1645008245.491540684.flb'', retry
+                      in 7 seconds: task_id=0, input=forward.1 > output=cloudwatch_logs.3
+                      (out_id=3)'
+                    format: int64
+                    minimum: 1
+                    type: integer
+                  hcPeriod:
+                    description: The time period by second to count the error and
+                      retry failure data point
+                    format: int64
+                    minimum: 1
+                    type: integer
+                  hcRetryFailureCount:
+                    description: 'the retry failure count to meet the unhealthy requirement,
+                      this is a sum for all output plugins in a defined HC_Period,
+                      example for retry failure: [2022/02/16 20:11:36] [ warn] [engine]
+                      chunk ''1-1645042288.260516436.flb'' cannot be retried: task_id=0,
+                      input=tcp.3 > output=cloudwatch_logs.1'
+                    format: int64
+                    minimum: 1
+                    type: integer
+                  healthCheck:
+                    description: 'enable Health check feature at http://127.0.0.1:2020/api/v1/health
+                      Note: Enabling this will not automatically configure kubernetes
+                      to use fluentbit''s healthcheck endpoint'
+                    type: boolean
+                  httpListen:
+                    description: Address to listen
+                    pattern: ^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$
+                    type: string
+                  httpPort:
+                    description: Port to listen
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  httpServer:
+                    description: If true enable statistics HTTP server
+                    type: boolean
+                  logFile:
+                    description: File to log diagnostic output
+                    type: string
+                  logLevel:
+                    description: Diagnostic level (error/warning/info/debug/trace)
+                    enum:
+                    - "off"
+                    - error
+                    - warning
+                    - info
+                    - debug
+                    - trace
+                    type: string
+                  parsersFile:
+                    description: Optional 'parsers' config file (can be multiple)
+                    type: string
+                  parsersFiles:
+                    description: backward compatible
+                    items:
+                      type: string
+                    type: array
+                  storage:
+                    description: Configure a global environment for the storage layer
+                      in Service. It is recommended to configure the volume and volumeMount
+                      separately for this storage. The hostPath type should be used
+                      for that Volume in Fluentbit daemon set.
+                    properties:
+                      backlogMemLimit:
+                        description: This option configure a hint of maximum value
+                          of memory to use when processing these records
+                        type: string
+                      checksum:
+                        description: Enable the data integrity check when writing
+                          and reading data from the filesystem
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      deleteIrrecoverableChunks:
+                        description: When enabled, irrecoverable chunks will be deleted
+                          during runtime, and any other irrecoverable chunk located
+                          in the configured storage path directory will be deleted
+                          when Fluent-Bit starts.
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      maxChunksUp:
+                        description: If the input plugin has enabled filesystem storage
+                          type, this property sets the maximum number of Chunks that
+                          can be up in memory
+                        format: int64
+                        type: integer
+                      metrics:
+                        description: If http_server option has been enabled in the
+                          Service section, this option registers a new endpoint where
+                          internal metrics of the storage layer can be consumed
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      path:
+                        description: Select an optional location in the file system
+                          to store streams and chunks of data/
+                        type: string
+                      sync:
+                        description: Configure the synchronization mode used to store
+                          the data into the file system
+                        enum:
+                        - normal
+                        - full
+                        type: string
+                    type: object
+                type: object
             type: object
         type: object
     served: true
@@ -26554,6 +26929,9 @@ spec:
                     type: boolean
                   type:
                     description: Type name
+                    type: string
+                  writeOperation:
+                    description: Operation to use to write in bulk requests.
                     type: string
                 type: object
               file:
