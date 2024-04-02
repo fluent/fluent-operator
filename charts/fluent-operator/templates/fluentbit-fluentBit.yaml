@@ -12,6 +12,8 @@ spec:
 {{- end }}
 {{- if .Values.fluentbit.dnsPolicy }}
   dnsPolicy: {{ .Values.fluentbit.dnsPolicy }}
+{{- else if .Values.fluentbit.hostNetwork }}
+  dnsPolicy: ClusterFirstWithHostNet
 {{- end }}
   image: {{ .Values.fluentbit.image.repository }}:{{ .Values.fluentbit.image.tag }}
   {{- if .Values.fluentbit.imagePullSecrets }}
