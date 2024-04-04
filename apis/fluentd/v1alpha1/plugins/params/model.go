@@ -88,6 +88,15 @@ func (ps *PluginStore) GetTag() string {
 	return ps.Store["tag"]
 }
 
+// Returns @id value
+func (ps *PluginStore) GetId() string {
+	if value, ok := ps.Store["@id"]; !ok {
+		return ""
+	} else {
+		return value
+	}
+}
+
 // Returns the @label value string of this plugin store
 func (ps *PluginStore) RouteLabel() string {
 	if ps.Name != "route" {
@@ -118,7 +127,7 @@ func (ps *PluginStore) String() string {
 	ps.setWhitespaces(parentPrefixWhitespaces + IntervalWhitespaces)
 	ps.processBody(&buf)
 	if len(ps.Childs) > 0 {
-		sort.Sort(PluginStoreByName(ps.Childs))
+		sort.Sort(PluginStoreByNameById(ps.Childs))
 		for _, child := range ps.Childs {
 			child.setWhitespaces(ps.PrefixWhitespaces)
 			buf.WriteString(child.String())
@@ -202,3 +211,22 @@ type PluginStoreByName []*PluginStore
 func (a PluginStoreByName) Len() int           { return len(a) }
 func (a PluginStoreByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a PluginStoreByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
+
+// +kubebuilder:object:generate=false
+type PluginStoreByNameById []*PluginStore
+
+func (a PluginStoreByNameById) Len() int      { return len(a) }
+func (a PluginStoreByNameById) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a PluginStoreByNameById) Less(i, j int) bool {
+	if a[i].Name == a[j].Name {
+		if a[i].GetTag() == "**" && a[j].GetTag() != "**" {
+			return false
+		}
+		if a[i].GetTag() != "**" && a[j].GetTag() == "**" {
+			return true
+		}
+		return a[i].GetId() < a[j].GetId()
+	} else {
+		return a[i].Name < a[j].Name
+	}
+}

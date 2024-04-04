@@ -380,6 +380,7 @@ func (pgr *PluginResources) RenderMainConfig(enableMultiWorkers bool) (string, e
 
 	// sort main routers
 	childRouters := ByRouteLabelsPointers(pgr.MainRouterPlugins.Childs)
+	sort.SliceStable(childRouters[:], childRouters.Less)
 	pgr.MainRouterPlugins.Childs = childRouters
 	if enableMultiWorkers {
 		pgr.MainRouterPlugins.SetIgnorePath()
@@ -387,7 +388,8 @@ func (pgr *PluginResources) RenderMainConfig(enableMultiWorkers bool) (string, e
 	buf.WriteString(pgr.MainRouterPlugins.String())
 
 	// sort label plugins
-	labelPlugins := ByRouteLabels(pgr.LabelPluginResources)
+	labelPlugins := ByTags(pgr.LabelPluginResources)
+	sort.SliceStable(labelPlugins[:], labelPlugins.Less)
 	for _, labelPlugin := range labelPlugins {
 		if enableMultiWorkers {
 			labelPlugin.SetIgnorePath()
@@ -407,9 +409,13 @@ type ByRouteLabelsPointers []*params.PluginStore
 // +kubebuilder:object:generate:=false
 type ByRouteLabels []params.PluginStore
 
+// +kubebuilder:object:generate:=false
+type ByTags []params.PluginStore
+
 func (a ByHashcode) Less(i, j int) bool            { return a[i].Hash() < a[j].Hash() }
 func (a ByRouteLabelsPointers) Less(i, j int) bool { return a[i].RouteLabel() < a[j].RouteLabel() }
 func (a ByRouteLabels) Less(i, j int) bool         { return a[i].RouteLabel() < a[j].RouteLabel() }
+func (a ByTags) Less(i, j int) bool                { return a[i].GetTag() < a[j].GetTag() }
 
 var _ Renderer = &FluentdConfig{}
 var _ Renderer = &ClusterFluentdConfig{}

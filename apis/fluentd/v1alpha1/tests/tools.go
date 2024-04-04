@@ -247,6 +247,27 @@ spec:
         value: ${record["kubernetes"]["namespace_name"]}
 `
 
+	FluentdFilter    fluentdv1alpha1.Filter
+	FluentdFilterRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Filter
+metadata:
+  name: fluentd-filter
+  namespace: fluent
+labels:
+  filter.fluentd.fluent.io/enabled: "true"
+spec: 
+  filters: 
+  - recordTransformer:
+      records:
+      - key: loki-tenant
+        value: 9705b9de-d60e-4492-b322-eac870
+      - key: environment
+        value: uat
+      - key: application
+        value: my-application
+`
+
 	FluentdClusterRecordTransformerFilter fluentdv1alpha1.ClusterFilter
 	FluentdClusterRecordTransformerRaw    = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -344,6 +365,106 @@ spec:
       logstashPrefix: ks-logstash-log
 `
 
+	FluentdOutput2ES1    fluentdv1alpha1.Output
+	FluentdOutput2ES1Raw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-output-es
+  namespace: fluent
+labels:
+  output.fluentd.fluent.io/enabled: "es"
+spec: 
+  outputs:
+  - copy:
+      copyMode: no_copy
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      indexName: es1-notag-1
+      port: 9243
+      scheme: https
+      sslVerify: false
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      indexName: es1-notag-2
+      port: 9243
+      scheme: https
+      sslVerify: false
+`
+	FluentdOutput2ES2    fluentdv1alpha1.Output
+	FluentdOutput2ES2Raw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-output-es2
+  namespace: fluent
+labels:
+  output.fluentd.fluent.io/enabled: "es"
+spec: 
+  outputs:
+  - copy:
+      copyMode: no_copy
+    tag: specific_tag_1
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      indexName: es2-specific-tag-1-1
+      port: 9243
+      scheme: https
+      sslVerify: false
+    tag: specific_tag_1
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      indexName: es2-specific-tag-1-2
+      port: 9243
+      scheme: https
+      sslVerify: false
+    tag: specific_tag_1
+`
+	FluentdOutput2ES3    fluentdv1alpha1.Output
+	FluentdOutput2ES3Raw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-output-es3
+  namespace: fluent
+labels:
+  output.fluentd.fluent.io/enabled: "es"
+spec: 
+  outputs:
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      indexName: es3-specific-tag-2-1
+      port: 9243
+      scheme: https
+      sslVerify: false
+    tag: specific_tag_2
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      indexName: es3-specific-tag-2-2
+      port: 9243
+      scheme: https
+      sslVerify: false
+    tag: specific_tag_2
+`
+	FluentdOutput2ES4    fluentdv1alpha1.Output
+	FluentdOutput2ES4Raw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-output-es4
+  namespace: fluent
+labels:
+  output.fluentd.fluent.io/enabled: "es"
+spec: 
+  outputs:
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      indexName: es4-notag-1
+      port: 9243
+      scheme: https
+      sslVerify: false
+`
+
 	FluentdclusterOutput2OpenSearch    fluentdv1alpha1.ClusterOutput
 	FluentdclusterOutput2OpenSearchRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -421,6 +542,35 @@ spec:
 #      tlsPrivateKeyFile: /path/to/key.key
       insecure: true
 `
+
+	FluentdClusterOutput2Loki1    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutput2Loki1Raw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-loki
+labels:
+  output.fluentd.fluent.io/enabled: "loki"
+spec: 
+  outputs: 
+  - loki:
+      url: http://loki-logging-data.kubesphere-logging-system.svc:3100
+      extractKubernetesLabels: true
+      labels:
+        - key11=value11
+        - key12 = value12
+        - key13
+      labelKeys:
+        - key21
+        - key22
+      removeKeys:
+        - key31
+        - key32
+      dropSingleKey: true
+      includeThreadLabel: true
+      insecure: true
+`
+
 	FluentdClusterOutputLogOperator    fluentdv1alpha1.ClusterOutput
 	FluentdClusterOutputLogOperatorRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -763,15 +913,21 @@ func init() {
 			ParseIntoObject(FluentdConfig1Raw, &FluentdConfig1)
 			ParseIntoObject(FluentdConfig2Raw, &FluentdConfig2)
 			ParseIntoObject(FluentdClusterFilter1Raw, &FluentdClusterFilter1)
+			ParseIntoObject(FluentdFilterRaw, &FluentdFilter)
 			ParseIntoObject(FluentdClusterRecordTransformerRaw, &FluentdClusterRecordTransformerFilter)
 			ParseIntoObject(FluentdClusterOutputClusterRaw, &FluentdClusterOutputCluster)
 			ParseIntoObject(FluentdClusterOutputLogOperatorRaw, &FluentdClusterOutputLogOperator)
 			ParseIntoObject(FluentdClusterOutputBufferRaw, &FluentdClusterOutputBuffer)
 			ParseIntoObject(FluentdClusterOutputMemoryBufferRaw, &FluentdClusterOutputMemoryBuffer)
 			ParseIntoObject(FluentdclusterOutput2ESRaw, &FluentdclusterOutput2ES)
+			ParseIntoObject(FluentdOutput2ES1Raw, &FluentdOutput2ES1)
+			ParseIntoObject(FluentdOutput2ES2Raw, &FluentdOutput2ES2)
+			ParseIntoObject(FluentdOutput2ES3Raw, &FluentdOutput2ES3)
+			ParseIntoObject(FluentdOutput2ES4Raw, &FluentdOutput2ES4)
 			ParseIntoObject(FluentdclusterOutput2OpenSearchRaw, &FluentdclusterOutput2OpenSearch)
 			ParseIntoObject(FluentdClusterOutput2kafkaRaw, &FluentdClusterOutput2kafka)
 			ParseIntoObject(FluentdClusterOutput2LokiRaw, &FluentdClusterOutput2Loki)
+			ParseIntoObject(FluentdClusterOutput2Loki1Raw, &FluentdClusterOutput2Loki1)
 			ParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
 			ParseIntoObject(FluentdClusterOutputCustomRaw, &FluentdClusterOutputCustom)
 			ParseIntoObject(FluentdClusterOutput2CloudWatchRaw, &FluentdClusterOutput2CloudWatch)
