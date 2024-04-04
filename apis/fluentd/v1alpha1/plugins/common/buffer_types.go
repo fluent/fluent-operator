@@ -188,7 +188,9 @@ func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 			ps.InsertPairs("path", filepath.Join(targetPaths...))
 		}
 	} else {
-		ps.InsertPairs("path", params.DefaultBufferPath)
+		if *b.Type != "memory" {
+			ps.InsertPairs("path", params.DefaultBufferPath)
+		}
 	}
 
 	if b.TimeKey != nil {

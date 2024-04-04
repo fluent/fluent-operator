@@ -290,6 +290,29 @@ spec:
       path: /buffers/es.log
   `
 
+	FluentdClusterOutputMemoryBuffer    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutputMemoryBufferRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - stdout: {}
+    buffer:
+      type: memory
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log
+    buffer:
+      type: file
+      path: /buffers/es.log
+`
+
 	FluentdClusterOutputTag    fluentdv1alpha1.ClusterOutput
 	FluentdClusterOutputTagRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -744,6 +767,7 @@ func init() {
 			ParseIntoObject(FluentdClusterOutputClusterRaw, &FluentdClusterOutputCluster)
 			ParseIntoObject(FluentdClusterOutputLogOperatorRaw, &FluentdClusterOutputLogOperator)
 			ParseIntoObject(FluentdClusterOutputBufferRaw, &FluentdClusterOutputBuffer)
+			ParseIntoObject(FluentdClusterOutputMemoryBufferRaw, &FluentdClusterOutputMemoryBuffer)
 			ParseIntoObject(FluentdclusterOutput2ESRaw, &FluentdclusterOutput2ES)
 			ParseIntoObject(FluentdclusterOutput2OpenSearchRaw, &FluentdclusterOutput2OpenSearch)
 			ParseIntoObject(FluentdClusterOutput2kafkaRaw, &FluentdClusterOutput2kafka)
