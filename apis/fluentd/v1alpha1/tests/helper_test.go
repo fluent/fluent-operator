@@ -6,8 +6,10 @@ import (
 	"testing"
 
 	"github.com/go-logr/logr"
+	"github.com/go-openapi/errors"
 
 	. "github.com/onsi/gomega"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
@@ -218,7 +220,7 @@ func Test_ClusterCfgOutput2Kafka(t *testing.T) {
 
 func Test_ClusterCfgOutput2Loki(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+	sl := NewSecretLoader(logr.Logger{}, lokiHttpCredentials, lokiTenantName)
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -329,7 +331,7 @@ func Test_ClusterCfgOutput2Datadog(t *testing.T) {
 
 func Test_MixedCfgCopy1(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+	sl := NewSecretLoader(logr.Logger{}, lokiHttpCredentials, lokiTenantName)
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -429,7 +431,7 @@ func Test_MixedCfgCopy3(t *testing.T) {
 
 func Test_MixedCfgCopy4(t *testing.T) {
 	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+	sl := NewSecretLoader(logr.Logger{}, esCredentials)
 
 	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
 	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
@@ -846,5 +848,33 @@ func Test_RecordTransformer(t *testing.T) {
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-filter-recordTransformer.cfg"))).To(Equal(config))
 
 		i++
+	}
+}
+
+type SecretLoaderStruct struct {
+	secrets map[string]corev1.Secret
+}
+
+func NewSecretLoader(l logr.Logger, sec ...corev1.Secret) plugins.SecretLoader {
+	secrets := make(map[string]corev1.Secret)
+	for _, s := range sec {
+		secrets[s.Name] = s
+	}
+	return SecretLoaderStruct{
+		secrets: secrets,
+	}
+}
+
+func (sl SecretLoaderStruct) LoadSecret(s plugins.Secret) (string, error) {
+	var secret corev1.Secret
+	var ok bool
+	if secret, ok = sl.secrets[s.ValueFrom.SecretKeyRef.Name]; !ok {
+		return "", errors.NotFound(fmt.Sprintf("The secret %s is not found.", s.ValueFrom.SecretKeyRef.Name))
+	}
+
+	if v, ok := secret.StringData[s.ValueFrom.SecretKeyRef.Key]; !ok {
+		return "", errors.NotFound(fmt.Sprintf("The key %s is not found.", s.ValueFrom.SecretKeyRef.Key))
+	} else {
+		return strings.TrimSuffix(fmt.Sprintf("%s", v), "\n"), nil
 	}
 }

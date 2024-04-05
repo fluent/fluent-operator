@@ -23,19 +23,23 @@ type ValueSource struct {
 	SecretKeyRef corev1.SecretKeySelector `json:"secretKeyRef,omitempty"`
 }
 
-type SecretLoader struct {
+type SecretLoader interface {
+	LoadSecret(s Secret) (string, error)
+}
+
+type SecretLoaderStruct struct {
 	client    client.Client
 	namespace string
 }
 
 func NewSecretLoader(c client.Client, ns string, l logr.Logger) SecretLoader {
-	return SecretLoader{
+	return SecretLoaderStruct{
 		client:    c,
 		namespace: ns,
 	}
 }
 
-func (sl SecretLoader) LoadSecret(s Secret) (string, error) {
+func (sl SecretLoaderStruct) LoadSecret(s Secret) (string, error) {
 	var secret corev1.Secret
 	if err := sl.client.Get(context.Background(), client.ObjectKey{Name: s.ValueFrom.SecretKeyRef.Name, Namespace: sl.namespace}, &secret); err != nil {
 		return "", err

@@ -5,6 +5,8 @@ import (
 	"os"
 	"sync"
 
+	corev1 "k8s.io/api/core/v1"
+
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/filter"
@@ -390,6 +392,16 @@ spec:
       port: 9243
       scheme: https
       sslVerify: false
+      user:
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: es-credentials
+      password:
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: es-credentials
 `
 	FluentdOutput2ES2    fluentdv1alpha1.Output
 	FluentdOutput2ES2Raw = `
@@ -510,21 +522,21 @@ spec:
   - loki:
       url: http://loki-logging-data.kubesphere-logging-system.svc:3100
       extractKubernetesLabels: true
-#      tenantID:
-#        valueFrom:
-#          secretKeyRef:
-#            key: tenant_key
-#            name: tenant_name
-#      httpPassword:
-#        valueFrom:
-#          secretKeyRef:
-#            key: password_key
-#            name: password_name
-#      httpUser:
-#        valueFrom:
-#          secretKeyRef:
-#            key: user_key
-#            name: user_name
+      tenantID:
+        valueFrom:
+          secretKeyRef:
+            key: tenant_key
+            name: loki-tenant-name
+      httpPassword:
+        valueFrom:
+          secretKeyRef:
+            key: password_key
+            name: loki-http-credentials
+      httpUser:
+        valueFrom:
+          secretKeyRef:
+            key: user_key
+            name: loki-http-credentials
       labels:
         - key11=value11
         - key12 = value12
@@ -541,6 +553,31 @@ spec:
 #      tlsClientCertFile: /path/to/certificate.pem
 #      tlsPrivateKeyFile: /path/to/key.key
       insecure: true
+`
+
+	lokiHttpCredentials    corev1.Secret
+	lokiHttpCredentialsRaw = `
+apiVersion: v1
+kind: Secret
+metadata:
+  name: loki-http-credentials
+  namespace: fluent
+type: Opaque
+stringData:
+  password_key: s3cr3tP@ssword
+  user_key: s3cr3tUsern4me
+`
+
+	lokiTenantName    corev1.Secret
+	lokiTenantNameRaw = `
+apiVersion: v1
+kind: Secret
+metadata:
+  name: loki-tenant-name
+  namespace: fluent
+type: Opaque
+stringData:
+  tenant_key: 0c3ba7a4-3148-4605-b62a-afc92dd1c4d7
 `
 
 	FluentdClusterOutput2Loki1    fluentdv1alpha1.ClusterOutput
@@ -787,6 +824,20 @@ spec:
       includeThreadLabel: true
       insecure: true
 `
+
+	esCredentials    corev1.Secret
+	esCredentialsRaw = `
+apiVersion: v1
+kind: Secret
+metadata:
+  name: es-credentials
+  namespace: fluent
+type: Opaque
+stringData:
+  password: s3cr3tP@ssword
+  username: s3cr3tUsern4me
+`
+
 	once sync.Once
 )
 
@@ -936,6 +987,9 @@ func init() {
 			ParseIntoObject(FluentdOutputMixedCopy1Raw, &FluentdOutputMixedCopy1)
 			ParseIntoObject(FluentdOutputMixedCopy2Raw, &FluentdOutputMixedCopy2)
 			ParseIntoObject(FluentdOutputMixedCopy3Raw, &FluentdOutputMixedCopy3)
+			ParseIntoObject(esCredentialsRaw, &esCredentials)
+			ParseIntoObject(lokiHttpCredentialsRaw, &lokiHttpCredentials)
+			ParseIntoObject(lokiTenantNameRaw, &lokiTenantName)
 		},
 	)
 }
