@@ -455,7 +455,6 @@ func Test_MixedCfgCopy4(t *testing.T) {
 	i := 0
 	for i < maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
-		fmt.Println("CONFIG: ", config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-copy-4.cfg"))).To(Equal(config))
 
