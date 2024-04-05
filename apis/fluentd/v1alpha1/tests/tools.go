@@ -549,9 +549,9 @@ spec:
         - key32
       dropSingleKey: true
       includeThreadLabel: true
-#      tlsCaCertFile: /path/to/ca.pem
-#      tlsClientCertFile: /path/to/certificate.pem
-#      tlsPrivateKeyFile: /path/to/key.key
+      tlsCaCertFile: /path/to/ca.pem
+      tlsClientCertFile: /path/to/certificate.pem
+      tlsPrivateKeyFile: /path/to/key.key
       insecure: true
 `
 
