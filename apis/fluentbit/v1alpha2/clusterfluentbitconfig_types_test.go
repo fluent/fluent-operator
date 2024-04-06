@@ -1,6 +1,9 @@
 package v1alpha2
 
 import (
+	"fmt"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/multilineparser"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/parser"
 	"testing"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -144,6 +147,44 @@ var expectedK8s = `[Service]
     Write_Operation    update
 `
 
+var expectedParsers = `[PARSER]
+    Name    clusterparser0
+    Format    json
+    Time_Key    time
+    Time_Format    %Y-%m-%dT%H:%M:%S %z
+[PARSER]
+    Name    parser0-4087ca5ebba883e13a4369122e716be7
+    Format    regex
+    Regex    .*
+    Time_Key    time
+    Time_Format    %Y-%m-%dT%H:%M:%S %z
+[PARSER]
+    Name    clusterparser1
+    Format    ltsv
+    Time_Key    time
+    Time_Format    [%d/%b/%Y:%H:%M:%S %z]
+    Types    status:integer size:integer
+`
+
+var expectedMultilineParsers = `[MULTILINE_PARSER]
+    Name    clustermultilineparser0
+    Type    regex
+    Parser    go
+    Key_Content    log
+[MULTILINE_PARSER]
+    Name    multilineparser0
+    Type    regex
+    Flush_Timeout    1000
+    Rule    "start_state" "/(Dec \d+ \d+\:\d+\:\d+)(.*)/" "cont"
+    Rule    "cont" "/^\s+at.*/" "cont"
+[MULTILINE_PARSER]
+    Name    clustermultilineparser1
+    Type    regex
+    Flush_Timeout    500
+    Rule    "start_state" "/^(\d+ \d+\:\d+\:\d+)(.*)/" "cont"
+    Rule    "cont" "/^\s+at.*/" "cont"
+`
+
 var labels = map[string]string{
 	"label0": "lv0",
 	"label1": "lv1",
@@ -153,14 +194,16 @@ var labels = map[string]string{
 }
 
 var cfg = ClusterFluentBitConfig{
-	Spec: FluentBitConfigSpec{Service: &Service{
-		Daemon:       ptrBool(false),
-		FlushSeconds: ptrInt64(1),
-		GraceSeconds: ptrInt64(30),
-		HttpServer:   ptrBool(true),
-		LogLevel:     "info",
-		ParsersFile:  "parsers.conf",
-	}},
+	Spec: FluentBitConfigSpec{
+		Service: &Service{
+			Daemon:       ptrBool(false),
+			FlushSeconds: ptrInt64(1),
+			GraceSeconds: ptrInt64(30),
+			HttpServer:   ptrBool(true),
+			LogLevel:     "info",
+			ParsersFile:  "parsers.conf",
+		},
+	},
 }
 
 func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
@@ -191,7 +234,8 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 				MemBufLimit:            "5MB",
 				RefreshIntervalSeconds: ptrInt64(10),
 				DB:                     "/fluent-bit/tail/pos.db",
-			}},
+			},
+		},
 	}
 
 	inputs := ClusterInputList{
@@ -417,7 +461,8 @@ func TestRenderMainConfigK8s(t *testing.T) {
 				MemBufLimit:            "5MB",
 				RefreshIntervalSeconds: ptrInt64(10),
 				DB:                     "/fluent-bit/tail/pos.db",
-			}},
+			},
+		},
 	}
 	inputList := ClusterInputList{
 		Items: []ClusterInput{*inputObj},
@@ -504,10 +549,212 @@ func TestRenderMainConfigK8s(t *testing.T) {
 	}
 	var rewriteTagCfg []string
 
-	config, err := cfg.RenderMainConfig(sl, inputList, filterList, outputList, nsFilterList, nsOutputList, rewriteTagCfg)
+	config, err := cfg.RenderMainConfig(
+		sl, inputList, filterList, outputList, nsFilterList, nsOutputList, rewriteTagCfg,
+	)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(config).To(Equal(expectedK8s))
+}
 
+func TestClusterFluentBitConfig_RenderMainConfig_WithParsersFiles(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	cfbc := ClusterFluentBitConfig{
+		Spec: FluentBitConfigSpec{
+			Service: &Service{
+				Daemon:       ptrBool(false),
+				FlushSeconds: ptrInt64(1),
+				GraceSeconds: ptrInt64(30),
+				HttpServer:   ptrBool(true),
+				LogLevel:     "info",
+				ParsersFiles: []string{"parsers.conf", "parsers_multiline.conf"},
+			},
+		},
+	}
+
+	config, err := cfbc.RenderMainConfig(
+		sl, ClusterInputList{}, ClusterFilterList{}, ClusterOutputList{}, nil, nil, nil,
+	)
+	g.Expect(err).NotTo(HaveOccurred())
+	fmt.Println(config)
+}
+
+func TestClusterFluentBitConfig_RenderParserConfig(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	clusterParser := &ClusterParser{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterParser",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "clusterparser0",
+			Labels: labels,
+		},
+		Spec: ParserSpec{
+			JSON: &parser.JSON{
+				TimeKey:    "time",
+				TimeFormat: "%Y-%m-%dT%H:%M:%S %z",
+			},
+		},
+	}
+	clusterParsers := ClusterParserList{
+		Items: []ClusterParser{*clusterParser},
+	}
+
+	nsParser := &Parser{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "Parser",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "parser0",
+			Namespace: "testnamespace",
+			Labels:    labels,
+		},
+		Spec: ParserSpec{
+			Regex: &parser.Regex{
+				Regex:      ".*",
+				TimeKey:    "time",
+				TimeFormat: "%Y-%m-%dT%H:%M:%S %z",
+			},
+		},
+	}
+	nsParsers := []ParserList{
+		{
+			Items: []Parser{*nsParser},
+		},
+	}
+
+	nsClusterParser := &ClusterParser{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterParser",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "clusterparser1",
+			Labels: labels,
+		},
+		Spec: ParserSpec{
+			LTSV: &parser.LSTV{
+				TimeKey:    "time",
+				TimeFormat: "[%d/%b/%Y:%H:%M:%S %z]",
+				Types:      "status:integer size:integer",
+			},
+		},
+	}
+	nsClusterParsers := []ClusterParserList{
+		{
+			Items: []ClusterParser{*nsClusterParser},
+		},
+	}
+
+	config, err := cfg.RenderParserConfig(sl, clusterParsers, nsParsers, nsClusterParsers)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(config).To(Equal(expectedParsers))
+}
+
+func TestClusterFluentBitConfig_RenderMultilineParserConfig(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	clusterMultilineParser := &ClusterMultilineParser{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterMultilineParser",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "clustermultilineparser0",
+			Labels: labels,
+		},
+		Spec: MultilineParserSpec{
+			MultilineParser: &multilineparser.MultilineParser{
+				Type:       "regex",
+				Parser:     "go",
+				KeyContent: "log",
+			},
+		},
+	}
+	clusterMultilineParsers := ClusterMultilineParserList{
+		Items: []ClusterMultilineParser{*clusterMultilineParser},
+	}
+
+	nsMultilineParser := &MultilineParser{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "MultilineParser",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "multilineparser0",
+			Namespace: "testnamespace",
+			Labels:    labels,
+		},
+		Spec: MultilineParserSpec{
+			MultilineParser: &multilineparser.MultilineParser{
+				Type:         "regex",
+				FlushTimeout: 1000,
+				Rules: []multilineparser.Rule{
+					{
+						Start: "start_state",
+						Regex: `/(Dec \d+ \d+\:\d+\:\d+)(.*)/`,
+						Next:  "cont",
+					},
+					{
+						Start: "cont",
+						Regex: `/^\s+at.*/`,
+						Next:  "cont",
+					},
+				},
+			},
+		},
+	}
+	nsMultilineParsers := []MultilineParserList{
+		{
+			Items: []MultilineParser{*nsMultilineParser},
+		},
+	}
+
+	nsClusterMultilineParser := &ClusterMultilineParser{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterMultilineParser",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "clustermultilineparser1",
+			Labels: labels,
+		},
+		Spec: MultilineParserSpec{
+			MultilineParser: &multilineparser.MultilineParser{
+				Type:         "regex",
+				FlushTimeout: 500,
+				Rules: []multilineparser.Rule{
+					{
+						Start: "start_state",
+						Regex: `/^(\d+ \d+\:\d+\:\d+)(.*)/`,
+						Next:  "cont",
+					},
+					{
+						Start: "cont",
+						Regex: `/^\s+at.*/`,
+						Next:  "cont",
+					},
+				},
+			},
+		},
+	}
+	nsClusterMultilineParsers := []ClusterMultilineParserList{
+		{
+			Items: []ClusterMultilineParser{*nsClusterMultilineParser},
+		},
+	}
+
+	config, err := cfg.RenderMultilineParserConfig(
+		sl, clusterMultilineParsers, nsMultilineParsers, nsClusterMultilineParsers,
+	)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(config).To(Equal(expectedMultilineParsers))
 }
 
 func ptrBool(v bool) *bool {

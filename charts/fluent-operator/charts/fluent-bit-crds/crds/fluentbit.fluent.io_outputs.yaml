@@ -513,9 +513,6 @@ spec:
                     description: If set, _id will be the value of the key from incoming
                       record and Generate_ID option is ignored.
                     type: string
-                  writeOperation:
-                    description: Operation to use to write in bulk requests.
-                    type: string
                   includeTagKey:
                     description: When enabled, it append the Tag name to the record.
                     type: boolean
@@ -663,6 +660,9 @@ spec:
                     type: boolean
                   type:
                     description: Type name
+                    type: string
+                  writeOperation:
+                    description: Operation to use to write in bulk requests.
                     type: string
                 type: object
               file:
