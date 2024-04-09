@@ -34,7 +34,12 @@ spec:
 {{ toYaml .Values.fluentbit.output.es.httpPassword | indent 6 }}
 {{- end }}
     logstashFormat: {{ .Values.fluentbit.output.es.logstashFormat | default true }}
-    logstashPrefix: {{ .Values.fluentbit.output.es.logstashPrefix | default "ks-logstash-log" | quote }}
+{{- if .Values.fluentbit.output.es.logstashPrefix }}
+    logstashPrefix: {{ .Values.fluentbit.output.es.logstashPrefix | quote }}
+{{- end }}
+{{- if .Values.fluentbit.output.es.logstashPrefixKey }}
+    logstashPrefixKey: {{ .Values.fluentbit.output.es.logstashPrefixKey | quote }}
+{{- end }}
     replaceDots: {{ .Values.fluentbit.output.es.replaceDots | default false }}
     writeOperation: {{ .Values.fluentbit.output.es.writeOperation | default "create" | quote }}
     traceError: {{ .Values.fluentbit.output.es.traceError | default false }}
