@@ -130,6 +130,11 @@ func plugins(docsLocations []DocumentsLocation) {
 			}
 
 			dst := fmt.Sprintf("./docs/plugins/%s/%s.md", dl.name, src_name)
+
+			if err := genDocDirs(dst); err != nil {
+				fmt.Printf("Error while generating documentation directories: %s\n", err.Error())
+			}
+
 			f, err := os.Create(dst)
 			if err != nil {
 				fmt.Printf("Error while generating documentation: %s\n", err.Error())
@@ -183,10 +188,18 @@ func crds(docsLocations []DocumentsLocation) {
 				buffer.WriteString("[Back to TOC](#table-of-contents)\n")
 			}
 		}
-
+		
 		f, _ := os.Create(fmt.Sprintf("./docs/%s.md", dl.name))
 		f.WriteString(fmt.Sprintf(firstParagraph, dl.name) + buffer.String())
 	}
+}
+
+func genDocDirs(docPath string) error {
+	dirPath := filepath.Dir(docPath)
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		return os.MkdirAll(dirPath, os.ModePerm)
+	}
+	return nil
 }
 
 func toSectionLink(name string) string {

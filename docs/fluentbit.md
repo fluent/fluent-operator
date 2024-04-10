@@ -8,6 +8,8 @@ This Document documents the types introduced by the fluentbit Operator.
 * [ClusterFluentBitConfigList](#clusterfluentbitconfiglist)
 * [ClusterInput](#clusterinput)
 * [ClusterInputList](#clusterinputlist)
+* [ClusterMultilineParser](#clustermultilineparser)
+* [ClusterMultilineParserList](#clustermultilineparserlist)
 * [ClusterOutput](#clusteroutput)
 * [ClusterOutputList](#clusteroutputlist)
 * [ClusterParser](#clusterparser)
@@ -29,6 +31,8 @@ This Document documents the types introduced by the fluentbit Operator.
 * [FluentBitService](#fluentbitservice)
 * [FluentBitSpec](#fluentbitspec)
 * [InputSpec](#inputspec)
+* [MultilineParser](#multilineparser)
+* [MultilineParserList](#multilineparserlist)
 * [NamespacedFluentBitCfgSpec](#namespacedfluentbitcfgspec)
 * [Output](#output)
 * [OutputList](#outputlist)
@@ -103,6 +107,28 @@ ClusterInputList contains a list of ClusterInput
 | ----- | ----------- | ------ |
 | metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
 | items |  | []ClusterInput |
+
+[Back to TOC](#table-of-contents)
+# ClusterMultilineParser
+
+ClusterMultilineParser is the Schema for the cluster-level multiline parser API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | MultilineParserSpec |
+
+[Back to TOC](#table-of-contents)
+# ClusterMultilineParserList
+
+ClusterMultilineParserList contains a list of ClusterMultilineParser
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []ClusterMultilineParser |
 
 [Back to TOC](#table-of-contents)
 # ClusterOutput
@@ -331,6 +357,7 @@ FluentBitConfigSpec defines the desired state of ClusterFluentBitConfig
 | filterSelector | Select filter plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | outputSelector | Select output plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | parserSelector | Select parser plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| multilineParserSelector | Select multiline parser plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | namespace | If namespace is defined, then the configmap and secret for fluent-bit is in this namespace. If it is not defined, it is in the namespace of the fluentd-operator | *string |
 
 [Back to TOC](#table-of-contents)
@@ -430,6 +457,28 @@ InputSpec defines the desired state of ClusterInput
 | tcp | TCP defines the TCP input plugin configuration | *[input.TCP](plugins/input/tcp.md) |
 
 [Back to TOC](#table-of-contents)
+# MultilineParser
+
+MultilineParser is the Schema of namespace-level multiline parser API
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta) |
+| spec |  | MultilineParserSpec |
+
+[Back to TOC](#table-of-contents)
+# MultilineParserList
+
+MultilineParserList contains a list of MultilineParser
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| metadata |  | [metav1.ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta) |
+| items |  | []MultilineParser |
+
+[Back to TOC](#table-of-contents)
 # NamespacedFluentBitCfgSpec
 
 NamespacedFluentBitCfgSpec defines the desired state of FluentBit
@@ -440,7 +489,10 @@ NamespacedFluentBitCfgSpec defines the desired state of FluentBit
 | filterSelector | Select filter plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | outputSelector | Select output plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | parserSelector | Select parser plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| service | Service defines the global behaviour of the Fluent Bit engine. | *Service |
 | clusterParserSelector | Select cluster level parser config | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| multilineParserSelector | Select multiline parser plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
+| clusterMultilineParserSelector | Select cluster level multiline parser config | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 
 [Back to TOC](#table-of-contents)
 # Output
@@ -572,7 +624,11 @@ ParserSpec defines the desired state of ClusterParser
 | logFile | File to log diagnostic output | string |
 | logLevel | Diagnostic level (error/warning/info/debug/trace) | string |
 | parsersFile | Optional 'parsers' config file (can be multiple) | string |
+| parsersFiles | backward compatible | []string |
 | storage | Configure a global environment for the storage layer in Service. It is recommended to configure the volume and volumeMount separately for this storage. The hostPath type should be used for that Volume in Fluentbit daemon set. | *Storage |
+| emitterName | Per-namespace re-emitter configuration | string |
+| emitterMemBufLimit |  | string |
+| emitterStorageType |  | string |
 
 [Back to TOC](#table-of-contents)
 # Storage
