@@ -40,6 +40,7 @@ func TestOutput_S3_Params(t *testing.T) {
 		StorageClass:             "storage_class",
 		RetryLimit:               ptrAny(int32(1)),
 		ExternalId:               "external_id",
+		Profile:                  "my-profile",
 	}
 
 	expected := params.NewKVs()
@@ -69,6 +70,7 @@ func TestOutput_S3_Params(t *testing.T) {
 	expected.Insert("storage_class", "storage_class")
 	expected.Insert("retry_limit", "1")
 	expected.Insert("external_id", "external_id")
+	expected.Insert("profile", "my-profile")
 
 	kvs, err := s3.Params(sl)
 	g.Expect(err).NotTo(HaveOccurred())
