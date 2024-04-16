@@ -1,0 +1,30 @@
+{{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
+{{- if .Values.fluentbit.parsers.javaMultiline.enable -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterMultilineParser
+metadata:
+  name: java-multiline
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  type: "regex"
+  flushTimeout: 1000
+  keyContent: "log"
+  rules:
+    - start: "start_state"
+      regex: '/^\[?(\d+\-\d+\-\d+ \d+\:\d+\:\d+(\.\d+)?)\]? /'
+      next: "cont"
+    - start: "cont"
+      regex: '/^com\..*/'
+      next: "cont"
+    - start: "cont"
+      regex: '/^\s+.*/'
+      next: "cont"
+    - start: "cont"
+      regex: '/^Caused.*$/'
+      next: "cont"
+{{- end }}
+{{- end }}
+{{- end }}

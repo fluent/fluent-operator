@@ -183,6 +183,8 @@ fluentbit:
       # Use storageType as "filesystem" if you want to use filesystem as the buffering mechanism for tail input.
       storageType: memory
       pauseOnChunksOverlimit: "off"
+      # multiline.parser 
+      # multilineParser: "docker, cri"
     systemd:
       enable: true
       systemdFilter:
@@ -319,6 +321,17 @@ fluentbit:
   # Configure the default filters in FluentBit.
   # The `filter` will filter and parse the collected log information and output the logs into a uniform format. You can choose whether to turn this on or not.
   filter:
+    multiline:
+      enable: false
+      keyContent: log
+      # emitterMemBufLimit 120 (MB)
+      emitterMemBufLimit: 120 
+      parsers:
+        - go
+        - python
+        - java
+        #  use custom multiline parser need set .Values.parsers.javaMultiline.enable = true
+        # - java-multiline
     kubernetes:
       enable: true
       labels: false
@@ -341,6 +354,11 @@ fluentbit:
 
   # removes the hostPath mounts for varlibcontainers, varlogs and systemd.
   disableLogVolumes: false
+
+  parsers:
+    javaMultiline:
+    # use in filter for parser generic springboot multiline log format
+      enable: false
 
 fluentd:
   # Installs a sub chart carrying the CRDs for the fluentd controller. The sub chart is enabled by default.

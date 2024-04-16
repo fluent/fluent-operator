@@ -343,8 +343,6 @@ spec:
                           type: array
                       required:
                       - call
-                      - code
-                      - script
                       type: object
                     modify:
                       description: Modify defines Modify Filter configuration.
@@ -11438,8 +11436,6 @@ spec:
                           type: array
                       required:
                       - call
-                      - code
-                      - script
                       type: object
                     modify:
                       description: Modify defines Modify Filter configuration.
