@@ -65,7 +65,7 @@ type S3 struct {
 	// Specify an external ID for the STS API, can be used with the role_arn parameter if your role requires an external ID.
 	ExternalId string `json:"ExternalId,omitempty"`
 	// Option to specify an AWS Profile for credentials.
-	Profile      string `json:Profile,omitempty`
+	Profile      string `json:"Profile,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
 }
 
