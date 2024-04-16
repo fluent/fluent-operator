@@ -220,6 +220,7 @@ fluentbit:
       logstashPrefix: ks-logstash-log
       bufferSize: 20MB
       traceError: true
+    #      logstashPrefixKey: ks-logstash-log
     #      suppressTypeName: "On"
     #      path: ""
     #      bufferSize: "4KB"
