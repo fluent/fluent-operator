@@ -30,7 +30,7 @@ import (
 // +kubebuilder:object:generate:=true
 
 type MultilineParserSpec struct {
-	MultilineParser *multilineparser.MultilineParser `json:",inline"`
+	*multilineparser.MultilineParser `json:",inline"`
 }
 
 // +kubebuilder:object:root=true
