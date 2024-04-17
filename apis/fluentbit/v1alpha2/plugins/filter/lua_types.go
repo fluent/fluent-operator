@@ -1,9 +1,9 @@
 package filter
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
-	"regexp"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
@@ -17,12 +17,12 @@ import (
 type Lua struct {
 	plugins.CommonParams `json:",inline"`
 	// Path to the Lua script that will be used.
-	Script v1.ConfigMapKeySelector `json:"script"`
+	Script v1.ConfigMapKeySelector `json:"script,omitempty"`
 	// Lua function name that will be triggered to do filtering.
 	// It's assumed that the function is declared inside the Script defined above.
 	Call string `json:"call"`
 	// Inline LUA code instead of loading from a path via script.
-	Code string `json:"code"`
+	Code string `json:"code,omitempty"`
 	// If these keys are matched, the fields are converted to integer.
 	// If more than one key, delimit by space.
 	// Note that starting from Fluent Bit v1.6 integer data types are preserved
