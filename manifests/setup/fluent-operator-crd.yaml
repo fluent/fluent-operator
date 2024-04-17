@@ -5123,6 +5123,9 @@ spec:
                       a later chunk, resulting in data shuffling. This feature prevents
                       this shuffling by using a queue logic for uploads.
                     type: boolean
+                  Profile:
+                    description: Option to specify an AWS Profile for credentials.
+                    type: string
                   Region:
                     description: The AWS region of your S3 bucket
                     type: string
@@ -28752,6 +28755,9 @@ spec:
                       a later chunk, resulting in data shuffling. This feature prevents
                       this shuffling by using a queue logic for uploads.
                     type: boolean
+                  Profile:
+                    description: Option to specify an AWS Profile for credentials.
+                    type: string
                   Region:
                     description: The AWS region of your S3 bucket
                     type: string
