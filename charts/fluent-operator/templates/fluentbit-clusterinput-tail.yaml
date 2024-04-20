@@ -20,6 +20,9 @@ spec:
     {{- else if eq .Values.containerRuntime "crio" }}
     parser: cri
     {{- end }}
+    {{- if .Values.fluentbit.input.tail.multilineParser }}
+    multilineParser: {{ .Values.fluentbit.input.tail.multilineParser | quote }}
+    {{- end }}
     refreshIntervalSeconds: {{ .Values.fluentbit.input.tail.refreshIntervalSeconds }}
     memBufLimit: {{ .Values.fluentbit.input.tail.memBufLimit }}
     {{- if .Values.fluentbit.input.tail.bufferMaxSize }}

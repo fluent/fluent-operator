@@ -8,7 +8,9 @@ metadata:
     app.kubernetes.io/name: fluent-bit
 spec:
   service:
-    parsersFile: parsers.conf
+    parsersFiles:
+      - /fluent-bit/config/parsers.conf
+      - /fluent-bit/config/parsers_multiline.conf
     httpServer: true
   {{- if .Values.fluentbit.logLevel }}
     logLevel: {{ .Values.fluentbit.logLevel }}
@@ -27,6 +29,9 @@ spec:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
   outputSelector:
+    matchLabels:
+      fluentbit.fluent.io/enabled: "true"
+  multilineParserSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"
 {{- end }}

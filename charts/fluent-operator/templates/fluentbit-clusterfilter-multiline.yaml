@@ -1,0 +1,20 @@
+{{- if .Values.Kubernetes -}}
+{{- if .Values.fluentbit.enable -}}
+{{- if .Values.fluentbit.filter.multiline.enable -}}
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFilter
+metadata:
+  name: multiline
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+    fluentbit.fluent.io/component: logging
+spec:
+  match: kube.*
+  filters:
+  - multiline:
+      keyContent: {{ .Values.fluentbit.filter.multiline.keyContent | quote }}
+      emitterMemBufLimit: {{ .Values.fluentbit.filter.multiline.emitterMemBufLimit }}
+      parser: "{{- join "," .Values.fluentbit.filter.multiline.parsers -}}"
+{{- end }}
+{{- end }}
+{{- end }}
