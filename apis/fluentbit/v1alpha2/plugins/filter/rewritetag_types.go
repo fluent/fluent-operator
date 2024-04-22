@@ -1,6 +1,10 @@
 package filter
 
 import (
+	"crypto/md5"
+	"fmt"
+	"strings"
+
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -18,7 +22,7 @@ type RewriteTag struct {
 	// When the filter emits a record under the new Tag, there is an internal emitter
 	// plugin that takes care of the job. Since this emitter expose metrics as any other
 	// component of the pipeline, you can use this property to configure an optional name for it.
-	EmitterName string `json:"emitterName,omitempty"`
+	EmitterName        string `json:"emitterName,omitempty"`
 	EmitterMemBufLimit string `json:"emitterMemBufLimit,omitempty"`
 	EmitterStorageType string `json:"emitterStorageType,omitempty"`
 }
@@ -46,4 +50,12 @@ func (r *RewriteTag) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("Emitter_Storage.type", r.EmitterStorageType)
 	}
 	return kvs, nil
+}
+
+func (r *RewriteTag) MakeNamespaced(ns string) {
+	for idx, rule := range r.Rules {
+		parts := strings.Fields(rule)
+		parts[2] = fmt.Sprintf("%x.%s", md5.Sum([]byte(ns)), parts[2])
+		r.Rules[idx] = strings.Join(parts, " ")
+	}
 }
