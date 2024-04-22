@@ -5,7 +5,7 @@ This page describes the release process and the currently planned schedule for u
 ## Release schedule
 
 | release series | date  (year-month-day) | release shepherd                      |
-| -------------- | ---------------------- | ------------------------------------- |
+|----------------|------------------------|---------------------------------------|
 | v0.1.0         | 2020-02-17             | Guangzhe Huang (GitHub: @huanggze)    |
 | v0.2.0         | 2020-08-27             | Guangzhe Huang (GitHub: @huanggze)    |
 | v0.3.0         | 2020-11-10             | Guangzhe Huang (GitHub: @huanggze)    |
@@ -40,6 +40,7 @@ This page describes the release process and the currently planned schedule for u
 | v2.5.0         | 2023-09-13             | Elon Cheng (GitHub: @wenchajun)       |
 | v2.6.0         | 2023-11-22             | Elon Cheng (GitHub: @wenchajun)       |
 | v2.7.0         | 2023-12-19             | Anthony Treuillier (GitHub: @antrema) |
+| v2.8.0         | 2024-04-22             | Zhang Peng (GitHub: @Gentleelephant)  |
 
 # How to cut a new release
 

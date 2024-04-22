@@ -1,3 +1,57 @@
+## 2.8.0 / 2024-04-22
+### Features
+- Feat: feat: add multiline parser support for fluentbit (#1100) @ksdpmx
+- Feat: feat: enforce Fluentd tests (#1110) @antrema
+- Feat: feat: implement SecretLoader as interface and enforce Fluentd tests u… (#1109) @antrema
+- Feat: namespaced tag re_emitter parameters support (#1085) @chrono2002
+- Feat: LUA filter inline code support (#1081) @chrono2002
+- Feat: feat(disableLogVolumes): expose disableLogVolumes in helm chart (#1082) @L1ghtman2k
+- Feat: feat(chart): Add operator.extraArgs to add extra args to the fluent-operator container (#1074) @alexandrevilain
+- Feat: feat(tls): allow overwriting tls for s3  (#1078) @L1ghtman2k
+- Feat: feat: Emitter storage_type and mem_buf_limit config (#1069) @chrono2002
+- Feat: Rework fluent-bit-watcher and make use of the hot-reload mechanism (#1051) @markusthoemmes
+- Feat: Add clusterinput tail resource to support setting bufferMaxSize (#1052) @opencmit2
+- Feat: feat(1062): Configure logLevel in ClusterFluentBitConfig (#1063) @dennis-ge
+- Feat: feat: support s3 server side encryption (#1039) @cw-Guo
+
+### ENHANCEMENT
+- Helm multiline passer template and usage (#1138) @onecer
+- make lua scripts `code` and `script` optional (#1129) @onecer
+- MultilineParser achieve an effect similar to embedding by using anonymous structs (#1133) @onecer
+- helm template fluentbit output es support logstashPrefixKey (#1119) @onecer
+- Add Profile field for Fluent bit S3 output (#1127) @jeff303
+- auto gen plugins documentation directory (#1121) @onecer
+- build(deps): Bump google.golang.org/protobuf from 1.28.1 to 1.33.0 (#1091) @dependabot
+- build(deps): Bump actions/cache from 3 to 4 (#1055) @dependabot
+- build(deps): Bump actions/setup-go from 4 to 5 (#1034) @dependabot
+- build(deps): Bump sigs.k8s.io/yaml from 1.3.0 to 1.4.0 (#1028) @dependabot
+- build(deps): Bump golang from 1.21.4 to 1.22.0 in /docs/best-practice/forwarding-logs-via-http (#1077) @dependabot
+- build(deps): Bump helm/kind-action from 1.8.0 to 1.9.0 (#1076) @dependabot
+- build(deps): Bump azure/setup-helm from 3 to 4 (#1075) @dependabot
+- build(deps): Bump actions/setup-python from 4 to 5 (#1035) @dependabot
+- build(deps): Bump arm64v8/ruby from 3.2-slim-bullseye to 3.3-slim-bullseye in /cmd/fluent-watcher/fluentd (#1032) @dependabot
+- HostNetwork DNS Policy (#1101) @opp-svega
+- adds servicemonitor (#1089) @chrono2002
+- push image to multiple registry (#1079) @sarathchandra24
+- fluentbit/output/elasticsearch: Add writeOperation option (#1080) @icy
+- Bump fluent-bit to 2.2.2 (#1053) @markusthoemmes
+- Bump Golang version to 1.21 and replace slice utils with stdlib (#1049) @markusthoemmes
+- Add stackdriver output to the Helm Chart (#1040) @UgurcanAkkok
+
+### BUGFIX
+- Fix: Passing variables to es output config is fixed (#1099) @aido93
+- fix fluent-operator clusterrole in manifests directory (#1098) @Cajga
+- fix: delete remaining debug traces (#1107) @antrema
+- fix: ordered fluentd-config #1104 (#1106) @antrema
+- Fix 1090: Path issues (#1093) @sarathchandra24
+- fix: no Path default value for memory buffer #1103 (#1105) @antrema
+- fix build args fluentd image (#1095) @sarathchandra24
+- Fix: attach latest tag to images - DockerHub synchronize with GHCR (#1086) @sarathchandra24
+- fix: incorrect fields in syslog input plugin parameters (#1084) @lukasboettcher
+- fix(fluentd): Use custom plugin content for hash generation (#1059) @MisterMX
+- fix prometheus-remote-write-edge templates error (#1036) @JiaweiGithub
+- Fixed the .spec.loki.tls map rendering in FluentBit loki ClusterOutput (#1031) @isemichastnov
+
 ## 2.7.0 / 2023-12-19
 ### Features
 - Feat: Add copy output plugin for fluentd #1017 (#1018) @antrema
@@ -10,7 +64,7 @@
 - build(deps): Bump golang in /docs/best-practice/forwarding-logs-via-http (#1004) @dependabot
 - build(deps): Bump github.com/onsi/gomega from 1.28.0 to 1.30.0 (#1002) @dependabot
 
-### BUGFIX 
+### BUGFIX
 - fix: Add SSL/TLS settings feature for fluentd output Elasticsearch #418 (#1011) @antrema
 - fix: Add RBAC permissions for input and clusterinput (#1019) @MisterMX
 - fix: missing CRD entries and documentation #1020 (#1022) @antrema
