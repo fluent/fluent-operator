@@ -17,6 +17,8 @@ resources:
 - fluentd.fluent.io_clusterfluentdconfigs.yaml
 - fluentd.fluent.io_fluentdconfigs.yaml
 - fluentd.fluent.io_filters.yaml
+- fluentd.fluent.io_clusterinputs.yaml
+- fluentd.fluent.io_inputs.yaml
 - fluentd.fluent.io_clusterfilters.yaml
 - fluentd.fluent.io_outputs.yaml
 - fluentd.fluent.io_clusteroutputs.yaml
