@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"crypto/md5"
 	"fmt"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
@@ -188,4 +189,14 @@ func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("Kube_Token_TTL", k.KubeTokenTTL)
 	}
 	return kvs, nil
+}
+
+func (k *Kubernetes) MakeNamespaced(ns string) {
+	if k.KubeTagPrefix == "" {
+		k.KubeTagPrefix = "kube.var.log.containers."
+	}
+	k.KubeTagPrefix = fmt.Sprintf("%x.%s", md5.Sum([]byte(ns)), k.KubeTagPrefix)
+	if k.RegexParser != "" {
+		k.RegexParser = fmt.Sprintf("%s-%x", k.RegexParser, md5.Sum([]byte(ns)))
+	}
 }

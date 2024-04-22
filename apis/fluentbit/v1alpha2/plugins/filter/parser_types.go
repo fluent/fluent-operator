@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"crypto/md5"
 	"fmt"
 	"strings"
 
@@ -58,4 +59,13 @@ func (p *Parser) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("Unescape_Key", fmt.Sprint(*p.UnescapeKey))
 	}
 	return kvs, nil
+}
+
+func (p *Parser) MakeNamespaced(ns string) {
+	parsers := strings.Split(p.Parser, ",")
+	for i := range parsers {
+		parsers[i] = strings.Trim(parsers[i], " ")
+		parsers[i] = fmt.Sprintf("%s-%x", parsers[i], md5.Sum([]byte(ns)))
+	}
+	p.Parser = strings.Join(parsers, ",")
 }

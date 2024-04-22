@@ -18,15 +18,11 @@ package v1alpha2
 
 import (
 	"bytes"
-	"crypto/md5"
 	"fmt"
 	"reflect"
 	"sort"
-	"strings"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/custom"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/filter"
 	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -83,27 +79,9 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex)))
 			}
 
-			switch f := p.(type) {
-			case *filter.Kubernetes:
-				kubeTagPrefix := f.KubeTagPrefix
-				if kubeTagPrefix == "" {
-					kubeTagPrefix = "kube.var.log.containers."
-				}
-				f.KubeTagPrefix = fmt.Sprintf("%x.%s", md5.Sum([]byte(item.Namespace)), kubeTagPrefix)
-				if f.RegexParser != "" {
-					f.RegexParser = fmt.Sprintf("%s-%x", f.RegexParser, md5.Sum([]byte(item.Namespace)))
-				}
-			case *filter.Parser:
-				parsers := strings.Split(f.Parser, ",")
-				for i := range parsers {
-					parsers[i] = strings.Trim(parsers[i], " ")
-					parsers[i] = fmt.Sprintf("%s-%x", parsers[i], md5.Sum([]byte(item.Namespace)))
-				}
-				f.Parser = strings.Join(parsers, ",")
-			case *custom.CustomPlugin:
-				if f.Config != "" {
-					f.Config = custom.MakeCustomConfigNamespaced(f.Config, item.Namespace)
-				}
+			var iface interface{} = p
+			if f, ok := iface.(plugins.Namespaceable); ok {
+				f.MakeNamespaced(item.Namespace)
 			}
 
 			kvs, err := p.Params(sl)
