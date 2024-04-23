@@ -15,7 +15,6 @@ func TestOutput_DataDog_Params(t *testing.T) {
 
 	dd := DataDog{
 		Host:          "http-intake.logs.datadoghq.com",
-		APIKey:        "1234apikey",
 		TLS:           ptrBool(true),
 		Compress:      "gzip",
 		Service:       "service_name",
@@ -31,7 +30,6 @@ func TestOutput_DataDog_Params(t *testing.T) {
 	expected.Insert("Host", "http-intake.logs.datadoghq.com")
 	expected.Insert("TLS", "true")
 	expected.Insert("compress", "gzip")
-	expected.Insert("apikey", "1234apikey")
 	expected.Insert("json_date_key", "timestamp")
 	expected.Insert("include_tag_key", "true")
 	expected.Insert("tag_key", "tagkey")
