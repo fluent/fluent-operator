@@ -1,6 +1,10 @@
 package filter
 
 import (
+	"crypto/md5"
+	"fmt"
+	"strings"
+
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -46,4 +50,12 @@ func (r *RewriteTag) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("Emitter_Storage.type", r.EmitterStorageType)
 	}
 	return kvs, nil
+}
+
+func (r *RewriteTag) MakeNamespaced(ns string) {
+	for idx, rule := range r.Rules {
+		parts := strings.Fields(rule)
+		parts[2] = fmt.Sprintf("%x.%s", md5.Sum([]byte(ns)), parts[2])
+		r.Rules[idx] = strings.Join(parts, " ")
+	}
 }

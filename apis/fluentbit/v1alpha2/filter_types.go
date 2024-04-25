@@ -18,15 +18,13 @@ package v1alpha2
 
 import (
 	"bytes"
-	"crypto/md5"
 	"fmt"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/custom"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"reflect"
 	"sort"
-	"strings"
+
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -80,32 +78,12 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 			if item.Spec.MatchRegex != "" {
 				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex)))
 			}
-			for _, filter := range item.Spec.FilterItems {
-				if filter.Kubernetes != nil {
-					kubeTagPrefix := filter.Kubernetes.KubeTagPrefix
-					if kubeTagPrefix == "" {
-						kubeTagPrefix = "kube.var.log.containers."
-					}
-					filter.Kubernetes.KubeTagPrefix = fmt.Sprintf("%x.%s", md5.Sum([]byte(item.Namespace)), kubeTagPrefix)
-					if filter.Kubernetes.RegexParser != "" {
-						filter.Kubernetes.RegexParser = fmt.Sprintf("%s-%x", filter.Kubernetes.RegexParser, md5.Sum([]byte(item.Namespace)))
-					}
-				}
-				if filter.Parser != nil {
-					parsers := strings.Split(filter.Parser.Parser, ",")
-					parserString := ""
-					for i := range parsers {
-						parsers[i] = strings.Trim(parsers[i], " ")
-						parsers[i] = fmt.Sprintf("%s-%x", parsers[i], md5.Sum([]byte(item.Namespace)))
-						parserString = parserString + parsers[i] + ","
-					}
-					parserString = strings.TrimSuffix(parserString, ",")
-					filter.Parser.Parser = parserString
-				}
-				if filter.CustomPlugin != nil && filter.CustomPlugin.Config != "" {
-					filter.CustomPlugin.Config = custom.MakeCustomConfigNamespaced(filter.CustomPlugin.Config, item.Namespace)
-				}
+
+			var iface interface{} = p
+			if f, ok := iface.(plugins.Namespaceable); ok {
+				f.MakeNamespaced(item.Namespace)
 			}
+
 			kvs, err := p.Params(sl)
 			if err != nil {
 				return err

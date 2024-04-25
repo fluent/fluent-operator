@@ -3,8 +3,9 @@ package custom
 import (
 	"bytes"
 	"fmt"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	"strings"
+
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
@@ -26,6 +27,12 @@ func (a *CustomPlugin) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 	kvs.Content = indentation(a.Config)
 	return kvs, nil
+}
+
+func (c *CustomPlugin) MakeNamespaced(ns string) {
+	if c.Config != "" {
+		c.Config = MakeCustomConfigNamespaced(c.Config, ns)
+	}
 }
 
 func indentation(str string) string {
