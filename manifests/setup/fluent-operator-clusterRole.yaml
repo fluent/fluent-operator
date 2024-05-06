@@ -57,11 +57,16 @@ rules:
       - clusteroutputs
       - clusteroutputs/finalizers
       - clusterparsers
+      - clusterparsers/finalizers
       - fluentbitconfigs
+      - fluentbitconfigs/finalizers
+      - multilineparsers
+      - multilineparsers/finalizers
+      - clustermultilineparsers
+      - clustermultilineparsers/finalizers
       - filters
       - outputs
       - parsers
-      - clusterparsers/finalizers
     verbs:
       - create
       - delete
