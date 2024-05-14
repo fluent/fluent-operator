@@ -188,7 +188,7 @@ func crds(docsLocations []DocumentsLocation) {
 				buffer.WriteString("[Back to TOC](#table-of-contents)\n")
 			}
 		}
-		
+
 		f, _ := os.Create(fmt.Sprintf("./docs/%s.md", dl.name))
 		f.WriteString(fmt.Sprintf(firstParagraph, dl.name) + buffer.String())
 	}
