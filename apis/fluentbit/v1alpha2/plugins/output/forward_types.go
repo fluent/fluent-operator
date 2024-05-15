@@ -19,6 +19,9 @@ type Forward struct {
 	// +kubebuilder:validation:Minimum:=1
 	// +kubebuilder:validation:Maximum:=65535
 	Port *int32 `json:"port,omitempty"`
+	// Overwrite the tag as we transmit. This allows the receiving pipeline start
+	// fresh, or to attribute source.
+	Tag string `json:"tag,omitempty"`
 	// Set timestamps in integer format, it enable compatibility mode for Fluentd v0.12 series.
 	TimeAsInteger *bool `json:"timeAsInteger,omitempty"`
 	// Always send options (with "size"=count of messages)
@@ -52,6 +55,9 @@ func (f *Forward) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if f.Port != nil {
 		kvs.Insert("Port", fmt.Sprint(*f.Port))
+	}
+	if f.Tag != "" {
+		kvs.Insert("Tag", f.Tag)
 	}
 	if f.TimeAsInteger != nil {
 		kvs.Insert("Time_as_Integer", fmt.Sprint(*f.TimeAsInteger))

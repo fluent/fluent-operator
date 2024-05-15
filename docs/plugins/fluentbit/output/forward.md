@@ -7,6 +7,7 @@ Forward is the protocol used by Fluentd to route messages between peers. <br /> 
 | ----- | ----------- | ------ |
 | host | Target host where Fluent-Bit or Fluentd are listening for Forward messages. | string |
 | port | TCP Port of the target service. | *int32 |
+| tag | Overwrite the tag as we transmit. This allows the receiving pipeline start fresh, or to attribute source. | string |
 | timeAsInteger | Set timestamps in integer format, it enable compatibility mode for Fluentd v0.12 series. | *bool |
 | sendOptions | Always send options (with \"size\"=count of messages) | *bool |
 | requireAckResponse | Send \"chunk\"-option and wait for \"ack\" response from server. Enables at-least-once and receiving server can control rate of traffic. (Requires Fluentd v0.14.0+ server) | *bool |
