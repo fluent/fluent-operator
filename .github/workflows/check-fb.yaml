@@ -1,4 +1,4 @@
-name: Building Fluent Bit image
+name: Check Building Fluent Bit image
 
 on:
   workflow_dispatch:
