@@ -16,6 +16,11 @@ type Elasticsearch struct {
 	Scheme *string `json:"scheme,omitempty"`
 	// Path defines the REST API endpoint of Elasticsearch to post write requests (default: nil).
 	Path *string `json:"path,omitempty"`
+	// Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must
+	// be set as well and host, port, user and password are ignored.
+	CloudId *plugins.Secret `json:"cloudId,omitempty"`
+	// Authenticate towards Elastic Cloud using cloudAuth.
+	CloudAuth *plugins.Secret `json:"cloudAuth,omitempty"`
 	// IndexName defines the placeholder syntax of Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section.
 	IndexName *string `json:"indexName,omitempty"`
 	// If true, Fluentd uses the conventional index name format logstash-%Y.%m.%d (default: false). This option supersedes the index_name option.
