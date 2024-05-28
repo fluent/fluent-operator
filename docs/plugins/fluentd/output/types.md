@@ -17,6 +17,7 @@ Output defines all available output plugins and their parameters
 | forward | out_forward plugin | *Forward |
 | http | out_http plugin | *Http |
 | elasticsearch | out_es plugin | *Elasticsearch |
+| elasticsearchDataStream | out_es datastreams plugin | *ElasticsearchDataStream |
 | opensearch | out_opensearch plugin | *Opensearch |
 | kafka | out_kafka plugin | *Kafka2 |
 | s3 | out_s3 plugin | *S3 |
