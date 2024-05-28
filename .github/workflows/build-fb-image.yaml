@@ -1,24 +1,12 @@
 name: Building Fluent Bit image
 
 on:
-  push:
-    branches:
-      - 'master'
-    tags:
-      - 'v*'
-    paths:
-      - ".github/workflows/build-fb-image.yaml"
-      - "cmd/fluent-watcher/fluentbit/**"
-      - "cmd/fluent-watcher/hooks/**"
-      - "pkg/filenotify/**"
-  pull_request:
-    branches:
-      - "master"
-    paths:
-      - ".github/workflows/build-fb-image.yaml"
-      - "cmd/fluent-watcher/fluentbit/**"
-      - "cmd/fluent-watcher/hooks/**"
-      - "pkg/filenotify/**"
+  workflow_dispatch:
+    inputs:
+      docker_tag_version:
+        description: 'Fluent Bit image release version'
+        required: true
+        default: '3.0.4'
 
 env:
   DOCKER_REPO: 'kubesphere'
@@ -38,10 +26,21 @@ jobs:
       DOCKER_IMG_NAME: ${{ steps.set-outputs.outputs.DOCKER_IMG_NAME }}
       version: ${{ steps.image-metadata.outputs.version }}
       tags: ${{ steps.image-metadata.outputs.tags }}
+      release_tags: ${{ steps.image-tags.outputs.tags }}
       labels: ${{ steps.image-metadata.outputs.labels }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Extract version parts
+        id: extract_version
+        run: |
+          VERSION=${{ github.event.inputs.docker_tag_version }}
+          VERSION_WITHOUT_V=${VERSION#v}
+          MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
+
+          echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
+          echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
             
       - name: docker metadata for building
         id: image-metadata
@@ -50,11 +49,25 @@ jobs:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
           tags: |
             raw,latest
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
+
+      - name: docker tags for cloning
+        id: image-tags
+        uses: docker/metadata-action@v5
+        with:
+          tags: |
+            raw,latest
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
 
       - name: Set outputs
         id: set-outputs
@@ -71,9 +84,20 @@ jobs:
       version: ${{ steps.image-metadata.outputs.version }}
       tags: ${{ steps.image-metadata.outputs.tags }}
       labels: ${{ steps.image-metadata.outputs.labels }}
+      release_tags: ${{ steps.image-tags.outputs.tags }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Extract version parts
+        id: extract_version
+        run: |
+          VERSION=${{ github.event.inputs.docker_tag_version }}
+          VERSION_WITHOUT_V=${VERSION#v}
+          MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
+
+          echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
+          echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
 
       - name: docker metadata
         id: image-metadata
@@ -84,12 +108,27 @@ jobs:
             latest=false
             suffix=-debug
           tags: |
-            raw,latest
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
+
+      - name: docker tags for cloning
+        id: image-tags
+        uses: docker/metadata-action@v5
+        with:
+          flavor: |
+            latest=false
+            suffix=-debug
+          tags: |
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
       
       - name: Set outputs
         id: set-outputs
@@ -213,7 +252,7 @@ jobs:
       target_image: "${{ needs.build-prod-image-metadata.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
       platforms: "['linux/arm64', 'linux/amd64']"
-      is_latest: true
+      tags: ${{ needs.build-prod-image-metadata.outputs.release_tags }}
     secrets:
       source_registry_username:  ${{ github.actor }}
       source_registry_token: ${{ secrets.GITHUB_TOKEN }}
@@ -233,8 +272,7 @@ jobs:
       target_image: "${{ needs.build-debug-image-metadata.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
       platforms: "['linux/arm64', 'linux/amd64']"
-      is_latest: false
-      suffix: "-debug"
+      tags: ${{ needs.build-debug-image-metadata.outputs.release_tags }}
     secrets:
       source_registry_username:  ${{ github.actor }}
       source_registry_token: ${{ secrets.GITHUB_TOKEN }}

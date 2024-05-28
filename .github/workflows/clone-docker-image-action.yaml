@@ -24,16 +24,10 @@
           required: false
           type: string
           default: '["linux/arm64", "linux/amd64"]'
-        suffix:
-          description: 'The suffix to append to the target image'
+        tags:
+          description: 'The tags to apply to the target image'
           required: false
           type: string
-          default: ''
-        is_latest:
-          description: 'Whether to tag the image as latest'
-          required: false
-          type: boolean
-          default: false
       secrets: 
         source_registry_token:
           description: The Github token or similar to authenticate with for the registry.
@@ -73,27 +67,17 @@
       outputs:
         tags: ${{ steps.tags-converter.outputs.TAGS }}
       steps:
-        - name: docker metadata for tags
-          id: tags-metadata
-          uses: docker/metadata-action@v5
-          with:
-            flavor: |
-              latest=${{ inputs.is_latest }}
-              suffix=${{ inputs.suffix }}
-            tags: |
-              raw,latest
-              type=ref,event=branch
-              type=ref,event=pr
-              type=ref,event=tag
-              type=semver,pattern={{version}}
-              type=semver,pattern={{major}}.{{minor}}
+        - name: determine tags
+          id: display-tags
+          run: |
+            echo "input tags: ${{ inputs.tags }}"
 
         - name: Convert tags to JSON array
           id: tags-converter
           run: |
 
             # Get the line-separated list of tags
-            TAGS="${{ steps.tags-metadata.outputs.tags }}"
+            TAGS="${{ inputs.tags }}"
 
             # Initialize an empty array
             JSON_TAGS="["
@@ -103,11 +87,12 @@
               JSON_TAGS+="\"$tag\","
             done <<< "$TAGS"
 
-            # print the JSON array
-            echo "TAGS=$JSON_TAGS"
-
             # Remove the trailing comma and close the array
             JSON_TAGS="${JSON_TAGS%,}]"
+
+            # print the JSON array
+            echo "TAGS=$JSON_TAGS"
+            
             # Output the JSON array
             echo "TAGS=$JSON_TAGS" >> $GITHUB_OUTPUT
   

@@ -1,16 +1,12 @@
 name: Building Fluentd image
 
 on:
-  push:
-    branches:
-      - 'master'
-    tags:
-      - 'v*'
-    paths:
-      - ".github/workflows/build-fd-image.yaml"
-      - "cmd/fluent-watcher/fluentd/**"
-      - "cmd/fluent-watcher/hooks/**"
-      - "pkg/filenotify/**"
+  workflow_dispatch:
+    inputs:
+      docker_tag_version:
+        description: 'Fluentd image release version'
+        required: true
+        default: '1.15.3'
 
 env:
   DOCKER_REPO: 'kubesphere'
@@ -34,6 +30,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Extract version parts
+        id: extract_version
+        run: |
+          VERSION=${{ github.event.inputs.docker_tag_version }}
+          VERSION_WITHOUT_V=${VERSION#v}
+          MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
+
+          echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
+          echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
             
       - name: docker metadata for amd64
         id: image-metadata
@@ -45,11 +51,12 @@ jobs:
             suffix=-amd64
           tags: |
             raw,latest
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
 
       - name: Set outputs
         id: set-outputs
@@ -67,6 +74,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Extract version parts
+        id: extract_version
+        run: |
+          VERSION=${{ github.event.inputs.docker_tag_version }}
+          VERSION_WITHOUT_V=${VERSION#v}
+          MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
+
+          echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
+          echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
             
       - name: docker metadata for arm64
         id: image-metadata
@@ -78,11 +95,12 @@ jobs:
             suffix=-arm64
           tags: |
             raw,latest
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
 
       - name: Set outputs
         id: set-outputs
@@ -98,9 +116,20 @@ jobs:
       version: ${{ steps.image-metadata.outputs.version }}
       tags: ${{ steps.image-metadata.outputs.tags }}
       labels: ${{ steps.image-metadata.outputs.labels }}
+      release_tags: ${{ steps.image-tags.outputs.tags }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Extract version parts
+        id: extract_version
+        run: |
+          VERSION=${{ github.event.inputs.docker_tag_version }}
+          VERSION_WITHOUT_V=${VERSION#v}
+          MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
+
+          echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
+          echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
             
       - name: docker metadata for arm64 base image
         id: image-metadata
@@ -111,12 +140,26 @@ jobs:
             latest=false
             suffix=-arm64-base
           tags: |
-            raw,latest
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
+      - name: docker metadata for arm64 base image
+        id: image-tags
+        uses: docker/metadata-action@v5
+        with:
+          flavor: |
+            latest=false
+            suffix=-arm64-base
+          tags: |
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
 
       - name: Set outputs
         id: set-outputs
@@ -221,8 +264,7 @@ jobs:
       target_image: "${{ needs.build-arm64-base-image-metadata.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
       platforms: "['linux/arm64']"
-      is_latest: false
-      suffix: "-arm64-base"
+      tags: ${{ needs.build-arm64-base-image-metadata.outputs.release_tags }}
     secrets:
       source_registry_username:  ${{ github.actor }}
       source_registry_token: ${{ secrets.GITHUB_TOKEN }}
@@ -291,12 +333,24 @@ jobs:
       version: ${{ steps.image-metadata.outputs.version }}
       tags: ${{ steps.image-metadata.outputs.tags }}
       labels: ${{ steps.image-metadata.outputs.labels }}
+      release_tags: ${{ steps.image-tags.outputs.tags }}
+
     steps:
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract version parts
+        id: extract_version
+        run: |
+          VERSION=${{ github.event.inputs.docker_tag_version }}
+          VERSION_WITHOUT_V=${VERSION#v}
+          MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
+
+          echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
+          echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
 
       - name: docker metadata for manifest
         id: image-metadata
@@ -304,12 +358,24 @@ jobs:
         with:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
           tags: |
-            raw,latest
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
+      
+      - name: docker tags for cloning
+        id: image-tags
+        uses: docker/metadata-action@v5
+        with:
+          tags: |
+            type=raw,value=${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.MAJOR_MINOR }}
+            type=raw,value=v${{ env.MAJOR_MINOR }}
+        env:
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
             
       - name: Set outputs
         id: set-outputs
@@ -352,7 +418,7 @@ jobs:
       target_image: "${{ needs.prod-image-manifest.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
       platforms: "['linux/arm64', 'linux/amd64']"
-      is_latest: true
+      tags: ${{ needs.prod-image-manifest.outputs.release_tags }}
     secrets:
       source_registry_username:  ${{ github.actor }}
       source_registry_token: ${{ secrets.GITHUB_TOKEN }}
