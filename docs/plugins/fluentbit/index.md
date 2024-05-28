@@ -31,7 +31,7 @@
   - [kafka](output/kafka.md)
   - [loki](output/loki.md)
   - [null](output/null.md)
-  - [opensearch](output/opensearch.md)
+  - [opensearch](output/open_search.md)
   - [opentelemetry](output/opentelemetry.md)
   - [prometheus remote write](output/prometheus-remote-write.md)
   - [splunk](output/splunk.md)
