@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"os/exec"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"syscall"
@@ -19,7 +20,8 @@ import (
 )
 
 const (
-	defaultBinPath      = "/usr/local/bundle/bin/fluentd"
+	defaultBinPath      = "/usr/bin/fluentd"
+	defaultArm64BinPath = "/usr/local/bundle/bin/fluentd"
 	defaultCfgPath      = "/fluentd/etc/fluent.conf"
 	defaultWatchDir     = "/fluentd/etc"
 	defaultPluginPath   = "/fluentd/plugins"
@@ -48,7 +50,16 @@ var pollInterval time.Duration
 
 func main() {
 
-	flag.StringVar(&binPath, "b", defaultBinPath, "The fluentd binary path.")
+	logger = log.NewLogfmtLogger(os.Stdout)
+
+	_ = level.Info(logger).Log("msg", "Current architecture", "arch", runtime.GOARCH)
+
+	switch runtime.GOARCH {
+	case "arm64":
+		flag.StringVar(&binPath, "b", defaultArm64BinPath, "The fluentd binary path for arm64.")
+	default:
+		flag.StringVar(&binPath, "b", defaultBinPath, "The fluentd binary path for amd64.")
+	}
 	flag.StringVar(&configPath, "c", defaultCfgPath, "The config file path.")
 	flag.StringVar(&pluginPath, "p", defaultPluginPath, "The config file path.")
 	flag.BoolVar(&exitOnFailure, "exit-on-failure", false, "If fluentd exits with failure, also exit the watcher.")
