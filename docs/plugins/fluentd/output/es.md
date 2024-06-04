@@ -1,4 +1,4 @@
-# Elasticsearch
+# ElasticsearchCommon
 
 Elasticsearch defines the parameters for out_es output plugin
 
@@ -12,9 +12,6 @@ Elasticsearch defines the parameters for out_es output plugin
 | path | Path defines the REST API endpoint of Elasticsearch to post write requests (default: nil). | *string |
 | cloudId | Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must be set as well and host, port, user and password are ignored. | *[plugins.Secret](../secret.md) |
 | cloudAuth | Authenticate towards Elastic Cloud using cloudAuth. | *[plugins.Secret](../secret.md) |
-| indexName | IndexName defines the placeholder syntax of Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section. | *string |
-| logstashFormat | If true, Fluentd uses the conventional index name format logstash-%Y.%m.%d (default: false). This option supersedes the index_name option. | *bool |
-| logstashPrefix | LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash). | *string |
 | user | Optional, The login credentials to connect to Elasticsearch | *[plugins.Secret](../secret.md) |
 | password | Optional, The login credentials to connect to Elasticsearch | *[plugins.Secret](../secret.md) |
 | sslVerify | Optional, Force certificate validation | *bool |
@@ -22,3 +19,21 @@ Elasticsearch defines the parameters for out_es output plugin
 | clientCert | Optional, Absolute path to client Certificate file | *string |
 | clientKey | Optional, Absolute path to client private Key file | *string |
 | clientKeyPassword | Optional, password for ClientKey file | *[plugins.Secret](../secret.md) |
+# Elasticsearch
+
+
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| indexName | IndexName defines the placeholder syntax of Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section. | *string |
+| logstashFormat | If true, Fluentd uses the conventional index name format logstash-%Y.%m.%d (default: false). This option supersedes the index_name option. | *bool |
+| logstashPrefix | LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash). | *string |
+# ElasticsearchDataStream
+
+
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| dataStreamName | You can specify Elasticsearch data stream name by this parameter. This parameter is mandatory for elasticsearch_data_stream | *string |

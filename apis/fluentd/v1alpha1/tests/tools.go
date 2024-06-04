@@ -367,6 +367,73 @@ spec:
       logstashPrefix: ks-logstash-log
 `
 
+	FluentdclusterOutput2ESDataStream    fluentdv1alpha1.ClusterOutput
+	FluentdclusterOutput2ESDataStreamRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-es
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec: 
+  outputs: 
+  - elasticsearchDataStream:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      dataStreamName: test-ds
+`
+	FluentdclusterOutput2CopyESDataStream    fluentdv1alpha1.ClusterOutput
+	FluentdclusterOutput2CopyESDataStreamRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-es-copy
+labels:
+  output.fluentd.fluent.io/enabled: "true"
+spec:
+  outputs:
+  - copy:
+      copyMode: no_copy
+  - elasticsearchDataStream:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      dataStreamName: es1-notag-1
+      port: 9243
+      scheme: https
+      sslVerify: false
+      user:
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: es-credentials
+      password:
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: es-credentials
+    buffer:
+      type: memory
+      flushMode: immediate
+  - elasticsearchDataStream:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      dataStreamName: es1-notag-2
+      port: 9243
+      scheme: https
+      sslVerify: false
+      user:
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: es-credentials
+      password:
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: es-credentials
+    buffer:
+      type: memory
+      flushMode: immediate
+`
+
 	FluentdOutput2ES1    fluentdv1alpha1.Output
 	FluentdOutput2ES1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -971,6 +1038,8 @@ func init() {
 			ParseIntoObject(FluentdClusterOutputBufferRaw, &FluentdClusterOutputBuffer)
 			ParseIntoObject(FluentdClusterOutputMemoryBufferRaw, &FluentdClusterOutputMemoryBuffer)
 			ParseIntoObject(FluentdclusterOutput2ESRaw, &FluentdclusterOutput2ES)
+			ParseIntoObject(FluentdclusterOutput2ESDataStreamRaw, &FluentdclusterOutput2ESDataStream)
+			ParseIntoObject(FluentdclusterOutput2CopyESDataStreamRaw, &FluentdclusterOutput2CopyESDataStream)
 			ParseIntoObject(FluentdOutput2ES1Raw, &FluentdOutput2ES1)
 			ParseIntoObject(FluentdOutput2ES2Raw, &FluentdOutput2ES2)
 			ParseIntoObject(FluentdOutput2ES3Raw, &FluentdOutput2ES3)

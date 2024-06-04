@@ -34,6 +34,8 @@ type Output struct {
 	Http *Http `json:"http,omitempty"`
 	// out_es plugin
 	Elasticsearch *Elasticsearch `json:"elasticsearch,omitempty"`
+	// out_es datastreams plugin
+	ElasticsearchDataStream *ElasticsearchDataStream `json:"elasticsearchDataStream,omitempty"`
 	// out_opensearch plugin
 	Opensearch *Opensearch `json:"opensearch,omitempty"`
 	// out_kafka plugin
@@ -133,6 +135,11 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 	if o.Elasticsearch != nil {
 		ps.InsertType(string(params.ElasticsearchOutputType))
 		return o.elasticsearchPlugin(ps, loader)
+	}
+
+	if o.ElasticsearchDataStream != nil {
+		ps.InsertType(string(params.ElasticsearchDataStreamOutputType))
+		return o.elasticsearchDataStreamPlugin(ps, loader)
 	}
 
 	if o.Opensearch != nil {
@@ -383,65 +390,75 @@ func (o *Output) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 	return parent
 }
 
-func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
-	if o.Elasticsearch.Host != nil {
-		parent.InsertPairs("host", fmt.Sprint(*o.Elasticsearch.Host))
+func (o *Output) elasticsearchPluginCommon(common *ElasticsearchCommon, parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+	if common.Host != nil {
+		parent.InsertPairs("host", fmt.Sprint(*common.Host))
 	}
 
-	if o.Elasticsearch.Port != nil {
-		parent.InsertPairs("port", fmt.Sprint(*o.Elasticsearch.Port))
+	if common.Port != nil {
+		parent.InsertPairs("port", fmt.Sprint(*common.Port))
 	}
 
-	if o.Elasticsearch.Hosts != nil {
-		parent.InsertPairs("hosts", fmt.Sprint(*o.Elasticsearch.Hosts))
+	if common.Hosts != nil {
+		parent.InsertPairs("hosts", fmt.Sprint(*common.Hosts))
 	}
 
-	if o.Elasticsearch.User != nil {
-		user, err := loader.LoadSecret(*o.Elasticsearch.User)
+	if common.User != nil {
+		user, err := loader.LoadSecret(*common.User)
 		if err != nil {
 			return nil, err
 		}
 		parent.InsertPairs("user", user)
 	}
 
-	if o.Elasticsearch.Password != nil {
-		pwd, err := loader.LoadSecret(*o.Elasticsearch.Password)
+	if common.Password != nil {
+		pwd, err := loader.LoadSecret(*common.Password)
 		if err != nil {
 			return nil, err
 		}
 		parent.InsertPairs("password", pwd)
 	}
 
-	if o.Elasticsearch.SslVerify != nil {
-		parent.InsertPairs("ssl_verify", fmt.Sprint(*o.Elasticsearch.SslVerify))
+	if common.SslVerify != nil {
+		parent.InsertPairs("ssl_verify", fmt.Sprint(*common.SslVerify))
 	}
 
-	if o.Elasticsearch.CAFile != nil {
-		parent.InsertPairs("ca_file", fmt.Sprint(*o.Elasticsearch.CAFile))
+	if common.CAFile != nil {
+		parent.InsertPairs("ca_file", fmt.Sprint(*common.CAFile))
 	}
 
-	if o.Elasticsearch.ClientCert != nil {
-		parent.InsertPairs("client_cert", fmt.Sprint(*o.Elasticsearch.ClientCert))
+	if common.ClientCert != nil {
+		parent.InsertPairs("client_cert", fmt.Sprint(*common.ClientCert))
 	}
 
-	if o.Elasticsearch.ClientKey != nil {
-		parent.InsertPairs("client_key", fmt.Sprint(*o.Elasticsearch.ClientKey))
+	if common.ClientKey != nil {
+		parent.InsertPairs("client_key", fmt.Sprint(*common.ClientKey))
 	}
 
-	if o.Elasticsearch.ClientKeyPassword != nil {
-		pwd, err := loader.LoadSecret(*o.Elasticsearch.ClientKeyPassword)
+	if common.ClientKeyPassword != nil {
+		pwd, err := loader.LoadSecret(*common.ClientKeyPassword)
 		if err != nil {
 			return nil, err
 		}
 		parent.InsertPairs("client_key_pass", pwd)
 	}
 
-	if o.Elasticsearch.Scheme != nil {
-		parent.InsertPairs("scheme", fmt.Sprint(*o.Elasticsearch.Scheme))
+	if common.Scheme != nil {
+		parent.InsertPairs("scheme", fmt.Sprint(*common.Scheme))
 	}
 
-	if o.Elasticsearch.Path != nil {
-		parent.InsertPairs("path", fmt.Sprint(*o.Elasticsearch.Path))
+	if common.Path != nil {
+		parent.InsertPairs("path", fmt.Sprint(*common.Path))
+	}
+
+	return parent, nil
+}
+
+func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+
+	parent, err := o.elasticsearchPluginCommon(&o.Elasticsearch.ElasticsearchCommon, parent, loader)
+	if err != nil {
+		return nil, err
 	}
 
 	if o.Elasticsearch.IndexName != nil {
@@ -454,6 +471,20 @@ func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.
 
 	if o.Elasticsearch.LogstashPrefix != nil {
 		parent.InsertPairs("logstash_prefix", fmt.Sprint(*o.Elasticsearch.LogstashPrefix))
+	}
+
+	return parent, nil
+}
+
+func (o *Output) elasticsearchDataStreamPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+
+	parent, err := o.elasticsearchPluginCommon(&o.ElasticsearchDataStream.ElasticsearchCommon, parent, loader)
+	if err != nil {
+		return nil, err
+	}
+
+	if o.ElasticsearchDataStream.DataStreamName != nil {
+		parent.InsertPairs("data_stream_name", fmt.Sprint(*o.ElasticsearchDataStream.DataStreamName))
 	}
 
 	return parent, nil

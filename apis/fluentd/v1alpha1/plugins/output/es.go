@@ -3,7 +3,7 @@ package output
 import "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
 
 // Elasticsearch defines the parameters for out_es output plugin
-type Elasticsearch struct {
+type ElasticsearchCommon struct {
 	// The hostname of your Elasticsearch node (default: localhost).
 	Host *string `json:"host,omitempty"`
 	// The port number of your Elasticsearch node (default: 9200).
@@ -21,12 +21,6 @@ type Elasticsearch struct {
 	CloudId *plugins.Secret `json:"cloudId,omitempty"`
 	// Authenticate towards Elastic Cloud using cloudAuth.
 	CloudAuth *plugins.Secret `json:"cloudAuth,omitempty"`
-	// IndexName defines the placeholder syntax of Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section.
-	IndexName *string `json:"indexName,omitempty"`
-	// If true, Fluentd uses the conventional index name format logstash-%Y.%m.%d (default: false). This option supersedes the index_name option.
-	LogstashFormat *bool `json:"logstashFormat,omitempty"`
-	// LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash).
-	LogstashPrefix *string `json:"logstashPrefix,omitempty"`
 	// Optional, The login credentials to connect to Elasticsearch
 	User *plugins.Secret `json:"user,omitempty"`
 	// Optional, The login credentials to connect to Elasticsearch
@@ -41,4 +35,22 @@ type Elasticsearch struct {
 	ClientKey *string `json:"clientKey,omitempty"`
 	// Optional, password for ClientKey file
 	ClientKeyPassword *plugins.Secret `json:"clientKeyPassword,omitempty"`
+}
+
+type Elasticsearch struct {
+	ElasticsearchCommon `json:",inline"`
+
+	// IndexName defines the placeholder syntax of Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section.
+	IndexName *string `json:"indexName,omitempty"`
+	// If true, Fluentd uses the conventional index name format logstash-%Y.%m.%d (default: false). This option supersedes the index_name option.
+	LogstashFormat *bool `json:"logstashFormat,omitempty"`
+	// LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash).
+	LogstashPrefix *string `json:"logstashPrefix,omitempty"`
+}
+
+type ElasticsearchDataStream struct {
+	ElasticsearchCommon `json:",inline"`
+
+	// You can specify Elasticsearch data stream name by this parameter. This parameter is mandatory for elasticsearch_data_stream
+	DataStreamName *string `json:"dataStreamName"`
 }
