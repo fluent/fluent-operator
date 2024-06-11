@@ -21,7 +21,7 @@ RUN buildDeps=" \
       make gcc g++ libc-dev \
       wget bzip2 gnupg dirmngr\
     " \
- && gem install fluentd -v 1.15.3 \
+ && gem install fluentd -v 1.17.0 \
  && apt-get purge -y --auto-remove \
                   -o APT::AutoRemove::RecommendsImportant=false \
                   $buildDeps \
