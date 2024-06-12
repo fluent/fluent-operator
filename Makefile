@@ -2,9 +2,9 @@ VERSION?=$(shell cat VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
 FB_IMG ?= kubesphere/fluent-bit:v3.0.4
 FB_IMG_DEBUG ?= kubesphere/fluent-bit:v3.0.4-debug
-FD_IMG ?= kubesphere/fluentd:v1.15.3
+FD_IMG ?= ghcr.io/fluent/fluent-operator/fluentd:v1.17.0
 FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
-FD_IMG_BASE ?= kubesphere/fluentd:v1.15.3-arm64-base
+FD_IMG_BASE ?= ghcr.io/fluent/fluent-operator/fluentd:v1.17.0-arm64-base
 
 ARCH ?= arm64
 
