@@ -74,8 +74,8 @@ fluentbit:
   enable: true
   serviceMonitor: false
   image:
-    repository: "ghcr.io/fluent/fluent-operator/fluentbit"
-    tag: "v3.0.7"
+    repository: "ghcr.io/fluent/fluent-operator/fluent-bit"
+    tag: "3.0.7"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
   resources:
