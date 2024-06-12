@@ -49,7 +49,7 @@
             docker pull --platform ${{ matrix.platform }} ${{ inputs.source_registry }}/${{ inputs.source_image }}
 
         - name: Trivy - multi-arch
-          uses: aquasecurity/trivy-action@0.13.1
+          uses: aquasecurity/trivy-action@0.21.0
           with:
             image-ref: ${{ inputs.source_registry }}/${{ inputs.source_image }}
             format: "table"
