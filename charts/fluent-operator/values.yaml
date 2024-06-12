@@ -74,8 +74,8 @@ fluentbit:
   enable: true
   serviceMonitor: false
   image:
-    repository: "kubesphere/fluent-bit"
-    tag: "v3.0.4"
+    repository: "ghcr.io/fluent/fluent-operator/fluentbit"
+    tag: "v3.0.7"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
   resources:
@@ -371,8 +371,8 @@ fluentd:
   mode: "collector"
   port: 24224
   image:
-    repository: "kubesphere/fluentd"
-    tag: "v1.15.3"
+    repository: "ghcr.io/fluent/fluent-operator/fluentd"
+    tag: "v1.17.0"
   # Numbers of the Fluentd instance
   # Applicable when the mode is "collector", and will be ignored when the mode is "agent"
   replicas: 1
