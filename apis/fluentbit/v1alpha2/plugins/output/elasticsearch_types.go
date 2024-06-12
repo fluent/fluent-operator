@@ -100,6 +100,8 @@ type Elasticsearch struct {
 	// When enabled, mapping types is removed and Type option is ignored. Types are deprecated in APIs in v7.0. This options is for v7.0 or later.
 	SuppressTypeName string `json:"suppressTypeName,omitempty"`
 	*plugins.TLS     `json:"tls,omitempty"`
+	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+	TotalLimitSize string `json:"totalLimitSize,omitempty"`
 }
 
 // Name implement Section() method
@@ -226,6 +228,9 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 			return nil, err
 		}
 		kvs.Merge(tls)
+	}
+	if es.TotalLimitSize != "" {
+		kvs.Insert("storage.total_limit_size", es.TotalLimitSize)
 	}
 	return kvs, nil
 }
