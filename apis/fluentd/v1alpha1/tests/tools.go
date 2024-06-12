@@ -55,7 +55,7 @@ spec:
       size: 10
       autoIncrementKey: "id"
   replicas: 1
-  image: kubesphere/fluentd:v1.15.3
+  image: ghcr.io/fluent/fluent-operator/fluentd:v1.17.0
   fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
@@ -80,7 +80,7 @@ spec:
       includeConfig: true
       includeRetry: true
   replicas: 1
-  image: kubesphere/fluentd:v1.15.3
+  image: ghcr.io/fluent/fluent-operator/fluentd:v1.17.0
   fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
@@ -132,7 +132,7 @@ spec:
       - /var/log/foo.log
       - /var/log/bar
   replicas: 1
-  image: kubesphere/fluentd:v1.15.3
+  image: ghcr.io/fluent/fluent-operator/fluentd:v1.17.0
   fluentdCfgSelector: 
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"

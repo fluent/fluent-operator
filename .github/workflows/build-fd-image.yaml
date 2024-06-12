@@ -6,7 +6,7 @@ on:
       docker_tag_version:
         description: 'Fluentd image release version'
         required: true
-        default: '1.15.3'
+        default: '1.17.0'
 
 env:
   DOCKER_REPO: 'kubesphere'
