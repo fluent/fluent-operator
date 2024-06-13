@@ -1,3 +1,31 @@
+## 2.9.0 / 2024-06-13
+### Features
+- Feat: Support elastic_data_stream (#1190) @fschlager
+- Feat: Add storage total limit size to es plugin (#1196) @smallc2009
+- Feat: Add tag parameter to forward output plugin (#1167) @fschlager
+- Feat: Support datadog plugin api key to allow for secret injection (#1070) @nitintecg
+- Feat: Add cloudId and cloudAuth parameters to elastic (#1169) @fschlager
+
+### ENHANCEMENT
+- Updates setup manifests to be compatible with v2.8.0 (#1161) @joshuabaird
+- Update index.md (#1180) @lansaloni
+- Upgrade fluentd to 1.17.0. (#1198) @joshuabaird
+- Update fluentbit to v3.0.7 (#1199) @joshuabaird
+- Update references to fluentd:1.17.0 image (#1200) @joshuabaird
+- build(deps): Bump golang.org/x/net from 0.17.0 to 0.23.0 (#1140) @dependabot
+- build(deps): Bump helm/kind-action from 1.9.0 to 1.10.0 (#1156) @dependabot
+- build(deps): Bump alpine from 3.19 to 3.20 in /cmd/fluent-watcher/fluentd (#1179) @dependabot
+- build(deps): Bump golang from 1.22.0 to 1.22.3 in /docs/best-practice/forwarding-logs-via-http (#1191) @dependabot
+- build(deps): Bump aquasecurity/trivy-action from 0.13.1 to 0.21.0 (#1192) @dependabot
+
+### BUGFIX
+- Fix: missing inputs and clusterInputs CRDs in setup.yaml (#1144) (#1145) @antrema
+- Fix: bugfix namespaced filters (#1143) @MarkusFreitag
+- Fix: fix release cycles for fluentd and fluentbit images manually. (#1183) @sarathchandra24
+- Fix: fix quotes for disable-component-controller argument string in fluent-operator deployment template. (#1160) @nickytd
+- Fix: fix fluentd path issues. (#1195) @sarathchandra24
+- Fix: fix fluent-bit image name. (#1201) @joshuabaird
+
 ## 2.8.0 / 2024-04-22
 ### Features
 - Feat: feat: add multiline parser support for fluentbit (#1100) @ksdpmx
