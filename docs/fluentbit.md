@@ -359,6 +359,7 @@ FluentBitConfigSpec defines the desired state of ClusterFluentBitConfig
 | parserSelector | Select parser plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | multilineParserSelector | Select multiline parser plugins | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta) |
 | namespace | If namespace is defined, then the configmap and secret for fluent-bit is in this namespace. If it is not defined, it is in the namespace of the fluentd-operator | *string |
+| configFileFormat | ConfigFileFormat defines the format of the config file, default is \"classic\", available options are \"classic\" and \"yaml\" | *string |
 
 [Back to TOC](#table-of-contents)
 # FluentBitList
@@ -455,6 +456,7 @@ InputSpec defines the desired state of ClusterInput
 | nginx | Nginx defines the Nginx input plugin configuration | *[input.Nginx](plugins/input/nginx.md) |
 | syslog | Syslog defines the Syslog input plugin configuration | *[input.Syslog](plugins/input/syslog.md) |
 | tcp | TCP defines the TCP input plugin configuration | *[input.TCP](plugins/input/tcp.md) |
+| processors | Processors defines the processors configuration | *plugins.Config |
 
 [Back to TOC](#table-of-contents)
 # MultilineParser
@@ -555,6 +557,7 @@ OutputSpec defines the desired state of ClusterOutput
 | s3 | S3 defines S3 Output configuration. | *[output.S3](plugins/output/s3.md) |
 | gelf | Gelf defines GELF Output configuration. | *[output.Gelf](plugins/output/gelf.md) |
 | customPlugin | CustomPlugin defines Custom Output configuration. | *custom.CustomPlugin |
+| processors | Processors defines the processors configuration | *plugins.Config |
 
 [Back to TOC](#table-of-contents)
 # Parser
