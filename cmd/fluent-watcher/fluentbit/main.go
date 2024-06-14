@@ -22,7 +22,7 @@ const (
 	defaultBinPath        = "/fluent-bit/bin/fluent-bit"
 	defaultCfgPath        = "/fluent-bit/etc/fluent-bit.conf"
 	defaultSecretYamlPath = "/fluent-bit/config/fluent-bit.yaml"
-	defaultYamlCfgPath    = "/fluent-bit/etc/fluent-bit.yml"
+	defaultYamlCfgPath    = "/fluent-bit/etc/fluent-bit.yaml"
 	defaultParserCfgPath  = "/fluent-bit/etc/parser.conf"
 	defaultWatchDir       = "/fluent-bit/config"
 	defaultPollInterval   = 1 * time.Second
@@ -37,7 +37,6 @@ func main() {
 	var pollInterval time.Duration
 	var parserCfgPath string
 	flag.StringVar(&binPath, "b", defaultBinPath, "The fluent bit binary path.")
-	flag.StringVar(&configPath, "c", defaultCfgPath, "The config file path.")
 	flag.StringVar(&externalPluginPath, "e", "", "Path to external plugin (shared lib)")
 	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
 	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
