@@ -1291,6 +1291,13 @@ spec:
           spec:
             description: FluentBitConfigSpec defines the desired state of ClusterFluentBitConfig
             properties:
+              configFileFormat:
+                description: ConfigFileFormat defines the format of the config file,
+                  default is "classic", available options are "classic" and "yaml"
+                enum:
+                - classic
+                - yaml
+                type: string
               filterSelector:
                 description: Select filter plugins
                 properties:
@@ -2240,6 +2247,19 @@ spec:
                       the tag will be overwritten by a value of the key.
                     type: string
                 type: object
+              processorFilterNames:
+                description: ProcessorFilterNames list the name of the filters to
+                  be applied to the processors, declare ProcessorFilterNames will
+                  convert filters to processor. will be ignored when processors is
+                  set
+                items:
+                  type: string
+                type: array
+              processors:
+                description: Processors defines the processors configuration, it has
+                  higher priority over processorFilterNames
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               prometheusScrapeMetrics:
                 description: PrometheusScrapeMetrics  defines Prometheus Scrape Metrics
                   Input configuration.

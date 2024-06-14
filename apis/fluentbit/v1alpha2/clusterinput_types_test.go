@@ -334,7 +334,7 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 
 	i := 0
 	for i < 5 {
-		clusterInputs, err := inputs.LoadAsYaml(sl, 0, nil)
+		clusterInputs, err := inputs.LoadAsYaml(sl, 0)
 		g.Expect(err).NotTo(HaveOccurred())
 		g.Expect(clusterInputs).To(Equal(inputExpectedYaml))
 
@@ -362,9 +362,16 @@ func TestClusterInputListProcessors_Load_As_Yaml(t *testing.T) {
 				Dummy: "{\"key\":\"value\"}",
 			},
 			Processors: &plugins.Config{Data: map[string]interface{}{
-				"name": "modify",
-				"add":  "hostname test",
-			}},
+				"logs": []interface{}{
+					map[string]interface{}{"add": "hostname test", "name": "modify"},
+					map[string]interface{}{"name": "lua", "call": "append_tag", "code": `function append_tag(tag, timestamp, record)
+    new_record = record
+    new_record["tag"] = tag
+    return 1, timestamp, new_record
+end`},
+				},
+			},
+			},
 		},
 	}
 	inputs := ClusterInputList{
@@ -372,7 +379,7 @@ func TestClusterInputListProcessors_Load_As_Yaml(t *testing.T) {
 	}
 	i := 0
 	for i < 5 {
-		clusterInputs, err := inputs.LoadAsYaml(sl, 0, nil)
+		clusterInputs, err := inputs.LoadAsYaml(sl, 0)
 		g.Expect(err).NotTo(HaveOccurred())
 		g.Expect(clusterInputs).To(Equal(inputExpectedYaml))
 

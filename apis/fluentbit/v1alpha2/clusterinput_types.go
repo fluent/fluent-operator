@@ -71,10 +71,11 @@ type InputSpec struct {
 	Syslog *input.Syslog `json:"syslog,omitempty"`
 	// TCP defines the TCP input plugin configuration
 	TCP *input.TCP `json:"tcp,omitempty"`
-	// Processors defines the processors configuration
+	// Processors defines the processors configuration, it has higher priority over processorFilterNames
 	// +kubebuilder:pruning:PreserveUnknownFields
 	Processors *plugins.Config `json:"processors,omitempty"`
-	// ProcessorFilterNames list the name of the filters to be applied to the processors
+	// ProcessorFilterNames list the name of the filters to be applied to the processors,
+	// declare ProcessorFilterNames will convert filters to processor. will be ignored when processors is set
 	ProcessorFilterNames []string `json:"processorFilterNames,omitempty"`
 }
 
@@ -170,28 +171,26 @@ func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int, proc
 			if item.Spec.LogLevel != "" {
 				buf.WriteString(fmt.Sprintf("%slog_level: %s\n", padding, item.Spec.LogLevel))
 			}
-			if item.Spec.ProcessorFilterNames != nil || item.Spec.Processors != nil {
+			if item.Spec.Processors != nil {
+				buf.WriteString(fmt.Sprintf("%sprocessors:\n", padding))
+				processorYaml, err := yaml.Marshal(item.Spec.Processors)
+				if err != nil {
+					return fmt.Errorf("error marshalling processor: %w", err)
+				}
+				buf.WriteString(utils.AdjustYamlIndent(string(processorYaml), depth+4))
+			} else if item.Spec.ProcessorFilterNames != nil {
 				buf.WriteString(fmt.Sprintf("%sprocessors:\n", padding))
 				buf.WriteString(fmt.Sprintf("%slogs:\n", utils.YamlIndent(depth+3)))
-				if len(item.Spec.ProcessorFilterNames) > 0 {
-					for _, filterName := range item.Spec.ProcessorFilterNames {
-						if filter, ok := processors[filterName]; !ok {
-							return fmt.Errorf("processor filter %s not found", filterName)
-						} else {
-							filterYaml, err := filter.LoadAsYaml(sl, depth+2)
-							if err != nil {
-								return fmt.Errorf("error loading processor filter %s: %w", filterName, err)
-							}
-							buf.WriteString(filterYaml)
-						}
+				for _, filterName := range item.Spec.ProcessorFilterNames {
+					currFilter, ok := processors[filterName]
+					if !ok {
+						return fmt.Errorf("processor not found: %s", filterName)
 					}
-				}
-				if item.Spec.Processors != nil {
-					processorYaml, err := yaml.Marshal(item.Spec.Processors)
+					currFilterYaml, err := currFilter.LoadAsYaml(sl, depth+2)
 					if err != nil {
-						return fmt.Errorf("error marshalling processor: %w", err)
+						return fmt.Errorf("error loading filter %s: %w", filterName, err)
 					}
-					buf.WriteString(utils.AdjustYamlIndent(string(processorYaml), depth+4))
+					buf.WriteString(currFilterYaml)
 				}
 			}
 			kvs, err := p.Params(sl)

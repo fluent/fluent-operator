@@ -31,7 +31,11 @@ func AdjustYamlIndent(yamlStr string, depth int) string {
 		if line == "" {
 			continue
 		}
-		lines[i] = fmt.Sprintf("%s%s", YamlIndent(depth), line)
+		if line == "logs:" {
+			lines[i] = fmt.Sprintf("%s%s", YamlIndent(depth-1), line)
+		} else {
+			lines[i] = fmt.Sprintf("%s%s", YamlIndent(depth), line)
+		}
 	}
 	return strings.Join(lines, "\n")
 }

@@ -27,6 +27,7 @@ func (c *CommonParams) AddCommonParams(kvs *params.KVs) error {
 }
 
 // Config represents untyped YAML configuration.
+// +kubebuilder:object:generate:=true
 // +kubebuilder:validation:Type=object
 type Config struct {
 	// Data holds the configuration keys and values.

@@ -38,6 +38,13 @@ spec:
           spec:
             description: FluentBitConfigSpec defines the desired state of ClusterFluentBitConfig
             properties:
+              configFileFormat:
+                description: ConfigFileFormat defines the format of the config file,
+                  default is "classic", available options are "classic" and "yaml"
+                enum:
+                - classic
+                - yaml
+                type: string
               filterSelector:
                 description: Select filter plugins
                 properties:
