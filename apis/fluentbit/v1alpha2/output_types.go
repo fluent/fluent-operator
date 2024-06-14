@@ -106,6 +106,55 @@ func (list OutputList) Load(sl plugins.SecretLoader) (string, error) {
 	return buf.String(), nil
 }
 
+func (list OutputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
+	var buf bytes.Buffer
+
+	sort.Sort(NSOutputByName(list.Items))
+
+	for _, item := range list.Items {
+		merge := func(p plugins.Plugin) error {
+			if p == nil || reflect.ValueOf(p).IsNil() {
+				return nil
+			}
+
+			buf.WriteString("[Output]\n")
+			if p.Name() != "" {
+				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+			}
+			if item.Spec.Match != "" {
+				buf.WriteString(fmt.Sprintf("    Match    %s\n", utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match)))
+			}
+			if item.Spec.MatchRegex != "" {
+				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex)))
+			}
+			if item.Spec.Alias != "" {
+				buf.WriteString(fmt.Sprintf("    Alias    %s\n", item.Spec.Alias))
+			}
+			if item.Spec.RetryLimit != "" {
+				buf.WriteString(fmt.Sprintf("    Retry_Limit    %s\n", item.Spec.RetryLimit))
+			}
+			if item.Spec.CustomPlugin != nil && item.Spec.CustomPlugin.Config != "" {
+				item.Spec.CustomPlugin.Config = custom.MakeCustomConfigNamespaced(item.Spec.CustomPlugin.Config, item.Namespace)
+			}
+			kvs, err := p.Params(sl)
+			if err != nil {
+				return err
+			}
+			buf.WriteString(kvs.String())
+			return nil
+		}
+
+		for i := 2; i < reflect.ValueOf(item.Spec).NumField(); i++ {
+			p, _ := reflect.ValueOf(item.Spec).Field(i).Interface().(plugins.Plugin)
+			if err := merge(p); err != nil {
+				return "", err
+			}
+		}
+	}
+
+	return buf.String(), nil
+}
+
 func init() {
 	SchemeBuilder.Register(&Output{}, &OutputList{})
 }
