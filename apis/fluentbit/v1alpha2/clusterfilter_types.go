@@ -19,10 +19,10 @@ package v1alpha2
 import (
 	"bytes"
 	"fmt"
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"reflect"
 	"sort"
-
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/custom"
@@ -149,6 +149,92 @@ func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 	return buf.String(), nil
 }
 
+func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
+	var buf bytes.Buffer
+
+	sort.Sort(FilterByName(list.Items))
+	if len(list.Items) == 0 {
+		return "", nil
+	}
+	buf.WriteString(fmt.Sprintf("%sfilters:\n", utils.YamlIndent(depth)))
+	padding := utils.YamlIndent(depth + 2)
+
+	for _, item := range list.Items {
+		merge := func(p plugins.Plugin) error {
+			if p == nil || reflect.ValueOf(p).IsNil() {
+				return nil
+			}
+
+			if p.Name() != "" {
+				buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
+			}
+			if item.Spec.LogLevel != "" {
+				buf.WriteString(fmt.Sprintf("%slog_level: %s\n", padding, item.Spec.LogLevel))
+			}
+			if item.Spec.Match != "" {
+				buf.WriteString(fmt.Sprintf("%smatch: \"%s\"\n", padding, item.Spec.Match))
+			}
+			if item.Spec.MatchRegex != "" {
+				buf.WriteString(fmt.Sprintf("%smatch_regex: %s\n", padding, item.Spec.MatchRegex))
+			}
+			kvs, err := p.Params(sl)
+			if err != nil {
+				return err
+			}
+			buf.WriteString(kvs.YamlString(depth + 2))
+			return nil
+		}
+
+		for _, elem := range item.Spec.FilterItems {
+			for i := 0; i < reflect.ValueOf(elem).NumField(); i++ {
+				p, _ := reflect.ValueOf(elem).Field(i).Interface().(plugins.Plugin)
+				if err := merge(p); err != nil {
+					return "", err
+				}
+			}
+		}
+	}
+
+	return buf.String(), nil
+}
+
+func (clusterFilter ClusterFilter) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
+	var buf bytes.Buffer
+	padding := utils.YamlIndent(depth + 2)
+	merge := func(p plugins.Plugin) error {
+		if p == nil || reflect.ValueOf(p).IsNil() {
+			return nil
+		}
+
+		if p.Name() != "" {
+			buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
+		}
+		if clusterFilter.Spec.LogLevel != "" {
+			buf.WriteString(fmt.Sprintf("%slog_level: %s\n", padding, clusterFilter.Spec.LogLevel))
+		}
+		if clusterFilter.Spec.Match != "" {
+			buf.WriteString(fmt.Sprintf("%smatch: \"%s\"\n", padding, clusterFilter.Spec.Match))
+		}
+		if clusterFilter.Spec.MatchRegex != "" {
+			buf.WriteString(fmt.Sprintf("%smatch_regex: %s\n", padding, clusterFilter.Spec.MatchRegex))
+		}
+		kvs, err := p.Params(sl)
+		if err != nil {
+			return err
+		}
+		buf.WriteString(kvs.YamlString(depth + 2))
+		return nil
+	}
+	for _, elem := range clusterFilter.Spec.FilterItems {
+		for i := 0; i < reflect.ValueOf(elem).NumField(); i++ {
+			p, _ := reflect.ValueOf(elem).Field(i).Interface().(plugins.Plugin)
+			if err := merge(p); err != nil {
+				return "", err
+			}
+		}
+	}
+	return buf.String(), nil
+}
 func init() {
 	SchemeBuilder.Register(&ClusterFilter{}, &ClusterFilterList{})
 }

@@ -258,3 +258,260 @@ func TestClusterFilter_RecordModifier_Generated(t *testing.T) {
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(clusterFilters).To(Equal(filtersExpected))
 }
+
+func TestClusterFilterList_Load_As_Yaml(t *testing.T) {
+	var filtersExpected = `filters:
+  - name: modify
+    match: "logs.foo.bar"
+    condition:
+      - Key_value_equals    kve0    kvev0
+      - Key_value_equals    kve1    kvev1
+      - Key_value_equals    kve2    kvev2
+      - Key_does_not_exist    kdn0    kdnv0
+      - Key_does_not_exist    kdn1    kdnv1
+      - Key_does_not_exist    kdn2    kdnv2
+    set:
+      - app    foo
+      - customer    cus1
+      - sk0    skv0
+    add:
+      - add_k0    k0value
+      - add_k1    k1v
+      - add_k2    k2val
+    rename:
+      - rk0    r0v
+      - rk1    r1v
+      - rk2    r2v
+      - rk3    r3v
+  - name: kubernetes
+    match: "logs.foo.bar"
+    buffer_size: 10m
+    kube_url: http://127.0.0.1:6443
+    kube_ca_file: root.ca
+    kube_ca_path: /root/.kube/crt
+    labels: true
+    annotations: true
+    dns_wait_time: 30
+    use_kubelet: true
+    kubelet_port: 10000
+    kube_meta_cache_ttl: 60s
+  - name: throttle
+    match: "*"
+    alias: throttle.application-xy
+    rate: 200
+    window: 300
+    interval: 1s
+`
+	g := NewGomegaWithT(t)
+
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	labels := map[string]string{
+		"label0": "lv0",
+		"label1": "lv1",
+		"label3": "lval3",
+		"lbl2":   "lval2",
+		"lbl1":   "lvl1",
+	}
+
+	filterObj1 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "filter0",
+			Labels: labels,
+		},
+		Spec: FilterSpec{
+			Match: "logs.foo.bar",
+			FilterItems: []FilterItem{
+				{
+					Modify: &filter.Modify{
+						Conditions: []filter.Condition{
+							{
+								KeyValueEquals: map[string]string{
+									"kve1": "kvev1",
+									"kve0": "kvev0",
+									"kve2": "kvev2",
+								},
+							},
+							{
+								KeyDoesNotExist: map[string]string{
+									"kdn1": "kdnv1",
+									"kdn0": "kdnv0",
+									"kdn2": "kdnv2",
+								},
+							},
+						},
+						Rules: []filter.Rule{
+							{
+								Set: map[string]string{
+									"sk0":      "skv0",
+									"customer": "cus1",
+									"app":      "foo",
+								},
+								Add: map[string]string{
+									"add_k1": "k1v",
+									"add_k2": "k2val",
+									"add_k0": "k0value",
+								},
+								Rename: map[string]string{
+									"rk1": "r1v",
+									"rk0": "r0v",
+									"rk3": "r3v",
+									"rk2": "r2v",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	filterObj2 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "filter2",
+			Labels: labels,
+		},
+		Spec: FilterSpec{
+			Match: "logs.foo.bar",
+			FilterItems: []FilterItem{
+				{
+					Kubernetes: &filter.Kubernetes{
+						BufferSize:       "10m",
+						KubeURL:          "http://127.0.0.1:6443",
+						KubeCAFile:       "root.ca",
+						KubeCAPath:       "/root/.kube/crt",
+						Labels:           ptrBool(true),
+						Annotations:      ptrBool(true),
+						DNSWaitTime:      ptrInt32(30),
+						UseKubelet:       ptrBool(true),
+						KubeletPort:      ptrInt32(10000),
+						KubeMetaCacheTTL: "60s",
+					},
+				},
+			},
+		},
+	}
+	filterObj3 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "filter3",
+			Labels: labels,
+		},
+		Spec: FilterSpec{
+			Match: "*",
+			FilterItems: []FilterItem{
+				{
+					Throttle: &filter.Throttle{
+						CommonParams: plugins.CommonParams{
+							Alias: "throttle.application-xy",
+						},
+						Rate:     ptrInt64(200),
+						Window:   ptrInt64(300),
+						Interval: "1s",
+					},
+				},
+			},
+		},
+	}
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{*filterObj1, *filterObj2, *filterObj3},
+	}
+
+	i := 0
+	for i < 5 {
+		clusterFilters, err := filters.LoadAsYaml(sl, 0)
+		g.Expect(err).NotTo(HaveOccurred())
+		g.Expect(clusterFilters).To(Equal(filtersExpected))
+
+		i++
+	}
+}
+
+func TestClusterFilter_RecordModifier_Generated_Load_As_Yaml(t *testing.T) {
+	var filtersExpected = `filters:
+  - name: record_modifier
+    match: "logs.foo.bar"
+    record:
+      - hostname ${HOSTNAME}
+      - product Awesome_Tool
+    remove_key:
+      - Swap.total
+      - Swap.free
+      - Swap.used
+    allowlist_key:
+      - Mem.total
+      - Mem.free
+      - Mem.used
+    whitelist_key:
+      - Disk.total
+      - Disk.free
+      - Disk.used
+    uuid_key:
+      - ID1
+      - UiD2
+`
+	g := NewGomegaWithT(t)
+
+	sl := plugins.NewSecretLoader(nil, "test namespace")
+
+	rmFilter := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "filterRecordModifier",
+		},
+		Spec: FilterSpec{
+			Match: "logs.foo.bar",
+			FilterItems: []FilterItem{
+				{
+					RecordModifier: &filter.RecordModifier{
+						CommonParams: plugins.CommonParams{},
+						Records: []string{
+							"hostname ${HOSTNAME}",
+							"product Awesome_Tool",
+						},
+						RemoveKeys: []string{
+							"Swap.total",
+							"Swap.free",
+							"Swap.used",
+						},
+						AllowlistKeys: []string{
+							"Mem.total",
+							"Mem.free",
+							"Mem.used",
+						},
+						WhitelistKeys: []string{
+							"Disk.total",
+							"Disk.free",
+							"Disk.used",
+						},
+						UUIDKeys: []string{
+							"ID1",
+							"UiD2",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{*rmFilter},
+	}
+
+	clusterFilters, err := filters.LoadAsYaml(sl, 0)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterFilters).To(Equal(filtersExpected))
+}

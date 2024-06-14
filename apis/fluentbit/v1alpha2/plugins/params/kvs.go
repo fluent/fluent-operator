@@ -3,6 +3,7 @@ package params
 import (
 	"bytes"
 	"fmt"
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	"sort"
 	"strings"
 )
@@ -67,10 +68,6 @@ func (kvs *KVs) String() string {
 	return buf.String()
 }
 
-func indent(depth int) string {
-	return strings.Repeat("  ", depth)
-}
-
 func (kvs *KVs) YamlString(depth int) string {
 	if kvs == nil {
 		return ""
@@ -89,14 +86,14 @@ func (kvs *KVs) YamlString(depth int) string {
 	for _, key := range kvs.keys { // keep the order
 		values := keyValuesMap[key]
 		if len(values) == 1 {
-			buf.WriteString(fmt.Sprintf("%s%s: %s\n", indent(depth), strings.ToLower(key), values[0]))
+			buf.WriteString(fmt.Sprintf("%s%s: %s\n", utils.YamlIndent(depth), strings.ToLower(key), values[0]))
 		} else {
 			if _, ok := keyFinishedMap[key]; ok { // avoid output multiple times
 				continue
 			}
-			buf.WriteString(fmt.Sprintf("%s%s:\n", indent(depth), strings.ToLower(key)))
+			buf.WriteString(fmt.Sprintf("%s%s:\n", utils.YamlIndent(depth), strings.ToLower(key)))
 			for _, value := range values {
-				buf.WriteString(fmt.Sprintf("%s  - %s\n", indent(depth), value))
+				buf.WriteString(fmt.Sprintf("%s  - %s\n", utils.YamlIndent(depth), value))
 			}
 			keyFinishedMap[key] = true
 		}

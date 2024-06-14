@@ -20,3 +20,18 @@ func GenerateNamespacedMatchRegExpr(namespace string, matchRegex string) string 
 	matchRegex = strings.TrimPrefix(matchRegex, "^")
 	return fmt.Sprintf("^%x\\.%s", md5.Sum([]byte(namespace)), matchRegex)
 }
+
+func YamlIndent(depth int) string {
+	return strings.Repeat("  ", depth)
+}
+
+func AdjustYamlIndent(yamlStr string, depth int) string {
+	lines := strings.Split(yamlStr, "\n")
+	for i, line := range lines {
+		if line == "" {
+			continue
+		}
+		lines[i] = fmt.Sprintf("%s%s", YamlIndent(depth), line)
+	}
+	return strings.Join(lines, "\n")
+}

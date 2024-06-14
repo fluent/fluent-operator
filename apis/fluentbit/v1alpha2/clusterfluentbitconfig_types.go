@@ -46,6 +46,10 @@ type FluentBitConfigSpec struct {
 	// If namespace is defined, then the configmap and secret for fluent-bit is in this namespace.
 	// If it is not defined, it is in the namespace of the fluentd-operator
 	Namespace *string `json:"namespace,omitempty"`
+	// ConfigFileFormat defines the format of the config file, default is "classic",
+	// available options are "classic" and "yaml"
+	// +kubebuilder:validation:Enum:=classic;yaml
+	ConfigFileFormat *string `json:"configFileFormat,omitempty"`
 }
 
 type Storage struct {
@@ -219,6 +223,28 @@ func (s *Service) Params() *params.KVs {
 	return m
 }
 
+func (cfg ClusterFluentBitConfig) RenderMainConfigWithTargetFormat(sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList,
+	outputs ClusterOutputList, nsFilterLists []FilterList, nsOutputLists []OutputList, rewriteTagConfigs []string, configFileFormat *string) (string, error) {
+	if configFileFormat != nil && *configFileFormat == "yaml" {
+		// TODO: Implement YAML format
+		return "", nil
+	}
+	return cfg.RenderMainConfig(sl, inputs, filters, outputs, nsFilterLists, nsOutputLists, rewriteTagConfigs)
+}
+
+func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
+	sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList,
+	outputs ClusterOutputList, nsFilterLists []FilterList, nsOutputLists []OutputList, rewriteTagConfigs []string,
+) (string, error) {
+	var buf bytes.Buffer
+	// TODO: Implement YAML format
+	// The Service defines the global behaviour of the Fluent Bit engine.
+	if cfg.Spec.Service != nil {
+		buf.WriteString("service:\n")
+		buf.WriteString(cfg.Spec.Service.Params().YamlString(1))
+	}
+	return "", nil
+}
 func (cfg ClusterFluentBitConfig) RenderMainConfig(
 	sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList,
 	outputs ClusterOutputList, nsFilterLists []FilterList, nsOutputLists []OutputList, rewriteTagConfigs []string,
