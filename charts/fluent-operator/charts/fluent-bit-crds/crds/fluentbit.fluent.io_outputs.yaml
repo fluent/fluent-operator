@@ -2266,6 +2266,10 @@ spec:
                       server listening for traces, e.g: /v1/traces'
                     type: string
                 type: object
+              processors:
+                description: Processors defines the processors configuration
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               prometheusExporter:
                 description: PrometheusExporter_types defines Prometheus exporter
                   configuration to expose metrics from Fluent Bit.

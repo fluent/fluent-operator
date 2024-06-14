@@ -71,12 +71,9 @@ type InputSpec struct {
 	Syslog *input.Syslog `json:"syslog,omitempty"`
 	// TCP defines the TCP input plugin configuration
 	TCP *input.TCP `json:"tcp,omitempty"`
-	// Processors defines the processors configuration, it has higher priority over processorFilterNames
+	// Processors defines the processors configuration
 	// +kubebuilder:pruning:PreserveUnknownFields
 	Processors *plugins.Config `json:"processors,omitempty"`
-	// ProcessorFilterNames list the name of the filters to be applied to the processors,
-	// declare ProcessorFilterNames will convert filters to processor. will be ignored when processors is set
-	ProcessorFilterNames []string `json:"processorFilterNames,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -149,7 +146,7 @@ func (list ClusterInputList) Load(sl plugins.SecretLoader) (string, error) {
 	return buf.String(), nil
 }
 
-func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int, processors map[string]ClusterFilter) (string, error) {
+func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
 	var buf bytes.Buffer
 
 	sort.Sort(InputByName(list.Items))
@@ -178,20 +175,6 @@ func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int, proc
 					return fmt.Errorf("error marshalling processor: %w", err)
 				}
 				buf.WriteString(utils.AdjustYamlIndent(string(processorYaml), depth+4))
-			} else if item.Spec.ProcessorFilterNames != nil {
-				buf.WriteString(fmt.Sprintf("%sprocessors:\n", padding))
-				buf.WriteString(fmt.Sprintf("%slogs:\n", utils.YamlIndent(depth+3)))
-				for _, filterName := range item.Spec.ProcessorFilterNames {
-					currFilter, ok := processors[filterName]
-					if !ok {
-						return fmt.Errorf("processor not found: %s", filterName)
-					}
-					currFilterYaml, err := currFilter.LoadAsYaml(sl, depth+2)
-					if err != nil {
-						return fmt.Errorf("error loading filter %s: %w", filterName, err)
-					}
-					buf.WriteString(currFilterYaml)
-				}
 			}
 			kvs, err := p.Params(sl)
 			if err != nil {

@@ -2247,17 +2247,8 @@ spec:
                       the tag will be overwritten by a value of the key.
                     type: string
                 type: object
-              processorFilterNames:
-                description: ProcessorFilterNames list the name of the filters to
-                  be applied to the processors, declare ProcessorFilterNames will
-                  convert filters to processor. will be ignored when processors is
-                  set
-                items:
-                  type: string
-                type: array
               processors:
-                description: Processors defines the processors configuration, it has
-                  higher priority over processorFilterNames
+                description: Processors defines the processors configuration
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
               prometheusScrapeMetrics:
@@ -5909,6 +5900,10 @@ spec:
                       server listening for traces, e.g: /v1/traces'
                     type: string
                 type: object
+              processors:
+                description: Processors defines the processors configuration
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               prometheusExporter:
                 description: PrometheusExporter_types defines Prometheus exporter
                   configuration to expose metrics from Fluent Bit.
@@ -30827,6 +30822,10 @@ spec:
                       server listening for traces, e.g: /v1/traces'
                     type: string
                 type: object
+              processors:
+                description: Processors defines the processors configuration
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               prometheusExporter:
                 description: PrometheusExporter_types defines Prometheus exporter
                   configuration to expose metrics from Fluent Bit.

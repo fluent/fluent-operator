@@ -19,7 +19,9 @@ package v1alpha2
 import (
 	"bytes"
 	"fmt"
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	"reflect"
+	"sigs.k8s.io/yaml"
 	"sort"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -103,6 +105,10 @@ type OutputSpec struct {
 
 	// CustomPlugin defines Custom Output configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
+
+	// Processors defines the processors configuration
+	// +kubebuilder:pruning:PreserveUnknownFields
+	Processors *plugins.Config `json:"processors,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -185,6 +191,62 @@ func (list ClusterOutputList) Load(sl plugins.SecretLoader) (string, error) {
 	return buf.String(), nil
 }
 
+func (list ClusterOutputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
+	var buf bytes.Buffer
+
+	sort.Sort(OutputByName(list.Items))
+	buf.WriteString(fmt.Sprintf("%soutputs:\n", utils.YamlIndent(depth)))
+	padding := utils.YamlIndent(depth + 2)
+	for _, item := range list.Items {
+		merge := func(p plugins.Plugin) error {
+			if p == nil || reflect.ValueOf(p).IsNil() {
+				return nil
+			}
+
+			if p.Name() != "" {
+				buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
+			}
+			if item.Spec.Match != "" {
+				buf.WriteString(fmt.Sprintf("%smatch: \"%s\"\n", padding, item.Spec.Match))
+			}
+			if item.Spec.LogLevel != "" {
+				buf.WriteString(fmt.Sprintf("%slog_level: %s\n", padding, item.Spec.LogLevel))
+			}
+			if item.Spec.MatchRegex != "" {
+				buf.WriteString(fmt.Sprintf("%smatch_regex: %s\n", padding, item.Spec.MatchRegex))
+			}
+			if item.Spec.Alias != "" {
+				buf.WriteString(fmt.Sprintf("%salias: %s\n", padding, item.Spec.Alias))
+			}
+			if item.Spec.RetryLimit != "" {
+				buf.WriteString(fmt.Sprintf("%sretry_limit: %s\n", padding, item.Spec.RetryLimit))
+			}
+			if item.Spec.Processors != nil {
+				buf.WriteString(fmt.Sprintf("%sprocessors:\n", padding))
+				processorYaml, err := yaml.Marshal(item.Spec.Processors)
+				if err != nil {
+					return fmt.Errorf("error marshalling processor: %w", err)
+				}
+				buf.WriteString(utils.AdjustYamlIndent(string(processorYaml), depth+4))
+			}
+			kvs, err := p.Params(sl)
+			if err != nil {
+				return err
+			}
+			buf.WriteString(kvs.YamlString(depth + 2))
+			return nil
+		}
+
+		for i := 2; i < reflect.ValueOf(item.Spec).NumField(); i++ {
+			p, _ := reflect.ValueOf(item.Spec).Field(i).Interface().(plugins.Plugin)
+			if err := merge(p); err != nil {
+				return "", err
+			}
+		}
+	}
+
+	return buf.String(), nil
+}
 func init() {
 	SchemeBuilder.Register(&ClusterOutput{}, &ClusterOutputList{})
 }
