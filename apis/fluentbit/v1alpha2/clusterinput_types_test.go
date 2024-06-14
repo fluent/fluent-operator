@@ -317,6 +317,35 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 		},
 	}
 
+	expectedYaml := `inputs:
+  - name: tail
+    alias: input0_alias
+    path: /logs/containers/apps0
+    exclude_path: /logs/containers/exclude_path
+    refresh_interval: 10
+    ignore_older: 5m
+    skip_long_lines: true
+    db: /fluent-bit/tail/pos.db
+    mem_buf_limit: 5MB
+    parser: docker
+    tag: logs.foo.bar
+    docker_mode: true
+    docker_mode_flush: 4
+    docker_mode_parser: docker-mode-parser
+    inotify_watcher: false
+  - name: dummy
+    alias: input2_alias
+    tag: logs.foo.bar
+    rate: 3
+    samples: 5
+  - name: prometheus_scrape
+    alias: input3_alias
+    tag: logs.foo.bar
+    host: https://example3.com
+    port: 433
+    scrape_interval: 10s
+    metrics_path: /metrics
+`
 	inputs := ClusterInputList{
 		Items: []ClusterInput{*inputObj1, *inputObj2, *inputObj3},
 	}
@@ -325,7 +354,7 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 	for i < 5 {
 		clusterInputs, err := inputs.LoadAsYaml(sl, 0)
 		g.Expect(err).NotTo(HaveOccurred())
-		g.Expect(clusterInputs).To(Equal(inputExpectedYaml))
+		g.Expect(clusterInputs).To(Equal(expectedYaml))
 
 		i++
 	}

@@ -409,7 +409,7 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 	for i < 5 {
 		clusterInputs, err := outputs.LoadAsYaml(sl, 0)
 		g.Expect(err).NotTo(HaveOccurred())
-		g.Expect(clusterInputs).To(Equal(outputExpected))
+		g.Expect(clusterInputs).To(Equal(outputExpectedYaml))
 
 		i++
 	}
