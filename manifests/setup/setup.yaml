@@ -18824,6 +18824,11 @@ spec:
                   type: string
                 description: Annotations to add to the Fluentbit service account
                 type: object
+              terminationGracePeriodSeconds:
+                description: Optional duration in seconds the pod needs to terminate
+                  gracefully. Value must be non-negative integer.
+                format: int64
+                type: integer
               tolerations:
                 description: Tolerations
                 items:
