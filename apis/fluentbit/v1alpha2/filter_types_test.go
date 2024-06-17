@@ -131,3 +131,118 @@ func TestFilterList_Load(t *testing.T) {
 		})
 	}
 }
+
+func TestFilterList_LoadAsYaml(t *testing.T) {
+	testcases := []struct {
+		name     string
+		input    Filter
+		expected string
+	}{
+		{
+			name: "a single filteritem",
+			input: Filter{
+				Spec: FilterSpec{
+					FilterItems: []FilterItem{
+						FilterItem{
+							Parser: &filter.Parser{
+								KeyName: "log",
+								Parser:  "first-parser",
+							},
+						},
+					},
+				},
+			},
+			expected: `  - name: parser
+    key_name: log
+    parser: first-parser-d41d8cd98f00b204e9800998ecf8427e
+`,
+		},
+		{
+			name: "a single filteritem, with multiple plugins",
+			input: Filter{
+				Spec: FilterSpec{
+					FilterItems: []FilterItem{
+						FilterItem{
+							Kubernetes: &filter.Kubernetes{
+								KubeTagPrefix: "custom-tag",
+							},
+							Parser: &filter.Parser{
+								KeyName: "log",
+								Parser:  "first-parser",
+							},
+						},
+					},
+				},
+			},
+			expected: `  - name: kubernetes
+    kube_tag_prefix: d41d8cd98f00b204e9800998ecf8427e.custom-tag
+  - name: parser
+    key_name: log
+    parser: first-parser-d41d8cd98f00b204e9800998ecf8427e
+`,
+		},
+		{
+			name: "multiple filteritems",
+			input: Filter{
+				Spec: FilterSpec{
+					FilterItems: []FilterItem{
+						FilterItem{
+							Kubernetes: &filter.Kubernetes{
+								KubeTagPrefix: "custom-tag",
+							},
+							Parser: &filter.Parser{
+								KeyName: "log",
+								Parser:  "first-parser",
+							},
+						},
+						FilterItem{
+							Parser: &filter.Parser{
+								KeyName:     "msg",
+								Parser:      "second-parser",
+								ReserveData: ptr(true),
+							},
+						},
+						FilterItem{
+							Parser: &filter.Parser{
+								KeyName:     "msg",
+								Parser:      "third-parser",
+								ReserveData: ptr(true),
+							},
+						},
+					},
+				},
+			},
+			expected: `  - name: kubernetes
+    kube_tag_prefix: d41d8cd98f00b204e9800998ecf8427e.custom-tag
+  - name: parser
+    key_name: log
+    parser: first-parser-d41d8cd98f00b204e9800998ecf8427e
+  - name: parser
+    key_name: msg
+    parser: second-parser-d41d8cd98f00b204e9800998ecf8427e
+    reserve_data: true
+  - name: parser
+    key_name: msg
+    parser: third-parser-d41d8cd98f00b204e9800998ecf8427e
+    reserve_data: true
+`,
+		},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.name, func(t *testing.T) {
+			g := NewGomegaWithT(t)
+
+			sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+			fl := FilterList{
+				Items: make([]Filter, 1),
+			}
+			fl.Items[0] = tc.input
+
+			renderedFilterList, err := fl.LoadAsYaml(sl, 0)
+			g.Expect(err).NotTo(HaveOccurred())
+			g.Expect(renderedFilterList).To(Equal(tc.expected))
+		})
+	}
+}

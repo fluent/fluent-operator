@@ -145,7 +145,7 @@ func (list OutputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, e
 			if err != nil {
 				return err
 			}
-			buf.WriteString(kvs.String())
+			buf.WriteString(kvs.YamlString(depth + 2))
 			return nil
 		}
 
