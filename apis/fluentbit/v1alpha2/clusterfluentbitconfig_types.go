@@ -20,6 +20,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/output"
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	"sort"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
@@ -305,17 +306,31 @@ func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
 	}
 
 	buf.WriteString(inputSections)
-	buf.WriteString(filterSections)
 	for _, rtc := range rewriteTagConfigs {
 		buf.WriteString(rtc)
+	}
+	if filterSections == "" && nsFilterSections != nil {
+		buf.WriteString(fmt.Sprintf("%sfilters:\n", utils.YamlIndent(1)))
+	} else {
+		// 1. filterSections == "" && nsFilterSections == nil
+		// 2. filterSections != "" && nsFilterSections != nil
+		// 3. filterSections != "" && nsFilterSections == nil
+		buf.WriteString(filterSections)
 	}
 	for _, filters := range nsFilterSections {
 		buf.WriteString(filters)
 	}
+	if outputSections == "" && nsOutputSections != nil {
+		buf.WriteString(fmt.Sprintf("%soutputs:\n", utils.YamlIndent(1)))
+	} else {
+		// 1. outputSections == "" && nsOutputSections == nil
+		// 2. outputSections != "" && nsOutputSections != nil
+		// 3. outputSections != "" && nsOutputSections == nil
+		buf.WriteString(outputSections)
+	}
 	for _, outputs := range nsOutputSections {
 		buf.WriteString(outputs)
 	}
-	buf.WriteString(outputSections)
 
 	return buf.String(), nil
 }
