@@ -95,7 +95,15 @@ spec:
                       description: CustomPlugin defines a Custom plugin configuration.
                       properties:
                         config:
+                          description: Config holds any unsupported plugins classic
+                            configurations, if ConfigFileFormat is set to yaml, this
+                            filed will be ignored
                           type: string
+                        yamlConfig:
+                          description: YamlConfig holds the unsupported plugins yaml
+                            configurations, it only works when the ConfigFileFormat
+                            is yaml
+                          type: object
                       type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
@@ -1960,7 +1968,13 @@ spec:
                 description: CustomPlugin defines Custom Input configuration.
                 properties:
                   config:
+                    description: Config holds any unsupported plugins classic configurations,
+                      if ConfigFileFormat is set to yaml, this filed will be ignored
                     type: string
+                  yamlConfig:
+                    description: YamlConfig holds the unsupported plugins yaml configurations,
+                      it only works when the ConfigFileFormat is yaml
+                    type: object
                 type: object
               dummy:
                 description: Dummy defines Dummy Input configuration.
@@ -3975,7 +3989,13 @@ spec:
                 description: CustomPlugin defines Custom Output configuration.
                 properties:
                   config:
+                    description: Config holds any unsupported plugins classic configurations,
+                      if ConfigFileFormat is set to yaml, this filed will be ignored
                     type: string
+                  yamlConfig:
+                    description: YamlConfig holds the unsupported plugins yaml configurations,
+                      it only works when the ConfigFileFormat is yaml
+                    type: object
                 type: object
               datadog:
                 description: DataDog defines DataDog Output configuration.
@@ -12491,7 +12511,15 @@ spec:
                       description: CustomPlugin defines a Custom plugin configuration.
                       properties:
                         config:
+                          description: Config holds any unsupported plugins classic
+                            configurations, if ConfigFileFormat is set to yaml, this
+                            filed will be ignored
                           type: string
+                        yamlConfig:
+                          description: YamlConfig holds the unsupported plugins yaml
+                            configurations, it only works when the ConfigFileFormat
+                            is yaml
+                          type: object
                       type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
@@ -28897,7 +28925,13 @@ spec:
                 description: CustomPlugin defines Custom Output configuration.
                 properties:
                   config:
+                    description: Config holds any unsupported plugins classic configurations,
+                      if ConfigFileFormat is set to yaml, this filed will be ignored
                     type: string
+                  yamlConfig:
+                    description: YamlConfig holds the unsupported plugins yaml configurations,
+                      it only works when the ConfigFileFormat is yaml
+                    type: object
                 type: object
               datadog:
                 description: DataDog defines DataDog Output configuration.

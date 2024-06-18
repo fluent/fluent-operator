@@ -11,9 +11,10 @@ import (
 type kvTransformFunc func(string, string) (string, string)
 
 type KVs struct {
-	keys    []string
-	values  []string
-	Content string
+	keys        []string
+	values      []string
+	Content     string
+	YamlContent string
 }
 
 func NewKVs() *KVs {
@@ -72,9 +73,10 @@ func (kvs *KVs) YamlString(depth int) string {
 	if kvs == nil {
 		return ""
 	}
-	if kvs.Content != "" {
-		return kvs.Content
+	if kvs.YamlContent != "" {
+		return utils.AdjustYamlIndent(kvs.YamlContent, depth)
 	}
+
 	var buf bytes.Buffer
 
 	// deduplicate to yaml format

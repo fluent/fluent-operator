@@ -138,9 +138,10 @@ func (list OutputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, e
 			if item.Spec.RetryLimit != "" {
 				buf.WriteString(fmt.Sprintf("%sretry_limit: %s\n", padding, item.Spec.RetryLimit))
 			}
-			if item.Spec.CustomPlugin != nil && item.Spec.CustomPlugin.Config != "" {
-				item.Spec.CustomPlugin.Config = custom.MakeCustomConfigNamespaced(item.Spec.CustomPlugin.Config, item.Namespace)
+			if item.Spec.CustomPlugin != nil && item.Spec.CustomPlugin.YamlConfig != nil {
+				item.Spec.CustomPlugin.MakeNamespaced(item.Namespace)
 			}
+
 			kvs, err := p.Params(sl)
 			if err != nil {
 				return err

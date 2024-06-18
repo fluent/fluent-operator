@@ -692,7 +692,7 @@ func (in *FilterItem) DeepCopyInto(out *FilterItem) {
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)
-		**out = **in
+		(*in).DeepCopyInto(*out)
 	}
 }
 
@@ -1136,7 +1136,7 @@ func (in *InputSpec) DeepCopyInto(out *InputSpec) {
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)
-		**out = **in
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Forward != nil {
 		in, out := &in.Forward, &out.Forward
@@ -1555,7 +1555,7 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)
-		**out = **in
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Processors != nil {
 		in, out := &in.Processors, &out.Processors
