@@ -147,6 +147,90 @@ var expectedK8s = `[Service]
     Write_Operation    update
 `
 
+var expectedK8sYaml = `service:
+  daemon: false
+  flush: 1
+  grace: 30
+  http_server: true
+  log_level: info
+  parsers_file: /fluent-bit/etc/parsers.conf
+pipeline:
+  inputs:
+    - name: tail
+      path: /var/log/containers/*.log
+      refresh_interval: 10
+      ignore_older: 5m
+      skip_long_lines: true
+      db: /fluent-bit/tail/pos.db
+      mem_buf_limit: 5MB
+      tag: kube.*
+  filters:
+    - name: parser
+      match: "acbd18db4cc2f85cedef654fccc4a4d8.kube.*"
+      key_name: log
+      parser: bar-acbd18db4cc2f85cedef654fccc4a4d8-acbd18db4cc2f85cedef654fccc4a4d8
+      reserve_data: true
+  outputs:
+    - name: opensearch
+      match: "acbd18db4cc2f85cedef654fccc4a4d8.kube.*"
+      host: foo.bar
+      port: 9200
+      index: foo-index
+    - name: es
+      match: "acbd18db4cc2f85cedef654fccc4a4d8.kube.*"
+      host: foo.bar
+      port: 9200
+      index: foo-index
+      write_operation: update
+`
+
+var expectedK8sYamlWithClusterFilterOutput = `service:
+  daemon: false
+  flush: 1
+  grace: 30
+  http_server: true
+  log_level: info
+  parsers_file: /fluent-bit/etc/parsers.conf
+pipeline:
+  inputs:
+    - name: tail
+      path: /var/log/containers/*.log
+      refresh_interval: 10
+      ignore_older: 5m
+      skip_long_lines: true
+      db: /fluent-bit/tail/pos.db
+      mem_buf_limit: 5MB
+      tag: kube.*
+  filters:
+    - name: parser
+      match: "kubernetes.*"
+      key_name: log
+      parser: test
+      reserve_data: true
+    - name: parser
+      match: "acbd18db4cc2f85cedef654fccc4a4d8.kube.*"
+      key_name: log
+      parser: bar-acbd18db4cc2f85cedef654fccc4a4d8
+      reserve_data: true
+  outputs:
+    - name: es
+      match: "kube.*"
+      host: foo.bar
+      port: 9200
+      index: foo-index
+    - name: opensearch
+      match: "acbd18db4cc2f85cedef654fccc4a4d8.kube.*"
+      host: foo.bar
+      port: 9200
+      index: foo-index
+    - name: es
+      match: "acbd18db4cc2f85cedef654fccc4a4d8.kube.*"
+      host: foo.bar
+      port: 9200
+      index: foo-index
+      write_operation: update
+`
+
 var expectedParsers = `[PARSER]
     Name    clusterparser0
     Format    json
@@ -554,6 +638,169 @@ func TestRenderMainConfigK8s(t *testing.T) {
 	)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(config).To(Equal(expectedK8s))
+
+	yamlConfig, err := cfg.RenderMainConfigInYaml(
+		sl, inputList, filterList, outputList, nsFilterList, nsOutputList, rewriteTagCfg,
+	)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(yamlConfig).To(Equal(expectedK8sYaml))
+}
+
+func TestRenderMainConfigK8sInYaml(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	inputObj := &ClusterInput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterInput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "input0",
+			Labels: labels,
+		},
+		Spec: InputSpec{
+			Tail: &input.Tail{
+				Tag:                    "kube.*",
+				Path:                   "/var/log/containers/*.log",
+				SkipLongLines:          ptrBool(true),
+				IgnoreOlder:            "5m",
+				MemBufLimit:            "5MB",
+				RefreshIntervalSeconds: ptrInt64(10),
+				DB:                     "/fluent-bit/tail/pos.db",
+			},
+		},
+	}
+	inputList := ClusterInputList{
+		Items: []ClusterInput{*inputObj},
+	}
+	filterList := ClusterFilterList{
+		Items: []ClusterFilter{
+			{
+				TypeMeta: metav1.TypeMeta{
+					APIVersion: "fluentbit.fluent.io/v1alpha2",
+					Kind:       "Filter",
+				},
+				ObjectMeta: metav1.ObjectMeta{
+					Name:   "cluster-filter",
+					Labels: labels,
+				},
+				Spec: FilterSpec{
+					Match: "kubernetes.*",
+					FilterItems: []FilterItem{
+						{Parser: &filter.Parser{
+							KeyName:     "log",
+							Parser:      "test",
+							ReserveData: ptrBool(true),
+						}},
+					},
+				},
+			},
+		},
+	}
+	outputList := ClusterOutputList{
+		Items: []ClusterOutput{
+			{
+				TypeMeta: metav1.TypeMeta{
+					APIVersion: "fluentbit.fluent.io/v1alpha2",
+					Kind:       "Output",
+				},
+				ObjectMeta: metav1.ObjectMeta{
+					Name:   "cluster-output0",
+					Labels: labels,
+				},
+				Spec: OutputSpec{
+					Match: "kube.*",
+					Elasticsearch: &output.Elasticsearch{
+						Host:  "foo.bar",
+						Port:  ptrInt32(9200),
+						Index: "foo-index",
+					},
+				},
+			},
+		},
+	}
+	filterObj := &Filter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "Filter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "filter0",
+			Namespace: "foo",
+			Labels:    labels,
+		},
+		Spec: FilterSpec{
+			Match: "kube.*",
+			FilterItems: []FilterItem{
+				{
+					Parser: &filter.Parser{
+						KeyName:     "log",
+						Parser:      "bar",
+						ReserveData: ptrBool(true),
+					},
+				},
+			},
+		},
+	}
+	nsFilterList := []FilterList{
+		{
+			Items: []Filter{*filterObj},
+		},
+	}
+	outputObj := &Output{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "Output",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "output0",
+			Namespace: "foo",
+			Labels:    labels,
+		},
+		Spec: OutputSpec{
+			Match: "kube.*",
+			OpenSearch: &output.OpenSearch{
+				Host:  "foo.bar",
+				Port:  ptrInt32(9200),
+				Index: "foo-index",
+			},
+		},
+	}
+
+	outputObjEs := &Output{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "Output",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "output1",
+			Namespace: "foo",
+			Labels:    labels,
+		},
+		Spec: OutputSpec{
+			Match: "kube.*",
+			Elasticsearch: &output.Elasticsearch{
+				Host:           "foo.bar",
+				Port:           ptrInt32(9200),
+				Index:          "foo-index",
+				WriteOperation: "update",
+			},
+		},
+	}
+
+	nsOutputList := []OutputList{
+		{
+			Items: []Output{*outputObj, *outputObjEs},
+		},
+	}
+	var rewriteTagCfg []string
+
+	yamlConfig, err := cfg.RenderMainConfigInYaml(
+		sl, inputList, filterList, outputList, nsFilterList, nsOutputList, rewriteTagCfg,
+	)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(yamlConfig).To(Equal(expectedK8sYamlWithClusterFilterOutput))
 }
 
 func TestClusterFluentBitConfig_RenderMainConfig_WithParsersFiles(t *testing.T) {
