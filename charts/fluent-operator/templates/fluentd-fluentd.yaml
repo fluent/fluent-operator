@@ -4,6 +4,7 @@ apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
   name: {{ .Values.fluentd.name }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     app.kubernetes.io/name: fluentd
 spec:
