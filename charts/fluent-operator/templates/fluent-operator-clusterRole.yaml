@@ -28,6 +28,12 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - events
+    verbs:
+      - list
+  - apiGroups:
+      - ""
+    resources:
       - secrets
       - configmaps
       - serviceaccounts

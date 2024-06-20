@@ -72,7 +72,7 @@ type InputSpec struct {
 	// TCP defines the TCP input plugin configuration
 	TCP *input.TCP `json:"tcp,omitempty"`
 	// KubernetesEvents defines the KubernetesEvents input plugin configuration
-	KubernetesEvents *input.KubernetesEvents `json:"KubernetesEvents,omitempty"`
+	KubernetesEvents *input.KubernetesEvents `json:"kubernetesEvents,omitempty"`
 }
 
 // +kubebuilder:object:root=true
