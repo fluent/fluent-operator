@@ -5,6 +5,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluent-bit-containerd-config
+  namespace: {{ .Release.Namespace | quote }}
 data:
   containerd.lua: |
     function containerd( tag, timestamp, record)
