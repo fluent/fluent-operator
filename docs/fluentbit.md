@@ -456,6 +456,7 @@ InputSpec defines the desired state of ClusterInput
 | nginx | Nginx defines the Nginx input plugin configuration | *[input.Nginx](plugins/input/nginx.md) |
 | syslog | Syslog defines the Syslog input plugin configuration | *[input.Syslog](plugins/input/syslog.md) |
 | tcp | TCP defines the TCP input plugin configuration | *[input.TCP](plugins/input/tcp.md) |
+| kubernetesEvents | KubernetesEvents defines the KubernetesEvents input plugin configuration | *[input.KubernetesEvents](plugins/input/kubernetesevents.md) |
 
 [Back to TOC](#table-of-contents)
 # MultilineParser
