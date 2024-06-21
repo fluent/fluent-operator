@@ -106,6 +106,7 @@ spec:
                             configurations, it only works when the ConfigFileFormat
                             is yaml
                           type: object
+                          x-kubernetes-preserve-unknown-fields: true
                       type: object
                     grep:
                       description: Grep defines Grep Filter configuration.

@@ -21,6 +21,7 @@ type CustomPlugin struct {
 	// if ConfigFileFormat is set to yaml, this filed will be ignored
 	Config string `json:"config,omitempty"`
 	// YamlConfig holds the unsupported plugins yaml configurations, it only works when the ConfigFileFormat is yaml
+	// +kubebuilder:pruning:PreserveUnknownFields
 	YamlConfig *plugins.Config `json:"yamlConfig,omitempty"`
 }
 

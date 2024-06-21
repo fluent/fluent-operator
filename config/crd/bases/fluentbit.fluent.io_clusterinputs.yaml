@@ -68,6 +68,7 @@ spec:
                     description: YamlConfig holds the unsupported plugins yaml configurations,
                       it only works when the ConfigFileFormat is yaml
                     type: object
+                    x-kubernetes-preserve-unknown-fields: true
                 type: object
               dummy:
                 description: Dummy defines Dummy Input configuration.

@@ -104,6 +104,7 @@ spec:
                             configurations, it only works when the ConfigFileFormat
                             is yaml
                           type: object
+                          x-kubernetes-preserve-unknown-fields: true
                       type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
@@ -1975,6 +1976,7 @@ spec:
                     description: YamlConfig holds the unsupported plugins yaml configurations,
                       it only works when the ConfigFileFormat is yaml
                     type: object
+                    x-kubernetes-preserve-unknown-fields: true
                 type: object
               dummy:
                 description: Dummy defines Dummy Input configuration.
@@ -3996,6 +3998,7 @@ spec:
                     description: YamlConfig holds the unsupported plugins yaml configurations,
                       it only works when the ConfigFileFormat is yaml
                     type: object
+                    x-kubernetes-preserve-unknown-fields: true
                 type: object
               datadog:
                 description: DataDog defines DataDog Output configuration.
@@ -12520,6 +12523,7 @@ spec:
                             configurations, it only works when the ConfigFileFormat
                             is yaml
                           type: object
+                          x-kubernetes-preserve-unknown-fields: true
                       type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
@@ -28932,6 +28936,7 @@ spec:
                     description: YamlConfig holds the unsupported plugins yaml configurations,
                       it only works when the ConfigFileFormat is yaml
                     type: object
+                    x-kubernetes-preserve-unknown-fields: true
                 type: object
               datadog:
                 description: DataDog defines DataDog Output configuration.
