@@ -14,4 +14,4 @@ Azure Blob is the Azure Blob output plugin, allows to ingest your records into A
 | emulatorMode | Optional toggle to use an Azure emulator | string |
 | endpoint | HTTP Service of the endpoint (if using EmulatorMode) | string |
 | tls | Enable/Disable TLS Encryption. Azure services require TLS to be enabled. | *[plugins.TLS](../tls.md) |
-| net | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |

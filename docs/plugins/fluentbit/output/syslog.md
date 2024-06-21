@@ -19,4 +19,4 @@ Syslog output plugin allows you to deliver messages to Syslog servers. <br /> **
 | syslogSDKey | Key name from the original record that contains the Structured Data (SD) content. | string |
 | syslogMessageKey | Key key name that contains the message to deliver. | string |
 | tls | Syslog output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section. | *[plugins.TLS](../tls.md) |
-| net | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |

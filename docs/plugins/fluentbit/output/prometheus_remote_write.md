@@ -16,4 +16,4 @@ An output plugin to submit Prometheus Metrics using the remote write protocol. <
 | addLabels | This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields | map[string]string |
 | workers | Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0,default : 2 | *int32 |
 | tls |  | *[plugins.TLS](../tls.md) |
-| net | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |

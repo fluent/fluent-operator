@@ -72,7 +72,7 @@ spec:
                   endpoint:
                     description: HTTP Service of the endpoint (if using EmulatorMode)
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -620,7 +620,7 @@ spec:
                   logstashPrefixKey:
                     description: Prefix keys with this string
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -914,7 +914,7 @@ spec:
                     description: Target host where Fluent-Bit or Fluentd are listening
                       for Forward messages.
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -1155,7 +1155,7 @@ spec:
                     - tcp
                     - udp
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -1416,7 +1416,7 @@ spec:
                     description: Specify the name of the time key in the output record.
                       To disable the time key just set the value to false.
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -1659,7 +1659,7 @@ spec:
                             x-kubernetes-map-type: atomic
                         type: object
                     type: object
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -2048,7 +2048,7 @@ spec:
                     - json
                     - key_value
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -2367,7 +2367,7 @@ spec:
                   logstashPrefixKey:
                     description: Prefix keys with this string
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -2644,7 +2644,7 @@ spec:
                     description: 'Specify an optional HTTP URI for the target web
                       server listening for metrics, e.g: /v1/metrics'
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -2894,7 +2894,7 @@ spec:
                     description: 'Log the response payload within the Fluent Bit log,default:
                       false'
                     type: boolean
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -3354,7 +3354,7 @@ spec:
                             x-kubernetes-map-type: atomic
                         type: object
                     type: object
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -3697,7 +3697,7 @@ spec:
                     description: Mode of the desired transport type, the available
                       options are tcp, tls and udp.
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:
@@ -3896,7 +3896,7 @@ spec:
                     description: TSpecify the name of the time key in the output record.
                       To disable the time key just set the value to false.
                     type: string
-                  net:
+                  networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
                       DNSMode:

@@ -24,4 +24,4 @@ The http output plugin allows to flush your records into a HTTP endpoint. <br />
 | gelfFullMessageKey | Specify the key to use for the full message in gelf format | string |
 | gelfLevelKey | Specify the key to use for the level in gelf format | string |
 | tls | HTTP output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section. | *[plugins.TLS](../tls.md) |
-| net | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |

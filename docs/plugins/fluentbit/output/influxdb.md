@@ -19,4 +19,4 @@ The influxdb output plugin, allows to flush your records into a InfluxDB time se
 | tagsListEnabled | Dynamically tag keys which are in the string array at Tags_List_Key key. | *bool |
 | tagListKey | Key of the string array optionally contained within each log record that contains tag keys for that record | string |
 | tls |  | *[plugins.TLS](../tls.md) |
-| net | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |

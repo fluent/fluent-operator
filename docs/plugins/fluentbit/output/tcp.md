@@ -11,4 +11,4 @@ The tcp output plugin allows to send records to a remote TCP server. <br /> The 
 | jsonDateKey | TSpecify the name of the time key in the output record. To disable the time key just set the value to false. | string |
 | jsonDateFormat | Specify the format of the date. Supported formats are double, epoch and iso8601 (eg: 2018-05-30T09:39:52.000681Z) | string |
 | tls |  | *[plugins.TLS](../tls.md) |
-| net | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |

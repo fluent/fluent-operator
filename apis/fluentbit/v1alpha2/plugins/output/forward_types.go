@@ -42,7 +42,7 @@ type Forward struct {
 	SelfHostname string `json:"selfHostname,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
-	*plugins.Networking `json:"net,omitempty"`
+	*plugins.Networking `json:"networking,omitempty"`
 }
 
 func (_ *Forward) Name() string {

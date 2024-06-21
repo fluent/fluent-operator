@@ -16,4 +16,4 @@ The Gelf output plugin allows to send logs in GELF format directly to a Graylog 
 | packetSize | If transport protocol is udp, it sets the size of packets to be sent. | *int32 |
 | compress | If transport protocol is udp, it defines if UDP packets should be compressed. | *bool |
 | tls |  | *[plugins.TLS](../tls.md) |
-| net | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
