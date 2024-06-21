@@ -100,6 +100,8 @@ type Elasticsearch struct {
 	// When enabled, mapping types is removed and Type option is ignored. Types are deprecated in APIs in v7.0. This options is for v7.0 or later.
 	SuppressTypeName string `json:"suppressTypeName,omitempty"`
 	*plugins.TLS     `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"net,omitempty"`
 	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
 	TotalLimitSize string `json:"totalLimitSize,omitempty"`
 }

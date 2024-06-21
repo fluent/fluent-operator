@@ -39,6 +39,8 @@ type PrometheusRemoteWrite struct {
 	Workers *int32 `json:"workers,omitempty"`
 
 	*plugins.TLS `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"net,omitempty"`
 }
 
 // implement Section() method

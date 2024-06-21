@@ -38,6 +38,8 @@ type OpenTelemetry struct {
 	// This allows you to add custom labels to all metrics exposed through the OpenTelemetry exporter. You may have multiple of these fields.
 	AddLabel     map[string]string `json:"addLabel,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"net,omitempty"`
 }
 
 // Name implement Section() method

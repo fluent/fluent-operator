@@ -17,3 +17,4 @@ The OpenTelemetry plugin allows you to take logs, metrics, and traces from Fluen
 | logResponsePayload | Log the response payload within the Fluent Bit log. | *bool |
 | addLabel | This allows you to add custom labels to all metrics exposed through the OpenTelemetry exporter. You may have multiple of these fields. | map[string]string |
 | tls |  | *[plugins.TLS](../tls.md) |
+| net | Include fluentbit networking options for this output-plugin | *plugins.Networking |

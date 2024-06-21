@@ -43,6 +43,8 @@ type Syslog struct {
 	// Syslog output plugin supports TTL/SSL, for more details about the properties available
 	// and general configuration, please refer to the TLS/SSL section.
 	*plugins.TLS `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"net,omitempty"`
 }
 
 func (_ *Syslog) Name() string {

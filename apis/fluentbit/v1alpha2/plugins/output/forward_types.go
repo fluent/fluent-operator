@@ -41,6 +41,8 @@ type Forward struct {
 	// Default value of the auto-generated certificate common name (CN).
 	SelfHostname string `json:"selfHostname,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"net,omitempty"`
 }
 
 func (_ *Forward) Name() string {

@@ -30,6 +30,8 @@ type TCP struct {
 	// +kubebuilder:validation:Enum:=double;epoch;iso8601
 	JsonDateFormat string `json:"jsonDateFormat,omitempty"`
 	*plugins.TLS   `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"net,omitempty"`
 }
 
 func (_ *TCP) Name() string {
@@ -59,6 +61,13 @@ func (t *TCP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 			return nil, err
 		}
 		kvs.Merge(tls)
+	}
+	if t.Networking != nil {
+		net, err := t.Networking.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(net)
 	}
 	return kvs, nil
 }

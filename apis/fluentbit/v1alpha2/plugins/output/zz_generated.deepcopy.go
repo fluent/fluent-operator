@@ -38,9 +38,9 @@ func (in *AzureBlob) DeepCopyInto(out *AzureBlob) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -208,9 +208,9 @@ func (in *Elasticsearch) DeepCopyInto(out *Elasticsearch) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -338,9 +338,9 @@ func (in *Forward) DeepCopyInto(out *Forward) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -378,9 +378,9 @@ func (in *Gelf) DeepCopyInto(out *Gelf) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -430,9 +430,9 @@ func (in *HTTP) DeepCopyInto(out *HTTP) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -490,9 +490,9 @@ func (in *InfluxDB) DeepCopyInto(out *InfluxDB) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -602,9 +602,9 @@ func (in *Loki) DeepCopyInto(out *Loki) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -707,9 +707,9 @@ func (in *OpenSearch) DeepCopyInto(out *OpenSearch) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -766,9 +766,9 @@ func (in *OpenTelemetry) DeepCopyInto(out *OpenTelemetry) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -857,9 +857,9 @@ func (in *PrometheusRemoteWrite) DeepCopyInto(out *PrometheusRemoteWrite) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -972,9 +972,9 @@ func (in *Splunk) DeepCopyInto(out *Splunk) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -1067,9 +1067,9 @@ func (in *Syslog) DeepCopyInto(out *Syslog) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }
@@ -1097,9 +1097,9 @@ func (in *TCP) DeepCopyInto(out *TCP) {
 		*out = new(plugins.TLS)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Net != nil {
-		in, out := &in.Net, &out.Net
-		*out = new(plugins.Net)
+	if in.Networking != nil {
+		in, out := &in.Networking, &out.Networking
+		*out = new(plugins.Networking)
 		(*in).DeepCopyInto(*out)
 	}
 }

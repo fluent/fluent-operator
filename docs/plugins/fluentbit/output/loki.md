@@ -19,3 +19,4 @@ The loki output plugin, allows to ingest your records into a Loki service. <br /
 | autoKubernetesLabels | If set to true, it will add all Kubernetes labels to the Stream labels. | string |
 | tenantIDKey | Specify the name of the key from the original record that contains the Tenant ID. The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically. | string |
 | tls |  | *[plugins.TLS](../tls.md) |
+| net | Include fluentbit networking options for this output-plugin | *plugins.Networking |
