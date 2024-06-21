@@ -9,7 +9,7 @@ import (
 // +kubebuilder:object:generate:=true
 
 // Fluent Bit implements a unified networking interface that is exposed to components like plugins. These are the functions from https://docs.fluentbit.io/manual/administration/networking and can be used on various output plugins
-type Net struct {
+type Networking struct {
 	// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
 	ConnectTimeout *int32 `json:"connectTimeout,omitempty"`
 	// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
@@ -35,7 +35,7 @@ type Net struct {
 	SourceAddress *string `json:"sourceAddress,omitempty"`
 }
 
-func (t *Net) Params(sl SecretLoader) (*params.KVs, error) {
+func (t *Networking) Params(sl SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 	if t.ConnectTimeout != nil {
 		kvs.Insert("net.connect_timeout", fmt.Sprint(*t.ConnectTimeout))
