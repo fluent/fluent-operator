@@ -429,6 +429,7 @@ FluentBitSpec defines the desired state of FluentBit
 | metricsPort | MetricsPort is the port used by the metrics server. If this option is set, HttpPort from ClusterFluentBitConfig needs to match this value. Default is 2020. | int32 |
 | service | Service represents configurations on the fluent-bit service. | FluentBitService |
 | schedulerName | SchedulerName represents the desired scheduler for fluent-bit pods. | string |
+| terminationGracePeriodSeconds | Optional duration in seconds the pod needs to terminate gracefully. Value must be non-negative integer. | *int64 |
 
 [Back to TOC](#table-of-contents)
 # InputSpec
@@ -456,6 +457,7 @@ InputSpec defines the desired state of ClusterInput
 | nginx | Nginx defines the Nginx input plugin configuration | *[input.Nginx](plugins/input/nginx.md) |
 | syslog | Syslog defines the Syslog input plugin configuration | *[input.Syslog](plugins/input/syslog.md) |
 | tcp | TCP defines the TCP input plugin configuration | *[input.TCP](plugins/input/tcp.md) |
+| kubernetesEvents | KubernetesEvents defines the KubernetesEvents input plugin configuration | *[input.KubernetesEvents](plugins/input/kubernetesevents.md) |
 | processors | Processors defines the processors configuration | *plugins.Config |
 
 [Back to TOC](#table-of-contents)

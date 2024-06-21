@@ -250,6 +250,72 @@ spec:
                         type: string
                     type: object
                 type: object
+              kubernetesEvents:
+                description: KubernetesEvents defines the KubernetesEvents input plugin
+                  configuration
+                properties:
+                  db:
+                    description: Set a database file to keep track of recorded Kubernetes
+                      events
+                    type: string
+                  dbSync:
+                    description: 'Set a database sync method. values: extra, full,
+                      normal and off'
+                    type: string
+                  intervalNsec:
+                    description: 'Set the polling interval for each channel (sub seconds:
+                      nanoseconds).'
+                    format: int64
+                    type: integer
+                  intervalSec:
+                    description: Set the polling interval for each channel.
+                    format: int32
+                    type: integer
+                  kubeCAFile:
+                    description: CA certificate file
+                    type: string
+                  kubeCAPath:
+                    description: Absolute path to scan for certificate files
+                    type: string
+                  kubeNamespace:
+                    description: Kubernetes namespace to query events from. Gets events
+                      from all namespaces by default
+                    type: string
+                  kubeRequestLimit:
+                    description: kubernetes limit parameter for events query, no limit
+                      applied when set to 0.
+                    format: int32
+                    type: integer
+                  kubeRetentionTime:
+                    description: Kubernetes retention time for events.
+                    type: string
+                  kubeTokenFile:
+                    description: Token file
+                    type: string
+                  kubeTokenTTL:
+                    description: configurable 'time to live' for the K8s token. By
+                      default, it is set to 600 seconds. After this time, the token
+                      is reloaded from Kube_Token_File or the Kube_Token_Command.
+                    type: string
+                  kubeURL:
+                    description: API Server end-point
+                    type: string
+                  tag:
+                    description: Tag name associated to all records comming from this
+                      plugin.
+                    type: string
+                  tlsDebug:
+                    description: Debug level between 0 (nothing) and 4 (every detail).
+                    format: int32
+                    type: integer
+                  tlsVerify:
+                    description: When enabled, turns on certificate validation when
+                      connecting to the Kubernetes API server.
+                    type: boolean
+                  tlsVhost:
+                    description: Set optional TLS virtual host.
+                    type: string
+                type: object
               logLevel:
                 enum:
                 - "off"

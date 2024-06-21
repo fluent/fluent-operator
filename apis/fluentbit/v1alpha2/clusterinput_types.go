@@ -71,6 +71,8 @@ type InputSpec struct {
 	Syslog *input.Syslog `json:"syslog,omitempty"`
 	// TCP defines the TCP input plugin configuration
 	TCP *input.TCP `json:"tcp,omitempty"`
+	// KubernetesEvents defines the KubernetesEvents input plugin configuration
+	KubernetesEvents *input.KubernetesEvents `json:"kubernetesEvents,omitempty"`
 	// Processors defines the processors configuration
 	// +kubebuilder:pruning:PreserveUnknownFields
 	Processors *plugins.Config `json:"processors,omitempty"`

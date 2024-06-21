@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluent-bit-lua
+  namespace: {{ .Release.Namespace | quote }}
 data:
   systemd.lua: |
     function add_time(tag, timestamp, record)

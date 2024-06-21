@@ -105,6 +105,8 @@ type FluentBitSpec struct {
 	Service FluentBitService `json:"service,omitempty"`
 	// SchedulerName represents the desired scheduler for fluent-bit pods.
 	SchedulerName string `json:"schedulerName,omitempty"`
+	// Optional duration in seconds the pod needs to terminate gracefully. Value must be non-negative integer.
+	TerminationGracePeriodSeconds *int64 `json:"terminationGracePeriodSeconds,omitempty"`
 }
 
 // FluentBitService defines the service of the FluentBit
