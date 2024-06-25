@@ -72,7 +72,15 @@ fluentbit:
   # Installs a sub chart carrying the CRDs for the fluent-bit controller. The sub chart is enabled by default.
   crdsEnable: true
   enable: true
-  serviceMonitor: false
+  serviceMonitor:
+    enable: false
+    interval: 30s
+    path: /api/v2/metrics/prometheus
+    scrapeTimeout: 10s
+    secure: false
+    tlsConfig: {}
+    relabelings: []
+    metricRelabelings: []
   image:
     repository: "ghcr.io/fluent/fluent-operator/fluent-bit"
     tag: "3.0.7"

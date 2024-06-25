@@ -1,20 +1,41 @@
 {{- if .Values.Kubernetes -}}
 {{- if .Values.fluentbit.enable -}}
-{{- if .Values.fluentbit.serviceMonitor -}}
+{{- if .Values.fluentbit.serviceMonitor.enable -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: fluent-bit
   labels:
     app.kubernetes.io/name: fluent-bit
+  namespace: {{ template "fluent-operator.namespace" . }}
 spec:
   endpoints:
     - port: metrics
-      path: /api/v2/metrics/prometheus
-      interval: 30s
+      path: {{ .Values.fluentbit.serviceMonitor.path }} 
+      interval: {{ .Values.fluentbit.serviceMonitor.interval }}
+      {{- if .Values.fluentbit.serviceMonitor.secure }}
+      scheme: https
+      tlsConfig:
+        {{- toYaml .Values.fluentbit.serviceMonitor.tlsConfig }}
+      {{- end }}
+      scrapeTimeout: {{ .Values.fluentbit.serviceMonitor.scrapeTimeout }}
+      {{- with .Values.fluentbit.serviceMonitor.relabelings }}
+      relabelings:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.fluentbit.serviceMonitor.metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: fluent-bit
+      {{- include "fluent-operator.selectorLabels" . | nindent 6 }}
+      {{- with .Values.fluentbit.labels }}
+      {{- toYaml .Values.fluentbit.labels | nindent 6}}
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+    - {{ template "fluent-operator.namespace" . }} 
 {{- end }}
 {{- end }}
 {{- end }}
