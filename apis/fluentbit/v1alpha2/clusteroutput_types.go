@@ -19,16 +19,15 @@ package v1alpha2
 import (
 	"bytes"
 	"fmt"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	"reflect"
-	"sigs.k8s.io/yaml"
 	"sort"
-
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/custom"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/output"
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/yaml"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!

@@ -62,7 +62,7 @@ func main() {
 		flag.StringVar(&configPath, "c", defaultCfgPath, "The classic config file path.")
 	} else {
 		level.Info(logger).Log("msg", "fluent-bit secret yaml found, using yaml one.")
-		flag.StringVar(&configPath, "c", defaultYamlCfgPath, "The classic config file path.")
+		flag.StringVar(&configPath, "c", defaultYamlCfgPath, "The yaml config file path.")
 	}
 
 	if exitOnFailure {

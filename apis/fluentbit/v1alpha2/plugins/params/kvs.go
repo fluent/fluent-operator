@@ -3,9 +3,10 @@ package params
 import (
 	"bytes"
 	"fmt"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	"sort"
 	"strings"
+
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
 )
 
 type kvTransformFunc func(string, string) (string, string)
