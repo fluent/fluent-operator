@@ -36,6 +36,8 @@ type Gelf struct {
 	// If transport protocol is udp, it defines if UDP packets should be compressed.
 	Compress     *bool `json:"compress,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"networking,omitempty"`
 }
 
 func (_ *Gelf) Name() string {

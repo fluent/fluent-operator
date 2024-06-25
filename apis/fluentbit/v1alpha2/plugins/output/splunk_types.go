@@ -61,6 +61,8 @@ type Splunk struct {
 	// Enables dedicated thread(s) for this output. Default value `2` is set since version 1.8.13. For previous versions is 0.
 	Workers      *int32 `json:"Workers,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"networking,omitempty"`
 }
 
 // Name implement Section() method

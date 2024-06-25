@@ -52,6 +52,8 @@ type Loki struct {
 	// The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically.
 	TenantIDKey  string `json:"tenantIDKey,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"networking,omitempty"`
 }
 
 // implement Section() method

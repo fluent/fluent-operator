@@ -25,3 +25,4 @@ Splunk output plugin allows to ingest your records into a Splunk Enterprise serv
 | eventFields | Set event fields for the record. This option is an array and the format is \"key_name record_accessor_pattern\". | []string |
 | Workers | Enables dedicated thread(s) for this output. Default value `2` is set since version 1.8.13. For previous versions is 0. | *int32 |
 | tls |  | *[plugins.TLS](../tls.md) |
+| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |

@@ -45,6 +45,8 @@ type InfluxDB struct {
 	// Key of the string array optionally contained within each log record that contains tag keys for that record
 	TagsListKey  string `json:"tagListKey,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
+	// Include fluentbit networking options for this output-plugin
+	*plugins.Networking `json:"networking,omitempty"`
 }
 
 // Name implement Section() method
