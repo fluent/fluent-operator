@@ -95,7 +95,16 @@ spec:
                       description: CustomPlugin defines a Custom plugin configuration.
                       properties:
                         config:
+                          description: Config holds any unsupported plugins classic
+                            configurations, if ConfigFileFormat is set to yaml, this
+                            filed will be ignored
                           type: string
+                        yamlConfig:
+                          description: YamlConfig holds the unsupported plugins yaml
+                            configurations, it only works when the ConfigFileFormat
+                            is yaml
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
                       type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
@@ -1291,6 +1300,13 @@ spec:
           spec:
             description: FluentBitConfigSpec defines the desired state of ClusterFluentBitConfig
             properties:
+              configFileFormat:
+                description: ConfigFileFormat defines the format of the config file,
+                  default is "classic", available options are "classic" and "yaml"
+                enum:
+                - classic
+                - yaml
+                type: string
               filterSelector:
                 description: Select filter plugins
                 properties:
@@ -1953,7 +1969,14 @@ spec:
                 description: CustomPlugin defines Custom Input configuration.
                 properties:
                   config:
+                    description: Config holds any unsupported plugins classic configurations,
+                      if ConfigFileFormat is set to yaml, this filed will be ignored
                     type: string
+                  yamlConfig:
+                    description: YamlConfig holds the unsupported plugins yaml configurations,
+                      it only works when the ConfigFileFormat is yaml
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
                 type: object
               dummy:
                 description: Dummy defines Dummy Input configuration.
@@ -2306,6 +2329,10 @@ spec:
                       the tag will be overwritten by a value of the key.
                     type: string
                 type: object
+              processors:
+                description: Processors defines the processors configuration
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               prometheusScrapeMetrics:
                 description: PrometheusScrapeMetrics  defines Prometheus Scrape Metrics
                   Input configuration.
@@ -4088,7 +4115,14 @@ spec:
                 description: CustomPlugin defines Custom Output configuration.
                 properties:
                   config:
+                    description: Config holds any unsupported plugins classic configurations,
+                      if ConfigFileFormat is set to yaml, this filed will be ignored
                     type: string
+                  yamlConfig:
+                    description: YamlConfig holds the unsupported plugins yaml configurations,
+                      it only works when the ConfigFileFormat is yaml
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
                 type: object
               datadog:
                 description: DataDog defines DataDog Output configuration.
@@ -6477,6 +6511,10 @@ spec:
                       server listening for traces, e.g: /v1/traces'
                     type: string
                 type: object
+              processors:
+                description: Processors defines the processors configuration
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               prometheusExporter:
                 description: PrometheusExporter_types defines Prometheus exporter
                   configuration to expose metrics from Fluent Bit.
@@ -13296,7 +13334,16 @@ spec:
                       description: CustomPlugin defines a Custom plugin configuration.
                       properties:
                         config:
+                          description: Config holds any unsupported plugins classic
+                            configurations, if ConfigFileFormat is set to yaml, this
+                            filed will be ignored
                           type: string
+                        yamlConfig:
+                          description: YamlConfig holds the unsupported plugins yaml
+                            configurations, it only works when the ConfigFileFormat
+                            is yaml
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
                       type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
@@ -29765,7 +29812,14 @@ spec:
                 description: CustomPlugin defines Custom Output configuration.
                 properties:
                   config:
+                    description: Config holds any unsupported plugins classic configurations,
+                      if ConfigFileFormat is set to yaml, this filed will be ignored
                     type: string
+                  yamlConfig:
+                    description: YamlConfig holds the unsupported plugins yaml configurations,
+                      it only works when the ConfigFileFormat is yaml
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
                 type: object
               datadog:
                 description: DataDog defines DataDog Output configuration.
@@ -32154,6 +32208,10 @@ spec:
                       server listening for traces, e.g: /v1/traces'
                     type: string
                 type: object
+              processors:
+                description: Processors defines the processors configuration
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               prometheusExporter:
                 description: PrometheusExporter_types defines Prometheus exporter
                   configuration to expose metrics from Fluent Bit.

@@ -19,10 +19,13 @@ import (
 )
 
 const (
-	defaultBinPath      = "/fluent-bit/bin/fluent-bit"
-	defaultCfgPath      = "/fluent-bit/etc/fluent-bit.conf"
-	defaultWatchDir     = "/fluent-bit/config"
-	defaultPollInterval = 1 * time.Second
+	defaultBinPath        = "/fluent-bit/bin/fluent-bit"
+	defaultCfgPath        = "/fluent-bit/etc/fluent-bit.conf"
+	defaultSecretYamlPath = "/fluent-bit/config/fluent-bit.yaml"
+	defaultYamlCfgPath    = "/fluent-bit/etc/fluent-bit.yaml"
+	defaultParserCfgPath  = "/fluent-bit/etc/parser.conf"
+	defaultWatchDir       = "/fluent-bit/config"
+	defaultPollInterval   = 1 * time.Second
 )
 
 func main() {
@@ -32,12 +35,13 @@ func main() {
 	var watchPath string
 	var poll bool
 	var pollInterval time.Duration
+	var parserCfgPath string
 	flag.StringVar(&binPath, "b", defaultBinPath, "The fluent bit binary path.")
-	flag.StringVar(&configPath, "c", defaultCfgPath, "The config file path.")
 	flag.StringVar(&externalPluginPath, "e", "", "Path to external plugin (shared lib)")
 	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
 	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
 	flag.DurationVar(&pollInterval, "poll-interval", defaultPollInterval, "Poll interval if using poll watcher.")
+	flag.StringVar(&parserCfgPath, "R", defaultParserCfgPath, "Specify a parser config file")
 
 	// Deprecated flags to be removed in one of the next releases.
 	var exitOnFailure bool
@@ -45,13 +49,21 @@ func main() {
 	flag.BoolVar(&exitOnFailure, "exit-on-failure", false, "Deprecated: This has no effect anymore.")
 	flag.DurationVar(&flbTerminationTimeout, "flb-timeout", 0, "Deprecated: This has no effect anymore.")
 
-	flag.Parse()
-
 	signalCtx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
 	logger := log.NewLogfmtLogger(os.Stdout)
 	logger = log.With(logger, "time", log.TimestampFormat(time.Now, time.RFC3339))
+
+	// check  the config file format
+	_, err := os.Stat(defaultSecretYamlPath)
+	if os.IsNotExist(err) {
+		level.Info(logger).Log("msg", "No fluent-bit secret yaml found, using classic one.")
+		flag.StringVar(&configPath, "c", defaultCfgPath, "The classic config file path.")
+	} else {
+		level.Info(logger).Log("msg", "fluent-bit secret yaml found, using yaml one.")
+		flag.StringVar(&configPath, "c", defaultYamlCfgPath, "The yaml config file path.")
+	}
 
 	if exitOnFailure {
 		level.Warn(logger).Log("--exit-on-failure is deprecated. The process will exit no matter what if fluent-bit exits so this can safely be removed.")

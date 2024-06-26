@@ -1,0 +1,2 @@
+includes:
+  - /fluent-bit/config/fluent-bit.yaml

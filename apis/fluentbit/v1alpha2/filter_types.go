@@ -105,6 +105,53 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 	return buf.String(), nil
 }
 
+func (list FilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
+	var buf bytes.Buffer
+
+	sort.Sort(NSFilterByName(list.Items))
+	padding := utils.YamlIndent(depth + 2)
+	for _, item := range list.Items {
+		merge := func(p plugins.Plugin) error {
+			if p == nil || reflect.ValueOf(p).IsNil() {
+				return nil
+			}
+
+			if p.Name() != "" {
+				buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
+			}
+			if item.Spec.Match != "" {
+				buf.WriteString(fmt.Sprintf("%smatch: \"%s\"\n", padding, utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match)))
+			}
+			if item.Spec.MatchRegex != "" {
+				buf.WriteString(fmt.Sprintf("%smatch_regex: %s\n", padding, utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex)))
+			}
+
+			var iface interface{} = p
+			if f, ok := iface.(plugins.Namespaceable); ok {
+				f.MakeNamespaced(item.Namespace)
+			}
+
+			kvs, err := p.Params(sl)
+			if err != nil {
+				return err
+			}
+			buf.WriteString(kvs.YamlString(depth + 2))
+			return nil
+		}
+
+		for _, elem := range item.Spec.FilterItems {
+			for i := 0; i < reflect.ValueOf(elem).NumField(); i++ {
+				p, _ := reflect.ValueOf(elem).Field(i).Interface().(plugins.Plugin)
+				if err := merge(p); err != nil {
+					return "", err
+				}
+			}
+		}
+	}
+
+	return buf.String(), nil
+}
+
 func init() {
 	SchemeBuilder.Register(&Filter{}, &FilterList{})
 }

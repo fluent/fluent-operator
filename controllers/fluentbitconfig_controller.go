@@ -162,8 +162,8 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			}
 			// Inject config data into Secret
 			sl := plugins.NewSecretLoader(r.Client, ns)
-			mainAppCfg, err := cfg.RenderMainConfig(
-				sl, inputs, filters, outputs, nsFilterLists, nsOutputLists, rewriteTagConfigs,
+			mainAppCfg, err := cfg.RenderMainConfigWithTargetFormat(
+				sl, inputs, filters, outputs, nsFilterLists, nsOutputLists, rewriteTagConfigs, cfg.Spec.ConfigFileFormat,
 			)
 			if err != nil {
 				return ctrl.Result{}, err
@@ -196,11 +196,15 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
 				return ctrl.Result{}, err
 			}
-
+			// todo: fix the filename
+			configFileName := "fluent-bit.conf"
+			if cfg.Spec.ConfigFileFormat != nil && *cfg.Spec.ConfigFileFormat == "yaml" {
+				configFileName = "fluent-bit.yaml"
+			}
 			if _, err := controllerutil.CreateOrPatch(
 				ctx, r.Client, sec, func() error {
 					sec.Data = map[string][]byte{
-						"fluent-bit.conf":        []byte(mainAppCfg),
+						configFileName:           []byte(mainAppCfg),
 						"parsers.conf":           []byte(parserCfg),
 						"parsers_multiline.conf": []byte(multilineParserCfg),
 					}

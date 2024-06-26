@@ -692,7 +692,7 @@ func (in *FilterItem) DeepCopyInto(out *FilterItem) {
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)
-		**out = **in
+		(*in).DeepCopyInto(*out)
 	}
 }
 
@@ -860,6 +860,11 @@ func (in *FluentBitConfigSpec) DeepCopyInto(out *FluentBitConfigSpec) {
 	in.MultilineParserSelector.DeepCopyInto(&out.MultilineParserSelector)
 	if in.Namespace != nil {
 		in, out := &in.Namespace, &out.Namespace
+		*out = new(string)
+		**out = **in
+	}
+	if in.ConfigFileFormat != nil {
+		in, out := &in.ConfigFileFormat, &out.ConfigFileFormat
 		*out = new(string)
 		**out = **in
 	}
@@ -1136,7 +1141,7 @@ func (in *InputSpec) DeepCopyInto(out *InputSpec) {
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)
-		**out = **in
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Forward != nil {
 		in, out := &in.Forward, &out.Forward
@@ -1187,6 +1192,10 @@ func (in *InputSpec) DeepCopyInto(out *InputSpec) {
 		in, out := &in.KubernetesEvents, &out.KubernetesEvents
 		*out = new(input.KubernetesEvents)
 		(*in).DeepCopyInto(*out)
+	}
+	if in.Processors != nil {
+		in, out := &in.Processors, &out.Processors
+		*out = (*in).DeepCopy()
 	}
 }
 
@@ -1556,7 +1565,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)
-		**out = **in
+		(*in).DeepCopyInto(*out)
+	}
+	if in.Processors != nil {
+		in, out := &in.Processors, &out.Processors
+		*out = (*in).DeepCopy()
 	}
 }
 

@@ -19,10 +19,13 @@ package v1alpha2
 import (
 	"bytes"
 	"fmt"
+
 	"sort"
 
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/output"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -46,6 +49,10 @@ type FluentBitConfigSpec struct {
 	// If namespace is defined, then the configmap and secret for fluent-bit is in this namespace.
 	// If it is not defined, it is in the namespace of the fluentd-operator
 	Namespace *string `json:"namespace,omitempty"`
+	// ConfigFileFormat defines the format of the config file, default is "classic",
+	// available options are "classic" and "yaml"
+	// +kubebuilder:validation:Enum:=classic;yaml
+	ConfigFileFormat *string `json:"configFileFormat,omitempty"`
 }
 
 type Storage struct {
@@ -217,6 +224,116 @@ func (s *Service) Params() *params.KVs {
 		}
 	}
 	return m
+}
+
+func (cfg ClusterFluentBitConfig) RenderMainConfigWithTargetFormat(sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList,
+	outputs ClusterOutputList, nsFilterLists []FilterList, nsOutputLists []OutputList, rewriteTagConfigs []string, configFileFormat *string) (string, error) {
+	if configFileFormat != nil && *configFileFormat == "yaml" {
+		return cfg.RenderMainConfigInYaml(sl, inputs, filters, outputs, nsFilterLists, nsOutputLists, rewriteTagConfigs)
+	}
+	return cfg.RenderMainConfig(sl, inputs, filters, outputs, nsFilterLists, nsOutputLists, rewriteTagConfigs)
+}
+
+func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
+	sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList,
+	outputs ClusterOutputList, nsFilterLists []FilterList, nsOutputLists []OutputList, rewriteTagConfigs []string,
+) (string, error) {
+	var buf bytes.Buffer
+	// The Service defines the global behaviour of the Fluent Bit engine.
+	if cfg.Spec.Service != nil {
+		buf.WriteString("service:\n")
+		buf.WriteString(cfg.Spec.Service.Params().YamlString(1))
+	}
+	buf.WriteString("pipeline:\n")
+	inputSections, err := inputs.LoadAsYaml(sl, 1)
+	if err != nil {
+		return "", fmt.Errorf("failed to load inputs: %w", err)
+	}
+
+	filterSections, err := filters.LoadAsYaml(sl, 1)
+	if err != nil {
+		return "", fmt.Errorf("failed to load filters: %w", err)
+	}
+
+	var nsFilterSections []string
+	for _, nsFilterList := range nsFilterLists {
+		if len(nsFilterList.Items) == 0 {
+			continue
+		}
+		if nsFilterList.Items != nil {
+			ns := nsFilterList.Items[0].Namespace
+			namespacedSl := plugins.NewSecretLoader(sl.Client, ns)
+			filters, err := nsFilterList.LoadAsYaml(namespacedSl, 1)
+			if err != nil {
+				return "", fmt.Errorf("failed to load filters: %w", err)
+			}
+			nsFilterSections = append(nsFilterSections, filters)
+		}
+	}
+
+	outputSections, err := outputs.LoadAsYaml(sl, 1)
+	if err != nil {
+		return "", fmt.Errorf("failed to load outputs: %w", err)
+	}
+	var nsOutputSections []string
+	for _, nsOutputList := range nsOutputLists {
+		if len(nsOutputList.Items) == 0 {
+			continue
+		}
+		// The lists are per namespace, so get the namespace from the first item in a list
+		if nsOutputList.Items != nil {
+			ns := nsOutputList.Items[0].Namespace
+			namespacedSl := plugins.NewSecretLoader(sl.Client, ns)
+			outputs, err := nsOutputList.LoadAsYaml(namespacedSl, 1)
+			if err != nil {
+				return "", fmt.Errorf("failed to load outputs: %w", err)
+			}
+			nsOutputSections = append(nsOutputSections, outputs)
+		}
+	}
+
+	if inputSections != "" && outputSections == "" && nsOutputSections == nil {
+		defaultOutputs := ClusterOutputList{
+			Items: []ClusterOutput{
+				{
+					Spec: OutputSpec{Match: "*", Null: &output.Null{}},
+				},
+			},
+		}
+		outputSections, err = defaultOutputs.LoadAsYaml(sl, 1)
+		if err != nil {
+			return "", fmt.Errorf("failed to load outputs: %w", err)
+		}
+	}
+
+	buf.WriteString(inputSections)
+	for _, rtc := range rewriteTagConfigs {
+		buf.WriteString(rtc)
+	}
+	if filterSections == "" && nsFilterSections != nil {
+		buf.WriteString(fmt.Sprintf("%sfilters:\n", utils.YamlIndent(1)))
+	} else {
+		// 1. filterSections == "" && nsFilterSections == nil
+		// 2. filterSections != "" && nsFilterSections != nil
+		// 3. filterSections != "" && nsFilterSections == nil
+		buf.WriteString(filterSections)
+	}
+	for _, filters := range nsFilterSections {
+		buf.WriteString(filters)
+	}
+	if outputSections == "" && nsOutputSections != nil {
+		buf.WriteString(fmt.Sprintf("%soutputs:\n", utils.YamlIndent(1)))
+	} else {
+		// 1. outputSections == "" && nsOutputSections == nil
+		// 2. outputSections != "" && nsOutputSections != nil
+		// 3. outputSections != "" && nsOutputSections == nil
+		buf.WriteString(outputSections)
+	}
+	for _, outputs := range nsOutputSections {
+		buf.WriteString(outputs)
+	}
+
+	return buf.String(), nil
 }
 
 func (cfg ClusterFluentBitConfig) RenderMainConfig(

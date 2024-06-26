@@ -19,14 +19,14 @@ package v1alpha2
 import (
 	"bytes"
 	"fmt"
-	"reflect"
-	"sort"
-
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/custom"
 	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/input"
+	"github.com/fluent/fluent-operator/v2/pkg/utils"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"reflect"
+	"sigs.k8s.io/yaml"
+	"sort"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -73,6 +73,9 @@ type InputSpec struct {
 	TCP *input.TCP `json:"tcp,omitempty"`
 	// KubernetesEvents defines the KubernetesEvents input plugin configuration
 	KubernetesEvents *input.KubernetesEvents `json:"kubernetesEvents,omitempty"`
+	// Processors defines the processors configuration
+	// +kubebuilder:pruning:PreserveUnknownFields
+	Processors *plugins.Config `json:"processors,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -131,6 +134,55 @@ func (list ClusterInputList) Load(sl plugins.SecretLoader) (string, error) {
 				return err
 			}
 			buf.WriteString(kvs.String())
+			return nil
+		}
+
+		for i := 0; i < reflect.ValueOf(item.Spec).NumField(); i++ {
+			p, _ := reflect.ValueOf(item.Spec).Field(i).Interface().(plugins.Plugin)
+			if err := merge(p); err != nil {
+				return "", err
+			}
+		}
+	}
+
+	return buf.String(), nil
+}
+
+func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
+	var buf bytes.Buffer
+
+	sort.Sort(InputByName(list.Items))
+	buf.WriteString(fmt.Sprintf("%sinputs:\n", utils.YamlIndent(depth)))
+	padding := utils.YamlIndent(depth + 2)
+
+	for _, item := range list.Items {
+		merge := func(p plugins.Plugin) error {
+			if p == nil || reflect.ValueOf(p).IsNil() {
+				return nil
+			}
+
+			if p.Name() != "" {
+				buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
+			}
+			if item.Spec.Alias != "" {
+				buf.WriteString(fmt.Sprintf("%salias: %s\n", padding, item.Spec.Alias))
+			}
+			if item.Spec.LogLevel != "" {
+				buf.WriteString(fmt.Sprintf("%slog_level: %s\n", padding, item.Spec.LogLevel))
+			}
+			if item.Spec.Processors != nil {
+				buf.WriteString(fmt.Sprintf("%sprocessors:\n", padding))
+				processorYaml, err := yaml.Marshal(item.Spec.Processors)
+				if err != nil {
+					return fmt.Errorf("error marshalling processor: %w", err)
+				}
+				buf.WriteString(utils.AdjustYamlIndent(string(processorYaml), depth+4))
+			}
+			kvs, err := p.Params(sl)
+			if err != nil {
+				return err
+			}
+			buf.WriteString(kvs.YamlString(depth + 2))
 			return nil
 		}
 

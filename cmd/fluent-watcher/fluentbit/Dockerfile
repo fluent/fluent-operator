@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /fluent-bit/fluent-bit /code/cmd/
 FROM fluent/fluent-bit:3.0.7
 LABEL Description="Fluent Bit docker image" Vendor="Fluent" Version="1.0"
 
-COPY conf/fluent-bit.conf conf/parsers.conf /fluent-bit/etc/
+COPY conf/fluent-bit.conf conf/fluent-bit.yaml conf/parsers.conf /fluent-bit/etc/
 COPY --from=buildergo /fluent-bit/fluent-bit /fluent-bit/bin/fluent-bit-watcher
 
 # Entry point
