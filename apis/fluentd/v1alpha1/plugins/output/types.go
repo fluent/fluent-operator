@@ -451,6 +451,38 @@ func (o *Output) elasticsearchPluginCommon(common *ElasticsearchCommon, parent *
 		parent.InsertPairs("path", fmt.Sprint(*common.Path))
 	}
 
+	if common.TemplateOverwrite != nil {
+		parent.InsertPairs("template_overwrite", fmt.Sprint(*common.TemplateOverwrite))
+	}
+
+	if common.MaxRetryPuttingTemplate != nil {
+		parent.InsertPairs("max_retry_putting_template", fmt.Sprint(*common.MaxRetryPuttingTemplate))
+	}
+
+	if common.FailOnPuttingTemplateRetryExceeded != nil {
+		parent.InsertPairs("fail_on_putting_template_retry_exceed", fmt.Sprint(*common.FailOnPuttingTemplateRetryExceeded))
+	}
+
+	if common.ReconnectOnError != nil {
+		parent.InsertPairs("reconnect_on_error", fmt.Sprint(*common.ReconnectOnError))
+	}
+
+	if common.ReloadConnections != nil {
+		parent.InsertPairs("reload_connections", fmt.Sprint(*common.ReloadConnections))
+	}
+
+	if common.ReloadOnFailure != nil {
+		parent.InsertPairs("reload_on_failure", fmt.Sprint(*common.ReloadOnFailure))
+	}
+
+	if common.RequestTimeout != nil {
+		parent.InsertPairs("request_timeout", fmt.Sprint(*common.RequestTimeout))
+	}
+
+	if common.SuppressTypeName != nil {
+		parent.InsertPairs("suppress_type_name", fmt.Sprint(*common.SuppressTypeName))
+	}
+
 	if common.EnableIlm != nil {
 		parent.InsertPairs("enable_ilm", fmt.Sprint(*common.EnableIlm))
 	}

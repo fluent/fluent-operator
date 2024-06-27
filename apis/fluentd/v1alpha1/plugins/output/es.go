@@ -35,6 +35,23 @@ type ElasticsearchCommon struct {
 	ClientKey *string `json:"clientKey,omitempty"`
 	// Optional, password for ClientKey file
 	ClientKeyPassword *plugins.Secret `json:"clientKeyPassword,omitempty"`
+	// Optional, Always update the template, even if it already exists (default: false)
+	TemplateOverwrite *bool `json:"templateOverwrite,omitempty"`
+	// Optional, You can specify times of retry putting template (default: 10)
+	MaxRetryPuttingTemplate *uint32 `json:"maxRetryPuttingTemplate,omitempty"`
+	// Optional, Indicates whether to fail when max_retry_putting_template is exceeded. If you have multiple output plugin, you could use this property to do not fail on fluentd statup (default: false)
+	FailOnPuttingTemplateRetryExceeded *bool `json:"failOnPuttingTemplateRetryExceeded,omitempty"`
+	// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
+	ReconnectOnError *bool `json:"reconnectOnError,omitempty"`
+	// Optional, Automatically reload connection after 10000 documents (default: true)
+	ReloadConnections *bool `json:"reloadConnections,omitempty"`
+	// Optional, Indicates that the elasticsearch-transport will try to reload the nodes addresses if there is a failure while making the request, this can be useful to quickly remove a dead node from the list of addresses (default: false)
+	ReloadOnFailure *bool `json:"reloadOnFailure,omitempty"`
+	// Optional, HTTP Timeout (default: 5)
+	// +kubebuilder:validation:Pattern:="^\\d+(s|m|h|d)$"
+	RequestTimeout *string `json:"requestTimeout,omitempty"`
+	// Optional, Suppress '[types removal]' warnings on elasticsearch 7.x
+	SuppressTypeName *bool `json:"suppressTypeName,omitempty"`
 	// Optional, Enable Index Lifecycle Management (ILM)
 	EnableIlm *bool `json:"enableIlm,omitempty"`
 	// Optional, Specify ILM policy id

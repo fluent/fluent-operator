@@ -19,6 +19,14 @@ Elasticsearch defines the parameters for out_es output plugin
 | clientCert | Optional, Absolute path to client Certificate file | *string |
 | clientKey | Optional, Absolute path to client private Key file | *string |
 | clientKeyPassword | Optional, password for ClientKey file | *[plugins.Secret](../secret.md) |
+| templateOverwrite | Optional, Always update the template, even if it already exists (default: false) | *bool |
+| maxRetryPuttingTemplate | Optional, You can specify times of retry putting template (default: 10) | *uint32 |
+| failOnPuttingTemplateRetryExceeded | Optional, Indicates whether to fail when max_retry_putting_template is exceeded. If you have multiple output plugin, you could use this property to do not fail on fluentd statup (default: false) | *bool |
+| reconnectOnError | Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false) | *bool |
+| reloadConnections | Optional, Automatically reload connection after 10000 documents (default: true) | *bool |
+| reloadOnFailure | Optional, Indicates that the elasticsearch-transport will try to reload the nodes addresses if there is a failure while making the request, this can be useful to quickly remove a dead node from the list of addresses (default: false) | *bool |
+| requestTimeout | Optional, HTTP Timeout (default: 5) | *string |
+| suppressTypeName | Optional, Suppress '[types removal]' warnings on elasticsearch 7.x | *bool |
 | enableIlm | Optional, Enable Index Lifecycle Management (ILM) | *bool |
 | ilmPolicyId | Optional, Specify ILM policy id | *string |
 | ilmPolicy | Optional, Specify ILM policy contents as Hash | *string |

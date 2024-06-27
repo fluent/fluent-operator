@@ -673,6 +673,12 @@ spec:
                           description: Optional, Enable Index Lifecycle Management
                             (ILM)
                           type: boolean
+                        failOnPuttingTemplateRetryExceeded:
+                          description: 'Optional, Indicates whether to fail when max_retry_putting_template
+                            is exceeded. If you have multiple output plugin, you could
+                            use this property to do not fail on fluentd statup (default:
+                            false)'
+                          type: boolean
                         host:
                           description: 'The hostname of your Elasticsearch node (default:
                             localhost).'
@@ -709,6 +715,11 @@ spec:
                             index name to write events when logstash_format is true
                             (default: logstash).'
                           type: string
+                        maxRetryPuttingTemplate:
+                          description: 'Optional, You can specify times of retry putting
+                            template (default: 10)'
+                          format: int32
+                          type: integer
                         password:
                           description: Optional, The login credentials to connect
                             to Elasticsearch
@@ -752,12 +763,40 @@ spec:
                           maximum: 65535
                           minimum: 1
                           type: integer
+                        reconnectOnError:
+                          description: 'Optional, Indicates that the plugin should
+                            reset connection on any error (reconnect on next send)
+                            (default: false)'
+                          type: boolean
+                        reloadConnections:
+                          description: 'Optional, Automatically reload connection
+                            after 10000 documents (default: true)'
+                          type: boolean
+                        reloadOnFailure:
+                          description: 'Optional, Indicates that the elasticsearch-transport
+                            will try to reload the nodes addresses if there is a failure
+                            while making the request, this can be useful to quickly
+                            remove a dead node from the list of addresses (default:
+                            false)'
+                          type: boolean
+                        requestTimeout:
+                          description: 'Optional, HTTP Timeout (default: 5)'
+                          pattern: ^\d+(s|m|h|d)$
+                          type: string
                         scheme:
                           description: 'Specify https if your Elasticsearch endpoint
                             supports SSL (default: http).'
                           type: string
                         sslVerify:
                           description: Optional, Force certificate validation
+                          type: boolean
+                        suppressTypeName:
+                          description: Optional, Suppress '[types removal]' warnings
+                            on elasticsearch 7.x
+                          type: boolean
+                        templateOverwrite:
+                          description: 'Optional, Always update the template, even
+                            if it already exists (default: false)'
                           type: boolean
                         user:
                           description: Optional, The login credentials to connect
@@ -936,6 +975,12 @@ spec:
                           description: Optional, Enable Index Lifecycle Management
                             (ILM)
                           type: boolean
+                        failOnPuttingTemplateRetryExceeded:
+                          description: 'Optional, Indicates whether to fail when max_retry_putting_template
+                            is exceeded. If you have multiple output plugin, you could
+                            use this property to do not fail on fluentd statup (default:
+                            false)'
+                          type: boolean
                         host:
                           description: 'The hostname of your Elasticsearch node (default:
                             localhost).'
@@ -958,6 +1003,11 @@ spec:
                           description: Optional, Enable logging of 400 reason without
                             enabling debug log level
                           type: boolean
+                        maxRetryPuttingTemplate:
+                          description: 'Optional, You can specify times of retry putting
+                            template (default: 10)'
+                          format: int32
+                          type: integer
                         password:
                           description: Optional, The login credentials to connect
                             to Elasticsearch
@@ -1001,12 +1051,40 @@ spec:
                           maximum: 65535
                           minimum: 1
                           type: integer
+                        reconnectOnError:
+                          description: 'Optional, Indicates that the plugin should
+                            reset connection on any error (reconnect on next send)
+                            (default: false)'
+                          type: boolean
+                        reloadConnections:
+                          description: 'Optional, Automatically reload connection
+                            after 10000 documents (default: true)'
+                          type: boolean
+                        reloadOnFailure:
+                          description: 'Optional, Indicates that the elasticsearch-transport
+                            will try to reload the nodes addresses if there is a failure
+                            while making the request, this can be useful to quickly
+                            remove a dead node from the list of addresses (default:
+                            false)'
+                          type: boolean
+                        requestTimeout:
+                          description: 'Optional, HTTP Timeout (default: 5)'
+                          pattern: ^\d+(s|m|h|d)$
+                          type: string
                         scheme:
                           description: 'Specify https if your Elasticsearch endpoint
                             supports SSL (default: http).'
                           type: string
                         sslVerify:
                           description: Optional, Force certificate validation
+                          type: boolean
+                        suppressTypeName:
+                          description: Optional, Suppress '[types removal]' warnings
+                            on elasticsearch 7.x
+                          type: boolean
+                        templateOverwrite:
+                          description: 'Optional, Always update the template, even
+                            if it already exists (default: false)'
                           type: boolean
                         user:
                           description: Optional, The login credentials to connect
