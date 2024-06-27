@@ -941,35 +941,37 @@ spec:
                               type: object
                           type: object
                         dataStreamIlmName:
-                          description: You can specify the name of an existing ILM
-                            policy, which will be applied to the data stream. If not
-                            present, it creates a new ILM default policy (unless data_stream_template_name
-                            is defined, in that case the ILM will be set to the one
-                            specified in the matching index template)
+                          description: Optional, You can specify the name of an existing
+                            ILM policy, which will be applied to the data stream.
+                            If not present, it creates a new ILM default policy (unless
+                            data_stream_template_name is defined, in that case the
+                            ILM will be set to the one specified in the matching index
+                            template)
                           type: string
                         dataStreamIlmPolicy:
-                          description: You can specify the ILM policy contents as
-                            hash. If not present, it will apply the ILM default policy
+                          description: Optional, You can specify the ILM policy contents
+                            as hash. If not present, it will apply the ILM default
+                            policy
                           type: string
                         dataStreamIlmPolicyOverwrite:
-                          description: Specify whether the data stream ILM policy
-                            should be overwritten
+                          description: Optional, Specify whether the data stream ILM
+                            policy should be overwritten
                           type: boolean
                         dataStreamName:
                           description: You can specify Elasticsearch data stream name
                             by this parameter. This parameter is mandatory for elasticsearch_data_stream
                           type: string
                         dataStreamTemplateName:
-                          description: You can specify an existing matching index
-                            template for the data stream. If not present, it creates
-                            a new matching index template
+                          description: Optional, You can specify an existing matching
+                            index template for the data stream. If not present, it
+                            creates a new matching index template
                           type: string
                         dataStreamTemplateUseIndexPatternsWildcard:
-                          description: Specify whether index patterns should include
-                            a wildcard (*) when creating an index template. This is
-                            particularly useful to prevent errors in scenarios where
-                            index templates are generated automatically, and multiple
-                            services with distinct suffixes are in use
+                          description: Optional, Specify whether index patterns should
+                            include a wildcard (*) when creating an index template.
+                            This is particularly useful to prevent errors in scenarios
+                            where index templates are generated automatically, and
+                            multiple services with distinct suffixes are in use
                           type: boolean
                         enableIlm:
                           description: Optional, Enable Index Lifecycle Management
