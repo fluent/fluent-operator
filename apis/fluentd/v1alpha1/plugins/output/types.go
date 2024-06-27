@@ -451,6 +451,58 @@ func (o *Output) elasticsearchPluginCommon(common *ElasticsearchCommon, parent *
 		parent.InsertPairs("path", fmt.Sprint(*common.Path))
 	}
 
+	if common.TemplateOverwrite != nil {
+		parent.InsertPairs("template_overwrite", fmt.Sprint(*common.TemplateOverwrite))
+	}
+
+	if common.MaxRetryPuttingTemplate != nil {
+		parent.InsertPairs("max_retry_putting_template", fmt.Sprint(*common.MaxRetryPuttingTemplate))
+	}
+
+	if common.FailOnPuttingTemplateRetryExceeded != nil {
+		parent.InsertPairs("fail_on_putting_template_retry_exceed", fmt.Sprint(*common.FailOnPuttingTemplateRetryExceeded))
+	}
+
+	if common.ReconnectOnError != nil {
+		parent.InsertPairs("reconnect_on_error", fmt.Sprint(*common.ReconnectOnError))
+	}
+
+	if common.ReloadConnections != nil {
+		parent.InsertPairs("reload_connections", fmt.Sprint(*common.ReloadConnections))
+	}
+
+	if common.ReloadOnFailure != nil {
+		parent.InsertPairs("reload_on_failure", fmt.Sprint(*common.ReloadOnFailure))
+	}
+
+	if common.RequestTimeout != nil {
+		parent.InsertPairs("request_timeout", fmt.Sprint(*common.RequestTimeout))
+	}
+
+	if common.SuppressTypeName != nil {
+		parent.InsertPairs("suppress_type_name", fmt.Sprint(*common.SuppressTypeName))
+	}
+
+	if common.EnableIlm != nil {
+		parent.InsertPairs("enable_ilm", fmt.Sprint(*common.EnableIlm))
+	}
+
+	if common.IlmPolicyId != nil {
+		parent.InsertPairs("ilm_policy_id", fmt.Sprint(*common.IlmPolicyId))
+	}
+
+	if common.IlmPolicy != nil {
+		parent.InsertPairs("ilm_policy", fmt.Sprint(*common.IlmPolicy))
+	}
+
+	if common.IlmPolicyOverwrite != nil {
+		parent.InsertPairs("ilm_policy_overwrite", fmt.Sprint(*common.IlmPolicyOverwrite))
+	}
+
+	if common.LogEs400Reason != nil {
+		parent.InsertPairs("log_es_400_reason", fmt.Sprint(*common.LogEs400Reason))
+	}
+
 	return parent, nil
 }
 
@@ -485,6 +537,26 @@ func (o *Output) elasticsearchDataStreamPlugin(parent *params.PluginStore, loade
 
 	if o.ElasticsearchDataStream.DataStreamName != nil {
 		parent.InsertPairs("data_stream_name", fmt.Sprint(*o.ElasticsearchDataStream.DataStreamName))
+	}
+
+	if o.ElasticsearchDataStream.DataStreamTemplateName != nil {
+		parent.InsertPairs("data_stream_template_name", fmt.Sprint(*o.ElasticsearchDataStream.DataStreamTemplateName))
+	}
+
+	if o.ElasticsearchDataStream.DataStreamTemplateUseIndexPatternsWildcard != nil {
+		parent.InsertPairs("data_stream_template_use_index_patterns_wildcard", fmt.Sprint(*o.ElasticsearchDataStream.DataStreamTemplateUseIndexPatternsWildcard))
+	}
+
+	if o.ElasticsearchDataStream.DataStreamIlmName != nil {
+		parent.InsertPairs("data_stream_ilm_name", fmt.Sprint(*o.ElasticsearchDataStream.DataStreamIlmName))
+	}
+
+	if o.ElasticsearchDataStream.DataStreamIlmPolicy != nil {
+		parent.InsertPairs("data_stream_ilm_policy", fmt.Sprint(*o.ElasticsearchDataStream.DataStreamIlmPolicy))
+	}
+
+	if o.ElasticsearchDataStream.DataStreamIlmPolicyOverwrite != nil {
+		parent.InsertPairs("data_stream_ilm_policy_overwrite", fmt.Sprint(*o.ElasticsearchDataStream.DataStreamIlmPolicyOverwrite))
 	}
 
 	return parent, nil

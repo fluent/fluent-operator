@@ -35,6 +35,33 @@ type ElasticsearchCommon struct {
 	ClientKey *string `json:"clientKey,omitempty"`
 	// Optional, password for ClientKey file
 	ClientKeyPassword *plugins.Secret `json:"clientKeyPassword,omitempty"`
+	// Optional, Always update the template, even if it already exists (default: false)
+	TemplateOverwrite *bool `json:"templateOverwrite,omitempty"`
+	// Optional, You can specify times of retry putting template (default: 10)
+	MaxRetryPuttingTemplate *uint32 `json:"maxRetryPuttingTemplate,omitempty"`
+	// Optional, Indicates whether to fail when max_retry_putting_template is exceeded. If you have multiple output plugin, you could use this property to do not fail on fluentd statup (default: false)
+	FailOnPuttingTemplateRetryExceeded *bool `json:"failOnPuttingTemplateRetryExceeded,omitempty"`
+	// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
+	ReconnectOnError *bool `json:"reconnectOnError,omitempty"`
+	// Optional, Automatically reload connection after 10000 documents (default: true)
+	ReloadConnections *bool `json:"reloadConnections,omitempty"`
+	// Optional, Indicates that the elasticsearch-transport will try to reload the nodes addresses if there is a failure while making the request, this can be useful to quickly remove a dead node from the list of addresses (default: false)
+	ReloadOnFailure *bool `json:"reloadOnFailure,omitempty"`
+	// Optional, HTTP Timeout (default: 5)
+	// +kubebuilder:validation:Pattern:="^\\d+(s|m|h|d)$"
+	RequestTimeout *string `json:"requestTimeout,omitempty"`
+	// Optional, Suppress '[types removal]' warnings on elasticsearch 7.x
+	SuppressTypeName *bool `json:"suppressTypeName,omitempty"`
+	// Optional, Enable Index Lifecycle Management (ILM)
+	EnableIlm *bool `json:"enableIlm,omitempty"`
+	// Optional, Specify ILM policy id
+	IlmPolicyId *string `json:"ilmPolicyId,omitempty"`
+	// Optional, Specify ILM policy contents as Hash
+	IlmPolicy *string `json:"ilmPolicy,omitempty"`
+	// Optional, Specify whether overwriting ilm policy or not
+	IlmPolicyOverwrite *bool `json:"ilmPolicyOverride,omitempty"`
+	// Optional, Enable logging of 400 reason without enabling debug log level
+	LogEs400Reason *bool `json:"logEs400Reason,omitempty"`
 }
 
 type Elasticsearch struct {
@@ -53,4 +80,14 @@ type ElasticsearchDataStream struct {
 
 	// You can specify Elasticsearch data stream name by this parameter. This parameter is mandatory for elasticsearch_data_stream
 	DataStreamName *string `json:"dataStreamName"`
+	// Optional, You can specify an existing matching index template for the data stream. If not present, it creates a new matching index template
+	DataStreamTemplateName *string `json:"dataStreamTemplateName,omitempty"`
+	// Optional, Specify whether index patterns should include a wildcard (*) when creating an index template. This is particularly useful to prevent errors in scenarios where index templates are generated automatically, and multiple services with distinct suffixes are in use
+	DataStreamTemplateUseIndexPatternsWildcard *bool `json:"dataStreamTemplateUseIndexPatternsWildcard,omitempty"`
+	// Optional, You can specify the name of an existing ILM policy, which will be applied to the data stream. If not present, it creates a new ILM default policy (unless data_stream_template_name is defined, in that case the ILM will be set to the one specified in the matching index template)
+	DataStreamIlmName *string `json:"dataStreamIlmName,omitempty"`
+	// Optional, You can specify the ILM policy contents as hash. If not present, it will apply the ILM default policy
+	DataStreamIlmPolicy *string `json:"dataStreamIlmPolicy,omitempty"`
+	// Optional, Specify whether the data stream ILM policy should be overwritten
+	DataStreamIlmPolicyOverwrite *bool `json:"dataStreamIlmPolicyOverwrite,omitempty"`
 }

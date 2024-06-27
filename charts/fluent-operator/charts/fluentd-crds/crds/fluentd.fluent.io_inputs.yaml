@@ -3,8 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.11.3
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.15.0
   name: inputs.fluentd.fluent.io
 spec:
   group: fluentd.fluent.io
@@ -23,14 +22,19 @@ spec:
         description: Input is the Schema for the inputs API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -139,10 +143,10 @@ spec:
                                                 key.
                                               type: string
                                             name:
-                                              description: 'Name of the referent.
+                                              description: |-
+                                                Name of the referent.
                                                 More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                                TODO: Add other useful fields. apiVersion,
-                                                kind, uid?'
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
                                               type: string
                                             optional:
                                               description: Specify whether the Secret
@@ -171,10 +175,10 @@ spec:
                                                 key.
                                               type: string
                                             name:
-                                              description: 'Name of the referent.
+                                              description: |-
+                                                Name of the referent.
                                                 More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                                TODO: Add other useful fields. apiVersion,
-                                                kind, uid?'
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
                                               type: string
                                             optional:
                                               description: Specify whether the Secret
@@ -206,9 +210,9 @@ spec:
                             set, the client's hostname will be set to its key.
                           type: string
                         tag:
-                          description: in_forward uses incoming event's tag by default
-                            (See Protocol Section). If the tag parameter is set, its
-                            value is used instead.
+                          description: |-
+                            in_forward uses incoming event's tag by default (See Protocol Section).
+                            If the tag parameter is set, its value is used instead.
                           type: string
                         transport:
                           description: The transport section of forward plugin
@@ -264,10 +268,10 @@ spec:
                                             from.  Must be a valid secret key.
                                           type: string
                                         name:
-                                          description: 'Name of the referent. More
-                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                            TODO: Add other useful fields. apiVersion,
-                                            kind, uid?'
+                                          description: |-
+                                            Name of the referent.
+                                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                            TODO: Add other useful fields. apiVersion, kind, uid?
                                           type: string
                                         optional:
                                           description: Specify whether the Secret
@@ -295,10 +299,10 @@ spec:
                                             from.  Must be a valid secret key.
                                           type: string
                                         name:
-                                          description: 'Name of the referent. More
-                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                            TODO: Add other useful fields. apiVersion,
-                                            kind, uid?'
+                                          description: |-
+                                            Name of the referent.
+                                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                            TODO: Add other useful fields. apiVersion, kind, uid?
                                           type: string
                                         optional:
                                           description: Specify whether the Secret
@@ -319,9 +323,9 @@ spec:
                           description: Adds HTTP_ prefix headers to the record.
                           type: boolean
                         addRemoteAddr:
-                          description: 'Adds REMOTE_ADDR field to the record. The
-                            value of REMOTE_ADDR is the client''s address. i.e: X-Forwarded-For:
-                            host1, host2'
+                          description: |-
+                            Adds REMOTE_ADDR field to the record. The value of REMOTE_ADDR is the client's address.
+                            i.e: X-Forwarded-For: host1, host2
                           type: string
                         bind:
                           description: The port to listen to, default is "0.0.0.0"
@@ -592,24 +596,20 @@ spec:
                             not matched for incoming logs.
                           type: boolean
                         enableStatWatcher:
-                          description: Enables the additional inotify-based watcher.
-                            Setting this parameter to false will disable the inotify
-                            events and use only timer watcher for file tailing. This
-                            option is mainly for avoiding the stuck issue with inotify.
+                          description: |-
+                            Enables the additional inotify-based watcher. Setting this parameter to false will disable the inotify events and use only timer watcher for file tailing.
+                            This option is mainly for avoiding the stuck issue with inotify.
                           type: boolean
                         enableWatchTimer:
-                          description: Enables the additional watch timer. Setting
-                            this parameter to false will significantly reduce CPU
-                            and I/O consumption when tailing a large number of files
-                            on systems with inotify support. The default is true which
-                            results in an additional 1 second timer being used.
+                          description: |-
+                            Enables the additional watch timer. Setting this parameter to false will significantly reduce CPU and I/O consumption when tailing a large number of files on systems with inotify support.
+                            The default is true which results in an additional 1 second timer being used.
                           type: boolean
                         encoding:
-                          description: Specifies the encoding of reading lines. By
-                            default, in_tail emits string value as ASCII-8BIT encoding.
+                          description: |-
+                            Specifies the encoding of reading lines. By default, in_tail emits string value as ASCII-8BIT encoding.
                             If encoding is specified, in_tail changes string to encoding.
-                            If encoding and fromEncoding both are specified, in_tail
-                            tries to encode string from fromEncoding to encoding.
+                            If encoding and fromEncoding both are specified, in_tail tries to encode string from fromEncoding to encoding.
                           type: string
                         excludePath:
                           description: The paths excluded from the watcher list.
@@ -621,24 +621,20 @@ spec:
                             should set true when you use * or strftime format in path.
                           type: boolean
                         fromEncoding:
-                          description: Specifies the encoding of reading lines. By
-                            default, in_tail emits string value as ASCII-8BIT encoding.
+                          description: |-
+                            Specifies the encoding of reading lines. By default, in_tail emits string value as ASCII-8BIT encoding.
                             If encoding is specified, in_tail changes string to encoding.
-                            If encoding and fromEncoding both are specified, in_tail
-                            tries to encode string from fromEncoding to encoding.
+                            If encoding and fromEncoding both are specified, in_tail tries to encode string from fromEncoding to encoding.
                           type: string
                         group:
-                          description: The in_tail plugin can assign each log file
-                            to a group, based on user defined rules. The limit parameter
-                            controls the total number of lines collected for a group
-                            within a rate_period time interval.
+                          description: |-
+                            The in_tail plugin can assign each log file to a group, based on user defined rules.
+                            The limit parameter controls the total number of lines collected for a group within a rate_period time interval.
                           properties:
                             pattern:
-                              description: Specifies the regular expression for extracting
-                                metadata (namespace, podname) from log file path.
-                                Default value of the pattern regexp extracts information
-                                about namespace, podname, docker_id, container of
-                                the log (K8s specific).
+                              description: |-
+                                Specifies the regular expression for extracting metadata (namespace, podname) from log file path.
+                                Default value of the pattern regexp extracts information about namespace, podname, docker_id, container of the log (K8s specific).
                               type: string
                             ratePeriod:
                               description: Time period in which the group line limit
@@ -835,12 +831,10 @@ spec:
                             like /path/to/%Y/%m/%d/.
                           type: string
                         posFile:
-                          description: (recommended) Fluentd will record the position
-                            it last read from this file. pos_file handles multiple
-                            positions in one file so no need to have multiple pos_file
-                            parameters per source. Don't share pos_file between in_tail
-                            configurations. It causes unexpected behavior e.g. corrupt
-                            pos_file content.
+                          description: |-
+                            (recommended) Fluentd will record the position it last read from this file.
+                            pos_file handles multiple positions in one file so no need to have multiple pos_file parameters per source.
+                            Don't share pos_file between in_tail configurations. It causes unexpected behavior e.g. corrupt pos_file content.
                           type: string
                         posFileCompactionInterval:
                           description: The interval of doing compaction of pos file.
@@ -867,16 +861,11 @@ spec:
                           format: int32
                           type: integer
                         rotateWait:
-                          description: in_tail actually does a bit more than tail
-                            -F itself. When rotating a file, some data may still need
-                            to be written to the old file as opposed to the new one.
-                            in_tail takes care of this by keeping a reference to the
-                            old file (even after it has been rotated) for some time
-                            before transitioning completely to the new file. This
-                            helps prevent data designated for the old file from getting
-                            lost. By default, this time interval is 5 seconds. The
-                            rotate_wait parameter accepts a single integer representing
-                            the number of seconds you want this time interval to be.
+                          description: |-
+                            in_tail actually does a bit more than tail -F itself. When rotating a file, some data may still need to be written to the old file as opposed to the new one.
+                            in_tail takes care of this by keeping a reference to the old file (even after it has been rotated) for some time before transitioning completely to the new file.
+                            This helps prevent data designated for the old file from getting lost. By default, this time interval is 5 seconds.
+                            The rotate_wait parameter accepts a single integer representing the number of seconds you want this time interval to be.
                           format: int32
                           type: integer
                         skipRefreshOnStartup:
