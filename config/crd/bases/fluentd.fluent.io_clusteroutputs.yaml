@@ -3,8 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.11.3
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.15.0
   name: clusteroutputs.fluentd.fluent.io
 spec:
   group: fluentd.fluent.io
@@ -23,14 +22,19 @@ spec:
         description: ClusterOutput is the Schema for the clusteroutputs API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -63,16 +67,17 @@ spec:
                           pattern: ^\d+(KB|MB|GB|TB)$
                           type: string
                         chunkLimitSize:
-                          description: 'Buffer parameters The max size of each chunks:
-                            events will be written into chunks until the size of chunks
-                            become this size Default: 8MB (memory) / 256MB (file)'
+                          description: |-
+                            Buffer parameters
+                            The max size of each chunks: events will be written into chunks until the size of chunks become this size
+                            Default: 8MB (memory) / 256MB (file)
                           pattern: ^\d+(KB|MB|GB|TB)$
                           type: string
                         compress:
-                          description: Fluentd will decompress these compressed chunks
-                            automatically before passing them to the output plugin
-                            If gzip is set, Fluentd compresses data records before
-                            writing to buffer chunks. Default:text.
+                          description: |-
+                            Fluentd will decompress these compressed chunks automatically before passing them to the output plugin
+                            If gzip is set, Fluentd compresses data records before writing to buffer chunks.
+                            Default:text.
                           enum:
                           - text
                           - gzip
@@ -88,20 +93,21 @@ spec:
                             new in Fluentd v1.2.6.
                           type: boolean
                         flushAtShutdown:
-                          description: Flush parameters This specifies whether to
-                            flush/write all buffer chunks on shutdown or not.
+                          description: |-
+                            Flush parameters
+                            This specifies whether to flush/write all buffer chunks on shutdown or not.
                           type: boolean
                         flushInterval:
                           description: FlushInterval defines the flush interval
                           pattern: ^\d+(\.[0-9]{0,2})?(s|m|h|d)?$
                           type: string
                         flushMode:
-                          description: 'FlushMode defines the flush mode: lazy: flushes/writes
-                            chunks once per timekey interval: flushes/writes chunks
-                            per specified time via flush_interval immediate: flushes/writes
-                            chunks immediately after events are appended into chunks
-                            default: equals to lazy if time is specified as chunk
-                            key, interval otherwise'
+                          description: |-
+                            FlushMode defines the flush mode:
+                            lazy: flushes/writes chunks once per timekey
+                            interval: flushes/writes chunks per specified time via flush_interval
+                            immediate: flushes/writes chunks immediately after events are appended into chunks
+                            default: equals to lazy if time is specified as chunk key, interval otherwise
                           enum:
                           - default
                           - lazy
@@ -125,8 +131,9 @@ spec:
                             logging level
                           type: string
                         overflowAction:
-                          description: 'OverflowAtction defines the output plugin
-                            behave when its buffer queue is full. Default: throw_exception'
+                          description: |-
+                            OverflowAtction defines the output plugin behave when its buffer queue is full.
+                            Default: throw_exception
                           type: string
                         path:
                           description: The path where buffer chunks are stored. This
@@ -141,11 +148,12 @@ spec:
                           pattern: ^\d+.?\d+$
                           type: string
                         queuedChunksLimitSize:
-                          description: 'Limit the number of queued chunks. Default:
-                            1 If a smaller flush_interval is set, e.g. 1s, there are
-                            lots of small queued chunks in the buffer. With file buffer,
-                            it may consume a lot of fd resources when output destination
-                            has a problem. This parameter mitigates such situations.'
+                          description: |-
+                            Limit the number of queued chunks. Default: 1
+                            If a smaller flush_interval is set, e.g. 1s,
+                            there are lots of small queued chunks in the buffer.
+                            With file buffer, it may consume a lot of fd resources when output destination has a problem.
+                            This parameter mitigates such situations.
                           minimum: 1
                           type: integer
                         retryExponentialBackoffBase:
@@ -176,9 +184,9 @@ spec:
                           pattern: ^\d+.?\d+$
                           type: string
                         retryTimeout:
-                          description: Retry parameters The maximum time (seconds)
-                            to retry to flush again the failed chunks, until the plugin
-                            discards the buffer chunks
+                          description: |-
+                            Retry parameters
+                            The maximum time (seconds) to retry to flush again the failed chunks, until the plugin discards the buffer chunks
                           pattern: ^\d+(\.[0-9]{0,2})?(s|m|h|d)?$
                           type: string
                         retryType:
@@ -191,12 +199,12 @@ spec:
                           pattern: ^\d+(\.[0-9]{0,2})?(s|m|h|d)?$
                           type: string
                         tag:
-                          description: The output plugins group events into chunks.
-                            Chunk keys, specified as the argument of <buffer> section,
-                            control how to group events into chunks. If tag is empty,
-                            which means blank Chunk Keys. Tag also supports Nested
-                            Field, combination of Chunk Keys, placeholders, etc. See
-                            https://docs.fluentd.org/configuration/buffer-section.
+                          description: |-
+                            The output plugins group events into chunks.
+                            Chunk keys, specified as the argument of <buffer> section, control how to group events into chunks.
+                            If tag is empty, which means blank Chunk Keys.
+                            Tag also supports Nested Field, combination of Chunk Keys, placeholders, etc.
+                            See https://docs.fluentd.org/configuration/buffer-section.
                           type: string
                         timeFormat:
                           description: Process value according to the specified format.
@@ -229,8 +237,9 @@ spec:
                           description: Uses the specified timezone.
                           type: string
                         totalLimitSize:
-                          description: 'The size limitation of this buffer plugin
-                            instance Default: 512MB (memory) / 64GB (file)'
+                          description: |-
+                            The size limitation of this buffer plugin instance
+                            Default: 512MB (memory) / 64GB (file)
                           pattern: ^\d+(KB|MB|GB|TB)$
                           type: string
                         type:
@@ -270,10 +279,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -301,10 +310,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -448,10 +457,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -581,10 +590,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -612,10 +621,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -628,9 +637,9 @@ spec:
                               type: object
                           type: object
                         cloudId:
-                          description: Authenticate towards Elastic Cloud using CloudId.
-                            If set, cloudAuth must be set as well and host, port,
-                            user and password are ignored.
+                          description: |-
+                            Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must
+                            be set as well and host, port, user and password are ignored.
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's
@@ -645,10 +654,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -660,6 +669,10 @@ spec:
                                   x-kubernetes-map-type: atomic
                               type: object
                           type: object
+                        enableIlm:
+                          description: Optional, Enable Index Lifecycle Management
+                            (ILM)
+                          type: boolean
                         host:
                           description: 'The hostname of your Elasticsearch node (default:
                             localhost).'
@@ -668,10 +681,24 @@ spec:
                           description: Hosts defines a list of hosts if you want to
                             connect to more than one Elasticsearch nodes
                           type: string
+                        ilmPolicy:
+                          description: Optional, Specify ILM policy contents as Hash
+                          type: string
+                        ilmPolicyId:
+                          description: Optional, Specify ILM policy id
+                          type: string
+                        ilmPolicyOverride:
+                          description: Optional, Specify whether overwriting ilm policy
+                            or not
+                          type: boolean
                         indexName:
                           description: IndexName defines the placeholder syntax of
                             Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section.
                           type: string
+                        logEs400Reason:
+                          description: Optional, Enable logging of 400 reason without
+                            enabling debug log level
+                          type: boolean
                         logstashFormat:
                           description: 'If true, Fluentd uses the conventional index
                             name format logstash-%Y.%m.%d (default: false). This option
@@ -699,10 +726,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -749,10 +776,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -795,10 +822,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -826,10 +853,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -842,9 +869,9 @@ spec:
                               type: object
                           type: object
                         cloudId:
-                          description: Authenticate towards Elastic Cloud using CloudId.
-                            If set, cloudAuth must be set as well and host, port,
-                            user and password are ignored.
+                          description: |-
+                            Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must
+                            be set as well and host, port, user and password are ignored.
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's
@@ -859,10 +886,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -874,10 +901,41 @@ spec:
                                   x-kubernetes-map-type: atomic
                               type: object
                           type: object
+                        dataStreamIlmName:
+                          description: You can specify the name of an existing ILM
+                            policy, which will be applied to the data stream. If not
+                            present, it creates a new ILM default policy (unless data_stream_template_name
+                            is defined, in that case the ILM will be set to the one
+                            specified in the matching index template)
+                          type: string
+                        dataStreamIlmPolicy:
+                          description: You can specify the ILM policy contents as
+                            hash. If not present, it will apply the ILM default policy
+                          type: string
+                        dataStreamIlmPolicyOverwrite:
+                          description: Specify whether the data stream ILM policy
+                            should be overwritten
+                          type: boolean
                         dataStreamName:
                           description: You can specify Elasticsearch data stream name
                             by this parameter. This parameter is mandatory for elasticsearch_data_stream
                           type: string
+                        dataStreamTemplateName:
+                          description: You can specify an existing matching index
+                            template for the data stream. If not present, it creates
+                            a new matching index template
+                          type: string
+                        dataStreamTemplateUseIndexPatternsWildcard:
+                          description: Specify whether index patterns should include
+                            a wildcard (*) when creating an index template. This is
+                            particularly useful to prevent errors in scenarios where
+                            index templates are generated automatically, and multiple
+                            services with distinct suffixes are in use
+                          type: boolean
+                        enableIlm:
+                          description: Optional, Enable Index Lifecycle Management
+                            (ILM)
+                          type: boolean
                         host:
                           description: 'The hostname of your Elasticsearch node (default:
                             localhost).'
@@ -886,6 +944,20 @@ spec:
                           description: Hosts defines a list of hosts if you want to
                             connect to more than one Elasticsearch nodes
                           type: string
+                        ilmPolicy:
+                          description: Optional, Specify ILM policy contents as Hash
+                          type: string
+                        ilmPolicyId:
+                          description: Optional, Specify ILM policy id
+                          type: string
+                        ilmPolicyOverride:
+                          description: Optional, Specify whether overwriting ilm policy
+                            or not
+                          type: boolean
+                        logEs400Reason:
+                          description: Optional, Enable logging of 400 reason without
+                            enabling debug log level
+                          type: boolean
                         password:
                           description: Optional, The login credentials to connect
                             to Elasticsearch
@@ -903,10 +975,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -953,10 +1025,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -1053,11 +1125,9 @@ spec:
                           pattern: ^\d+(\.[0-9]{0,2})?(s|m|h|d)?$
                           type: string
                         dnsRoundRobin:
-                          description: Enable client-side DNS round robin. Uniform
-                            randomly pick an IP address to send data when a hostname
-                            has several IP addresses. heartbeat_type udp is not available
-                            with dns_round_robintrue. Use heartbeat_type tcp or heartbeat_type
-                            none.
+                          description: |-
+                            Enable client-side DNS round robin. Uniform randomly pick an IP address to send data when a hostname has several IP addresses.
+                            heartbeat_type udp is not available with dns_round_robintrue. Use heartbeat_type tcp or heartbeat_type none.
                           type: boolean
                         expireDnsCache:
                           description: Sets TTL to expire DNS cache in seconds. Set
@@ -1144,10 +1214,10 @@ spec:
                                                 key.
                                               type: string
                                             name:
-                                              description: 'Name of the referent.
+                                              description: |-
+                                                Name of the referent.
                                                 More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                                TODO: Add other useful fields. apiVersion,
-                                                kind, uid?'
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
                                               type: string
                                             optional:
                                               description: Specify whether the Secret
@@ -1176,10 +1246,10 @@ spec:
                                                 key.
                                               type: string
                                             name:
-                                              description: 'Name of the referent.
+                                              description: |-
+                                                Name of the referent.
                                                 More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                                TODO: Add other useful fields. apiVersion,
-                                                kind, uid?'
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
                                               type: string
                                             optional:
                                               description: Specify whether the Secret
@@ -1241,10 +1311,10 @@ spec:
                                               key.
                                             type: string
                                           name:
-                                            description: 'Name of the referent. More
-                                              info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                              TODO: Add other useful fields. apiVersion,
-                                              kind, uid?'
+                                            description: |-
+                                              Name of the referent.
+                                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                              TODO: Add other useful fields. apiVersion, kind, uid?
                                             type: string
                                           optional:
                                             description: Specify whether the Secret
@@ -1290,10 +1360,10 @@ spec:
                                               key.
                                             type: string
                                           name:
-                                            description: 'Name of the referent. More
-                                              info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                              TODO: Add other useful fields. apiVersion,
-                                              kind, uid?'
+                                            description: |-
+                                              Name of the referent.
+                                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                              TODO: Add other useful fields. apiVersion, kind, uid?
                                             type: string
                                           optional:
                                             description: Specify whether the Secret
@@ -1384,10 +1454,10 @@ spec:
                                                 key.
                                               type: string
                                             name:
-                                              description: 'Name of the referent.
+                                              description: |-
+                                                Name of the referent.
                                                 More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                                TODO: Add other useful fields. apiVersion,
-                                                kind, uid?'
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
                                               type: string
                                             optional:
                                               description: Specify whether the Secret
@@ -1435,10 +1505,10 @@ spec:
                                                 key.
                                               type: string
                                             name:
-                                              description: 'Name of the referent.
+                                              description: |-
+                                                Name of the referent.
                                                 More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                                TODO: Add other useful fields. apiVersion,
-                                                kind, uid?'
+                                                TODO: Add other useful fields. apiVersion, kind, uid?
                                               type: string
                                             optional:
                                               description: Specify whether the Secret
@@ -1546,10 +1616,10 @@ spec:
                                             from.  Must be a valid secret key.
                                           type: string
                                         name:
-                                          description: 'Name of the referent. More
-                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                            TODO: Add other useful fields. apiVersion,
-                                            kind, uid?'
+                                          description: |-
+                                            Name of the referent.
+                                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                            TODO: Add other useful fields. apiVersion, kind, uid?
                                           type: string
                                         optional:
                                           description: Specify whether the Secret
@@ -1577,10 +1647,10 @@ spec:
                                             from.  Must be a valid secret key.
                                           type: string
                                         name:
-                                          description: 'Name of the referent. More
-                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                            TODO: Add other useful fields. apiVersion,
-                                            kind, uid?'
+                                          description: |-
+                                            Name of the referent.
+                                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                            TODO: Add other useful fields. apiVersion, kind, uid?
                                           type: string
                                         optional:
                                           description: Specify whether the Secret
@@ -1773,8 +1843,9 @@ spec:
                             labels to the Stream labels.
                           type: boolean
                         httpPassword:
-                          description: Password for user defined in HTTP_User Set
-                            HTTP basic authentication password
+                          description: |-
+                            Password for user defined in HTTP_User
+                            Set HTTP basic authentication password
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's
@@ -1789,10 +1860,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -1820,10 +1891,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -1843,42 +1914,39 @@ spec:
                           description: Disable certificate validation
                           type: boolean
                         labelKeys:
-                          description: Optional list of record keys that will be placed
-                            as stream labels. This configuration property is for records
-                            key only.
+                          description: |-
+                            Optional list of record keys that will be placed as stream labels.
+                            This configuration property is for records key only.
                           items:
                             type: string
                           type: array
                         labels:
-                          description: Stream labels for API request. It can be multiple
-                            comma separated of strings specifying  key=value pairs.
-                            In addition to fixed parameters, it also allows to add
-                            custom record keys (similar to label_keys property).
+                          description: |-
+                            Stream labels for API request. It can be multiple comma separated of strings specifying  key=value pairs.
+                            In addition to fixed parameters, it also allows to add custom record keys (similar to label_keys property).
                           items:
                             type: string
                           type: array
                         lineFormat:
-                          description: Format to use when flattening the record to
-                            a log line. Valid values are json or key_value. If set
-                            to json,  the log line sent to Loki will be the Fluentd
-                            record dumped as JSON. If set to key_value, the log line
-                            will be each item in the record concatenated together
-                            (separated by a single space) in the format.
+                          description: |-
+                            Format to use when flattening the record to a log line. Valid values are json or key_value.
+                            If set to json,  the log line sent to Loki will be the Fluentd record dumped as JSON.
+                            If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
                           enum:
                           - json
                           - key_value
                           type: string
                         removeKeys:
-                          description: Optional list of record keys that will be removed
-                            from stream labels. This configuration property is for
-                            records key only.
+                          description: |-
+                            Optional list of record keys that will be removed from stream labels.
+                            This configuration property is for records key only.
                           items:
                             type: string
                           type: array
                         tenantID:
-                          description: Tenant ID used by default to push logs to Loki.
-                            If omitted or empty it assumes Loki is running in single-tenant
-                            mode and no X-Scope-OrgID header is sent.
+                          description: |-
+                            Tenant ID used by default to push logs to Loki.
+                            If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
                           properties:
                             valueFrom:
                               description: ValueSource defines how to find a value's
@@ -1893,10 +1961,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -1968,10 +2036,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its
@@ -2015,10 +2083,10 @@ spec:
                                         from.  Must be a valid secret key.
                                       type: string
                                     name:
-                                      description: 'Name of the referent. More info:
-                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        TODO: Add other useful fields. apiVersion,
-                                        kind, uid?'
+                                      description: |-
+                                        Name of the referent.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                        TODO: Add other useful fields. apiVersion, kind, uid?
                                       type: string
                                     optional:
                                       description: Specify whether the Secret or its

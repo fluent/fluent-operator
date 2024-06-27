@@ -19,6 +19,11 @@ Elasticsearch defines the parameters for out_es output plugin
 | clientCert | Optional, Absolute path to client Certificate file | *string |
 | clientKey | Optional, Absolute path to client private Key file | *string |
 | clientKeyPassword | Optional, password for ClientKey file | *[plugins.Secret](../secret.md) |
+| enableIlm | Optional, Enable Index Lifecycle Management (ILM) | *bool |
+| ilmPolicyId | Optional, Specify ILM policy id | *string |
+| ilmPolicy | Optional, Specify ILM policy contents as Hash | *string |
+| ilmPolicyOverride | Optional, Specify whether overwriting ilm policy or not | *bool |
+| logEs400Reason | Optional, Enable logging of 400 reason without enabling debug log level | *bool |
 # Elasticsearch
 
 
@@ -37,3 +42,8 @@ Elasticsearch defines the parameters for out_es output plugin
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | dataStreamName | You can specify Elasticsearch data stream name by this parameter. This parameter is mandatory for elasticsearch_data_stream | *string |
+| dataStreamTemplateName | You can specify an existing matching index template for the data stream. If not present, it creates a new matching index template | *string |
+| dataStreamTemplateUseIndexPatternsWildcard | Specify whether index patterns should include a wildcard (*) when creating an index template. This is particularly useful to prevent errors in scenarios where index templates are generated automatically, and multiple services with distinct suffixes are in use | *bool |
+| dataStreamIlmName | You can specify the name of an existing ILM policy, which will be applied to the data stream. If not present, it creates a new ILM default policy (unless data_stream_template_name is defined, in that case the ILM will be set to the one specified in the matching index template) | *string |
+| dataStreamIlmPolicy | You can specify the ILM policy contents as hash. If not present, it will apply the ILM default policy | *string |
+| dataStreamIlmPolicyOverwrite | Specify whether the data stream ILM policy should be overwritten | *bool |

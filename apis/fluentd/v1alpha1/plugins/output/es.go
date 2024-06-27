@@ -35,6 +35,16 @@ type ElasticsearchCommon struct {
 	ClientKey *string `json:"clientKey,omitempty"`
 	// Optional, password for ClientKey file
 	ClientKeyPassword *plugins.Secret `json:"clientKeyPassword,omitempty"`
+	// Optional, Enable Index Lifecycle Management (ILM)
+	EnableIlm *bool `json:"enableIlm,omitempty"`
+	// Optional, Specify ILM policy id
+	IlmPolicyId *string `json:"ilmPolicyId,omitempty"`
+	// Optional, Specify ILM policy contents as Hash
+	IlmPolicy *string `json:"ilmPolicy,omitempty"`
+	// Optional, Specify whether overwriting ilm policy or not
+	IlmPolicyOverwrite *bool `json:"ilmPolicyOverride,omitempty"`
+	// Optional, Enable logging of 400 reason without enabling debug log level
+	LogEs400Reason *bool `json:"logEs400Reason,omitempty"`
 }
 
 type Elasticsearch struct {
@@ -53,4 +63,14 @@ type ElasticsearchDataStream struct {
 
 	// You can specify Elasticsearch data stream name by this parameter. This parameter is mandatory for elasticsearch_data_stream
 	DataStreamName *string `json:"dataStreamName"`
+	// You can specify an existing matching index template for the data stream. If not present, it creates a new matching index template
+	DataStreamTemplateName *string `json:"dataStreamTemplateName,omitempty"`
+	// Specify whether index patterns should include a wildcard (*) when creating an index template. This is particularly useful to prevent errors in scenarios where index templates are generated automatically, and multiple services with distinct suffixes are in use
+	DataStreamTemplateUseIndexPatternsWildcard *bool `json:"dataStreamTemplateUseIndexPatternsWildcard,omitempty"`
+	// You can specify the name of an existing ILM policy, which will be applied to the data stream. If not present, it creates a new ILM default policy (unless data_stream_template_name is defined, in that case the ILM will be set to the one specified in the matching index template)
+	DataStreamIlmName *string `json:"dataStreamIlmName,omitempty"`
+	// You can specify the ILM policy contents as hash. If not present, it will apply the ILM default policy
+	DataStreamIlmPolicy *string `json:"dataStreamIlmPolicy,omitempty"`
+	// Specify whether the data stream ILM policy should be overwritten
+	DataStreamIlmPolicyOverwrite *bool `json:"dataStreamIlmPolicyOverwrite,omitempty"`
 }

@@ -3,8 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.11.3
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.15.0
   name: filters.fluentd.fluent.io
 spec:
   group: fluentd.fluent.io
@@ -23,14 +22,19 @@ spec:
         description: Filter is the Schema for the filters API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -133,10 +137,9 @@ spec:
                       description: The filter_parser filter plugin
                       properties:
                         emitInvalidRecordToError:
-                          description: 'Emits invalid record to @ERROR label. Invalid
-                            cases are: key does not exist;the format is not matched;an
-                            unexpected error. If you want to ignore these errors,
-                            set false.'
+                          description: |-
+                            Emits invalid record to @ERROR label. Invalid cases are: key does not exist;the format is not matched;an unexpected error.
+                            If you want to ignore these errors, set false.
                           type: boolean
                         hashValueField:
                           description: Stores the parsed values as a hash value in
@@ -147,10 +150,9 @@ spec:
                             key name prefix.
                           type: string
                         keyName:
-                          description: 'Specifies the field name in the record to
-                            parse. Required parameter. i.e: If set keyName to log,
-                            {"key":"value","log":"{\"time\":1622473200,\"user\":1}"}
-                            => {"user":1}'
+                          description: |-
+                            Specifies the field name in the record to parse. Required parameter.
+                            i.e: If set keyName to log, {"key":"value","log":"{\"time\":1622473200,\"user\":1}"} => {"user":1}
                           type: string
                         parse:
                           description: Parse defines various parameters for the parse
@@ -289,10 +291,10 @@ spec:
                             characters and re-parse it.
                           type: boolean
                         reserveData:
-                          description: 'Keeps the original key-value pair in the parsed
-                            result. Default is false. i.e: If set keyName to log,
-                            reverseData to true, {"key":"value","log":"{\"user\":1,\"num\":2}"}
-                            => {"key":"value","log":"{\"user\":1,\"num\":2}","user":1,"num":2}'
+                          description: |-
+                            Keeps the original key-value pair in the parsed result. Default is false.
+                            i.e: If set keyName to log, reverseData to true,
+                            {"key":"value","log":"{\"user\":1,\"num\":2}"} => {"key":"value","log":"{\"user\":1,\"num\":2}","user":1,"num":2}
                           type: boolean
                         reserveTime:
                           description: Keeps the original event time in the parsed
@@ -306,14 +308,14 @@ spec:
                       description: The filter_record_transformer filter plugin
                       properties:
                         autoTypecast:
-                          description: Automatically casts the field types. Default
-                            is false. This option is effective only for field values
-                            comprised of a single placeholder.
+                          description: |-
+                            Automatically casts the field types. Default is false.
+                            This option is effective only for field values comprised of a single placeholder.
                           type: boolean
                         enableRuby:
-                          description: 'When set to true, the full Ruby syntax is
-                            enabled in the ${...} expression. The default value is
-                            false. i.e: jsonized_record ${record.to_json}'
+                          description: |-
+                            When set to true, the full Ruby syntax is enabled in the ${...} expression. The default value is false.
+                            i.e: jsonized_record ${record.to_json}
                           type: boolean
                         keepKeys:
                           description: A list of keys to keep. Only relevant if renew_record
@@ -328,7 +330,8 @@ spec:
                                 description: New field can be defined as key
                                 type: string
                               value:
-                                description: The value must from Record properties.
+                                description: |-
+                                  The value must from Record properties.
                                   See https://docs.fluentd.org/filter/record_transformer#less-than-record-greater-than-directive
                                 type: string
                             required:
