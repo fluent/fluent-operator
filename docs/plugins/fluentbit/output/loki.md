@@ -7,8 +7,10 @@ The loki output plugin, allows to ingest your records into a Loki service. <br /
 | ----- | ----------- | ------ |
 | host | Loki hostname or IP address. | string |
 | port | Loki TCP port | *int32 |
+| uri | Specify a custom HTTP URI. It must start with forward slash. | string |
 | httpUser | Set HTTP basic authentication user name. | *[plugins.Secret](../secret.md) |
 | httpPassword | Password for user defined in HTTP_User Set HTTP basic authentication password | *[plugins.Secret](../secret.md) |
+| bearerToken | Set bearer token authentication token value. Can be used as alterntative to HTTP basic authentication | *[plugins.Secret](../secret.md) |
 | tenantID | Tenant ID used by default to push logs to Loki. If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent. | *[plugins.Secret](../secret.md) |
 | labels | Stream labels for API request. It can be multiple comma separated of strings specifying  key=value pairs. In addition to fixed parameters, it also allows to add custom record keys (similar to label_keys property). | []string |
 | labelKeys | Optional list of record keys that will be placed as stream labels. This configuration property is for records key only. | []string |

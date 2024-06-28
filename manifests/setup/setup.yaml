@@ -5701,6 +5701,37 @@ spec:
                     - "on"
                     - "off"
                     type: string
+                  bearerToken:
+                    description: |-
+                      Set bearer token authentication token value.
+                      Can be used as alterntative to HTTP basic authentication
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: |-
+                                  Name of the referent.
+                                  More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind, uid?
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
                   dropSingleKey:
                     description: If set to true and after extracting labels only a
                       single key remains, the log line sent to Loki will be the value
@@ -5971,6 +6002,10 @@ spec:
                         description: Hostname to be used for TLS SNI extension
                         type: string
                     type: object
+                  uri:
+                    description: Specify a custom HTTP URI. It must start with forward
+                      slash.
+                    type: string
                 required:
                 - host
                 type: object
@@ -31794,6 +31829,37 @@ spec:
                     - "on"
                     - "off"
                     type: string
+                  bearerToken:
+                    description: |-
+                      Set bearer token authentication token value.
+                      Can be used as alterntative to HTTP basic authentication
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                description: |-
+                                  Name of the referent.
+                                  More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Add other useful fields. apiVersion, kind, uid?
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
                   dropSingleKey:
                     description: If set to true and after extracting labels only a
                       single key remains, the log line sent to Loki will be the value
@@ -32064,6 +32130,10 @@ spec:
                         description: Hostname to be used for TLS SNI extension
                         type: string
                     type: object
+                  uri:
+                    description: Specify a custom HTTP URI. It must start with forward
+                      slash.
+                    type: string
                 required:
                 - host
                 type: object
