@@ -714,6 +714,9 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 		}
 		parent.InsertPairs("password", passwd)
 	}
+	if o.Loki.BearerTokenFile != nil {
+		parent.InsertPairs("bearer_token_file", fmt.Sprint(*o.Loki.BearerTokenFile))
+	}
 	if o.Loki.TenantID != nil {
 		id, err := loader.LoadSecret(*o.Loki.TenantID)
 		if err != nil {

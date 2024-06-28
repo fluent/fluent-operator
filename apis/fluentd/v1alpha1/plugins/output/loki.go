@@ -13,6 +13,9 @@ type Loki struct {
 	// Password for user defined in HTTP_User
 	// Set HTTP basic authentication password
 	HTTPPasswd *plugins.Secret `json:"httpPassword,omitempty"`
+	// Set path to file with bearer authentication token
+	// Can be used as alterntative to HTTP basic authentication
+	BearerTokenFile *string `json:"bearerTokenFile,omitempty"`
 	// Tenant ID used by default to push logs to Loki.
 	// If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
 	TenantID *plugins.Secret `json:"tenantID,omitempty"`
