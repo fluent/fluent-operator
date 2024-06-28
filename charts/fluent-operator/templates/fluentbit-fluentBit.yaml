@@ -90,6 +90,16 @@ spec:
   serviceAccountAnnotations:
 {{ toYaml .Values.fluentbit.serviceAccountAnnotations | indent 4 }}
   {{- end }}
+  rbacRules:
+    - apiGroups:
+      - ""
+      resources:
+      - events
+      verbs:
+      - list
+  {{- if .Values.fluentbit.rbacRules }}
+{{ toYaml .Values.fluentbit.rbacRules | nindent 4 }}
+  {{- end }}
 {{- if .Values.fluentbit.disableLogVolumes }}
   disableLogVolumes: {{ .Values.fluentbit.disableLogVolumes }}
 {{- end }}
