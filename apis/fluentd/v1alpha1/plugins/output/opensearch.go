@@ -26,4 +26,6 @@ type Opensearch struct {
 	User *plugins.Secret `json:"user,omitempty"`
 	// Optional, The login credentials to connect to Opensearch
 	Password *plugins.Secret `json:"password,omitempty"`
+	// Optional, Force certificate validation
+	SslVerify *bool `json:"sslVerify,omitempty"`
 }

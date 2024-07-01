@@ -611,6 +611,10 @@ func (o *Output) opensearchPlugin(parent *params.PluginStore, loader plugins.Sec
 		parent.InsertPairs("logstash_prefix", fmt.Sprint(*o.Opensearch.LogstashPrefix))
 	}
 
+	if o.Opensearch.SslVerify != nil {
+		parent.InsertPairs("ssl_verify", fmt.Sprint(*o.Opensearch.SslVerify))
+	}
+
 	return parent, nil
 }
 
