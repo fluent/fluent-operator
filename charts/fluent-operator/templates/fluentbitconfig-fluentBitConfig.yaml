@@ -9,7 +9,7 @@ metadata:
 spec:
   service:
     parsersFiles:
-      - /fluent-bit/config/parsers.conf
+      - /fluent-bit/etc/parsers.conf
       - /fluent-bit/config/parsers_multiline.conf
     httpServer: true
   {{- if .Values.fluentbit.logLevel }}
