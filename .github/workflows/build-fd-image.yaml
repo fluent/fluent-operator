@@ -200,7 +200,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and Push amd64 base Image for Fluentd
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: cmd/fluent-watcher/fluentd/Dockerfile.amd64
@@ -242,7 +242,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and Push arm64 base Image for Fluentd
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: cmd/fluent-watcher/fluentd/Dockerfile.arm64.base
@@ -307,7 +307,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and Push arm64 base Image for Fluentd
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: cmd/fluent-watcher/fluentd/Dockerfile.arm64.quick
