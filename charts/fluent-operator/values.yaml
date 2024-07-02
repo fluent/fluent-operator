@@ -121,6 +121,9 @@ fluentbit:
   securityContext: {}
   # List of volumes that can be mounted by containers belonging to the pod.
   additionalVolumes: []
+  # Additional rbac rules which will be applied to the fluent-bit clusterrole. Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding
+  # NOTE: As fluent-bit is managed by the fluent-operator, fluent-bit can only be granted permissions the operator also has 
+  rbacRules: {}
   # Pod volumes to mount into the container's filesystem.
   additionalVolumesMounts: []
   # affinity configuration for Fluent Bit pods. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
