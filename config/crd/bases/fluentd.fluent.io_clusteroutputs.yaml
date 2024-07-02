@@ -1914,6 +1914,11 @@ spec:
                     loki:
                       description: out_loki plugin
                       properties:
+                        bearerTokenFile:
+                          description: |-
+                            Set path to file with bearer authentication token
+                            Can be used as alterntative to HTTP basic authentication
+                          type: string
                         dropSingleKey:
                           description: If a record only has 1 key, then just set the
                             log line to the value and discard the key.

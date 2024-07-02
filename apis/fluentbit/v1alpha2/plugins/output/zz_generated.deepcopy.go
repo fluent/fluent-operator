@@ -576,6 +576,11 @@ func (in *Loki) DeepCopyInto(out *Loki) {
 		*out = new(plugins.Secret)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.BearerToken != nil {
+		in, out := &in.BearerToken, &out.BearerToken
+		*out = new(plugins.Secret)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.TenantID != nil {
 		in, out := &in.TenantID, &out.TenantID
 		*out = new(plugins.Secret)
