@@ -171,7 +171,7 @@ jobs:
 
       - name: Build and Push Image for Fluent Bit
         id: docker-build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./cmd/fluent-watcher/fluentbit/Dockerfile
@@ -215,7 +215,7 @@ jobs:
       
       - name: Build and Push Fluent Bit Debug Image
         id: docker-build-debug
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./cmd/fluent-watcher/fluentbit/Dockerfile.debug
