@@ -104,7 +104,7 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- with .Values.operator.disableComponentControllers }}
-          - {{ printf "%s=%s" "--disable-component-controllers" . | quote }}
+          - --disable-component-controllers={{ . }}
           {{- end }}
         volumeMounts:
         - name: env
