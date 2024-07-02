@@ -403,6 +403,10 @@ fluentd:
   #    value: "bar"
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  # Pod security context for Fluentd pod. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  podSecurityContext: {}
+  # Container security context for Fluentd container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
   imagePullSecrets: []
   # - name: "image-pull-secret"
   logLevel: ""
