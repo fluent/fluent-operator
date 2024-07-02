@@ -15,3 +15,4 @@ Opensearch defines the parameters for out_opensearch plugin
 | logstashPrefix | LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash). | *string |
 | user | Optional, The login credentials to connect to Opensearch | *[plugins.Secret](../secret.md) |
 | password | Optional, The login credentials to connect to Opensearch | *[plugins.Secret](../secret.md) |
+| sslVerify | Optional, Force certificate validation | *bool |
