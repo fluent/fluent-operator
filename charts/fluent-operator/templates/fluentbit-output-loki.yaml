@@ -5,14 +5,15 @@
 
 {{ with .Values.fluentbit.output.loki -}}
 {{/* 
-When http{User,Password} or tenantID is a string, make a secret for them
+When http{User,Password}, bearerToken, or tenantID is a string, make a secret for them
 When these keys are objects, they specify a secret to use generated elsewhere, assumed to exist in the k8s cluster 
 */}}
 {{ $userSecret := "loki-http-auth" -}}
 {{ $passSecret := "loki-http-pass" -}}
+{{ $bearerTokenSecret := "loki-bearer-token" -}}
 {{ $tenantIDSecret := "loki-tenant-id" -}}
 
-{{ range $k, $v := dict $userSecret .httpUser $passSecret .httpPassword $tenantIDSecret .tenantID -}}
+{{ range $k, $v := dict $userSecret .httpUser $passSecret .httpPassword $tenantIDSecret .tenantID $bearerTokenSecret .bearerToken -}}
 {{ if kindIs "string" $v -}}
 ---
 apiVersion: v1
@@ -78,6 +79,19 @@ spec:
           optional: false
       {{- else }}
 {{ .httpPassword | toYaml | indent 6 }}
+      {{- end }}
+    {{- end }}
+
+    {{- if .bearerToken }}
+    bearerToken: 
+      {{- if kindIs "string" .bearerToken }}
+      valueFrom:
+        secretKeyRef:
+          key: 'value'
+          name: {{ $bearerTokenSecret }}
+          optional: false
+      {{- else }}
+{{ .bearerToken | toYaml | indent 6 }}
       {{- end }}
     {{- end }}
 

@@ -278,7 +278,7 @@ fluentbit:
     # See https://docs.fluentbit.io/manual/pipeline/outputs/loki
     loki:
       # Switch for generation of fluentbit loki ClusterOutput (and loki basic auth http user and pass secrets if required)
-      enable: false   # Bool
+      enable: false # Bool
       host: 127.0.0.1 # String
       port: 3100      # Int
       # Either, give http{User,Password},tenantID string values specifying them directly
@@ -305,6 +305,15 @@ fluentbit:
       #      name: tenantsecret
       #      optional: true
       #
+      # To use bearer token auth instead of http basic auth
+      #bearerToken: ey....
+      # or with existing secret
+      #bearerToken:
+      #  valueFrom:
+      #    secretKeyRef:
+      #      key: value
+      #      name: bearerTokenSecret
+      #      optional: true
       #labels: []      # String list of <name>=<value>
       #labelKeys: []   # String list of <key>
       #removeKeys: []  # String list of <key>
