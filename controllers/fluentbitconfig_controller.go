@@ -403,16 +403,18 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 			md5.Sum([]byte(cfg.Namespace)),
 		),
 	)
-	if cfg.Spec.Service.EmitterName != "" {
-		buf.WriteString(fmt.Sprintf("    Emitter_Name    %s\n", cfg.Spec.Service.EmitterName))
-	} else {
-		buf.WriteString(fmt.Sprintf("    Emitter_Name    re_emitted_%x\n", md5.Sum([]byte(cfg.Namespace))))
-	}
-	if cfg.Spec.Service.EmitterStorageType != "" {
-		buf.WriteString(fmt.Sprintf("    Emitter_Storage.type    %s\n", cfg.Spec.Service.EmitterStorageType))
-	}
-	if cfg.Spec.Service.EmitterMemBufLimit != "" {
-		buf.WriteString(fmt.Sprintf("    Emitter_Mem_Buf_Limit    %s\n", cfg.Spec.Service.EmitterMemBufLimit))
+	if cfg.Spec.Service != nil {
+		if cfg.Spec.Service.EmitterName != "" {
+			buf.WriteString(fmt.Sprintf("    Emitter_Name    %s\n", cfg.Spec.Service.EmitterName))
+		} else {
+			buf.WriteString(fmt.Sprintf("    Emitter_Name    re_emitted_%x\n", md5.Sum([]byte(cfg.Namespace))))
+		}
+		if cfg.Spec.Service.EmitterStorageType != "" {
+			buf.WriteString(fmt.Sprintf("    Emitter_Storage.type    %s\n", cfg.Spec.Service.EmitterStorageType))
+		}
+		if cfg.Spec.Service.EmitterMemBufLimit != "" {
+			buf.WriteString(fmt.Sprintf("    Emitter_Mem_Buf_Limit    %s\n", cfg.Spec.Service.EmitterMemBufLimit))
+		}
 	}
 	return buf.String()
 }

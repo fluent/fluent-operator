@@ -36042,6 +36042,9 @@ spec:
                           description: 'Specify https if your Opensearch endpoint
                             supports SSL (default: http).'
                           type: string
+                        sslVerify:
+                          description: Optional, Force certificate validation
+                          type: boolean
                         user:
                           description: Optional, The login credentials to connect
                             to Opensearch
