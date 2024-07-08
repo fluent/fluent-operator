@@ -19,11 +19,16 @@ type Loki struct {
 	// +kubebuilder:validation:Minimum:=1
 	// +kubebuilder:validation:Maximum:=65535
 	Port *int32 `json:"port,omitempty"`
+	// Specify a custom HTTP URI. It must start with forward slash.
+	Uri string `json:"uri,omitempty"`
 	// Set HTTP basic authentication user name.
 	HTTPUser *plugins.Secret `json:"httpUser,omitempty"`
 	// Password for user defined in HTTP_User
 	// Set HTTP basic authentication password
 	HTTPPasswd *plugins.Secret `json:"httpPassword,omitempty"`
+	// Set bearer token authentication token value.
+	// Can be used as alterntative to HTTP basic authentication
+	BearerToken *plugins.Secret `json:"bearerToken,omitempty"`
 	// Tenant ID used by default to push logs to Loki.
 	// If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
 	TenantID *plugins.Secret `json:"tenantID,omitempty"`
@@ -70,6 +75,9 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if l.Port != nil {
 		kvs.Insert("port", fmt.Sprint(*l.Port))
 	}
+	if l.Uri != "" {
+		kvs.Insert("uri", l.Uri)
+	}
 	if l.HTTPUser != nil {
 		u, err := sl.LoadSecret(*l.HTTPUser)
 		if err != nil {
@@ -83,6 +91,13 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 			return nil, err
 		}
 		kvs.Insert("http_passwd", pwd)
+	}
+	if l.BearerToken != nil {
+		bearerToken, err := sl.LoadSecret(*l.BearerToken)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Insert("bearer_token", bearerToken)
 	}
 	if l.TenantID != nil {
 		id, err := sl.LoadSecret(*l.TenantID)
