@@ -1,3 +1,28 @@
+## 3.0.0 / 2024-07-09
+### Features
+- Feat: add daemonset terminationGracePeriodSeconds (#1204) @smallc2009
+- Feat: add kubernetes events input plugin (#1209) @smallc2009
+- Feat: support yaml config file (#1208) @cw-Guo
+- Feat(helm): respect helm release namespace setting (#1214) @reegnz
+- Feat: Adding Fluentbit's unified networking interface (#1217) @localleon
+- Feat: add elasticsearch options (#1220) @bakervos
+- Feat: add rbacRules to values.yaml with events watching as fixed permissions (#1223) @SvenThies
+- Feat: add 'sslVerify' to opensearch output (#1226) @zmw85
+- Feat: add bearer token auth for loki (#1224) @raynay-r
+
+### ENHANCEMENT
+- Adding instructions on how to set run operator for developement (#1216) @localleon
+- Templatize ServiceMonitor (#1218) @smallc2009
+- Update fluentbit to v3.1.0 (#1233) @wenchajun
+- build(deps): Bump docker/build-push-action from 5 to 6 (#1228) @dependabot
+- build(deps): Bump aquasecurity/trivy-action from 0.21.0 to 0.23.0 (#1229) @dependabot
+
+### BUGFIX
+- Fix: rewrite tag nil pointer reference (#1232) @cw-Guo
+- Fix: fix the parsing of disableComponentControllers in helm (#1222) @mritunjaysharma394
+- Fix(fluentd): add securityContext and podSecurityContext in values.yaml (#1230) @SvenThies
+- Fix: fix parsersfile default parsers.conf path (#1225) @cw-Guo
+
 ## 2.9.0 / 2024-06-13
 ### Features
 - Feat: Support elastic_data_stream (#1190) @fschlager
