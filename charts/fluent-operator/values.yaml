@@ -185,6 +185,7 @@ fluentbit:
   input:
     tail:
       enable: true
+      tag: "kube.*"
       refreshIntervalSeconds: 10
       memBufLimit: 100MB
       bufferMaxSize: ""

@@ -10,7 +10,7 @@ metadata:
     fluentbit.fluent.io/component: logging
 spec:
   tail:
-    tag: kube.*
+    tag: {{ .Values.fluentbit.input.tail.tag  }}
     path: {{ .Values.fluentbit.input.tail.path }}
     readFromHead: {{ .Values.fluentbit.input.tail.readFromHead }}
     {{- if eq .Values.containerRuntime "docker" }}
