@@ -9,7 +9,7 @@ metadata:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging
 spec:
-  match: kube.*
+  match: {{ .Values.fluentbit.filter.multiline.match }}
   filters:
   - multiline:
       keyContent: {{ .Values.fluentbit.filter.multiline.keyContent | quote }}

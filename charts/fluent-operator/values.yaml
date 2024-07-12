@@ -345,6 +345,7 @@ fluentbit:
     multiline:
       enable: false
       keyContent: log
+      match: "kube.*"
       # emitterMemBufLimit 120 (MB)
       emitterMemBufLimit: 120 
       parsers:
@@ -357,11 +358,13 @@ fluentbit:
       enable: true
       labels: false
       annotations: false
+      match: "kube.*"
     containerd:
       # This is customized lua containerd log format converter, you can refer here:
       # https://github.com/fluent/fluent-operator/blob/master/charts/fluent-operator/templates/fluentbit-clusterfilter-containerd.yaml
       # https://github.com/fluent/fluent-operator/blob/master/charts/fluent-operator/templates/fluentbit-containerd-config.yaml
       enable: true
+      match: "kube.*"
     systemd:
       enable: true
 
