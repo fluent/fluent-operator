@@ -89,6 +89,20 @@ type Kubernetes struct {
 	// configurable 'time to live' for the K8s token. By default, it is set to 600 seconds.
 	// After this time, the token is reloaded from Kube_Token_File or the Kube_Token_Command.
 	KubeTokenTTL string `json:"kubeTokenTTL,omitempty"`
+	// Command to get Kubernetes authorization token.
+	// By default, it will be NULL and we will use token file to get token.
+	KubeTokenCommand string `json:"kubeTokenCommand,omitempty"`
+	// Configurable TTL for K8s cached namespace metadata.
+	// By default, it is set to 900 which means a 15min TTL for namespace cache entries.
+	// Setting this to 0 will mean entries are evicted at random once the cache is full.
+	KubeMetaNamespaceCacheTTL *int32 `json:"kubeMetaNamespaceCacheTTL,omitempty"`
+	// Include Kubernetes namespace resource labels in the extra metadata.
+	NamespaceLabels *bool `json:"namespaceLabels,omitempty"`
+	// Include Kubernetes namespace resource annotations in the extra metadata.
+	NamespaceAnnotations *bool `json:"namespaceAnnotations,omitempty"`
+	// Include Kubernetes namespace metadata only and no pod metadata.
+	// If this is set, the values of Labels and Annotations are ignored.
+	NamespaceMetadataOnly *bool `json:"namespaceMetadataOnly,omitempty"`
 }
 
 func (_ *Kubernetes) Name() string {
@@ -187,6 +201,21 @@ func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if k.KubeTokenTTL != "" {
 		kvs.Insert("Kube_Token_TTL", k.KubeTokenTTL)
+	}
+	if k.KubeTokenCommand != "" {
+		kvs.Insert("Kube_Token_Command", fmt.Sprint(k.KubeTokenCommand))
+	}
+	if k.KubeMetaNamespaceCacheTTL != nil {
+		kvs.Insert("Kube_Meta_Namespace_Cache_TTL", fmt.Sprint(*k.KubeMetaNamespaceCacheTTL))
+	}
+	if k.NamespaceLabels != nil {
+		kvs.Insert("Namespace_Labels", fmt.Sprint(*k.NamespaceLabels))
+	}
+	if k.NamespaceAnnotations != nil {
+		kvs.Insert("Namespace_Annotations", fmt.Sprint(*k.NamespaceAnnotations))
+	}
+	if k.NamespaceMetadataOnly != nil {
+		kvs.Insert("Namespace_Metadata_Only", fmt.Sprint(*k.NamespaceMetadataOnly))
 	}
 	return kvs, nil
 }
