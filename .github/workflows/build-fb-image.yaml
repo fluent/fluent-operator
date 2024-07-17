@@ -36,10 +36,8 @@ jobs:
         id: extract_version
         run: |
           VERSION=${{ github.event.inputs.docker_tag_version }}
-          VERSION_WITHOUT_V=${VERSION#v}
           MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
 
-          echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
           echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
 
       - name: Determine image version tag
