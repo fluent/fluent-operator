@@ -200,6 +200,13 @@ spec:
                             when capacity is reached. In order to enable this option, you should set the number to a time interval.
                             For example, set this value to 60 or 60s and cache entries which have been created more than 60s will be evicted.
                           type: string
+                        kubeMetaNamespaceCacheTTL:
+                          description: |-
+                            Configurable TTL for K8s cached namespace metadata.
+                            By default, it is set to 900 which means a 15min TTL for namespace cache entries.
+                            Setting this to 0 will mean entries are evicted at random once the cache is full.
+                          format: int32
+                          type: integer
                         kubeMetaPreloadCacheDir:
                           description: |-
                             If set, Kubernetes meta-data can be cached/pre-loaded from files in JSON format in this directory,
@@ -209,6 +216,11 @@ spec:
                           description: |-
                             When the source records comes from Tail input plugin,
                             this option allows to specify what's the prefix used in Tail configuration.
+                          type: string
+                        kubeTokenCommand:
+                          description: |-
+                            Command to get Kubernetes authorization token.
+                            By default, it will be NULL and we will use token file to get token.
                           type: string
                         kubeTokenFile:
                           description: Token file
@@ -254,6 +266,19 @@ spec:
                             the data contained in the log key. Recommended use is
                             for developers or testing only.
                           type: string
+                        namespaceAnnotations:
+                          description: Include Kubernetes namespace resource annotations
+                            in the extra metadata.
+                          type: boolean
+                        namespaceLabels:
+                          description: Include Kubernetes namespace resource labels
+                            in the extra metadata.
+                          type: boolean
+                        namespaceMetadataOnly:
+                          description: |-
+                            Include Kubernetes namespace metadata only and no pod metadata.
+                            If this is set, the values of Labels and Annotations are ignored.
+                          type: boolean
                         regexParser:
                           description: |-
                             Set an alternative Parser to process record Tag and extract pod_name, namespace_name, container_name and docker_id.
