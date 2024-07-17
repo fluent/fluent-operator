@@ -54,6 +54,8 @@ jobs:
           fi
 
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+        env:
+          VERSION: ${{env.VERSION }}
             
       - name: docker metadata for building
         id: image-metadata
