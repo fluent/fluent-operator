@@ -181,7 +181,26 @@ jobs:
           echo "VERSION_SUFFIX=$VERSION_SUFFIX" >> $GITHUB_ENV
           echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
           echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
-            
+
+      - name: Determine image version tag
+        id: determine-tags
+        run: |
+          if skopeo inspect docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}-${{ env.VERSION_SUFFIX }}; then
+            echo "${{ env.VERSION }}-${{ env.VERSION_SUFFIX }} tag already exists, assuming we're building a patch release!"
+            LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${{ env.VERSION }}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
+            NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
+            IMAGE_TAG="${{ env.VERSION }}-${NEW_PATCH_VERSION}"
+            echo "Building patch release ${IMAGE_TAG}-${{ env.VERSION_SUFFIX }}!"
+          else
+            echo "${{ env.VERSION }}-${{ env.VERSION_SUFFIX }} tag does not exist, assuming we're building a new release!"
+            IMAGE_TAG="${{ env.VERSION }}"
+          fi
+    
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+        env:
+          VERSION: ${{ env.VERSION }}
+          VERSION_SUFFIX: ${{ env.VERSION_SUFFIX }}            
+          
       - name: docker metadata for arm64 base image
         id: image-metadata
         uses: docker/metadata-action@v5
