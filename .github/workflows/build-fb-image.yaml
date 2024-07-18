@@ -73,6 +73,7 @@ jobs:
             type=raw,value=${{ env.MAJOR_MINOR }}
             type=raw,value=v${{ env.MAJOR_MINOR }}
         env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
           MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
 
       - name: docker tags for cloning
@@ -81,11 +82,12 @@ jobs:
         with:
           tags: |
             raw,latest
-            type=raw,value=${{ github.event.inputs.docker_tag_version }}
-            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.IMAGE_TAG }}
+            type=raw,value=v${{ env.IMAGE_TAG }}
             type=raw,value=${{ env.MAJOR_MINOR }}
             type=raw,value=v${{ env.MAJOR_MINOR }}
         env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
           MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
 
       - name: Set outputs
@@ -151,6 +153,7 @@ jobs:
             type=raw,value=${{ env.MAJOR_MINOR }}
             type=raw,value=v${{ env.MAJOR_MINOR }}
         env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
           MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
 
       - name: docker tags for cloning
@@ -161,11 +164,12 @@ jobs:
             latest=false
             suffix=-debug
           tags: |
-            type=raw,value=${{ github.event.inputs.docker_tag_version }}
-            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.IMAGE_TAG }}
+            type=raw,value=v${{ env.IMAGE_TAG }}
             type=raw,value=${{ env.MAJOR_MINOR }}
             type=raw,value=v${{ env.MAJOR_MINOR }}
         env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
           MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
       
       - name: Set outputs
