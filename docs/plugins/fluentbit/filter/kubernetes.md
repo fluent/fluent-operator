@@ -34,3 +34,8 @@ Kubernetes filter allows to enrich your log files with Kubernetes metadata. <br 
 | kubeletHost | kubelet host using for HTTP request, this only works when Use_Kubelet set to On. | string |
 | kubeMetaCacheTTL | configurable TTL for K8s cached metadata. By default, it is set to 0 which means TTL for cache entries is disabled and cache entries are evicted at random when capacity is reached. In order to enable this option, you should set the number to a time interval. For example, set this value to 60 or 60s and cache entries which have been created more than 60s will be evicted. | string |
 | kubeTokenTTL | configurable 'time to live' for the K8s token. By default, it is set to 600 seconds. After this time, the token is reloaded from Kube_Token_File or the Kube_Token_Command. | string |
+| kubeTokenCommand | Command to get Kubernetes authorization token. By default, it will be NULL and we will use token file to get token. | string |
+| kubeMetaNamespaceCacheTTL | Configurable TTL for K8s cached namespace metadata. By default, it is set to 900 which means a 15min TTL for namespace cache entries. Setting this to 0 will mean entries are evicted at random once the cache is full. | *int32 |
+| namespaceLabels | Include Kubernetes namespace resource labels in the extra metadata. | *bool |
+| namespaceAnnotations | Include Kubernetes namespace resource annotations in the extra metadata. | *bool |
+| namespaceMetadataOnly | Include Kubernetes namespace metadata only and no pod metadata. If this is set, the values of Labels and Annotations are ignored. | *bool |
