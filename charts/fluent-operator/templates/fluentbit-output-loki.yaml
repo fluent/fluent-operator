@@ -20,7 +20,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ $k |quote }}
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ $.Release.Namespace | quote }}
 type: Opaque
 data:
   value: {{ $v | b64enc | quote }}
