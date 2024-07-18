@@ -118,6 +118,24 @@ jobs:
           echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
           echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
 
+      - name: Determine image version tag
+        id: determine-tags
+        run: |
+          if skopeo inspect docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}; then
+            echo "${{ env.VERSION }} tag already exists, assuming we're building a patch release!"
+            LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${{ env.VERSION }}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
+            NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
+            IMAGE_TAG="${{ env.VERSION }}-${NEW_PATCH_VERSION}"
+            echo "Buliding patch release ${IMAGE_TAG}!"
+          else
+            echo "${{ env.VERSION }} tag does not exist, assuming we're building a new release!"
+            IMAGE_TAG="${{ env.VERSION }}"
+          fi
+  
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+        env:
+          VERSION: ${{env.VERSION }}
+
       - name: docker metadata
         id: image-metadata
         uses: docker/metadata-action@v5
@@ -127,8 +145,8 @@ jobs:
             latest=false
             suffix=-debug
           tags: |
-            type=raw,value=${{ github.event.inputs.docker_tag_version }}
-            type=raw,value=v${{ github.event.inputs.docker_tag_version }}
+            type=raw,value=${{ env.IMAGE_TAG }}
+            type=raw,value=v${{ env.IMAGE_TAG }}
             type=raw,value=${{ env.MAJOR_MINOR }}
             type=raw,value=v${{ env.MAJOR_MINOR }}
         env:
