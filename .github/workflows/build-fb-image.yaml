@@ -51,7 +51,7 @@ jobs:
             LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${{ env.VERSION }}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
             IMAGE_TAG="${{ env.VERSION }}-${NEW_PATCH_VERSION}"
-            echo "Buliding patch release ${IMAGE_TAG}!"
+            echo "Building patch release ${IMAGE_TAG}!"
           else
             echo "${{ env.VERSION }} tag does not exist, assuming we're building a new release!"
             IMAGE_TAG="${{ env.VERSION }}"
@@ -123,13 +123,13 @@ jobs:
         id: determine-tags
         run: |
           if skopeo inspect docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}-debug; then
-            echo "${{ env.VERSION }} tag already exists, assuming we're building a patch release!"
+            echo "${{ env.VERSION }}-debug tag already exists, assuming we're building a patch release!"
             LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${{ env.VERSION }}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
             IMAGE_TAG="${{ env.VERSION }}-${NEW_PATCH_VERSION}"
-            echo "Buliding patch release ${IMAGE_TAG}!"
+            echo "Building patch release ${IMAGE_TAG}-debug!"
           else
-            echo "${{ env.VERSION }} tag does not exist, assuming we're building a new release!"
+            echo "${{ env.VERSION }}-debug tag does not exist, assuming we're building a new release!"
             IMAGE_TAG="${{ env.VERSION }}"
           fi
   
