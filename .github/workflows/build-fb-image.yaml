@@ -67,7 +67,7 @@ jobs:
         with:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
           tags: |
-            # raw,latest
+            raw,latest
             type=raw,value=${{ env.IMAGE_TAG }}
             type=raw,value=v${{ env.IMAGE_TAG }}
             type=raw,value=${{ env.MAJOR_MINOR }}
