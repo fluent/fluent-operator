@@ -115,13 +115,14 @@ jobs:
           VERSION_WITHOUT_V=${VERSION#v}
           MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
 
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "VERSION_WITHOUT_V=$VERSION_WITHOUT_V" >> $GITHUB_ENV
           echo "MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_ENV
 
       - name: Determine image version tag
         id: determine-tags
         run: |
-          if skopeo inspect docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}; then
+          if skopeo inspect docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}-debug; then
             echo "${{ env.VERSION }} tag already exists, assuming we're building a patch release!"
             LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${{ env.VERSION }}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
