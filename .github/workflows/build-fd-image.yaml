@@ -47,7 +47,7 @@ jobs:
       - name: Determine image version tag
         id: determine-tags
         run: |
-          if skopeo inspect --no-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}-${{ env.VERSION_SUFFIX }}; then
+          if skopeo inspect docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}-${{ env.VERSION_SUFFIX }}; then
             echo "${{ env.VERSION }}-${{ env.VERSION_SUFFIX }} tag already exists, assuming we're building a patch release!"
             LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${{ env.VERSION }}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
@@ -115,7 +115,7 @@ jobs:
       - name: Determine image version tag
         id: determine-tags
         run: |
-          if skopeo inspect --no-tags --override-arch arm64 docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}-${{ env.VERSION_SUFFIX }}; then
+          if skopeo inspect --override-arch arm64 docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}-${{ env.VERSION_SUFFIX }}; then
             echo "${{ env.VERSION }}-${{ env.VERSION_SUFFIX }} tag already exists, assuming we're building a patch release!"
             LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${{ env.VERSION }}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
@@ -414,7 +414,7 @@ jobs:
       - name: Determine image version tag
         id: determine-tags
         run: |
-          if skopeo inspect --no-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}; then
+          if skopeo inspect docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${{ env.VERSION }}; then
             echo "${{ env.VERSION }} tag already exists, assuming we're building a patch release!"
             LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${{ env.VERSION }}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
