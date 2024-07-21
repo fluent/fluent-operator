@@ -63,10 +63,17 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 ENVTEST_ASSETS_DIR=$(shell pwd)/testbin
-test: manifests generate fmt vet ## Run tests.
-	mkdir -p ${ENVTEST_ASSETS_DIR}
-	test -f ${ENVTEST_ASSETS_DIR}/setup-envtest.sh || curl -sSLo ${ENVTEST_ASSETS_DIR}/setup-envtest.sh https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/v0.8.3/hack/setup-envtest.sh
-	source ${ENVTEST_ASSETS_DIR}/setup-envtest.sh; fetch_envtest_tools $(ENVTEST_ASSETS_DIR); setup_envtest_env $(ENVTEST_ASSETS_DIR); go test ./apis/... -coverprofile cover.out
+
+install-setup-envtest: ## Install the setup-envtest tool if it is not already installed
+	if ! command -v setup-envtest &> /dev/null; then \
+	    go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest; \
+	fi
+
+setup-envtest: install-setup-envtest ## Download and set up the envtest binary
+	source <(setup-envtest use -p env) 
+
+test: manifests generate fmt vet setup-envtest ## Run tests.
+	go test ./apis/... -coverprofile cover.out
 
 ##@ Build
 
