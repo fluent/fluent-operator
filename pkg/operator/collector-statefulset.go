@@ -172,7 +172,7 @@ func MakeFluentbitPVC(co fluentbitv1alpha2.Collector) corev1.PersistentVolumeCla
 
 func makeDefaultFluentbitPVC(co fluentbitv1alpha2.Collector) corev1.PersistentVolumeClaim {
 
-	r := corev1.ResourceRequirements{
+	r := corev1.VolumeResourceRequirements{
 		Requests: corev1.ResourceList(map[corev1.ResourceName]resource.Quantity{corev1.ResourceStorage: resource.MustParse("1Gi")}),
 	}
 
