@@ -1,5 +1,7 @@
+ARG BASE_IMAGE=kubesphere/fluentd
+ARG BASE_IMAGE_TAG=latest-arm64-base
 # Fluentd watcher agent
-FROM golang:1.20.4-alpine3.16 as buildergo
+FROM golang:1.22.5-alpine3.20 as buildergo
 RUN mkdir -p /fluentd
 RUN mkdir -p /code
 COPY . /code/
@@ -8,54 +10,25 @@ RUN echo $(ls -al /code)
 RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
 
 # Fluentd main image
-FROM alpine:3.20
-LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.17.0"
+FROM ${BASE_IMAGE}:${BASE_IMAGE_TAG}
+LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version=${BASE_IMAGE_TAG}
+ENV TINI_VERSION=0.18.0
 
 # Do not split this into multiple RUN!
 # Docker creates a layer for every RUN-Statement
-# therefore an 'apk delete' has no effect
-RUN apk update \
- && apk add --no-cache \
-        ca-certificates \
-        ruby ruby-irb ruby-etc ruby-webrick \
-        tini \
- && apk add --no-cache --virtual .build-deps \
-        build-base linux-headers \
-        ruby-dev gnupg \
- && echo 'gem: --no-document' >> /etc/gemrc \
- && gem install oj -v 3.13.22 \
- && gem install json -v 2.6.2 \
- && gem install async -v 1.30.3 \
- && gem install async-http -v 0.56.6 \
+# therefore an 'apt-get purge' has no effect
+RUN buildDeps=" \
+      make gcc g++ libc-dev \
+      wget bzip2 gnupg dirmngr\
+    " \
  && gem install fluentd -v 1.17.0 \
- && gem install bigdecimal -v 1.4.4 \
-# NOTE: resolv v0.2.1 includes the fix for CPU spike issue due to DNS resolver.
-# This hack is needed for Ruby 2.6.7, 2.7.3 and 3.0.1. (alpine image is still kept on 2.7.3)
- && gem install resolv -v 0.2.1 \
- && gem install elasticsearch -v 7.13.3 \
- && gem install elasticsearch-xpack -v 7.13.3 \
- && gem install fluent-plugin-detect-exceptions -v 0.0.14 \
- && gem install \
-         fluent-plugin-s3 \
-         fluent-plugin-grok-parser \
-         fluent-plugin-rewrite-tag-filter \
-         fluent-plugin-oss \
-         fluent-plugin-dedot_filter \
-         fluent-plugin-sumologic_output \
-         fluent-plugin-kafka \
-         fluent-plugin-label-router \
-         fluent-plugin-record-modifier \
-         fluent-plugin-multi-format-parser \
-         fluent-plugin-aws-elasticsearch-service \
-         fluent-plugin-opensearch \
-         fluent-plugin-grafana-loki \
-         fluent-plugin-cloudwatch-logs \
-         fluent-plugin-datadog \
-         fluent-plugin-prometheus \
- && apk del .build-deps \
+ && apt-get purge -y --auto-remove \
+                  -o APT::AutoRemove::RecommendsImportant=false \
+                  $buildDeps \
+ && rm -rf /var/lib/apt/lists/* \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem /usr/lib/ruby/gems/2.*/gems/fluentd-*/test
 
-RUN addgroup -S fluent && adduser -S -G fluent fluent \
+RUN groupadd -r fluent && useradd -r -g fluent fluent \
     # for log storage (maybe shared with host)
     && mkdir -p /fluentd/log \
     # configuration/plugins path (default: copied from .)
@@ -64,11 +37,7 @@ RUN addgroup -S fluent && adduser -S -G fluent fluent \
 
 ENV FLUENTD_CONF="fluent.conf"
 
-ENV LD_PRELOAD=""
-# NOTE: resolv v0.2.1 includes the fix for CPU spike issue due to DNS resolver.
-# Forcing to load specific version of resolv (instead of bundled by default) is needed for Ruby 2.6.7, 2.7.3 and 3.0.1.
-# alpine image is still kept on 2.7.3. See https://pkgs.alpinelinux.org/packages?name=ruby&branch=v3.13
-ENV RUBYLIB="/usr/lib/ruby/gems/2.7.0/gems/resolv-0.2.1/lib"
+ENV LD_PRELOAD="/usr/lib/libjemalloc.so.2"
 EXPOSE 24224 5140
 
 USER fluent
