@@ -365,7 +365,6 @@ jobs:
           tags: ${{ steps.image-metadata.outputs.tags }}
           sources: |
             ghcr.io/${{ needs.build-amd64-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-amd64-prod-image-metadata.outputs.version }}
-            # ghcr.io/${{ needs.build-arm64-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-arm64-prod-image-metadata.outputs.version }}
 
   scan-image:
     needs: 
