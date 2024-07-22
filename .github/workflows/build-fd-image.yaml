@@ -334,6 +334,7 @@ jobs:
         with:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
           tags: |
+            type=raw,value=latest
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
@@ -347,6 +348,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           tags: |
+            type=raw,value=latest
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
