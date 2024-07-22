@@ -38,7 +38,7 @@ jobs:
             LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${VERSION}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
             IMAGE_BASE_TAG="${VERSION}-${NEW_PATCH_VERSION}"
-            echo "Building patch release ${IMAGE_TAG}!"
+            echo "Building patch release ${IMAGE_BASE_TAG}!"
           else
             echo "${VERSION} tag does not exist, assuming we're building a new release!"
             IMAGE_BASE_TAG="${VERSION}"
@@ -101,7 +101,7 @@ jobs:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
           flavor: |
             latest=false
-            suffix=-"amd64"
+            suffix="-amd64"
           tags: |
             raw,latest
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
