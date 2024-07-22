@@ -101,7 +101,7 @@ jobs:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
           flavor: |
             latest=false
-            suffix="-amd64"
+            suffix=-amd64
           tags: |
             raw,latest
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
