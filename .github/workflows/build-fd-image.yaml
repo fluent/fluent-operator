@@ -374,7 +374,7 @@ jobs:
     with:
       source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
       source_registry: ghcr.io
-      platforms: "['linux/arm64', 'linux/amd64']"
+      platforms: "[''linux/amd64']" # "['linux/arm64', 'linux/amd64']"
     secrets:
       registry_username: ${{ github.actor }}
       registry_password: ${{ secrets.GITHUB_TOKEN }}
