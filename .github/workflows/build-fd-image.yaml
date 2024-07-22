@@ -393,7 +393,7 @@ jobs:
       source_registry: ghcr.io
       target_image: "${{ needs.prod-image-manifest.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
-      platforms: "['linux/arm64']" # "['linux/arm64', 'linux/amd64']"
+      platforms: "['linux/amd64']" # "['linux/arm64', 'linux/amd64']"
       tags: ${{ needs.prod-image-manifest.outputs.release_tags }}
     secrets:
       source_registry_username:  ${{ github.actor }}
