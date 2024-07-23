@@ -146,6 +146,17 @@ jobs:
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
 
+      - name: docker metadata for arm64 base image
+        id: image-tags
+        uses: docker/metadata-action@v5
+        with:
+         tags: |
+           type=raw,value=latest
+           type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+           type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+           type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+           type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+
       - name: Set outputs
         id: set-outputs
         run: |
