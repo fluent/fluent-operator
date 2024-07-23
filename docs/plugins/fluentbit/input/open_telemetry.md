@@ -12,3 +12,5 @@ The OpenTelemetry plugin allows you to ingest telemetry data as per the OTLP spe
 | bufferMaxSize | Specify the maximum buffer size in KB to receive a JSON message(default 4M). | string |
 | bufferChunkSize | This sets the chunk size for incoming incoming JSON messages. These chunks are then stored/managed in the space available by buffer_max_size(default 512K). | string |
 | successfulResponseCode | It allows to set successful response code. 200, 201 and 204 are supported(default 201). | *int32 |
+| tag | opentelemetry uses the tag value for incoming metrics. | string |
+| tagFromURI | If true, tag will be created from uri. e.g. v1_metrics from /v1/metrics | *bool |
