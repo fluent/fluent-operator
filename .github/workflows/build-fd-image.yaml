@@ -348,18 +348,18 @@ jobs:
           sources: |
             ghcr.io/${{ needs.build-amd64-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-amd64-prod-image-metadata.outputs.version }}
 
-  scan-image:
-    needs: 
-      - prod-image-manifest
-    name: Scan Fluentd Image
-    uses: ./.github/workflows/scan-docker-image-action.yaml
-    with:
-      source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
-      source_registry: ghcr.io
-      platforms: "['linux/arm64', 'linux/amd64']"
-    secrets:
-      registry_username: ${{ github.actor }}
-      registry_password: ${{ secrets.GITHUB_TOKEN }}
+  # scan-image:
+  #   needs: 
+  #     - prod-image-manifest
+  #   name: Scan Fluentd Image
+  #   uses: ./.github/workflows/scan-docker-image-action.yaml
+  #   with:
+  #     source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
+  #     source_registry: ghcr.io
+  #     platforms: "['linux/arm64', 'linux/amd64']"
+  #   secrets:
+  #     registry_username: ${{ github.actor }}
+  #     registry_password: ${{ secrets.GITHUB_TOKEN }}
 
   release-arm64-base-image-to-docker-hub:
     if: ${{ github.event_name != 'pull_request' }}
