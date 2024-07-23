@@ -150,6 +150,9 @@ jobs:
         id: image-tags
         uses: docker/metadata-action@v5
         with:
+          flavor: |
+            latest=false
+            suffix=-arm64-base          
          tags: |
            type=raw,value=latest
            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
