@@ -26,20 +26,20 @@ trap "cleanup" EXIT SIGINT
 echo ">> Temporary output directory ${TEMP_DIR}"
 
 # Ensure we can execute.
+chmod +x ${CODEGEN_PKG}/kube_codegen.sh 
+
 PACKAGE_PATH_BASE="github.com/fluent/fluent-operator/v2"
 
 mkdir -p "${TEMP_DIR}/${PACKAGE_PATH_BASE}/apis/fluentbit" \
          "${TEMP_DIR}/${PACKAGE_PATH_BASE}/apis/fluentd" \
          "${TEMP_DIR}/${PACKAGE_PATH_BASE}/apis/generated"
 
-chmod +x ${CODEGEN_PKG}/kube_codegen.sh 
-
 source ${CODEGEN_PKG}/kube_codegen.sh kube::codegen::gen_client \
     --output-dir "${TEMP_DIR}" \
     --with-watch \
     --output-pkg "${PACKAGE_PATH_BASE}/apis/generated" \
     --boilerplate "${SCRIPT_ROOT}/hack/boilerplate.go.txt" \
-    ./apis/generated
+    ./apis
 
 ls -lha $TEMP_DIR
 

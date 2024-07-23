@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# inspired by: https://github.com/weaveworks/flagger/tree/master/hack
+# inspired by: https://github.com/weaveworks/flagger/tree/main/hack
 
 set -o errexit
 set -o nounset
@@ -8,35 +8,24 @@ set -o pipefail
 
 SCRIPT_ROOT=$(git rev-parse --show-toplevel)
 
-# Grab code-generator version from go.sum.
-CODEGEN_VERSION=$(grep 'k8s.io/code-generator' go.sum | awk '{print $2}' | head -1 |cut -b 1-7)
-CODEGEN_PKG=$(echo `go env GOPATH`"/pkg/mod/k8s.io/code-generator@${CODEGEN_VERSION}")
 
-# code-generator does work with go.mod but makes assumptions about
-# the project living in `$GOPATH/src`. To work around this and support
-# any location; create a temporary directory, use this as an output
-# base, and copy everything back once generated.
-TEMP_DIR=$(mktemp -d)
+DIFFROOT="${SCRIPT_ROOT}/apis"
+TMP_DIFFROOT="${SCRIPT_ROOT}/_tmp/apis"
+
+_tmp="${SCRIPT_ROOT}/_tmp"
+
 cleanup() {
-    echo ">> Removing ${TEMP_DIR}"
-    rm -rf ${TEMP_DIR}
+    echo ">> Removing ${_tmp}"
+    rm -rf ${_tmp}
 }
 trap "cleanup" EXIT SIGINT
 
-echo ">> Temporary output directory ${TEMP_DIR}"
+cleanup
 
-# Ensure we can execute.
-chmod +x ${CODEGEN_PKG}/generate-groups.sh
+mkdir -p "${TMP_DIFFROOT}"
+cp -a "${DIFFROOT}"/* "${TMP_DIFFROOT}"
 
-${CODEGEN_PKG}/generate-groups.sh "client" \
-    github.com/fluent/fluent-operator/v2/apis/generated github.com/fluent/fluent-operator/v2/apis \
-    "fluentbit:v1alpha2 fluentd:v1alpha1" \
-    --output-base "${TEMP_DIR}" \
-    --go-header-file ${SCRIPT_ROOT}/hack/boilerplate.go.txt
-
-TMP_DIFFROOT=${TEMP_DIR}/github.com/fluent/fluent-operator/v2/apis/generated/clientset
-DIFFROOT=${SCRIPT_ROOT}/apis/generated/clientset
-
+"${SCRIPT_ROOT}/hack/update-codegen.sh"
 echo "diffing ${DIFFROOT} against freshly generated clientset"
 ret=0
 diff -Naupr "${DIFFROOT}" "${TMP_DIFFROOT}" || ret=$?
