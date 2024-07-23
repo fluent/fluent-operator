@@ -43,25 +43,6 @@
           required: true
   
   jobs:
-    check-image-exists:
-      strategy:
-        matrix:
-          platform: ${{ fromJson(inputs.platforms) }}
-      runs-on: ubuntu-latest
-      steps:
-        - name: Login to source container registry ${{ inputs.source_registry }}
-          uses: docker/login-action@v3
-          with:
-            registry: ${{ inputs.source_registry }}
-            username: ${{ secrets.source_registry_username }}
-            password: ${{ secrets.source_registry_token }}
-
-        - name: Pull the source image; verify it exists
-          run: 
-            docker pull "$SOURCE_IMAGE" --platform=${{ matrix.platform }}
-          env:
-            SOURCE_IMAGE: ${{ inputs.source_registry }}/${{ inputs.source_image }}:${{ inputs.tags }}
-          shell: bash
     create-tags:
       runs-on: ubuntu-latest
       outputs:
@@ -98,7 +79,6 @@
   
     push-image:
       needs: 
-        - check-image-exists
         - create-tags
       strategy:
         matrix:
