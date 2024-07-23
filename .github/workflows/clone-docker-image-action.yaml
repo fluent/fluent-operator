@@ -60,7 +60,7 @@
           run: 
             docker pull "$SOURCE_IMAGE" --platform=${{ matrix.platform }}
           env:
-            SOURCE_IMAGE: ${{ inputs.source_registry }}/${{ inputs.source_image }}
+            SOURCE_IMAGE: ${{ inputs.source_registry }}/${{ inputs.source_image }}:${{ inputs.tags }}
           shell: bash
     create-tags:
       runs-on: ubuntu-latest

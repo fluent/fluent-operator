@@ -363,7 +363,7 @@ jobs:
 
   release-arm64-base-image-to-docker-hub:
     if: ${{ github.event_name != 'pull_request' }}
-    name: Release arm64-base image to Docker Hub
+    name: Release images to Docker Hub
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs: 
       - build-arm64-base-image-metadata
