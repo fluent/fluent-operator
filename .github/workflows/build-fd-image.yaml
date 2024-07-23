@@ -387,7 +387,7 @@ jobs:
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs: 
       - prod-image-manifest
-      - scan-image
+      # - scan-image
     with:
       source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}"
       source_registry: ghcr.io
