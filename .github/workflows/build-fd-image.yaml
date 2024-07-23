@@ -82,39 +82,39 @@ jobs:
         run: |
           echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
 
-  # build-arm64-prod-image-metadata:
-  #   needs:
-  #     - determine-tags
-  #   runs-on: ubuntu-latest
-  #   name: Build prod image metadata for arm64
-  #   outputs:
-  #     IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
-  #     version: ${{ steps.image-metadata.outputs.version }}
-  #     tags: ${{ steps.image-metadata.outputs.tags }}
-  #     labels: ${{ steps.image-metadata.outputs.labels }}
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  build-arm64-prod-image-metadata:
+    needs:
+      - determine-tags
+    runs-on: ubuntu-latest
+    name: Build prod image metadata for arm64
+    outputs:
+      IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
+      version: ${{ steps.image-metadata.outputs.version }}
+      tags: ${{ steps.image-metadata.outputs.tags }}
+      labels: ${{ steps.image-metadata.outputs.labels }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: docker metadata for arm64
-  #       id: image-metadata
-  #       uses: docker/metadata-action@v5
-  #       with:
-  #         images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
-  #         flavor: |
-  #           latest=false
-  #           suffix=-arm64
-  #         tags: |
-  #           raw,latest
-  #           type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-  #           type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-  #           type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-  #           type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+      - name: docker metadata for arm64
+        id: image-metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
+          flavor: |
+            latest=false
+            suffix=-arm64
+          tags: |
+            raw,latest
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
 
-  #     - name: Set outputs
-  #       id: set-outputs
-  #       run: |
-  #         echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
+      - name: Set outputs
+        id: set-outputs
+        run: |
+          echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
 
   build-arm64-base-image-metadata:
     needs:
@@ -250,61 +250,61 @@ jobs:
           tags: ${{ needs.build-arm64-base-image-metadata.outputs.tags }}
           labels: ${{ needs.build-arm64-base-image-metadata.outputs.labels }}
 
-  # build-arm64:
-  #   runs-on: ubuntu-latest
-  #   needs: 
-  #     - build-arm64-prod-image-metadata
-  #     - build-arm64-base-image-metadata
-  #     - build-arm64-base
-  #   timeout-minutes: 90 
-  #   name: Build arm64 Image for Fluentd
-  #   steps:
-  #     - name: Install Go
-  #       uses: actions/setup-go@v5
-  #       with:
-  #         go-version: 1.21
+  build-arm64:
+    runs-on: ubuntu-latest
+    needs: 
+      - build-arm64-prod-image-metadata
+      - build-arm64-base-image-metadata
+      - build-arm64-base
+    timeout-minutes: 90 
+    name: Build arm64 Image for Fluentd
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
 
-  #     - uses: actions/cache@v4
-  #       with:
-  #         path: ~/go/pkg/mod
-  #         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+      - uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  #     - name: Login to Docker Hub
-  #       uses: docker/login-action@v3
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Set up Docker Buildx
-  #       id: buildx
-  #       uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
 
-  #     - name: Build and Push arm64 base Image for Fluentd
-  #       uses: docker/build-push-action@v6
-  #       with:
-  #         context: .
-  #         file: cmd/fluent-watcher/fluentd/Dockerfile.arm64.quick
-  #         push: true
-  #         platforms: linux/arm64
-  #         tags: ${{ needs.build-arm64-prod-image-metadata.outputs.tags }}
-  #         labels: ${{ needs.build-arm64-prod-image-metadata.outputs.labels }}
-  #         build-args: |
-  #           BASE_IMAGE_TAG=${{ needs.build-arm64-base-image-metadata.outputs.version }}
-  #           BASE_IMAGE=ghcr.io/${{needs.build-arm64-base-image-metadata.outputs.IMG_NAME}}
+      - name: Build and Push arm64 base Image for Fluentd
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: cmd/fluent-watcher/fluentd/Dockerfile.arm64.quick
+          push: true
+          platforms: linux/arm64
+          tags: ${{ needs.build-arm64-prod-image-metadata.outputs.tags }}
+          labels: ${{ needs.build-arm64-prod-image-metadata.outputs.labels }}
+          build-args: |
+            BASE_IMAGE_TAG=${{ needs.build-arm64-base-image-metadata.outputs.version }}
+            BASE_IMAGE=ghcr.io/${{needs.build-arm64-base-image-metadata.outputs.IMG_NAME}}
 
   prod-image-manifest:
     needs: 
       - determine-tags
       - build-amd64-prod-image-metadata
-      #- build-arm64-prod-image-metadata
+      - build-arm64-prod-image-metadata
       - build-amd64
-      # - build-arm64
+      - build-arm64
     runs-on: ubuntu-latest
     name: Create image manifest
     outputs:
@@ -361,19 +361,20 @@ jobs:
           tags: ${{ steps.image-metadata.outputs.tags }}
           sources: |
             ghcr.io/${{ needs.build-amd64-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-amd64-prod-image-metadata.outputs.version }}
+            ghcr.io/${{ needs.build-arm64-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-arm64-prod-image-metadata.outputs.version }}
 
-  # scan-image:
-  #   needs: 
-  #     - prod-image-manifest
-  #   name: Scan Fluentd Image
-  #   uses: ./.github/workflows/scan-docker-image-action.yaml
-  #   with:
-  #     source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
-  #     source_registry: ghcr.io
-  #     platforms: "['linux/arm64', 'linux/amd64']"
-  #   secrets:
-  #     registry_username: ${{ github.actor }}
-  #     registry_password: ${{ secrets.GITHUB_TOKEN }}
+  scan-image:
+    needs: 
+      - prod-image-manifest
+    name: Scan Fluentd Image
+    uses: ./.github/workflows/scan-docker-image-action.yaml
+    with:
+      source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
+      source_registry: ghcr.io
+      platforms: "['linux/arm64', 'linux/amd64']"
+    secrets:
+      registry_username: ${{ github.actor }}
+      registry_password: ${{ secrets.GITHUB_TOKEN }}
 
   release-arm64-base-image-to-docker-hub:
     if: ${{ github.event_name != 'pull_request' }}
@@ -401,7 +402,7 @@ jobs:
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs: 
       - prod-image-manifest
-      # - scan-image
+      - scan-image
     with:
       source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}"
       source_registry: ghcr.io
