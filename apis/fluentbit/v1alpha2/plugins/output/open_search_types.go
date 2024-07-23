@@ -99,6 +99,8 @@ type OpenSearch struct {
 	*plugins.Networking `json:"networking,omitempty"`
 	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
 	TotalLimitSize string `json:"totalLimitSize,omitempty"`
+	// +kubebuilder:validation:Enum=gzip
+	Compress string `json:"compress,omitempty"`
 }
 
 // Name implement Section() method

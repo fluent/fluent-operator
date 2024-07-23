@@ -2336,6 +2336,10 @@ spec:
                       otherwise the value must be according to the Unit Size specification.
                     pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
                     type: string
+                  compress:
+                    enum:
+                    - gzip
+                    type: string
                   currentTimeIndex:
                     description: Use current time for index generation instead of
                       message record
