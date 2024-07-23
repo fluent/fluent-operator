@@ -153,12 +153,12 @@ jobs:
           flavor: |
             latest=false
             suffix=-arm64-base          
-         tags: |
-           type=raw,value=latest
-           type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-           type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-           type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-           type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
 
       - name: Set outputs
         id: set-outputs
