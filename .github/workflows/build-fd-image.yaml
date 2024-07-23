@@ -116,41 +116,41 @@ jobs:
   #       run: |
   #         echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
 
-  # build-arm64-base-image-metadata:
-  #   needs:
-  #     - determine-tags
-  #   runs-on: ubuntu-latest
-  #   name: Build prod image metadata for arm64 base image
-  #   outputs:
-  #     IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
-  #     DOCKER_IMG_NAME: ${{ steps.set-outputs.outputs.DOCKER_IMG_NAME }}
-  #     version: ${{ steps.image-metadata.outputs.version }}
-  #     tags: ${{ steps.image-metadata.outputs.tags }}
-  #     labels: ${{ steps.image-metadata.outputs.labels }}
-  #     release_tags: ${{ steps.image-tags.outputs.tags }}
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  build-arm64-base-image-metadata:
+    needs:
+      - determine-tags
+    runs-on: ubuntu-latest
+    name: Build prod image metadata for arm64 base image
+    outputs:
+      IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
+      DOCKER_IMG_NAME: ${{ steps.set-outputs.outputs.DOCKER_IMG_NAME }}
+      version: ${{ steps.image-metadata.outputs.version }}
+      tags: ${{ steps.image-metadata.outputs.tags }}
+      labels: ${{ steps.image-metadata.outputs.labels }}
+      release_tags: ${{ steps.image-tags.outputs.tags }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
          
-  #     - name: docker metadata for arm64 base image
-  #       id: image-metadata
-  #       uses: docker/metadata-action@v5
-  #       with:
-  #         images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
-  #         flavor: |
-  #           latest=false
-  #           suffix=-arm64-base
-  #         tags: |
-  #           type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-  #           type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-  #           type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-  #           type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+      - name: docker metadata for arm64 base image
+        id: image-metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
+          flavor: |
+            latest=false
+            suffix=-arm64-base
+          tags: |
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
 
-  #     - name: Set outputs
-  #       id: set-outputs
-  #       run: |
-  #         echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
-  #         echo "DOCKER_IMG_NAME=${{env.DOCKER_REPO}}/${{ env.DOCKER_IMAGE }}" >> $GITHUB_OUTPUT
+      - name: Set outputs
+        id: set-outputs
+        run: |
+          echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
+          echo "DOCKER_IMG_NAME=${{env.DOCKER_REPO}}/${{ env.DOCKER_IMAGE }}" >> $GITHUB_OUTPUT
 
   build-amd64:
     runs-on: ubuntu-latest
@@ -173,7 +173,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Login to Docker Hub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -194,67 +194,47 @@ jobs:
           tags: ${{ needs.build-amd64-prod-image-metadata.outputs.tags }}
           labels: ${{ needs.build-amd64-prod-image-metadata.outputs.labels }}
 
-  # build-arm64-base:
-  #   runs-on: ubuntu-latest
-  #   needs: build-arm64-base-image-metadata
-  #   timeout-minutes: 90 
-  #   name: Build arm64 base Image for Fluentd
-  #   steps:
-  #     - name: Install Go
-  #       uses: actions/setup-go@v5
-  #       with:
-  #         go-version: 1.21
+  build-arm64-base:
+    runs-on: ubuntu-latest
+    needs: build-arm64-base-image-metadata
+    timeout-minutes: 90 
+    name: Build arm64 base Image for Fluentd
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
 
-  #     - uses: actions/cache@v4
-  #       with:
-  #         path: ~/go/pkg/mod
-  #         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+      - uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  #     - name: Login to Docker Hub
-  #       uses: docker/login-action@v3
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Set up Docker Buildx
-  #       id: buildx
-  #       uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
 
-  #     - name: Build and Push arm64 base Image for Fluentd
-  #       uses: docker/build-push-action@v6
-  #       with:
-  #         context: .
-  #         file: cmd/fluent-watcher/fluentd/Dockerfile.arm64.base
-  #         push: true
-  #         platforms: linux/arm64
-  #         tags: ${{ needs.build-arm64-base-image-metadata.outputs.tags }}
-  #         labels: ${{ needs.build-arm64-base-image-metadata.outputs.labels }}
-
-  # release-arm64-base-image-to-docker-hub:
-  #   if: ${{ github.event_name != 'pull_request' }}
-  #   name: Release Image to Docker Hub
-  #   uses: ./.github/workflows/clone-docker-image-action.yaml
-  #   needs: 
-  #     - build-arm64-base-image-metadata
-  #     - build-arm64-base
-  #   with:
-  #     source_image: "${{ needs.build-arm64-base-image-metadata.outputs.IMG_NAME }}"
-  #     source_registry: ghcr.io
-  #     target_image: "${{ needs.build-arm64-base-image-metadata.outputs.DOCKER_IMG_NAME }}"
-  #     target_registry: docker.io
-  #     platforms: "['linux/arm64']"
-  #     tags: ${{ needs.build-arm64-base-image-metadata.outputs.release_tags }}
-  #   secrets:
-  #     source_registry_username:  ${{ github.actor }}
-  #     source_registry_token: ${{ secrets.GITHUB_TOKEN }}
-  #     target_registry_username: ${{ secrets.REGISTRY_USER }}
-  #     target_registry_token: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Build and Push arm64 base Image for Fluentd
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: cmd/fluent-watcher/fluentd/Dockerfile.arm64.base
+          push: true
+          platforms: linux/arm64
+          tags: ${{ needs.build-arm64-base-image-metadata.outputs.tags }}
+          labels: ${{ needs.build-arm64-base-image-metadata.outputs.labels }}
 
   # build-arm64:
   #   runs-on: ubuntu-latest
@@ -381,9 +361,29 @@ jobs:
   #     registry_username: ${{ github.actor }}
   #     registry_password: ${{ secrets.GITHUB_TOKEN }}
 
+  release-arm64-base-image-to-docker-hub:
+    if: ${{ github.event_name != 'pull_request' }}
+    name: Release arm64-base image to Docker Hub
+    uses: ./.github/workflows/clone-docker-image-action.yaml
+    needs: 
+      - build-arm64-base-image-metadata
+      - build-arm64-base
+    with:
+      source_image: "${{ needs.build-arm64-base-image-metadata.outputs.IMG_NAME }}"
+      source_registry: ghcr.io
+      target_image: "${{ needs.build-arm64-base-image-metadata.outputs.DOCKER_IMG_NAME }}"
+      target_registry: docker.io
+      platforms: "['linux/arm64']"
+      tags: ${{ needs.build-arm64-base-image-metadata.outputs.release_tags }}
+    secrets:
+      source_registry_username:  ${{ github.actor }}
+      source_registry_token: ${{ secrets.GITHUB_TOKEN }}
+      target_registry_username: ${{ secrets.REGISTRY_USER }}
+      target_registry_token: ${{ secrets.REGISTRY_PASSWORD }}
+
   release-images-to-docker-hub:
     if: ${{ github.event_name != 'pull_request' }}
-    name: Release Image to Docker Hub
+    name: Release images to Docker Hub
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs: 
       - prod-image-manifest
