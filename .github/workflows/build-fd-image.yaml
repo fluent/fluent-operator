@@ -348,22 +348,22 @@ jobs:
           sources: |
             ghcr.io/${{ needs.build-amd64-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-amd64-prod-image-metadata.outputs.version }}
 
-  # scan-image:
-  #   needs: 
-  #     - prod-image-manifest
-  #   name: Scan Fluentd Image
-  #   uses: ./.github/workflows/scan-docker-image-action.yaml
-  #   with:
-  #     source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
-  #     source_registry: ghcr.io
-  #     platforms: "['linux/arm64', 'linux/amd64']"
-  #   secrets:
-  #     registry_username: ${{ github.actor }}
-  #     registry_password: ${{ secrets.GITHUB_TOKEN }}
+  scan-image:
+    needs: 
+      - prod-image-manifest
+    name: Scan Fluentd Image
+    uses: ./.github/workflows/scan-docker-image-action.yaml
+    with:
+      source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
+      source_registry: ghcr.io
+      platforms: "['linux/arm64', 'linux/amd64']"
+    secrets:
+      registry_username: ${{ github.actor }}
+      registry_password: ${{ secrets.GITHUB_TOKEN }}
 
   release-arm64-base-image-to-docker-hub:
     if: ${{ github.event_name != 'pull_request' }}
-    name: Release images to Docker Hub
+    name: Release arm64-base images to Docker Hub
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs: 
       - build-arm64-base-image-metadata
@@ -373,7 +373,7 @@ jobs:
       source_registry: ghcr.io
       target_image: "${{ needs.build-arm64-base-image-metadata.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
-      platforms: "['linux/arm64']"
+      #platforms: "['linux/arm64']"
       tags: ${{ needs.build-arm64-base-image-metadata.outputs.release_tags }}
     secrets:
       source_registry_username:  ${{ github.actor }}
@@ -387,13 +387,13 @@ jobs:
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs: 
       - prod-image-manifest
-      # - scan-image
+      - scan-image
     with:
       source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}"
       source_registry: ghcr.io
       target_image: "${{ needs.prod-image-manifest.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
-      platforms: "['linux/amd64']" # "['linux/arm64', 'linux/amd64']"
+      # platforms: "['linux/amd64']" # "['linux/arm64', 'linux/amd64']"
       tags: ${{ needs.prod-image-manifest.outputs.release_tags }}
     secrets:
       source_registry_username:  ${{ github.actor }}

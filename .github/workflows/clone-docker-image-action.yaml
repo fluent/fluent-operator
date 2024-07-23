@@ -19,11 +19,11 @@
           description: 'The target registry'
           required: true
           type: string
-        platforms:
-          description: 'The platforms to clone'
-          required: false
-          type: string
-          default: '["linux/arm64", "linux/amd64"]'
+        # platforms:
+        #   description: 'The platforms to clone'
+        #   required: false
+        #   type: string
+        #   default: '["linux/arm64", "linux/amd64"]'
         tags:
           description: 'The tags to apply to the target image'
           required: false
