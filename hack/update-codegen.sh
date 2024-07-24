@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# copied from: https://github.com/weaveworks/flagger/tree/master/hack
+# copied from: https://github.com/weaveworks/flagger/tree/main/hack
 
 set -o errexit
 set -o nounset
@@ -26,13 +26,22 @@ trap "cleanup" EXIT SIGINT
 echo ">> Temporary output directory ${TEMP_DIR}"
 
 # Ensure we can execute.
-chmod +x ${CODEGEN_PKG}/generate-groups.sh
+chmod +x ${CODEGEN_PKG}/kube_codegen.sh 
 
-${CODEGEN_PKG}/generate-groups.sh "client" \
-    github.com/fluent/fluent-operator/v2/apis/generated github.com/fluent/fluent-operator/v2/apis \
-    "fluentbit:v1alpha2 fluentd:v1alpha1" \
-    --output-base "${TEMP_DIR}" \
-    --go-header-file ${SCRIPT_ROOT}/hack/boilerplate.go.txt
+PACKAGE_PATH_BASE="github.com/fluent/fluent-operator/v2"
+
+mkdir -p "${TEMP_DIR}/${PACKAGE_PATH_BASE}/apis/fluentbit" \
+         "${TEMP_DIR}/${PACKAGE_PATH_BASE}/apis/fluentd" \
+         "${TEMP_DIR}/${PACKAGE_PATH_BASE}/apis/generated"
+
+source ${CODEGEN_PKG}/kube_codegen.sh kube::codegen::gen_client \
+    --output-dir "${TEMP_DIR}" \
+    --with-watch \
+    --output-pkg "${PACKAGE_PATH_BASE}/apis/generated" \
+    --boilerplate "${SCRIPT_ROOT}/hack/boilerplate.go.txt" \
+    ./apis
+
+ls -lha $TEMP_DIR
 
 # Copy everything back.
-cp -r "${TEMP_DIR}/github.com/fluent/fluent-operator/v2/apis/." "${SCRIPT_ROOT}/apis/"
+cp -r "${TEMP_DIR}/${PACKAGE_PATH_BASE}/." "${SCRIPT_ROOT}" 

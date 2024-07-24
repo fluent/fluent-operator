@@ -1,4 +1,4 @@
-FROM golang:1.20.4-alpine3.16 as buildergo
+FROM golang:1.22.0-alpine3.19 as buildergo
 RUN mkdir -p /fluent-bit
 RUN mkdir -p /code
 COPY . /code/

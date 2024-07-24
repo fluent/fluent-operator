@@ -31,7 +31,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
-	"sigs.k8s.io/controller-runtime/pkg/source"
 
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
 	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
@@ -613,11 +612,11 @@ func (r *FluentdConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&fluentdv1alpha1.Fluentd{}).
 		Owns(&corev1.Secret{}).
-		Watches(&source.Kind{Type: &fluentdv1alpha1.ClusterFluentdConfig{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentdv1alpha1.FluentdConfig{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentdv1alpha1.Filter{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentdv1alpha1.ClusterFilter{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentdv1alpha1.Output{}}, &handler.EnqueueRequestForObject{}).
-		Watches(&source.Kind{Type: &fluentdv1alpha1.ClusterOutput{}}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentdv1alpha1.ClusterFluentdConfig{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentdv1alpha1.FluentdConfig{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentdv1alpha1.Filter{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentdv1alpha1.ClusterFilter{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentdv1alpha1.Output{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentdv1alpha1.ClusterOutput{}, &handler.EnqueueRequestForObject{}).
 		Complete(r)
 }

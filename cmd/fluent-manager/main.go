@@ -25,6 +25,8 @@ import (
 
 	"github.com/joho/godotenv"
 	"sigs.k8s.io/controller-runtime/pkg/cache"
+	"sigs.k8s.io/controller-runtime/pkg/metrics/server"
+	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -87,21 +89,24 @@ func main() {
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 	ctrlOpts := ctrl.Options{
-		Scheme:                 scheme,
-		MetricsBindAddress:     metricsAddr,
-		Port:                   9443,
+		Scheme: scheme,
+		Metrics: server.Options{
+			BindAddress: metricsAddr,
+		},
+		WebhookServer: webhook.NewServer(webhook.Options{
+			Port: 9443,
+		}),
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "45c4fdd2.fluent.io",
 	}
 	namespacedController := false
 	if watchNamespaces != "" {
+		config := cache.Config{}
 		namespacedController = true
 		namespaces := strings.Split(watchNamespaces, ",")
-		if len(namespaces) > 1 {
-			ctrlOpts.NewCache = cache.MultiNamespacedCacheBuilder(namespaces)
-		} else {
-			ctrlOpts.Namespace = namespaces[0]
+		for _, namespace := range namespaces {
+			ctrlOpts.Cache.DefaultNamespaces[namespace] = config
 		}
 	}
 

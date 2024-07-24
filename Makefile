@@ -63,10 +63,17 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 ENVTEST_ASSETS_DIR=$(shell pwd)/testbin
-test: manifests generate fmt vet ## Run tests.
-	mkdir -p ${ENVTEST_ASSETS_DIR}
-	test -f ${ENVTEST_ASSETS_DIR}/setup-envtest.sh || curl -sSLo ${ENVTEST_ASSETS_DIR}/setup-envtest.sh https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/v0.8.3/hack/setup-envtest.sh
-	source ${ENVTEST_ASSETS_DIR}/setup-envtest.sh; fetch_envtest_tools $(ENVTEST_ASSETS_DIR); setup_envtest_env $(ENVTEST_ASSETS_DIR); go test ./apis/... -coverprofile cover.out
+
+install-setup-envtest: ## Install the setup-envtest tool if it is not already installed
+	if ! command -v setup-envtest &> /dev/null; then \
+	    go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest; \
+	fi
+
+setup-envtest: install-setup-envtest ## Download and set up the envtest binary
+	source <(setup-envtest use -p env) 
+
+test: manifests generate fmt vet setup-envtest ## Run tests.
+	go test ./apis/... -coverprofile cover.out
 
 ##@ Build
 
@@ -159,9 +166,9 @@ KUSTOMIZE = $(shell pwd)/bin/kustomize
 kustomize: go-deps ## Download kustomize locally if necessary.
 	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5@v5.0.0)
 
-CODE_GENERATOR = $(shell go env GOPATH)/pkg/mod/k8s.io/code-generator@v0.26.1
+CODE_GENERATOR = $(shell go env GOPATH)/pkg/mod/k8s.io/code-generator@v0.30.3
 code-generator: go-deps ## Download code-generator locally if necessary
-	$(call go-get-tool,$(CODE_GENERATOR),k8s.io/code-generator@v0.26.1)
+	$(call go-get-tool,$(CODE_GENERATOR),k8s.io/code-generator@v0.30.3)
 
 # go-get-tool will 'go get' any package $2 and install it to $1.
 PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -178,7 +185,7 @@ rm -rf $$TMP_DIR ;\
 endef
 
 go-deps: # download go dependencies
-	go get k8s.io/code-generator@v0.26.1
+	go get k8s.io/code-generator@v0.30.3
 	go mod download
 
 docs-update: # update api docs
