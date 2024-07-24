@@ -2396,6 +2396,13 @@ spec:
                       and 204 are supported(default 201).
                     format: int32
                     type: integer
+                  tag:
+                    description: opentelemetry uses the tag value for incoming metrics.
+                    type: string
+                  tagFromURI:
+                    description: If true, tag will be created from uri. e.g. v1_metrics
+                      from /v1/metrics
+                    type: boolean
                   tagKey:
                     description: Specify the key name to overwrite a tag. If set,
                       the tag will be overwritten by a value of the key.

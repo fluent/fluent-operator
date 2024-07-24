@@ -31,6 +31,10 @@ type OpenTelemetry struct {
 	BufferChunkSize string `json:"bufferChunkSize,omitempty"`
 	//It allows to set successful response code. 200, 201 and 204 are supported(default 201).
 	SuccessfulResponseCode *int32 `json:"successfulResponseCode,omitempty"`
+	// opentelemetry uses the tag value for incoming metrics.
+	Tag string `json:"tag,omitempty"`
+	// If true, tag will be created from uri. e.g. v1_metrics from /v1/metrics
+	TagFromURI *bool `json:"tagFromURI,omitempty"`
 }
 
 func (_ *OpenTelemetry) Name() string {
@@ -60,6 +64,12 @@ func (ot *OpenTelemetry) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if ot.SuccessfulResponseCode != nil {
 		kvs.Insert("successful_response_code", fmt.Sprint(*ot.SuccessfulResponseCode))
+	}
+	if ot.Tag != "" {
+		kvs.Insert("tag", ot.Tag)
+	}
+	if ot.TagFromURI != nil {
+		kvs.Insert("tag_from_uri", fmt.Sprint(*ot.TagFromURI))
 	}
 	return kvs, nil
 }
