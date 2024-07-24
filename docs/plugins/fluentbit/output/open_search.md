@@ -40,3 +40,4 @@ OpenSearch is the opensearch output plugin, allows to ingest your records into a
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
 | totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |
+| compress |  | string |
