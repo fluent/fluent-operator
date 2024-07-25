@@ -124,3 +124,23 @@ rules:
       - get
       - watch
       - patch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - rolebindings
+    verbs:
+      - create
+      - list
+      - get
+      - watch
+      - patch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - roles
+    verbs:
+      - create
+      - list
+      - get
+      - watch
+      - patch
