@@ -384,7 +384,7 @@ jobs:
       - build-arm64-base-image-metadata
       - build-arm64-base
     with:
-      source_image: "${{ needs.build-arm64-base-image-metadata.outputs.IMG_NAME }}"
+      source_image: "${{ needs.build-arm64-base-image-metadata.outputs.IMG_NAME }}:${{ needs.build-arm64-base-image-metadata.outputs.version }}"
       source_registry: ghcr.io
       target_image: "${{ needs.build-arm64-base-image-metadata.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
@@ -403,7 +403,7 @@ jobs:
       - prod-image-manifest
       - scan-image
     with:
-      source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}"
+      source_image: "${{ needs.prod-image-manifest.outputs.IMG_NAME }}:${{ needs.prod-image-manifest.outputs.version }}"
       source_registry: ghcr.io
       target_image: "${{ needs.prod-image-manifest.outputs.DOCKER_IMG_NAME }}"
       target_registry: docker.io
