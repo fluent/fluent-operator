@@ -2794,6 +2794,52 @@ spec:
                       uses the breakline character (LF or 0x10).
                     type: string
                 type: object
+              udp:
+                description: UDP defines the UDP input plugin configuration
+                properties:
+                  bufferSize:
+                    description: |-
+                      BufferSize Specify the maximum buffer size in KB to receive a JSON message.
+                      If not set, the default size will be the value of Chunk_Size.
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  chunkSize:
+                    description: |-
+                      By default the buffer to store the incoming JSON messages, do not allocate the maximum memory allowed,
+                      instead it allocate memory when is required.
+                      The rounds of allocations are set by Chunk_Size in KB. If not set, Chunk_Size is equal to 32 (32KB).
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  format:
+                    description: |-
+                      Format Specify the expected payload format. It support the options json and none.
+                      When using json, it expects JSON maps, when is set to none,
+                      it will split every record using the defined Separator (option below).
+                    type: string
+                  listen:
+                    description: 'Listen Listener network interface, default: 0.0.0.0'
+                    type: string
+                  port:
+                    description: 'Port Specify the UDP port where listening for connections,
+                      default: 5170'
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  separator:
+                    description: Separator When the expected Format is set to none,
+                      Fluent Bit needs a separator string to split the records. By
+                      default it uses the breakline character (LF or 0x10).
+                    type: string
+                  sourceAddressKey:
+                    description: SourceAddressKey Specify the key where the source
+                      address will be injected.
+                    type: string
+                  threaded:
+                    description: Threaded mechanism allows input plugin to run in
+                      a separate thread which helps to desaturate the main pipeline.
+                    type: string
+                type: object
             type: object
         type: object
     served: true
@@ -39237,6 +39283,26 @@ rules:
   - rbac.authorization.k8s.io
   resources:
   - clusterroles
+  verbs:
+  - create
+  - list
+  - get
+  - watch
+  - patch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  verbs:
+  - create
+  - list
+  - get
+  - watch
+  - patch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - roles
   verbs:
   - create
   - list
