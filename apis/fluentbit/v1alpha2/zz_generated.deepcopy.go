@@ -1187,6 +1187,11 @@ func (in *InputSpec) DeepCopyInto(out *InputSpec) {
 		*out = new(input.TCP)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.UDP != nil {
+		in, out := &in.UDP, &out.UDP
+		*out = new(input.UDP)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.KubernetesEvents != nil {
 		in, out := &in.KubernetesEvents, &out.KubernetesEvents
 		*out = new(input.KubernetesEvents)
