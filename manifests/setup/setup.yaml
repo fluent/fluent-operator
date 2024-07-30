@@ -39196,6 +39196,7 @@ rules:
   - events
   verbs:
   - list
+  - watch
 - apiGroups:
   - ""
   resources:
