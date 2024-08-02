@@ -86,18 +86,21 @@ Fluent Bit will be deployed as a DaemonSet while Fluentd will be deployed as a S
 ### Fluent Bit
 
 The following CRDs are defined for Fluent Bit:
+
 - **`FluentBit`**: Defines the Fluent Bit DaemonSet and its configs. A custom Fluent Bit image `kubesphere/fluent-bit` is required to work with FluentBit Operator for dynamic configuration reloading.
 - **`ClusterFluentBitConfig`**: Select cluster-level input/filter/output plugins and generates the final config into a Secret.
 - **`FluentBitConfig`**: Selects namespace-level filter/output/parser and cluster-level parser plugins and generates final config into a Secret.
 - **`ClusterInput`**: Defines cluster-level input config sections.
 - **`Parser`**: Defines namespace-level parser config sections.
 - **`ClusterParser`**: Defines cluster-level parser config sections.
+- **`MultilineParser`**: Defines namespace-level multiline-parser config sections
+- **`ClusterMultilineParser`**: Defines cluster-level multiline-parser config sections
 - **`Filter`**: Defines namespace-level filter config sections.
 - **`ClusterFilter`**: Defines cluster-level filter config sections.
 - **`Output`**: Defines namespace-level output config sections.
 - **`ClusterOutput`**: Defines cluster-level output config sections.
 
-Each **`ClusterInput`**, **`ClusterParser`**, **`ClusterFilter`**, **`ClusterOutput`** represents a Fluent Bit config section, which are selected by **`ClusterFluentBitConfig`** via label selectors. Fluent Operator watches those objects, constructs the final config, and finally creates a Secret to store the config which will be mounted into the Fluent Bit DaemonSet. The entire workflow looks like below:
+Each **`ClusterInput`**, **`ClusterParser`**, **`ClusterFilter`**, **`ClusterMultilineParser`**, **`ClusterOutput`** represents a Fluent Bit config section, which are selected by **`ClusterFluentBitConfig`** via label selectors. Fluent Operator watches those objects, constructs the final config, and finally creates a Secret to store the config which will be mounted into the Fluent Bit DaemonSet. The entire workflow looks like below:
 
 ![Fluent Bit workflow](docs/images/fluent-bit-operator-workflow.svg)
 
