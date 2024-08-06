@@ -31,7 +31,7 @@ spec:
     matchLabels:
       {{- include "fluent-operator.selectorLabels" . | nindent 6 }}
       {{- with .Values.fluentbit.labels }}
-      {{- toYaml .Values.fluentbit.labels | nindent 6}}
+      {{- toYaml . | nindent 6 }}
       {{- end }}
   namespaceSelector:
     matchNames:
