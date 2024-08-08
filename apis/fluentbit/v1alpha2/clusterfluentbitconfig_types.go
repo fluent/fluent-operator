@@ -118,6 +118,8 @@ type Service struct {
 	EmitterName        string `json:"emitterName,omitempty"`
 	EmitterMemBufLimit string `json:"emitterMemBufLimit,omitempty"`
 	EmitterStorageType string `json:"emitterStorageType,omitempty"`
+	// If true enable reloading via HTTP
+	HotReload *bool `json:"hotReload,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -222,6 +224,9 @@ func (s *Service) Params() *params.KVs {
 		if s.Storage.DeleteIrrecoverableChunks != "" {
 			m.Insert("storage.delete_irrecoverable_chunks", s.Storage.DeleteIrrecoverableChunks)
 		}
+	}
+	if s.HotReload != nil {
+		m.Insert("Hot_Reload", fmt.Sprint(*s.HotReload))
 	}
 	return m
 }
