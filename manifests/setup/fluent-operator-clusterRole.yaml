@@ -30,7 +30,8 @@ rules:
     resources:
       - events
     verbs:
-      - list      
+      - list
+      - watch
   - apiGroups:
       - ""
     resources:
