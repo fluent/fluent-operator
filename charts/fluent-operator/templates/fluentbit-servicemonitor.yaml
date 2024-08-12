@@ -29,7 +29,7 @@ spec:
       {{- end }}
   selector:
     matchLabels:
-      {{- include "fluent-operator.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: fluent-bit
       {{- with .Values.fluentbit.labels }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
