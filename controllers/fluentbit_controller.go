@@ -54,6 +54,7 @@ type FluentBitReconciler struct {
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles,verbs=create;list;get;watch;patch
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=rolebindings,verbs=create;list;get;watch;patch
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get
+// +kubebuilder:rbac:groups=core,resources=events,verbs=list;watch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
