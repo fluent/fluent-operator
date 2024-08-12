@@ -72,6 +72,8 @@ func main() {
 		level.Warn(logger).Log("--flb-timeout is deprecated. Consider setting the terminationGracePeriod field on the `(Cluster)FluentBit` instance.")
 	}
 
+	flag.Parse()
+
 	// First, launch the fluent-bit process.
 	args := []string{"--enable-hot-reload", "-c", configPath}
 	if externalPluginPath != "" {
