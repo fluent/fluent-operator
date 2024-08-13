@@ -523,7 +523,7 @@ func (cfg ClusterFluentBitConfig) RenderLuaScript(
 	scripts := make([]Script, 0)
 	for _, f := range filters.Items {
 		for _, p := range f.Spec.FilterItems {
-			if p.Lua != nil {
+			if p.Lua != nil && p.Lua.Script.Key != "" {
 				script, err := cl.LoadConfigMap(p.Lua.Script, namespace)
 				if err != nil {
 					return nil, err
