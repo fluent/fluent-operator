@@ -100,5 +100,12 @@ func (f *Forward) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(tls)
 	}
+	if f.Networking != nil {
+		net, err := f.Networking.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(net)
+	}
 	return kvs, nil
 }

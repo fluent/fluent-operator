@@ -97,5 +97,12 @@ func (p *PrometheusRemoteWrite) Params(sl plugins.SecretLoader) (*params.KVs, er
 		}
 		kvs.Merge(tls)
 	}
+	if p.Networking != nil {
+		net, err := p.Networking.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(net)
+	}
 	return kvs, nil
 }
