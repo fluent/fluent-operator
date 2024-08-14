@@ -43,6 +43,7 @@ This page describes the release process and the currently planned schedule for u
 | v2.8.0         | 2024-04-22             | Zhang Peng (GitHub: @Gentleelephant)  |
 | v2.9.0         | 2024-06-13             | Elon Cheng (GitHub: @wenchajun)       |
 | v3.0.0         | 2024-07-09             | Elon Cheng (GitHub: @wenchajun)       |
+| v3.1.0         | 2024-08-14             | Zhang Peng (GitHub: @Gentleelephant)  |
 
 # How to cut a new release
 
