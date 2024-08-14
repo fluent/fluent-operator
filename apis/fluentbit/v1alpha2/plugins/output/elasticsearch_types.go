@@ -231,6 +231,13 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(tls)
 	}
+	if es.Networking != nil {
+		net, err := es.Networking.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(net)
+	}
 	if es.TotalLimitSize != "" {
 		kvs.Insert("storage.total_limit_size", es.TotalLimitSize)
 	}

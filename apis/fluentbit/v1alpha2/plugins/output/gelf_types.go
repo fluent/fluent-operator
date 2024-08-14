@@ -83,5 +83,12 @@ func (g *Gelf) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(tls)
 	}
+	if g.Networking != nil {
+		net, err := g.Networking.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(net)
+	}
 	return kvs, nil
 }

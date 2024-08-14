@@ -69,5 +69,12 @@ func (t *TCP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+	if t.Networking != nil {
+		net, err := t.Networking.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(net)
+	}
 	return kvs, nil
 }

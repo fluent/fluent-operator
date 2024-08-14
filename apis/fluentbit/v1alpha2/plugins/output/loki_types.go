@@ -137,5 +137,12 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(tls)
 	}
+	if l.Networking != nil {
+		net, err := l.Networking.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(net)
+	}
 	return kvs, nil
 }

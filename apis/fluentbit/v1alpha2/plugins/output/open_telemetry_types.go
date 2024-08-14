@@ -98,5 +98,12 @@ func (o *OpenTelemetry) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(tls)
 	}
+	if o.Networking != nil {
+		net, err := o.Networking.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(net)
+	}
 	return kvs, nil
 }

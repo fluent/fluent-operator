@@ -50,7 +50,7 @@ func (t *Networking) Params(sl SecretLoader) (*params.KVs, error) {
 		kvs.Insert("net.dns.prefer_ipv4", fmt.Sprint(*t.DNSPreferIPv4))
 	}
 	if t.DNSResolver != nil {
-		kvs.Insert("net.dns.prefer_ipv4", *t.DNSResolver)
+		kvs.Insert("net.dns.resolver", *t.DNSResolver)
 	}
 	if t.Keepalive != nil {
 		kvs.Insert("net.keepalive", *t.Keepalive)
