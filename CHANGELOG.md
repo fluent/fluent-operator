@@ -1,3 +1,48 @@
+## 3.1.0 / 2024-08-14
+### Features
+- Render ConfigMap only if key is not empty string (#1299) @dex4er
+- Set explicit fluent-bit name label selector (#1293) @rmvangun
+- Allow fluent-operator to watch Kubernetes events (#1277) @thomasgouveia
+- add fluent bit config-reload via HTTP (#1286) @jiuxia211
+- feat(fluentbit): add fluentbit input_udp plugin (#1267) @cw-Guo
+- add tag and tag_from_uri for opentelemetry input plugin (#1255) @smallc2009
+- add compression to opensearch output plugin (#1258) @smallc2009
+- Support for patch release tags. (#1246) @joshuabaird
+- Add missing fluent-bit config parameters (#1244) @reegnz
+
+### ENHANCEMENT
+- build(deps): Bump github.com/onsi/gomega from 1.33.1 to 1.34.1 (#1275) @dependabot
+- build(deps): Bump github.com/go-logr/logr from 1.4.1 to 1.4.2 (#1271) @dependabot
+- build(deps): Bump k8s.io/klog/v2 from 2.120.1 to 2.130.1 (#1272) @dependabot
+- build(deps): Bump aquasecurity/trivy-action from 0.23.0 to 0.24.0 (#1279) @dependabot
+- build(deps): Bump golang.org/x/sync from 0.7.0 to 0.8.0 (#1283) @dependabot
+- build(deps): Bump golang from 1.22.5-alpine3.19 to 1.22.6-alpine3.19 in /cmd/fluent-manager (#1288) @dependabot
+- build(deps): Bump sigs.k8s.io/controller-runtime from 0.18.4 to 0.18.5 (#1295) @dependabot
+- build(deps): Bump golang from 1.22.5-alpine3.19 to 1.22.6-alpine3.19 in /cmd/fluent-watcher/fluentbit (#1289) @dependabot
+- build(deps): Bump golang from 1.22.5-alpine3.19 to 1.22.6-alpine3.19 in /cmd/fluent-watcher/fluentd (#1290) @dependabot
+- update fluentbit to v3.1.4 (#1282) @jiuxia211
+- Mention multiline parser CRDs in README (#1280) @reegnz
+- build(deps): Bump github.com/go-openapi/errors from 0.20.4 to 0.22.0 (#1274) @dependabot
+- build(deps): Bump golang from 1.22.0-alpine3.19 to 1.22.5-alpine3.19 in /cmd/fluent-watcher/fluentd (#1260) @dependabot
+- build(deps): Bump golang from 1.22.0-alpine3.19 to 1.22.5-alpine3.19 in /cmd/fluent-watcher/fluentbit (#1261) @dependabot
+- build(deps): Bump golang from 1.22.0-alpine3.19 to 1.22.5-alpine3.19 in /cmd/fluent-manager (#1262) @dependabot
+- build(deps): Bump fluent/fluent-bit from 3.1.3-debug to 3.1.4-debug in /cmd/fluent-watcher/fluentbit (#1266) @dependabot
+- build(deps): Bump fluent/fluent-bit from 3.1.2-debug to 3.1.3-debug in /cmd/fluent-watcher/fluentbit (#1245) @dependabot
+- build(deps): Bump golang from 1.22.3 to 1.22.4 in /docs/best-practice/forwarding-logs-via-http (#1227) @dependabot
+- build(deps): Bump k8s.io/client-go from 0.26.3 to 0.30.3 (#1254) @dependabot
+- build(deps): bump k8s.io/client-go, k8s.io/apimachinery, k8s.io/api, … (#1251) @jiuxia211
+- Bump fluentbit to 3.1.2. (#1240) @joshuabaird
+- build(deps): Bump fluent/fluent-bit from 3.1.0-debug to 3.1.2-debug in /cmd/fluent-watcher/fluentbit (#1238) @dependabot
+
+### BUGFIX
+- bug: Allows to render net properties for outputs (#1298) @dex4er
+- BUG: re-add accidently removed flag.Parse (#1294) @developer-guy
+- Fix service monitor label selector scope (#1284) @rmvangun
+- fix(rbac): Add missing rbac rules for namespaced fluentbit (#1265) @alexandrevilain
+- Fixes "build fluent operator" CI workflow (#1263) @joshuabaird
+- Fixes fluentd/fluent-bit image build CI workflows (#1259) @joshuabaird
+- Fix release name on fluentbit output loki (#1248) @yildizozan
+
 ## 3.0.0 / 2024-07-09
 ### Features
 - Feat: add daemonset terminationGracePeriodSeconds (#1204) @smallc2009
