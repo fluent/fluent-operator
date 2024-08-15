@@ -69,6 +69,8 @@ type FilterItem struct {
 	AWS *filter.AWS `json:"aws,omitempty"`
 	// Multiline defines a Multiline configuration.
 	Multiline *filter.Multiline `json:"multiline,omitempty"`
+	// LogToMetrics defines a Log to Metrics Filter configuration.
+	LogToMetrics *filter.LogToMetrics `json:"logToMetrics,omitempty"`
 	// CustomPlugin defines a Custom plugin configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }

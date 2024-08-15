@@ -284,6 +284,7 @@ Filter is the Schema for namespace level filter API
 | rewriteTag | RewriteTag defines a RewriteTag configuration. | *[filter.RewriteTag](plugins/filter/rewritetag.md) |
 | aws | Aws defines a Aws configuration. | *[filter.AWS](plugins/filter/aws.md) |
 | multiline | Multiline defines a Multiline configuration. | *[filter.Multiline](plugins/filter/multiline.md) |
+| logToMetrics | LogToMetrics defines a Log to Metrics Filter configuration. | *[filter.LogToMetrics](plugins/filter/logtometrics.md) |
 | customPlugin | CustomPlugin defines a Custom plugin configuration. | *custom.CustomPlugin |
 
 [Back to TOC](#table-of-contents)
@@ -635,6 +636,7 @@ ParserSpec defines the desired state of ClusterParser
 | emitterName | Per-namespace re-emitter configuration | string |
 | emitterMemBufLimit |  | string |
 | emitterStorageType |  | string |
+| hotReload | If true enable reloading via HTTP | *bool |
 
 [Back to TOC](#table-of-contents)
 # Storage
