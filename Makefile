@@ -142,13 +142,13 @@ push-amd64:
 ##@ Deployment
 
 install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd/bases/ | kubectl apply -f -
+	$(KUSTOMIZE) build config/crd/bases/ | kubectl create -f -
 
 uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/crd/bases/ | kubectl delete -f -
 
 deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	kubectl apply -f manifests/setup/setup.yaml
+	kubectl create -f manifests/setup/setup.yaml
 
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
 	kubectl delete -f manifests/setup/setup.yaml
