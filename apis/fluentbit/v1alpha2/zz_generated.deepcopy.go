@@ -688,6 +688,11 @@ func (in *FilterItem) DeepCopyInto(out *FilterItem) {
 		*out = new(filter.Multiline)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.LogToMetrics != nil {
+		in, out := &in.LogToMetrics, &out.LogToMetrics
+		*out = new(filter.LogToMetrics)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)

@@ -314,6 +314,94 @@ spec:
                             This could mitigate the Kube API heavy traffic issue for large cluster.
                           type: boolean
                       type: object
+                    logToMetrics:
+                      description: LogToMetrics defines a Log to Metrics Filter configuration.
+                      properties:
+                        addLabel:
+                          description: Add a custom label NAME and set the value to
+                            the value of KEY
+                          items:
+                            type: string
+                          type: array
+                        alias:
+                          description: Alias for the plugin
+                          type: string
+                        bucket:
+                          description: Defines a bucket for histogram
+                          items:
+                            type: string
+                          type: array
+                        discardLogs:
+                          description: |-
+                            Flag that defines if logs should be discarded after processing. This applies
+                            for all logs, no matter if they have emitted metrics or not.
+                          type: boolean
+                        emitterMemBufLimit:
+                          description: set a buffer limit to restrict memory usage
+                            of metrics emitter
+                          type: string
+                        emitterName:
+                          description: Name of the emitter (advanced users)
+                          type: string
+                        exclude:
+                          description: |-
+                            Optional filter for records in which the content of KEY does not matches the regular expression.
+                            Value Format: FIELD REGEX
+                          items:
+                            type: string
+                          type: array
+                        kubernetesMode:
+                          description: |-
+                            If enabled, it will automatically put pod_id, pod_name, namespace_name, docker_id and container_name
+                            into the metric as labels. This option is intended to be used in combination with the kubernetes filter plugin.
+                          type: boolean
+                        labelField:
+                          description: Includes a record field as label dimension
+                            in the metric.
+                          items:
+                            type: string
+                          type: array
+                        metricDescription:
+                          description: Sets a help text for the metric.
+                          type: string
+                        metricMode:
+                          description: Defines the mode for the metric. Valid values
+                            are [counter, gauge or histogram]
+                          type: string
+                        metricName:
+                          description: Sets the name of the metric.
+                          type: string
+                        metricNamespace:
+                          description: Namespace of the metric
+                          type: string
+                        metricSubsystem:
+                          description: Sets a sub-system for the metric.
+                          type: string
+                        regex:
+                          description: |-
+                            Optional filter for records in which the content of KEY matches the regular expression.
+                            Value Format: FIELD REGEX
+                          items:
+                            type: string
+                          type: array
+                        retryLimit:
+                          description: 'RetryLimit describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
+                          type: string
+                        tag:
+                          description: Defines the tag for the generated metrics record
+                          type: string
+                        valueField:
+                          description: Specify the record field that holds a numerical
+                            value
+                          type: string
+                      type: object
                     lua:
                       description: Lua defines Lua Filter configuration.
                       properties:
