@@ -20,3 +20,4 @@ Syslog output plugin allows you to deliver messages to Syslog servers. <br /> **
 | syslogMessageKey | Key key name that contains the message to deliver. | string |
 | tls | Syslog output plugin supports TTL/SSL, for more details about the properties available and general configuration, please refer to the TLS/SSL section. | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |

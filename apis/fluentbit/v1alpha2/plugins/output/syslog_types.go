@@ -45,6 +45,8 @@ type Syslog struct {
 	*plugins.TLS `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
+	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+	TotalLimitSize string `json:"totalLimitSize,omitempty"`
 }
 
 func (_ *Syslog) Name() string {
@@ -106,6 +108,9 @@ func (s *Syslog) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 			return nil, err
 		}
 		kvs.Merge(net)
+	}
+	if s.TotalLimitSize != "" {
+		kvs.Insert("storage.total_limit_size", s.TotalLimitSize)
 	}
 	return kvs, nil
 }
