@@ -103,5 +103,9 @@ spec:
 {{- if .Values.fluentbit.disableLogVolumes }}
   disableLogVolumes: {{ .Values.fluentbit.disableLogVolumes }}
 {{- end }}
+{{- if .Values.fluentbit.initContainers }}
+  initContainers:
+  {{ toYaml .Values.fluentbit.initContainers | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
