@@ -765,6 +765,11 @@ func (in *OpenTelemetry) DeepCopyInto(out *OpenTelemetry) {
 			(*out)[key] = val
 		}
 	}
+	if in.LogsBodyKeyAttributes != nil {
+		in, out := &in.LogsBodyKeyAttributes, &out.LogsBodyKeyAttributes
+		*out = new(bool)
+		**out = **in
+	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
 		*out = new(plugins.TLS)
