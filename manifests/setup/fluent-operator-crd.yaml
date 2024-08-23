@@ -463,6 +463,13 @@ spec:
                             If you desire timestamp precision enabling this option will pass the timestamp as
                             a Lua table with keys sec for seconds since epoch and nsec for nanoseconds.
                           type: boolean
+                        typeArrayKey:
+                          description: |-
+                            If these keys are matched, the fields are handled as array. If more than
+                            one key, delimit by space. It is useful the array can be empty.
+                          items:
+                            type: string
+                          type: array
                         typeIntKey:
                           description: |-
                             If these keys are matched, the fields are converted to integer.
@@ -14959,6 +14966,13 @@ spec:
                             If you desire timestamp precision enabling this option will pass the timestamp as
                             a Lua table with keys sec for seconds since epoch and nsec for nanoseconds.
                           type: boolean
+                        typeArrayKey:
+                          description: |-
+                            If these keys are matched, the fields are handled as array. If more than
+                            one key, delimit by space. It is useful the array can be empty.
+                          items:
+                            type: string
+                          type: array
                         typeIntKey:
                           description: |-
                             If these keys are matched, the fields are converted to integer.

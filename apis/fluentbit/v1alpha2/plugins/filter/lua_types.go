@@ -28,6 +28,9 @@ type Lua struct {
 	// Note that starting from Fluent Bit v1.6 integer data types are preserved
 	// and not converted to double as in previous versions.
 	TypeIntKey []string `json:"typeIntKey,omitempty"`
+	// If these keys are matched, the fields are handled as array. If more than
+	// one key, delimit by space. It is useful the array can be empty.
+	TypeArrayKey []string `json:"typeArrayKey,omitempty"`
 	// If enabled, Lua script will be executed in protected mode.
 	// It prevents to crash when invalid Lua script is executed. Default is true.
 	ProtectedMode *bool `json:"protectedMode,omitempty"`
@@ -76,6 +79,10 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("type_int_key", strings.Join(l.TypeIntKey, " "))
 	}
 
+	if l.TypeArrayKey != nil && len(l.TypeArrayKey) > 0 {
+		kvs.Insert("type_array_key", strings.Join(l.TypeIntKey, " "))
+	}
+
 	if l.ProtectedMode != nil {
 		kvs.Insert("protected_mode", strconv.FormatBool(*l.ProtectedMode))
 	}
@@ -83,5 +90,6 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	if l.TimeAsTable {
 		kvs.Insert("time_as_table", "true")
 	}
+
 	return kvs, nil
 }

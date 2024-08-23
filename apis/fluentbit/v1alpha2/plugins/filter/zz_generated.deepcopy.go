@@ -335,6 +335,11 @@ func (in *Lua) DeepCopyInto(out *Lua) {
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
+	if in.TypeArrayKey != nil {
+		in, out := &in.TypeArrayKey, &out.TypeArrayKey
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	if in.ProtectedMode != nil {
 		in, out := &in.ProtectedMode, &out.ProtectedMode
 		*out = new(bool)

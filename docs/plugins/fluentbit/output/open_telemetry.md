@@ -15,7 +15,7 @@ The OpenTelemetry plugin allows you to take logs, metrics, and traces from Fluen
 | tracesUri | Specify an optional HTTP URI for the target web server listening for traces, e.g: /v1/traces | string |
 | header | Add a HTTP header key/value pair. Multiple headers can be set. | map[string]string |
 | logResponsePayload | Log the response payload within the Fluent Bit log. | *bool |
-| logsBodyKeyAttributes | Adds unmatched keys as attributes when true. | *bool |
 | addLabel | This allows you to add custom labels to all metrics exposed through the OpenTelemetry exporter. You may have multiple of these fields. | map[string]string |
+| logsBodyKeyAttributes | If true, remaining unmatched keys are added as attributes. | *bool |
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
