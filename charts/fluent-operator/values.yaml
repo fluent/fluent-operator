@@ -134,6 +134,8 @@ fluentbit:
           - matchExpressions:
               - key: node-role.kubernetes.io/edge
                 operator: DoesNotExist
+  # initContainers configuration for Fluent Bit pods. Ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+  initContainers: []
   # nodeSelector configuration for Fluent Bit pods. Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
   # Node tolerations applied to Fluent Bit pods. Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
