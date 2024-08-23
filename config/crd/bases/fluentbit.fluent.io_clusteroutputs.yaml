@@ -2856,6 +2856,9 @@ spec:
                   logResponsePayload:
                     description: Log the response payload within the Fluent Bit log.
                     type: boolean
+                  logsBodyKeyAttributes:
+                    description: If true, remaining unmatched keys are added as attributes.
+                    type: boolean
                   logsUri:
                     description: 'Specify an optional HTTP URI for the target web
                       server listening for logs, e.g: /v1/logs'
