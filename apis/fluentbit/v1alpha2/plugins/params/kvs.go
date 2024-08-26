@@ -11,6 +11,12 @@ import (
 
 type kvTransformFunc func(string, string) (string, string)
 
+type SecretProvider interface {
+	GetStringVal() string
+}
+
+type kvTransformFunc1 func(string, string) (string, SecretProvider)
+
 type KVs struct {
 	keys        []string
 	values      []string
@@ -22,6 +28,36 @@ func NewKVs() *KVs {
 	return &KVs{
 		keys:   []string{},
 		values: []string{},
+	}
+}
+
+func (kvs *KVs) InsertMapValMap(m map[string]SecretProvider, f kvTransformFunc1) {
+	if len(m) > 0 {
+		keys := make([]string, 0, len(m))
+		for k := range m {
+			keys = append(keys, k)
+		}
+
+		sort.Strings(keys)
+
+		for _, k := range keys {
+			v := m[k]
+			strval := v.GetStringVal()
+			if f != nil {
+				transformedKey, transformedVal := f(k, strval)
+
+				if transformedVal != nil {
+					strval = transformedVal.GetStringVal()
+				} else {
+					strval = "" // Default to an empty string if transformation returns nil
+				}
+
+				k = transformedKey
+			}
+
+			kvs.Insert(k, strval)
+
+		}
 	}
 }
 
