@@ -54,7 +54,7 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 
 	if l.Code != "" {
 		var singleLineLua string = ""
-		var lineTrim = ""
+		lineTrim := ""
 		for _, line := range strings.Split(strings.TrimSuffix(l.Code, "\n"), "\n") {
 			lineTrim = strings.TrimSpace(line)
 			if lineTrim != "" {
@@ -80,7 +80,7 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 
 	if l.TypeArrayKey != nil && len(l.TypeArrayKey) > 0 {
-		kvs.Insert("type_array_key", strings.Join(l.TypeIntKey, " "))
+		kvs.Insert("type_array_key", strings.Join(l.TypeArrayKey, " "))
 	}
 
 	if l.ProtectedMode != nil {
