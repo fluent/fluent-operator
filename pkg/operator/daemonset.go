@@ -143,6 +143,17 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 		})
 	}
 
+	// Mount Wasm Filter
+	if fb.Spec.WasmFile != (corev1.VolumeSource{}) {
+		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, corev1.Volume{
+			Name:         "wasm",
+			VolumeSource: fb.Spec.WasmFile,
+		})
+		ds.Spec.Template.Spec.Containers[0].VolumeMounts = append(ds.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+			Name:      "wasm",
+			MountPath: "/fluent-bit/wasm",
+		})
+	}
 	// Mount Secrets
 	for _, secret := range fb.Spec.Secrets {
 		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, corev1.Volume{

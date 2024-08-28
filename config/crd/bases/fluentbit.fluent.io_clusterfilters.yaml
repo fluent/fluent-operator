@@ -879,6 +879,51 @@ spec:
                           format: int64
                           type: integer
                       type: object
+                    wasm:
+                      description: Wasm defines a Wasm configuration.
+                      properties:
+                        accessiblePaths:
+                          description: Specify the whitelist of paths to be able to
+                            access paths from WASM programs.
+                          type: string
+                        alias:
+                          description: Alias for the plugin
+                          type: string
+                        eventFormat:
+                          description: 'Define event format to interact with Wasm
+                            programs: msgpack or json. Default: json'
+                          type: string
+                        functionName:
+                          description: Wasm function name that will be triggered to
+                            do filtering. It's assumed that the function is built
+                            inside the Wasm program specified above.
+                          type: string
+                        retryLimit:
+                          description: 'RetryLimit describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinetly. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
+                          type: string
+                        wasmHeapSize:
+                          description: Size of the heap size of Wasm execution. Review
+                            unit sizes for allowed values.
+                          pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                          type: string
+                        wasmPath:
+                          description: Path to the built Wasm program that will be
+                            used. This can be a relative path against the main configuration
+                            file.
+                          type: string
+                        wasmStackSize:
+                          description: Size of the stack size of Wasm execution. Review
+                            unit sizes for allowed values.
+                          pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                          type: string
+                      type: object
                   type: object
                 type: array
               logLevel:
