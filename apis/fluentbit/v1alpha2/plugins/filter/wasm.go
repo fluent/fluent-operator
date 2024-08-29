@@ -18,7 +18,7 @@ type Wasm struct {
 	// Wasm function name that will be triggered to do filtering. It's assumed that the function is built inside the Wasm program specified above.
 	FunctionName string `json:"functionName,omitempty"`
 	// Specify the whitelist of paths to be able to access paths from WASM programs.
-	AccessiblePaths string `json:"accessiblePaths,omitempty"`
+	AccessiblePaths []string `json:"accessiblePaths,omitempty"`
 	// Size of the heap size of Wasm execution. Review unit sizes for allowed values.
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	WasmHeapSize string `json:"wasmHeapSize,omitempty"`
@@ -43,13 +43,13 @@ func (w *Wasm) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("Wasm_Path", w.WasmPath)
 	}
 	if w.EventFormat != "" {
-		kvs.Insert("EventFormat", w.EventFormat)
+		kvs.Insert("Event_Format", w.EventFormat)
 	}
 	if w.FunctionName != "" {
 		kvs.Insert("Function_Name", w.FunctionName)
 	}
-	if w.AccessiblePaths != "" {
-		kvs.Insert("Accessible_Paths", w.AccessiblePaths)
+	for _, p := range w.AccessiblePaths {
+		kvs.Insert("Accessible_Paths", p)
 	}
 	if w.WasmHeapSize != "" {
 		kvs.Insert("Wasm_Heap_Size", w.WasmHeapSize)
