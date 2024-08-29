@@ -107,8 +107,6 @@ type FluentBitSpec struct {
 	SchedulerName string `json:"schedulerName,omitempty"`
 	// Optional duration in seconds the pod needs to terminate gracefully. Value must be non-negative integer.
 	TerminationGracePeriodSeconds *int64 `json:"terminationGracePeriodSeconds,omitempty"`
-	// Storage for wasm file. You will use it if wasm filter is enabled.
-	WasmFile corev1.VolumeSource `json:"wasmFile,omitempty"`
 }
 
 // FluentBitService defines the service of the FluentBit

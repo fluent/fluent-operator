@@ -885,7 +885,9 @@ spec:
                         accessiblePaths:
                           description: Specify the whitelist of paths to be able to
                             access paths from WASM programs.
-                          type: string
+                          items:
+                            type: string
+                          type: array
                         alias:
                           description: Alias for the plugin
                           type: string
