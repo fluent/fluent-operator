@@ -285,6 +285,7 @@ Filter is the Schema for namespace level filter API
 | aws | Aws defines a Aws configuration. | *[filter.AWS](plugins/filter/aws.md) |
 | multiline | Multiline defines a Multiline configuration. | *[filter.Multiline](plugins/filter/multiline.md) |
 | logToMetrics | LogToMetrics defines a Log to Metrics Filter configuration. | *[filter.LogToMetrics](plugins/filter/logtometrics.md) |
+| wasm | Wasm defines a Wasm configuration. | *[filter.Wasm](plugins/filter/wasm.md) |
 | customPlugin | CustomPlugin defines a Custom plugin configuration. | *custom.CustomPlugin |
 
 [Back to TOC](#table-of-contents)

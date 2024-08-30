@@ -71,6 +71,8 @@ type FilterItem struct {
 	Multiline *filter.Multiline `json:"multiline,omitempty"`
 	// LogToMetrics defines a Log to Metrics Filter configuration.
 	LogToMetrics *filter.LogToMetrics `json:"logToMetrics,omitempty"`
+	// Wasm defines a Wasm configuration.
+	Wasm *filter.Wasm `json:"wasm,omitempty"`
 	// CustomPlugin defines a Custom plugin configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }

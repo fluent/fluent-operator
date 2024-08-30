@@ -693,6 +693,11 @@ func (in *FilterItem) DeepCopyInto(out *FilterItem) {
 		*out = new(filter.LogToMetrics)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Wasm != nil {
+		in, out := &in.Wasm, &out.Wasm
+		*out = new(filter.Wasm)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)

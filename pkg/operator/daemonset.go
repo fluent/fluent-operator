@@ -142,7 +142,6 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 			MountPath: "/fluent-bit/tail",
 		})
 	}
-
 	// Mount Secrets
 	for _, secret := range fb.Spec.Secrets {
 		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, corev1.Volume{
