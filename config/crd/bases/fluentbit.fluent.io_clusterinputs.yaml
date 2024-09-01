@@ -95,6 +95,48 @@ spec:
                       plugin.
                     type: string
                 type: object
+              execWasi:
+                description: ExecWasi defines the exec wasi input plugin configuration
+                properties:
+                  accessiblePaths:
+                    description: Specify the whitelist of paths to be able to access
+                      paths from WASM programs.
+                    items:
+                      type: string
+                    type: array
+                  bufSize:
+                    description: Size of the buffer (check unit sizes for allowed
+                      values)
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  intervalNSec:
+                    description: Polling interval (nanoseconds).
+                    format: int64
+                    type: integer
+                  intervalSec:
+                    description: Polling interval (seconds).
+                    format: int32
+                    type: integer
+                  parser:
+                    description: Specify the name of a parser to interpret the entry
+                      as a structured message.
+                    type: string
+                  threaded:
+                    description: 'Indicates whether to run this input in its own thread.
+                      Default: false.'
+                    type: boolean
+                  wasiPath:
+                    description: The place of a WASM program file.
+                    type: string
+                  wasmHeapSize:
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  wasmStackSize:
+                    description: Size of the stack size of Wasm execution. Review
+                      unit sizes for allowed values.
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                type: object
               fluentBitMetrics:
                 description: FluentBitMetrics defines Fluent Bit Metrics Input configuration.
                 properties:

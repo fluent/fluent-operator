@@ -1207,6 +1207,11 @@ func (in *InputSpec) DeepCopyInto(out *InputSpec) {
 		*out = new(input.KubernetesEvents)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.ExecWasi != nil {
+		in, out := &in.ExecWasi, &out.ExecWasi
+		*out = new(input.ExecWasi)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Processors != nil {
 		in, out := &in.Processors, &out.Processors
 		*out = (*in).DeepCopy()
