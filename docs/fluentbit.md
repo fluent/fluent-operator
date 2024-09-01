@@ -461,6 +461,7 @@ InputSpec defines the desired state of ClusterInput
 | tcp | TCP defines the TCP input plugin configuration | *[input.TCP](plugins/input/tcp.md) |
 | udp | UDP defines the UDP input plugin configuration | *[input.UDP](plugins/input/udp.md) |
 | kubernetesEvents | KubernetesEvents defines the KubernetesEvents input plugin configuration | *[input.KubernetesEvents](plugins/input/kubernetesevents.md) |
+| execWasi | ExecWasi defines the exec wasi input plugin configuration | *[input.ExecWasi](plugins/input/execwasi.md) |
 | processors | Processors defines the processors configuration | *plugins.Config |
 
 [Back to TOC](#table-of-contents)
