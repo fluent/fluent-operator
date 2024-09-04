@@ -17,11 +17,10 @@ limitations under the License.
 package main
 
 import (
+	"errors"
 	"flag"
 	"os"
 	"strings"
-
-	"errors"
 
 	"github.com/joho/godotenv"
 	"sigs.k8s.io/controller-runtime/pkg/cache"
@@ -105,6 +104,8 @@ func main() {
 		config := cache.Config{}
 		namespacedController = true
 		namespaces := strings.Split(watchNamespaces, ",")
+
+		ctrlOpts.Cache.DefaultNamespaces = make(map[string]cache.Config)
 		for _, namespace := range namespaces {
 			ctrlOpts.Cache.DefaultNamespaces[namespace] = config
 		}
