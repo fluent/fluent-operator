@@ -40,6 +40,8 @@ type Elasticsearch struct {
 	Pipeline string `json:"pipeline,omitempty"`
 	// Enable AWS Sigv4 Authentication for Amazon ElasticSearch Service.
 	AWSAuth string `json:"awsAuth,omitempty"`
+	// AWSAuthSecret Enable AWS Sigv4 Authentication for Amazon ElasticSearch Service.
+	AWSAuthSecret *plugins.Secret `json:"awsAuthSecret,omitempty"`
 	// Specify the AWS region for Amazon ElasticSearch Service.
 	AWSRegion string `json:"awsRegion,omitempty"`
 	// Specify the custom sts endpoint to be used with STS API for Amazon ElasticSearch Service.
@@ -52,6 +54,8 @@ type Elasticsearch struct {
 	CloudID string `json:"cloudID,omitempty"`
 	// Specify the credentials to use to connect to Elastic's Elasticsearch Service running on Elastic Cloud.
 	CloudAuth string `json:"cloudAuth,omitempty"`
+	// CloudAuthSecret Specify the credentials to use to connect to Elastic's Elasticsearch Service running on Elastic Cloud.
+	CloudAuthSecret *plugins.Secret `json:"cloudAuthSecret,omitempty"`
 	// Optional username credential for Elastic X-Pack access
 	HTTPUser *plugins.Secret `json:"httpUser,omitempty"`
 	// Password for user defined in HTTP_User
@@ -135,6 +139,13 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if es.AWSAuth != "" {
 		kvs.Insert("AWS_Auth", es.AWSAuth)
 	}
+	if es.AWSAuthSecret != nil {
+		u, err := sl.LoadSecret(*es.AWSAuthSecret)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Insert("AWS_Auth", u)
+	}
 	if es.AWSRegion != "" {
 		kvs.Insert("AWS_Region", es.AWSRegion)
 	}
@@ -149,6 +160,13 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if es.CloudAuth != "" {
 		kvs.Insert("Cloud_Auth", es.CloudAuth)
+	}
+	if es.CloudAuthSecret != nil {
+		u, err := sl.LoadSecret(*es.CloudAuthSecret)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Insert("Cloud_Auth", u)
 	}
 	if es.AWSExternalID != "" {
 		kvs.Insert("AWS_External_ID", es.AWSExternalID)

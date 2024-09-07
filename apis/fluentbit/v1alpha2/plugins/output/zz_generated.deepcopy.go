@@ -152,6 +152,16 @@ func (in *Elasticsearch) DeepCopyInto(out *Elasticsearch) {
 		*out = new(int32)
 		**out = **in
 	}
+	if in.AWSAuthSecret != nil {
+		in, out := &in.AWSAuthSecret, &out.AWSAuthSecret
+		*out = new(plugins.Secret)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.CloudAuthSecret != nil {
+		in, out := &in.CloudAuthSecret, &out.CloudAuthSecret
+		*out = new(plugins.Secret)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.HTTPUser != nil {
 		in, out := &in.HTTPUser, &out.HTTPUser
 		*out = new(plugins.Secret)

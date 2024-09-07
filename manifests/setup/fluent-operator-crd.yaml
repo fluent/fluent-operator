@@ -4562,6 +4562,41 @@ spec:
                     description: Enable AWS Sigv4 Authentication for Amazon ElasticSearch
                       Service.
                     type: string
+                  awsAuthSecret:
+                    description: AWSAuthSecret Enable AWS Sigv4 Authentication for
+                      Amazon ElasticSearch Service.
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                default: ""
+                                description: |-
+                                  Name of the referent.
+                                  This field is effectively required, but due to backwards compatibility is
+                                  allowed to be empty. Instances of this type with an empty value here are
+                                  almost certainly wrong.
+                                  TODO: Add other useful fields. apiVersion, kind, uid?
+                                  More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
                   awsExternalID:
                     description: External ID for the AWS IAM Role specified with aws_role_arn.
                     type: string
@@ -4589,6 +4624,42 @@ spec:
                     description: Specify the credentials to use to connect to Elastic's
                       Elasticsearch Service running on Elastic Cloud.
                     type: string
+                  cloudAuthSecret:
+                    description: CloudAuthSecret Specify the credentials to use to
+                      connect to Elastic's Elasticsearch Service running on Elastic
+                      Cloud.
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                default: ""
+                                description: |-
+                                  Name of the referent.
+                                  This field is effectively required, but due to backwards compatibility is
+                                  allowed to be empty. Instances of this type with an empty value here are
+                                  almost certainly wrong.
+                                  TODO: Add other useful fields. apiVersion, kind, uid?
+                                  More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
                   cloudID:
                     description: If you are using Elastic's Elasticsearch Service
                       you can specify the cloud_id of the cluster running.
@@ -33179,6 +33250,41 @@ spec:
                     description: Enable AWS Sigv4 Authentication for Amazon ElasticSearch
                       Service.
                     type: string
+                  awsAuthSecret:
+                    description: AWSAuthSecret Enable AWS Sigv4 Authentication for
+                      Amazon ElasticSearch Service.
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                default: ""
+                                description: |-
+                                  Name of the referent.
+                                  This field is effectively required, but due to backwards compatibility is
+                                  allowed to be empty. Instances of this type with an empty value here are
+                                  almost certainly wrong.
+                                  TODO: Add other useful fields. apiVersion, kind, uid?
+                                  More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
                   awsExternalID:
                     description: External ID for the AWS IAM Role specified with aws_role_arn.
                     type: string
@@ -33206,6 +33312,42 @@ spec:
                     description: Specify the credentials to use to connect to Elastic's
                       Elasticsearch Service running on Elastic Cloud.
                     type: string
+                  cloudAuthSecret:
+                    description: CloudAuthSecret Specify the credentials to use to
+                      connect to Elastic's Elasticsearch Service running on Elastic
+                      Cloud.
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                default: ""
+                                description: |-
+                                  Name of the referent.
+                                  This field is effectively required, but due to backwards compatibility is
+                                  allowed to be empty. Instances of this type with an empty value here are
+                                  almost certainly wrong.
+                                  TODO: Add other useful fields. apiVersion, kind, uid?
+                                  More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
                   cloudID:
                     description: If you are using Elastic's Elasticsearch Service
                       you can specify the cloud_id of the cluster running.

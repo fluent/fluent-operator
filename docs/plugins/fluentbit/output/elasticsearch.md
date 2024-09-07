@@ -12,12 +12,14 @@ Elasticsearch is the es output plugin, allows to ingest your records into an Ela
 | bufferSize | Specify the buffer size used to read the response from the Elasticsearch HTTP service. This option is useful for debugging purposes where is required to read full responses, note that response size grows depending of the number of records inserted. To set an unlimited amount of memory set this value to False, otherwise the value must be according to the Unit Size specification. | string |
 | pipeline | Newer versions of Elasticsearch allows setting up filters called pipelines. This option allows defining which pipeline the database should use. For performance reasons is strongly suggested parsing and filtering on Fluent Bit side, avoid pipelines. | string |
 | awsAuth | Enable AWS Sigv4 Authentication for Amazon ElasticSearch Service. | string |
+| awsAuthSecret | AWSAuthSecret Enable AWS Sigv4 Authentication for Amazon ElasticSearch Service. | *[plugins.Secret](../secret.md) |
 | awsRegion | Specify the AWS region for Amazon ElasticSearch Service. | string |
 | awsSTSEndpoint | Specify the custom sts endpoint to be used with STS API for Amazon ElasticSearch Service. | string |
 | awsRoleARN | AWS IAM Role to assume to put records to your Amazon ES cluster. | string |
 | awsExternalID | External ID for the AWS IAM Role specified with aws_role_arn. | string |
 | cloudID | If you are using Elastic's Elasticsearch Service you can specify the cloud_id of the cluster running. | string |
 | cloudAuth | Specify the credentials to use to connect to Elastic's Elasticsearch Service running on Elastic Cloud. | string |
+| cloudAuthSecret | CloudAuthSecret Specify the credentials to use to connect to Elastic's Elasticsearch Service running on Elastic Cloud. | *[plugins.Secret](../secret.md) |
 | httpUser | Optional username credential for Elastic X-Pack access | *[plugins.Secret](../secret.md) |
 | httpPassword | Password for user defined in HTTP_User | *[plugins.Secret](../secret.md) |
 | index | Index name | string |
