@@ -154,12 +154,26 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			if err != nil {
 				return ctrl.Result{}, err
 			}
+
 			var ns string
 			if cfg.Spec.Namespace != nil {
 				ns = fmt.Sprintf(*cfg.Spec.Namespace)
 			} else {
 				ns = os.Getenv("NAMESPACE")
 			}
+			cl := plugins.NewConfigMapLoader(r.Client, ns)
+			// load scripts for namespaced filters
+			nsScripts, err := cfg.RenderNamespacedLuaScript(cl, nsFilterLists)
+			if err != nil {
+				return ctrl.Result{}, err
+			}
+			// load scripts for cluster filters
+			scripts, err := cfg.RenderLuaScript(cl, filters, ns)
+			if err != nil {
+				return ctrl.Result{}, err
+			}
+			scripts = append(scripts, nsScripts...)
+
 			// Inject config data into Secret
 			sl := plugins.NewSecretLoader(r.Client, ns)
 			mainAppCfg, err := cfg.RenderMainConfigWithTargetFormat(
@@ -175,12 +189,6 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			multilineParserCfg, err := cfg.RenderMultilineParserConfig(
 				sl, multilineParsers, nsMultilineParserLists, nsClusterMultilineParserLists,
 			)
-			if err != nil {
-				return ctrl.Result{}, err
-			}
-
-			cl := plugins.NewConfigMapLoader(r.Client, ns)
-			scripts, err := cfg.RenderLuaScript(cl, filters, ns)
 			if err != nil {
 				return ctrl.Result{}, err
 			}

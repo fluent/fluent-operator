@@ -1,6 +1,8 @@
 package filter
 
 import (
+	"crypto/md5"
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -92,4 +94,8 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 
 	return kvs, nil
+}
+
+func (l *Lua) MakeNamespaced(ns string) {
+	l.Script.Key = fmt.Sprintf("%x-%s", md5.Sum([]byte(ns)), l.Script.Key)
 }
