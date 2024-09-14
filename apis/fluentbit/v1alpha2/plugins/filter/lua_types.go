@@ -97,5 +97,5 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 }
 
 func (l *Lua) MakeNamespaced(ns string) {
-	l.Script.Key = fmt.Sprintf("%s-%x", l.Script.Key, md5.Sum([]byte(ns)))
+	l.Script.Key = fmt.Sprintf("%x-%s", md5.Sum([]byte(ns)), l.Script.Key)
 }
