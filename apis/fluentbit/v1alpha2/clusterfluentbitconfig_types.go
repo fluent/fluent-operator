@@ -18,6 +18,7 @@ package v1alpha2
 
 import (
 	"bytes"
+	"crypto/md5"
 	"fmt"
 
 	"sort"
@@ -535,5 +536,26 @@ func (cfg ClusterFluentBitConfig) RenderLuaScript(
 
 	sort.Sort(ByName(scripts))
 
+	return scripts, nil
+}
+
+func (cfg ClusterFluentBitConfig) RenderNamespacedLuaScript(
+	cl plugins.ConfigMapLoader, nsfiltersLists []FilterList) ([]Script, error) {
+	scripts := make([]Script, 0)
+	for _, nsfilters := range nsfiltersLists {
+		for _, f := range nsfilters.Items {
+			for _, p := range f.Spec.FilterItems {
+				if p.Lua != nil && p.Lua.Script.Key != "" {
+					script, err := cl.LoadConfigMap(p.Lua.Script, f.ObjectMeta.Namespace)
+					if err != nil {
+						return nil, err
+					}
+					namespacedScriptName := fmt.Sprintf("%s-%x", p.Lua.Script.Key, md5.Sum([]byte(f.ObjectMeta.Namespace)))
+					scripts = append(scripts, Script{Name: namespacedScriptName, Content: script})
+				}
+			}
+		}
+	}
+	sort.Sort(ByName(scripts))
 	return scripts, nil
 }
