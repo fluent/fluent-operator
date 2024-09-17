@@ -99,6 +99,8 @@ type Tail struct {
 	// Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached.
 	// +kubebuilder:validation:Enum:=on;off
 	PauseOnChunksOverlimit string `json:"pauseOnChunksOverlimit,omitempty"`
+	//Skips empty lines in the log file from any further processing or output.
+	SkipEmptyLines *bool `json:"skipEmptyLines,omitempty"`
 }
 
 func (_ *Tail) Name() string {
@@ -190,6 +192,9 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if t.PauseOnChunksOverlimit != "" {
 		kvs.Insert("storage.pause_on_chunks_overlimit", t.PauseOnChunksOverlimit)
+	}
+	if t.SkipEmptyLines != nil {
+		kvs.Insert("Skip_Empty_Lines", fmt.Sprint(*t.SkipEmptyLines))
 	}
 	return kvs, nil
 }

@@ -33,3 +33,4 @@ The Tail input plugin allows to monitor one or several text files. <br /> It has
 | multilineParser | This will help to reassembly multiline messages originally split by Docker or CRI Specify one or Multiline Parser definition to apply to the content. | string |
 | storageType | Specify the buffering mechanism to use. It can be memory or filesystem | string |
 | pauseOnChunksOverlimit | Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached. | string |
+| skipEmptyLines | Skips empty lines in the log file from any further processing or output. | *bool |
