@@ -146,6 +146,10 @@ fluentbit:
     - operator: Exists
   # Priority Class applied to Fluent Bit pods. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
   priorityClassName: ""
+  # custom command.
+  command: []
+  # custom command line arguments.
+  args: []
   # Environment variables that can be passed to fluentbit pods
   envVars: []
   #  - name: FOO
