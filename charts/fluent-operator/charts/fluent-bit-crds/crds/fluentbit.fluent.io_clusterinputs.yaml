@@ -809,6 +809,10 @@ spec:
                       a file once is rotated in case some pending data is flushed.
                     format: int64
                     type: integer
+                  skipEmptyLines:
+                    description: Skips empty lines in the log file from any further
+                      processing or output.
+                    type: boolean
                   skipLongLines:
                     description: |-
                       When a monitored file reach it buffer capacity due to a very long line (Buffer_Max_Size),
