@@ -1,5 +1,7 @@
-## 3.2.0 / 2024-09-14
+## 3.2.0 / 2024-09-21
 ### Features
+- Expose args and command attributes for FluentBit CRD (#1350) @reegnz
+- Add option to disable operator resources in Helm chart (#1348) @jiuxia211
 - Support lua filter in namespaced CRD (#1342) @cw-Guo
 - Add cloudAuthSecret & awsAuthSecret (#1338) @cw-Guo
 - Add exec wasi input plugin (#1326) @jiuxia211
