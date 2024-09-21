@@ -1,3 +1,22 @@
+## 3.2.0 / 2024-09-21
+### Features
+- Expose args and command attributes for FluentBit CRD (#1350) @reegnz
+- Add option to disable operator resources in Helm chart (#1348) @jiuxia211
+- Support lua filter in namespaced CRD (#1342) @cw-Guo
+- Add cloudAuthSecret & awsAuthSecret (#1338) @cw-Guo
+- Add exec wasi input plugin (#1326) @jiuxia211
+- Add wasm filter piugin (#1325) @jiuxia211
+- Expose lua filter type_array_key parameter (#1323) @reegnz
+- Support storage.total_limit_size in syslog plugin (#1318) @jk-mob
+- Expose fluentbit init-container values in helm chart (#1320) @RajatPorwal5
+- Add logs_body_key_attributes option for OpenTelemetry output plugin (#1322) @LKummer
+- Add log to metrics plugin (#1305) @Athishpranav200
+### ENHANCEMENT
+- Update fluentbit to 3.1.7 (#1329) @jiuxia211
+### BUGFIX
+- Fix assignment to entry in nil map when --watch-namespaces flag is provided (#1334) @alexandrevilain
+- Fix annotations too long issue (#1309) @cw-Guo
+
 ## 3.1.0 / 2024-08-14
 ### Features
 - Render ConfigMap only if key is not empty string (#1299) @dex4er
