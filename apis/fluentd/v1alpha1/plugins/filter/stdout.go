@@ -1,6 +1,6 @@
 package filter
 
-import "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
+import "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/common"
 
 // Stdout defines the parameters for filter_stdout plugin
 type Stdout struct {

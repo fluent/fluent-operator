@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 )
 
 type PluginStore struct {

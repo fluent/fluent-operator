@@ -18,11 +18,11 @@ limitations under the License.
 package fake
 
 import (
-	clientset "github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned"
-	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned/typed/fluentbit/v1alpha2"
-	fakefluentbitv1alpha2 "github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned/typed/fluentbit/v1alpha2/fake"
-	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned/typed/fluentd/v1alpha1"
-	fakefluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned/typed/fluentd/v1alpha1/fake"
+	clientset "github.com/fluent/fluent-operator/v3/apis/generated/clientset/versioned"
+	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v3/apis/generated/clientset/versioned/typed/fluentbit/v1alpha2"
+	fakefluentbitv1alpha2 "github.com/fluent/fluent-operator/v3/apis/generated/clientset/versioned/typed/fluentbit/v1alpha2/fake"
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/generated/clientset/versioned/typed/fluentd/v1alpha1"
+	fakefluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/generated/clientset/versioned/typed/fluentd/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"

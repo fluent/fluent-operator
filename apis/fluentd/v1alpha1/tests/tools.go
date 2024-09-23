@@ -7,11 +7,11 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
-	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/filter"
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/input"
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/output"
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/common"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/filter"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/input"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/output"
 	"sigs.k8s.io/yaml"
 )
 

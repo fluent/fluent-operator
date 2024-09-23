@@ -20,8 +20,8 @@ package v1alpha1
 import (
 	"net/http"
 
-	v1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
-	"github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned/scheme"
+	v1alpha1 "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1"
+	"github.com/fluent/fluent-operator/v3/apis/generated/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 

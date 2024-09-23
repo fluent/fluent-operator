@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	"sigs.k8s.io/yaml"
 )
 

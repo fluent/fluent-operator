@@ -18,7 +18,7 @@ limitations under the License.
 package fake
 
 import (
-	v1alpha2 "github.com/fluent/fluent-operator/v2/apis/generated/clientset/versioned/typed/fluentbit/v1alpha2"
+	v1alpha2 "github.com/fluent/fluent-operator/v3/apis/generated/clientset/versioned/typed/fluentbit/v1alpha2"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )

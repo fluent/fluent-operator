@@ -1,10 +1,11 @@
 package output
 
 import (
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/onsi/gomega"
 	"testing"
+
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/onsi/gomega"
 )
 
 func TestOutput_Kinesis_Params(t *testing.T) {

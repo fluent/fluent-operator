@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 	v1 "k8s.io/api/core/v1"
 )
 

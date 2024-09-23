@@ -2,17 +2,18 @@ package v1alpha2
 
 import (
 	"fmt"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/multilineparser"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/parser"
 	"testing"
+
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/multilineparser"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/parser"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/custom"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/filter"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/input"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/output"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/custom"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/filter"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/input"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/output"
 	. "github.com/onsi/gomega"
 )
 

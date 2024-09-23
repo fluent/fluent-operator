@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	fluentdv1alpha1 "github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1"
-	"github.com/fluent/fluent-operator/v2/pkg/operator"
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1"
+	"github.com/fluent/fluent-operator/v3/pkg/operator"
 )
 
 // FluentdReconciler reconciles a Fluentd object
