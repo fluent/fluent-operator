@@ -5,7 +5,7 @@ metadata:
   labels:
     app: fluent-bit
 spec:
-  image: ghcr.io/fluent/fluent-operator/fluent-bit:3.0.7
+  image: ghcr.io/fluent/fluent-operator/fluent-bit:3.1.8
   imagePullPolicy: IfNotPresent
   positionDB:
     hostPath:
