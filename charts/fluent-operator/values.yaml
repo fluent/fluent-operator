@@ -401,7 +401,7 @@ fluentd:
   port: 24224
   image:
     repository: "ghcr.io/fluent/fluent-operator/fluentd"
-    tag: "v1.17.0"
+    tag: "v1.17.0-4"
   # Numbers of the Fluentd instance
   # Applicable when the mode is "collector", and will be ignored when the mode is "agent"
   replicas: 1

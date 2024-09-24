@@ -11,7 +11,7 @@ spec:
         bind: 0.0.0.0
         port: 9880
   replicas: 1
-  image: kubesphere/fluentd:v1.14.4
+  image: ghcr.io/fluent/fluent-operator/fluentd:v1.17.0-4
   fluentdCfgSelector: 
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
