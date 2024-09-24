@@ -1,11 +1,12 @@
 package v1alpha2
 
 import (
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins/multilineparser"
+	"testing"
+
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/multilineparser"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
 )
 
 var clusterMultilineParserExpected = `[MULTILINE_PARSER]

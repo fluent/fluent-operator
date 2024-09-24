@@ -21,9 +21,9 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/filter"
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/input"
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/output"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/filter"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/input"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/output"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"

@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/fluent/fluent-operator/v2/pkg/utils"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 )
 
 type kvTransformFunc func(string, string) (string, string)

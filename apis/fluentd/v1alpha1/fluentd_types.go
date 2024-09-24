@@ -19,7 +19,7 @@ package v1alpha1
 import (
 	"slices"
 
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/input"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/input"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

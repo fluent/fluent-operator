@@ -3,8 +3,8 @@ package filter
 import (
 	"fmt"
 
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/params"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/params"
 )
 
 // Grep defines various parameters for the grep plugin

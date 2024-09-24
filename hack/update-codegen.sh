@@ -28,7 +28,7 @@ echo ">> Temporary output directory ${TEMP_DIR}"
 # Ensure we can execute.
 chmod +x ${CODEGEN_PKG}/kube_codegen.sh 
 
-PACKAGE_PATH_BASE="github.com/fluent/fluent-operator/v2"
+PACKAGE_PATH_BASE="github.com/fluent/fluent-operator/v3"
 
 mkdir -p "${TEMP_DIR}/${PACKAGE_PATH_BASE}/apis/fluentbit" \
          "${TEMP_DIR}/${PACKAGE_PATH_BASE}/apis/fluentd" \

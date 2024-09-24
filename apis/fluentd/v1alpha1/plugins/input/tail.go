@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins"
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/common"
-	"github.com/fluent/fluent-operator/v2/apis/fluentd/v1alpha1/plugins/params"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/common"
+	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins/params"
 )
 
 // The in_tail Input plugin allows Fluentd to read events from the tail of text files. Its behavior is similar to the tail -F command.

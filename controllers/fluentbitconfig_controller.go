@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
@@ -38,7 +38,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 
-	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v2/apis/fluentbit/v1alpha2"
+	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2"
 )
 
 // FluentBitConfigReconciler reconciles a FluentBitConfig object
