@@ -87,7 +87,7 @@ Fluent Bit will be deployed as a DaemonSet while Fluentd will be deployed as a S
 
 The following CRDs are defined for Fluent Bit:
 
-- **`FluentBit`**: Defines the Fluent Bit DaemonSet and its configs. A custom Fluent Bit image `kubesphere/fluent-bit` is required to work with FluentBit Operator for dynamic configuration reloading.
+- **`FluentBit`**: Defines the Fluent Bit DaemonSet and its configs. A custom Fluent Bit image `ghcr.io/fluent/fluent-operator/fluent-bit` is required to work with FluentBit Operator for dynamic configuration reloading.
 - **`ClusterFluentBitConfig`**: Select cluster-level input/filter/output plugins and generates the final config into a Secret.
 - **`FluentBitConfig`**: Selects namespace-level filter/output/parser and cluster-level parser plugins and generates final config into a Secret.
 - **`ClusterInput`**: Defines cluster-level input config sections.
