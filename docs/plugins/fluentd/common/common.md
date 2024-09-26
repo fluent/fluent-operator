@@ -44,7 +44,7 @@ Security defines the common parameters for the security plugin
 | sharedKey | The shared key for authentication. | *string |
 | userAuth | If true, user-based authentication is used. | *string |
 | allowAnonymousSource | Allows the anonymous source. <client> sections are required, if disabled. | *string |
-| user | Defines user section directly. | *User |
+| user | Defines user section directly. | *[User](#user) |
 # User
 
 User defines the common parameters for the user plugin
@@ -127,7 +127,7 @@ ServiceDiscovery defines various parameters for the ServiceDiscovery plugin. Flu
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| server | The server section of this plugin | *Server |
+| server | The server section of this plugin | *[Server](#server) |
 # FileServiceDiscovery
 
 FileServiceDiscovery defines the file type for the ServiceDiscovery plugin

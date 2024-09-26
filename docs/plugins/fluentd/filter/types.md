@@ -14,8 +14,8 @@ Filter defines all available filter plugins and their parameters.
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| grep | The filter_grep filter plugin | *Grep |
-| recordTransformer | The filter_record_transformer filter plugin | *RecordTransformer |
-| parser | The filter_parser filter plugin | *Parser |
-| stdout | The filter_stdout filter plugin | *Stdout |
-| customPlugin | Custom plugin type | *custom.CustomPlugin |
+| grep | The filter_grep filter plugin | *[Grep](#grep) |
+| recordTransformer | The filter_record_transformer filter plugin | *[RecordTransformer](#recordtransformer) |
+| parser | The filter_parser filter plugin | *[Parser](#parser) |
+| stdout | The filter_stdout filter plugin | *[Stdout](#stdout) |
+| customPlugin | Custom plugin type | *[custom.CustomPlugin](plugins/fluentd/custom/custom_plugin.md) |

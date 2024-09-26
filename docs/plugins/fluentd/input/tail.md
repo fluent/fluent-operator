@@ -30,7 +30,7 @@ The in_tail Input plugin allows Fluentd to read events from the tail of text fil
 | openOnEveryUpdate | Opens and closes the file on every update instead of leaving it open until it gets rotated. | *bool |
 | emitUnmatchedLines | Emits unmatched lines when <parse> format is not matched for incoming logs. | *bool |
 | ignoreRepeatedPermissionError | If you have to exclude the non-permission files from the watch list, set this parameter to true. It suppresses the repeated permission error logs. | *bool |
-| group | The in_tail plugin can assign each log file to a group, based on user defined rules. The limit parameter controls the total number of lines collected for a group within a rate_period time interval. | *Group |
+| group | The in_tail plugin can assign each log file to a group, based on user defined rules. The limit parameter controls the total number of lines collected for a group within a rate_period time interval. | *[Group](#group) |
 # Group
 
 
@@ -40,7 +40,7 @@ The in_tail Input plugin allows Fluentd to read events from the tail of text fil
 | ----- | ----------- | ------ |
 | pattern | Specifies the regular expression for extracting metadata (namespace, podname) from log file path. Default value of the pattern regexp extracts information about namespace, podname, docker_id, container of the log (K8s specific). | string |
 | ratePeriod | Time period in which the group line limit is applied. in_tail resets the counter after every rate_period interval. | *int32 |
-| rule | Grouping rules for log files. | *Rule |
+| rule | Grouping rules for log files. | *[Rule](#rule) |
 # Rule
 
 

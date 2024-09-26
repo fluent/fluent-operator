@@ -5,10 +5,10 @@ Grep defines various parameters for the grep plugin
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| regexp |  | []*Regexp |
-| exclude |  | []*Exclude |
-| and |  | []*And |
-| or |  | []*Or |
+| regexp |  | []*[Regexp](#regexp) |
+| exclude |  | []*[Exclude](#exclude) |
+| and |  | []*[And](#and) |
+| or |  | []*[Or](#or) |
 # Regexp
 
 Regexp defines the parameters for the regexp plugin
@@ -34,8 +34,8 @@ And defines the parameters for the \"and\" plugin
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| regexp |  | *Regexp |
-| exclude |  | *Exclude |
+| regexp |  | *[Regexp](#regexp) |
+| exclude |  | *[Exclude](#exclude) |
 # Or
 
 Or defines the parameters for the \"or\" plugin
@@ -43,5 +43,5 @@ Or defines the parameters for the \"or\" plugin
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| regexp |  | *Regexp |
-| exclude |  | *Exclude |
+| regexp |  | *[Regexp](#regexp) |
+| exclude |  | *[Exclude](#exclude) |
