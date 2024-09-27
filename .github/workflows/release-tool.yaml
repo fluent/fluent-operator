@@ -1,0 +1,90 @@
+name: Create Release Pull Request
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'New version number (e.g., v2.2.0)'
+        required: true
+
+jobs:
+  create-target-release-branch:
+    name: create target release branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Create release branch
+        run: |
+          git checkout -b release-${{ github.event.inputs.version }}
+          git push --set-upstream origin release-${{ github.event.inputs.version }}
+  create-work-release-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Create release branch
+        run: |
+          git checkout -b release-${{ github.event.inputs.version }}-work
+          git push --set-upstream origin release-${{ github.event.inputs.version }}-work
+
+  create-release-pr:
+    name: create release pr
+    runs-on: ubuntu-latest
+    needs: [create-target-release-branch, create-work-release-branch]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: release-${{ github.event.inputs.version }}-work
+
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Update version in manifests
+        run: |
+          sed -i 's/fluent-operator:latest/fluent-operator:${{ github.event.inputs.version }}/' manifests/setup/fluent-operator-deployment.yaml
+          sed -i 's/fluent-operator:latest/fluent-operator:${{ github.event.inputs.version }}/' manifests/setup/setup.yaml
+
+      - name: Update version in values.yaml
+        run: |
+          sed -i '/repository: "kubesphere\/fluent-operator"/!b;n;s/tag: "latest"/tag: "${{ github.event.inputs.version }}"/' charts/fluent-operator/values.yaml
+
+      - name: Update version
+        run: |
+          echo ${{ github.event.inputs.version }} > VERSION
+
+      - name: Commit & Push changes
+        run: |
+          git add manifests/setup/fluent-operator-deployment.yaml manifests/setup/setup.yaml charts/fluent-operator/values.yaml VERSION
+          git commit -m "Bump version to ${{ github.event.inputs.version }}"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          title: "Release ${{ github.event.inputs.version }}"
+          body: |
+            This PR updates the version to ${{ github.event.inputs.version }} in the following files:
+            - manifests/setup/fluent-operator-deployment.yaml
+            - manifests/setup/setup.yaml
+            - charts/fluent-operator/values.yaml
+            - VERSION
+            
+            Please review and merge to release the new version.
+          branch: release-${{ github.event.inputs.version }}-work
+          base: release-${{ github.event.inputs.version }}
