@@ -14,13 +14,10 @@ import (
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/influxdb**
 type InfluxDB struct {
 	// IP address or hostname of the target InfluxDB service.
-	// +kubebuilder:validation:Format="hostname"
-	// +kubebuilder:validation:Format="ipv4"
-	// +kubebuilder:validation:Format="ipv6"
 	Host string `json:"host"`
 	// TCP port of the target InfluxDB service.
-	//  +kubebuilder:validation:Maximum=65536
-	//  +kubebuilder:validation:Minimum=0
+	//  +kubebuilder:validation:Maximum=65535
+	//  +kubebuilder:validation:Minimum=1
 	Port *int32 `json:"port,omitempty"`
 	// InfluxDB database name where records will be inserted.
 	Database string `json:"database,omitempty"`
