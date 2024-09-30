@@ -5,8 +5,8 @@ The Modify Filter plugin allows you to change records using rules and conditions
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| conditions | All conditions have to be true for the rules to be applied. | []Condition |
-| rules | Rules are applied in the order they appear, with each rule operating on the result of the previous rule. | []Rule |
+| conditions | All conditions have to be true for the rules to be applied. | [][Condition](#condition) |
+| rules | Rules are applied in the order they appear, with each rule operating on the result of the previous rule. | [][Rule](#rule) |
 # Condition
 
 The plugin supports the following conditions

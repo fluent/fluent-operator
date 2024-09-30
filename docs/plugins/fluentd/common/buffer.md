@@ -65,6 +65,6 @@ BufferSection defines the common parameters for buffer sections
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| buffer | buffer section | *Buffer |
-| format | format section | *Format |
-| inject | inject section | *Inject |
+| buffer | buffer section | *[Buffer](#buffer) |
+| format | format section | *[Format](#format) |
+| inject | inject section | *[Inject](#inject) |

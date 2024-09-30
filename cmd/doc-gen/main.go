@@ -10,8 +10,10 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"sort"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -27,18 +29,16 @@ This Document documents the types introduced by the %s Operator.
 
 var (
 	links = map[string]string{
-		"metav1.ObjectMeta":        "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#objectmeta-v1-meta",
-		"metav1.ListMeta":          "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#listmeta-v1-meta",
-		"metav1.LabelSelector":     "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#labelselector-v1-meta",
-		"corev1.SecretKeySelector": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#secretkeyselector-v1-core",
-		"corev1.Toleration":        "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#toleration-v1-core",
-		"corev1.VolumeSource":      "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#volume-v1-core",
-		"plugins.Secret":           "../secret.md",
-		"Secret":                   "secret.md",
-		"plugins.TLS":              "../tls.md",
+		"plugins.Secret": "../secret.md",
+		"Secret":         "secret.md",
+		"plugins.TLS":    "../tls.md",
 	}
 
-	selfLinks = map[string]string{}
+	kubernetes_link_templates = map[string]string{
+		"corev1.": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#%s-v1-core",
+		"metav1.": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#%s-v1-meta",
+		"rbacv1.": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#%s-v1-rbac-authorization-k8s-io",
+	}
 
 	unincludedKeyWords = []string{
 		"deepcopy.go",
@@ -55,7 +55,7 @@ type DocumentsLocation struct {
 
 // Inspired by coreos/prometheus-operator: https://github.com/coreos/prometheus-operator
 func main() {
-	var pluginsLocations = []DocumentsLocation{
+	pluginsLocations := []DocumentsLocation{
 		{
 			path: fluentbitPluginPath,
 			name: "fluentbit",
@@ -67,7 +67,7 @@ func main() {
 	}
 	plugins(pluginsLocations)
 
-	var crdsLocations = []DocumentsLocation{
+	crdsLocations := []DocumentsLocation{
 		{
 			path: fluentbitCrdsPath,
 			name: "fluentbit",
@@ -105,7 +105,7 @@ func plugins(docsLocations []DocumentsLocation) {
 		for _, src := range srcs {
 			var buffer bytes.Buffer
 
-			types := ParseDocumentationFrom(src, true)
+			types := ParseDocumentationFrom(src, dl.name, true)
 
 			for _, t := range types {
 				strukt := t[0]
@@ -164,7 +164,7 @@ func crds(docsLocations []DocumentsLocation) {
 		var buffer bytes.Buffer
 		var types []KubeTypes
 		for _, src := range srcs {
-			types = append(types, ParseDocumentationFrom(src, false)...)
+			types = append(types, ParseDocumentationFrom(src, dl.name, false)...)
 		}
 
 		sort.Slice(types, func(i, j int) bool {
@@ -228,7 +228,7 @@ type Pair struct {
 // KubeTypes is an array to represent all available types in a parsed file. [0] is for the type itself
 type KubeTypes []Pair
 
-func ParseDocumentationFrom(src string, shouldSort bool) []KubeTypes {
+func ParseDocumentationFrom(src string, dl_name string, shouldSort bool) []KubeTypes {
 	var docForTypes []KubeTypes
 
 	pkg := astFrom(src)
@@ -254,7 +254,7 @@ func ParseDocumentationFrom(src string, shouldSort bool) []KubeTypes {
 		ks = append(ks, Pair{kubType.Name, fmtRawDoc(kubType.Doc), ""})
 
 		for _, field := range structType.Fields.List {
-			typeString := fieldType(field.Type)
+			typeString := fieldType(field.Type, dl_name)
 			if n := fieldName(field); n != "-" {
 				fieldDoc := fmtRawDoc(field.Doc.Text())
 				ks = append(ks, Pair{n, fieldDoc, typeString})
@@ -314,23 +314,63 @@ func fmtRawDoc(rawDoc string) string {
 	return postDoc
 }
 
-func toLink(typeName string) string {
-	if strings.Contains(typeName, "input.") ||
-		strings.Contains(typeName, "output.") ||
-		strings.Contains(typeName, "filter.") ||
-		strings.Contains(typeName, "parser.") {
-		// Eg. *output.Elasticsearch => ../plugins/output/elasticsearch.md
-		link := fmt.Sprintf("plugins/%s.md", strings.ReplaceAll(strings.ToLower(typeName), ".", "/"))
-		return wrapInLink(typeName, link)
+func tryKubernetesLink(typeName string) (string, bool) {
+	for prefix, link_template := range kubernetes_link_templates {
+		if strings.HasPrefix(typeName, prefix) {
+			typeName = strings.ToLower(strings.TrimPrefix(typeName, prefix))
+			return fmt.Sprintf(link_template, typeName), true
+		}
+	}
+	return "", false
+}
+
+var (
+	matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+	matchAllCap   = regexp.MustCompile("([a-z0-9])([A-Z])")
+)
+
+func ToSnakeCase(str string) string {
+	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+	return strings.ToLower(snake)
+}
+
+func toLink(typeName string, documentLocationName string) string {
+	primitiveTypes := map[string]bool{
+		"string":            true,
+		"bool":              true,
+		"int32":             true,
+		"int64":             true,
+		"map[string]string": true,
 	}
 
-	selfLink, hasSelfLink := selfLinks[typeName]
-	if hasSelfLink {
-		return wrapInLink(typeName, selfLink)
+	if _, ok := primitiveTypes[typeName]; ok {
+		return typeName
 	}
 
 	link, hasLink := links[typeName]
 	if hasLink {
+		return wrapInLink(typeName, link)
+	}
+
+	if strings.Contains(typeName, "input.") ||
+		strings.Contains(typeName, "output.") ||
+		strings.Contains(typeName, "filter.") ||
+		strings.Contains(typeName, "parser.") ||
+		strings.Contains(typeName, "custom.") {
+		// Eg. *output.Elasticsearch => ../plugins/output/elasticsearch.md
+		pluginType, pluginName, _ := strings.Cut(typeName, ".")
+		link := fmt.Sprintf("plugins/%s/%s/%s.md", documentLocationName, pluginType, ToSnakeCase(pluginName))
+		return wrapInLink(typeName, link)
+	}
+
+	k8sLink, hasK8sLink := tryKubernetesLink(typeName)
+	if hasK8sLink {
+		return wrapInLink(typeName, k8sLink)
+	}
+
+	if !strings.Contains(typeName, ".") && len(typeName) > 0 && unicode.IsUpper([]rune(typeName)[0]) {
+		link := fmt.Sprintf("#%s", strings.ToLower(typeName))
 		return wrapInLink(typeName, link)
 	}
 
@@ -362,22 +402,22 @@ func fieldName(field *ast.Field) string {
 	return jsonTag
 }
 
-func fieldType(typ ast.Expr) string {
+func fieldType(typ ast.Expr, dl_name string) string {
 	switch typ.(type) {
 	case *ast.Ident:
-		return toLink(typ.(*ast.Ident).Name)
+		return toLink(typ.(*ast.Ident).Name, dl_name)
 	case *ast.StarExpr:
-		return "*" + fieldType(typ.(*ast.StarExpr).X)
+		return "*" + fieldType(typ.(*ast.StarExpr).X, dl_name)
 	case *ast.SelectorExpr:
 		e := typ.(*ast.SelectorExpr)
 		pkg := e.X.(*ast.Ident)
 		t := e.Sel
-		return toLink(pkg.Name + "." + t.Name)
+		return toLink(pkg.Name+"."+t.Name, dl_name)
 	case *ast.ArrayType:
-		return "[]" + toLink(fieldType(typ.(*ast.ArrayType).Elt))
+		return "[]" + fieldType(typ.(*ast.ArrayType).Elt, dl_name)
 	case *ast.MapType:
 		mapType := typ.(*ast.MapType)
-		return "map[" + toLink(fieldType(mapType.Key)) + "]" + toLink(fieldType(mapType.Value))
+		return "map[" + toLink(fieldType(mapType.Key, dl_name), dl_name) + "]" + toLink(fieldType(mapType.Value, dl_name), dl_name)
 	default:
 		return ""
 	}

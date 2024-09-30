@@ -14,7 +14,7 @@ RecordTransformer defines the parameters for filter_record_transformer plugin
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| records |  | []*Record |
+| records |  | []*[Record](#record) |
 | enableRuby | When set to true, the full Ruby syntax is enabled in the ${...} expression. The default value is false. i.e: jsonized_record ${record.to_json} | *bool |
 | autoTypecast | Automatically casts the field types. Default is false. This option is effective only for field values comprised of a single placeholder. | *bool |
 | renewRecord | By default, the record transformer filter mutates the incoming data. However, if this parameter is set to true, it modifies a new empty hash instead. | *bool |

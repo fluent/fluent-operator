@@ -26,7 +26,7 @@ Parse defines various parameters for the parse plugin
 | grokFailureKey | The key has grok failure reason. | *string |
 | multiLineStartRegexp | The regexp to match beginning of multiline. This is only for \"multiline_grok\". | *string |
 | grokPatternSeries | Specify grok pattern series set. | *string |
-| grok | Grok Sections | []Grok |
+| grok | Grok Sections | [][Grok](#grok) |
 # Grok
 
 

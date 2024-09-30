@@ -15,9 +15,9 @@ Input defines all available input plugins and their parameters
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| forward | in_forward plugin | *Forward |
-| http | in_http plugin | *Http |
-| tail | in_tail plugin | *Tail |
-| sample | in_sample plugin | *Sample |
-| customPlugin | Custom plugin type | *custom.CustomPlugin |
-| monitorAgent | monitor_agent plugin | *MonitorAgent |
+| forward | in_forward plugin | *[Forward](#forward) |
+| http | in_http plugin | *[Http](#http) |
+| tail | in_tail plugin | *[Tail](#tail) |
+| sample | in_sample plugin | *[Sample](#sample) |
+| customPlugin | Custom plugin type | *[custom.CustomPlugin](plugins/fluentd/custom/custom_plugin.md) |
+| monitorAgent | monitor_agent plugin | *[MonitorAgent](#monitoragent) |
