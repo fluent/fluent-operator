@@ -18,6 +18,8 @@ type AzureLogAnalytics struct {
 	SharedKey *plugins.Secret `json:"sharedKey"`
 	// Name of the event type.
 	LogType string `json:"logType,omitempty"`
+	// Set a record key that will populate 'logtype'. If the key is found, it will have precedence
+	LogTypeKey string `json:"logTypeKey,omitempty"`
 	// Specify the name of the key where the timestamp is stored.
 	TimeKey string `json:"timeKey,omitempty"`
 	// If set, overrides the timeKey value with the `time-generated-field` HTTP header value.
@@ -48,6 +50,9 @@ func (o *AzureLogAnalytics) Params(sl plugins.SecretLoader) (*params.KVs, error)
 	}
 	if o.LogType != "" {
 		kvs.Insert("Log_Type", o.LogType)
+	}
+	if o.LogTypeKey != "" {
+		kvs.Insert("Log_Type_Key", o.LogTypeKey)
 	}
 	if o.TimeKey != "" {
 		kvs.Insert("Time_Key", o.TimeKey)
