@@ -143,8 +143,20 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 		expected := operator.MakeStatefulSet(*fd)
 
 		return func() error {
+			// Preserve the kubectl.kubernetes.io/restartedAt annotation
+			restartedAt := o.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"]
+
 			o.Labels = expected.Labels
 			o.Spec = expected.Spec
+
+			// Restore the kubectl.kubernetes.io/restartedAt annotation if it existed
+			if restartedAt != "" {
+				if o.Spec.Template.Annotations == nil {
+					o.Spec.Template.Annotations = make(map[string]string)
+				}
+				o.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = restartedAt
+			}
+
 			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
 				return err
 			}
@@ -153,8 +165,20 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 	case *appsv1.DaemonSet:
 		expected := operator.MakeFluentdDaemonSet(*fd)
 		return func() error {
+			// Preserve the kubectl.kubernetes.io/restartedAt annotation
+			restartedAt := o.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"]
+
 			o.Labels = expected.Labels
 			o.Spec = expected.Spec
+
+			// Restore the kubectl.kubernetes.io/restartedAt annotation if it existed
+			if restartedAt != "" {
+				if o.Spec.Template.Annotations == nil {
+					o.Spec.Template.Annotations = make(map[string]string)
+				}
+				o.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = restartedAt
+			}
+
 			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
 				return err
 			}

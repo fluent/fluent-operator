@@ -8,5 +8,6 @@ Azure Log Analytics is the Azure Log Analytics output plugin, allows you to inge
 | customerID | Customer ID or Workspace ID | *[plugins.Secret](../secret.md) |
 | sharedKey | Specify the primary or the secondary client authentication key | *[plugins.Secret](../secret.md) |
 | logType | Name of the event type. | string |
+| logTypeKey | Set a record key that will populate 'logtype'. If the key is found, it will have precedence | string |
 | timeKey | Specify the name of the key where the timestamp is stored. | string |
 | timeGenerated | If set, overrides the timeKey value with the `time-generated-field` HTTP header value. | *bool |
