@@ -119,7 +119,7 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	// Deploy Fluent Bit DaemonSet
 	logPath := r.getContainerLogPath(fb)
 	ds := operator.MakeDaemonSet(fb, logPath)
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, ds, r.mutate(ds, &fb)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, ds, r.mutate(ds, &fb)); err != nil { //
 		return ctrl.Result{}, err
 	}
 
@@ -152,9 +152,21 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 		expected := operator.MakeDaemonSet(*fb, logPath)
 
 		return func() error {
+			// Preserve the kubectl.kubernetes.io/restartedAt annotation
+			restartedAt := o.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"]
+
 			o.Labels = expected.Labels
 			o.Annotations = expected.Annotations
 			o.Spec = expected.Spec
+
+			// Restore the kubectl.kubernetes.io/restartedAt annotation if it existed
+			if restartedAt != "" {
+				if o.Spec.Template.Annotations == nil {
+					o.Spec.Template.Annotations = make(map[string]string)
+				}
+				o.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = restartedAt
+			}
+
 			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
 				return err
 			}
