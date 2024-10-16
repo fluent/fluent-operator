@@ -154,6 +154,8 @@ kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/mas
 
 > NOTE: For the helm based install, Helm v3.2.1 or higher is needed.
 
+To install or upgrade Fluent Operator using Helm:
+
 ```shell
 export FLUENT_OPERATOR_CONTAINER_RUNTIME="containerd" # or "cri-o", "docker" depending on the container runtime being used (see `values.yaml`)
 
