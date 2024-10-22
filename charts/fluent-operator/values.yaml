@@ -387,7 +387,10 @@ fluentbit:
   parsers:
     javaMultiline:
     # use in filter for parser generic springboot multiline log format
-      enable: false
+      enable:
+  #Using namespaceClusterFbCfg, deploy fluent-bit configmap and secret in this namespace.
+  #If it is not defined, it is in the namespace of the fluent-operator.
+  namespaceClusterFbCfg: ""
 
 fluentd:
   # Installs a sub chart carrying the CRDs for the fluentd controller. The sub chart is enabled by default.

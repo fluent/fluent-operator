@@ -7,6 +7,9 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
+  {{- if .Values.fluentbit.namespaceClusterFbCfg }}
+  namespace: {{ .Values.fluentbit.namespaceClusterFbCfg }}
+  {{- end }}
   service:
     parsersFiles:
       - /fluent-bit/etc/parsers.conf
