@@ -387,7 +387,7 @@ fluentbit:
   parsers:
     javaMultiline:
     # use in filter for parser generic springboot multiline log format
-      enable:
+      enable: false
   #Using namespaceClusterFbCfg, deploy fluent-bit configmap and secret in this namespace.
   #If it is not defined, it is in the namespace of the fluent-operator.
   namespaceClusterFbCfg: ""
