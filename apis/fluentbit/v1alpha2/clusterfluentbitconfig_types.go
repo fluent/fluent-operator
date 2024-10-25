@@ -20,7 +20,6 @@ import (
 	"bytes"
 	"crypto/md5"
 	"fmt"
-
 	"sort"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
