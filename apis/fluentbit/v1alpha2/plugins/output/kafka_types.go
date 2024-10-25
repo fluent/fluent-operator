@@ -9,6 +9,27 @@ import (
 
 // +kubebuilder:object:generate:=true
 
+type mapvalue struct {
+	StringVal string          `json:"format,omitempty"`
+	Secret    *plugins.Secret `json:"format,omitempty"`
+}
+
+// Implement the GetStringVal method to satisfy the SecretProvider interface
+func (m mapvalue) GetStringVal() string {
+	return m.StringVal
+}
+
+// mapvalue implicitly implements params.SecretProvider because SecretProvider is an empty interface
+var _ params.SecretProvider = mapvalue{}
+
+func convertMap(input map[string]mapvalue) map[string]params.SecretProvider {
+	result := make(map[string]params.SecretProvider)
+	for k, v := range input {
+		result[k] = v
+	}
+	return result
+}
+
 // Kafka output plugin allows to ingest your records into an Apache Kafka service. <br />
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/kafka**
 type Kafka struct {
@@ -35,8 +56,8 @@ type Kafka struct {
 	// then by default the first topic in the Topics list will indicate the topic to be used.
 	TopicKey string `json:"topicKey,omitempty"`
 	// {property} can be any librdkafka properties
-	Rdkafka map[string]string `json:"rdkafka,omitempty"`
 	//adds unknown topics (found in Topic_Key) to Topics. So in Topics only a default topic needs to be configured
+	Rdkafka map[string]mapvalue			 `json:"rdkafka,omitempty"`
 	DynamicTopic *bool `json:"dynamicTopic,omitempty"`
 	//Fluent Bit queues data into rdkafka library,
 	//if for some reason the underlying library cannot flush the records the queue might fills up blocking new addition of records.
@@ -84,8 +105,8 @@ func (k *Kafka) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("queue_full_retries", fmt.Sprint(*k.QueueFullRetries))
 	}
 
-	kvs.InsertStringMap(k.Rdkafka, func(k, v string) (string, string) {
-		return fmt.Sprintf("rdkafka.%s", k), v
+	kvs.InsertMapValMap(convertMap(k.Rdkafka), func(k, v string) (string, params.SecretProvider) {
+		return fmt.Sprintf("rdkafka.%s", k), mapvalue{StringVal: v}
 	})
 
 	return kvs, nil
