@@ -6,8 +6,8 @@ keywords:
   - fluent-bit
   - fluentd
   - operator
-version: 3.3.0
-appVersion: 3.3.0
+version: 3.2.1
+appVersion: 3.2.0
 icon: https://raw.githubusercontent.com/fluent/fluent-operator/master/docs/images/fluent-operator-icon.svg
 home: https://www.fluentd.org/
 sources:
