@@ -947,6 +947,10 @@ spec:
                   A regular expression to match against the tags of incoming records.
                   Use this option if you want to use the full regex syntax.
                 type: string
+              ordinal:
+                description: An ordinal to influence filter ordering
+                format: int32
+                type: integer
             type: object
         type: object
     served: true

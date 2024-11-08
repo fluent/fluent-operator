@@ -311,6 +311,7 @@ FilterSpec defines the desired state of ClusterFilter
 | matchRegex | A regular expression to match against the tags of incoming records. Use this option if you want to use the full regex syntax. | string |
 | logLevel |  | string |
 | filters | A set of filter plugins in order. | [][FilterItem](#filteritem) |
+| ordinal | An ordinal to influence filter ordering | int32 |
 
 [Back to TOC](#table-of-contents)
 # FluentBit

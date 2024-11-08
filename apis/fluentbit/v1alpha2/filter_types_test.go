@@ -13,18 +13,20 @@ func ptr[T any](v T) *T { return &v }
 func TestFilterList_Load(t *testing.T) {
 	testcases := []struct {
 		name     string
-		input    Filter
+		input    []Filter
 		expected string
 	}{
 		{
 			name: "a single filteritem",
-			input: Filter{
-				Spec: FilterSpec{
-					FilterItems: []FilterItem{
-						FilterItem{
-							Parser: &filter.Parser{
-								KeyName: "log",
-								Parser:  "first-parser",
+			input: []Filter{
+				{
+					Spec: FilterSpec{
+						FilterItems: []FilterItem{
+							{
+								Parser: &filter.Parser{
+									KeyName: "log",
+									Parser:  "first-parser",
+								},
 							},
 						},
 					},
@@ -38,16 +40,18 @@ func TestFilterList_Load(t *testing.T) {
 		},
 		{
 			name: "a single filteritem, with multiple plugins",
-			input: Filter{
-				Spec: FilterSpec{
-					FilterItems: []FilterItem{
-						FilterItem{
-							Kubernetes: &filter.Kubernetes{
-								KubeTagPrefix: "custom-tag",
-							},
-							Parser: &filter.Parser{
-								KeyName: "log",
-								Parser:  "first-parser",
+			input: []Filter{
+				{
+					Spec: FilterSpec{
+						FilterItems: []FilterItem{
+							{
+								Kubernetes: &filter.Kubernetes{
+									KubeTagPrefix: "custom-tag",
+								},
+								Parser: &filter.Parser{
+									KeyName: "log",
+									Parser:  "first-parser",
+								},
 							},
 						},
 					},
@@ -64,30 +68,32 @@ func TestFilterList_Load(t *testing.T) {
 		},
 		{
 			name: "multiple filteritems",
-			input: Filter{
-				Spec: FilterSpec{
-					FilterItems: []FilterItem{
-						FilterItem{
-							Kubernetes: &filter.Kubernetes{
-								KubeTagPrefix: "custom-tag",
+			input: []Filter{
+				{
+					Spec: FilterSpec{
+						FilterItems: []FilterItem{
+							{
+								Kubernetes: &filter.Kubernetes{
+									KubeTagPrefix: "custom-tag",
+								},
+								Parser: &filter.Parser{
+									KeyName: "log",
+									Parser:  "first-parser",
+								},
 							},
-							Parser: &filter.Parser{
-								KeyName: "log",
-								Parser:  "first-parser",
+							{
+								Parser: &filter.Parser{
+									KeyName:     "msg",
+									Parser:      "second-parser",
+									ReserveData: ptr(true),
+								},
 							},
-						},
-						FilterItem{
-							Parser: &filter.Parser{
-								KeyName:     "msg",
-								Parser:      "second-parser",
-								ReserveData: ptr(true),
-							},
-						},
-						FilterItem{
-							Parser: &filter.Parser{
-								KeyName:     "msg",
-								Parser:      "third-parser",
-								ReserveData: ptr(true),
+							{
+								Parser: &filter.Parser{
+									KeyName:     "msg",
+									Parser:      "third-parser",
+									ReserveData: ptr(true),
+								},
 							},
 						},
 					},
@@ -112,6 +118,60 @@ func TestFilterList_Load(t *testing.T) {
     Reserve_Data    true
 `,
 		},
+		{
+			name: "ordinal-based sorting",
+			input: []Filter{
+				{
+					Spec: FilterSpec{
+						Ordinal: 10,
+						FilterItems: []FilterItem{
+							{
+								Parser: &filter.Parser{
+									KeyName: "msg",
+									Parser:  "parser-two",
+								},
+							},
+						},
+					},
+				},
+				{
+					Spec: FilterSpec{
+						Ordinal: -10,
+						FilterItems: []FilterItem{
+							{
+								Kubernetes: &filter.Kubernetes{
+									KubeTagPrefix: "custom-tag",
+								},
+							},
+						},
+					},
+				},
+				{
+					Spec: FilterSpec{
+						FilterItems: []FilterItem{
+							{
+								Parser: &filter.Parser{
+									KeyName: "log",
+									Parser:  "parser-one",
+								},
+							},
+						},
+					},
+				},
+			},
+			expected: `[Filter]
+    Name    kubernetes
+    Kube_Tag_Prefix    d41d8cd98f00b204e9800998ecf8427e.custom-tag
+[Filter]
+    Name    parser
+    Key_Name    log
+    Parser    parser-one-d41d8cd98f00b204e9800998ecf8427e
+[Filter]
+    Name    parser
+    Key_Name    msg
+    Parser    parser-two-d41d8cd98f00b204e9800998ecf8427e
+`,
+		},
 	}
 
 	for _, tc := range testcases {
@@ -121,10 +181,8 @@ func TestFilterList_Load(t *testing.T) {
 			sl := plugins.NewSecretLoader(nil, "testnamespace")
 
 			fl := FilterList{
-				Items: make([]Filter, 1),
+				Items: tc.input,
 			}
-			fl.Items[0] = tc.input
-
 			renderedFilterList, err := fl.Load(sl)
 			g.Expect(err).NotTo(HaveOccurred())
 			g.Expect(renderedFilterList).To(Equal(tc.expected))
@@ -143,7 +201,7 @@ func TestFilterList_LoadAsYaml(t *testing.T) {
 			input: Filter{
 				Spec: FilterSpec{
 					FilterItems: []FilterItem{
-						FilterItem{
+						{
 							Parser: &filter.Parser{
 								KeyName: "log",
 								Parser:  "first-parser",
@@ -162,7 +220,7 @@ func TestFilterList_LoadAsYaml(t *testing.T) {
 			input: Filter{
 				Spec: FilterSpec{
 					FilterItems: []FilterItem{
-						FilterItem{
+						{
 							Kubernetes: &filter.Kubernetes{
 								KubeTagPrefix: "custom-tag",
 							},
@@ -186,7 +244,7 @@ func TestFilterList_LoadAsYaml(t *testing.T) {
 			input: Filter{
 				Spec: FilterSpec{
 					FilterItems: []FilterItem{
-						FilterItem{
+						{
 							Kubernetes: &filter.Kubernetes{
 								KubeTagPrefix: "custom-tag",
 							},
@@ -195,14 +253,14 @@ func TestFilterList_LoadAsYaml(t *testing.T) {
 								Parser:  "first-parser",
 							},
 						},
-						FilterItem{
+						{
 							Parser: &filter.Parser{
 								KeyName:     "msg",
 								Parser:      "second-parser",
 								ReserveData: ptr(true),
 							},
 						},
-						FilterItem{
+						{
 							Parser: &filter.Parser{
 								KeyName:     "msg",
 								Parser:      "third-parser",

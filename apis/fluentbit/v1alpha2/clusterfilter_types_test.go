@@ -10,7 +10,7 @@ import (
 )
 
 func TestClusterFilterList_Load(t *testing.T) {
-	var filtersExpected = `[Filter]
+	filtersExpected := `[Filter]
     Name    modify
     Match    logs.foo.bar
     Condition    Key_value_equals    kve0    kvev0
@@ -185,8 +185,206 @@ func TestClusterFilterList_Load(t *testing.T) {
 	}
 }
 
+func TestClusterFilterList_Load_Before(t *testing.T) {
+	filtersExpected := `[Filter]
+    Name    grep
+    Match    *
+    Alias    third
+    Regex    ^.*$
+[Filter]
+    Name    grep
+    Match    *
+    Alias    first
+    Regex    ^.*$
+`
+
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	filterObj1 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "first",
+		},
+		Spec: FilterSpec{
+			Match: "*",
+			FilterItems: []FilterItem{
+				{
+					Grep: &filter.Grep{
+						CommonParams: plugins.CommonParams{
+							Alias: "first",
+						},
+						Regex: "^.*$",
+					},
+				},
+			},
+		},
+	}
+
+	filterObj2 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "second",
+		},
+		Spec: FilterSpec{
+			Ordinal: 10,
+			Match:   "*",
+			FilterItems: []FilterItem{
+				{
+					Grep: &filter.Grep{
+						CommonParams: plugins.CommonParams{
+							Alias: "second",
+						},
+						Regex: "^.*$",
+					},
+				},
+			},
+		},
+	}
+
+	filterObj3 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "third",
+		},
+		Spec: FilterSpec{
+			Ordinal: -10,
+			Match:   "*",
+			FilterItems: []FilterItem{
+				{
+					Grep: &filter.Grep{
+						CommonParams: plugins.CommonParams{
+							Alias: "third",
+						},
+						Regex: "^.*$",
+					},
+				},
+			},
+		},
+	}
+
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{*filterObj1, *filterObj2, *filterObj3},
+	}
+
+	i := 0
+	for i < 5 {
+		clusterFilters, err := filters.LoadBefore(sl)
+		g.Expect(err).NotTo(HaveOccurred())
+
+		g.Expect(clusterFilters).To(Equal(filtersExpected))
+
+		i++
+	}
+}
+
+func TestClusterFilterList_Load_After(t *testing.T) {
+	filtersExpected := `[Filter]
+    Name    grep
+    Match    *
+    Alias    second
+    Regex    ^.*$
+`
+
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	filterObj1 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "first",
+		},
+		Spec: FilterSpec{
+			Match: "*",
+			FilterItems: []FilterItem{
+				{
+					Grep: &filter.Grep{
+						CommonParams: plugins.CommonParams{
+							Alias: "first",
+						},
+						Regex: "^.*$",
+					},
+				},
+			},
+		},
+	}
+
+	filterObj2 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "second",
+		},
+		Spec: FilterSpec{
+			Ordinal: 10,
+			Match:   "*",
+			FilterItems: []FilterItem{
+				{
+					Grep: &filter.Grep{
+						CommonParams: plugins.CommonParams{
+							Alias: "second",
+						},
+						Regex: "^.*$",
+					},
+				},
+			},
+		},
+	}
+
+	filterObj3 := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "third",
+		},
+		Spec: FilterSpec{
+			Ordinal: -10,
+			Match:   "*",
+			FilterItems: []FilterItem{
+				{
+					Grep: &filter.Grep{
+						CommonParams: plugins.CommonParams{
+							Alias: "third",
+						},
+						Regex: "^.*$",
+					},
+				},
+			},
+		},
+	}
+
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{*filterObj1, *filterObj2, *filterObj3},
+	}
+
+	i := 0
+	for i < 5 {
+		clusterFilters, err := filters.LoadAfter(sl)
+		g.Expect(err).NotTo(HaveOccurred())
+		g.Expect(clusterFilters).To(Equal(filtersExpected))
+
+		i++
+	}
+}
+
 func TestClusterFilter_RecordModifier_Generated(t *testing.T) {
-	var filtersExpected = `[Filter]
+	filtersExpected := `[Filter]
     Name    record_modifier
     Match    logs.foo.bar
     Record    hostname ${HOSTNAME}
@@ -260,7 +458,7 @@ func TestClusterFilter_RecordModifier_Generated(t *testing.T) {
 }
 
 func TestClusterFilterList_Load_As_Yaml(t *testing.T) {
-	var filtersExpected = `filters:
+	filtersExpected := `filters:
   - name: modify
     match: "logs.foo.bar"
     condition:
@@ -438,7 +636,7 @@ func TestClusterFilterList_Load_As_Yaml(t *testing.T) {
 }
 
 func TestClusterFilter_RecordModifier_Generated_Load_As_Yaml(t *testing.T) {
-	var filtersExpected = `filters:
+	filtersExpected := `filters:
   - name: record_modifier
     match: "logs.foo.bar"
     record:

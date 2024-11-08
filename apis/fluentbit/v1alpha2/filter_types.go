@@ -51,16 +51,24 @@ type FilterList struct {
 	Items           []Filter `json:"items"`
 }
 
-type NSFilterByName []Filter
+type NSFilterByOrdinalAndName []Filter
 
-func (a NSFilterByName) Len() int           { return len(a) }
-func (a NSFilterByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a NSFilterByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
+func (a NSFilterByOrdinalAndName) Len() int      { return len(a) }
+func (a NSFilterByOrdinalAndName) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a NSFilterByOrdinalAndName) Less(i, j int) bool {
+	if a[i].Spec.Ordinal < a[j].Spec.Ordinal {
+		return true
+	} else if a[i].Spec.Ordinal == a[j].Spec.Ordinal {
+		return a[i].Name < a[j].Name
+	} else {
+		return false
+	}
+}
 
 func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
 
-	sort.Sort(NSFilterByName(list.Items))
+	sort.Sort(NSFilterByOrdinalAndName(list.Items))
 
 	for _, item := range list.Items {
 		merge := func(p plugins.Plugin) error {
@@ -108,7 +116,7 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 func (list FilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
 	var buf bytes.Buffer
 
-	sort.Sort(NSFilterByName(list.Items))
+	sort.Sort(NSFilterByOrdinalAndName(list.Items))
 	padding := utils.YamlIndent(depth + 2)
 	for _, item := range list.Items {
 		merge := func(p plugins.Plugin) error {
