@@ -81,7 +81,7 @@ type Service struct {
 	// If true go to background on start
 	Daemon *bool `json:"daemon,omitempty"`
 	// Interval to flush output
-	FlushSeconds *int64 `json:"flushSeconds,omitempty"`
+	FlushSeconds *float64 `json:"flushSeconds,omitempty"`
 	// Wait time on exit
 	GraceSeconds *int64 `json:"graceSeconds,omitempty"`
 	// the error count to meet the unhealthy requirement, this is a sum for all output plugins in a defined HC_Period, example for output error: [2022/02/16 10:44:10] [ warn] [engine] failed to flush chunk '1-1645008245.491540684.flb', retry in 7 seconds: task_id=0, input=forward.1 > output=cloudwatch_logs.3 (out_id=3)
