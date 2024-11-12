@@ -301,8 +301,7 @@ spec:
                     type: string
                   flushSeconds:
                     description: Interval to flush output
-                    format: int64
-                    type: integer
+                    type: number
                   graceSeconds:
                     description: Wait time on exit
                     format: int64

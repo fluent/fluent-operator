@@ -377,7 +377,7 @@ var cfg = ClusterFluentBitConfig{
 	Spec: FluentBitConfigSpec{
 		Service: &Service{
 			Daemon:       ptrBool(false),
-			FlushSeconds: ptrInt64(1),
+			FlushSeconds: ptrFloat64(1),
 			GraceSeconds: ptrInt64(30),
 			HttpServer:   ptrBool(true),
 			LogLevel:     "info",
@@ -1168,7 +1168,7 @@ func TestClusterFluentBitConfig_RenderMainConfig_WithParsersFiles(t *testing.T) 
 		Spec: FluentBitConfigSpec{
 			Service: &Service{
 				Daemon:       ptrBool(false),
-				FlushSeconds: ptrInt64(1),
+				FlushSeconds: ptrFloat64(1),
 				GraceSeconds: ptrInt64(30),
 				HttpServer:   ptrBool(true),
 				LogLevel:     "info",
@@ -1370,5 +1370,9 @@ func ptrInt64(v int64) *int64 {
 }
 
 func ptrInt32(v int32) *int32 {
+	return &v
+}
+
+func ptrFloat64(v float64) *float64 {
 	return &v
 }
