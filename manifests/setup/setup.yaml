@@ -6966,6 +6966,10 @@ spec:
                   logResponsePayload:
                     description: Log the response payload within the Fluent Bit log.
                     type: boolean
+                  logsBodyKey:
+                    description: The log body key to look up in the log events body/message.
+                      Sets the Body field of the opentelemtry logs data model.
+                    type: string
                   logsBodyKeyAttributes:
                     description: If true, remaining unmatched keys are added as attributes.
                     type: boolean
@@ -35656,6 +35660,10 @@ spec:
                   logResponsePayload:
                     description: Log the response payload within the Fluent Bit log.
                     type: boolean
+                  logsBodyKey:
+                    description: The log body key to look up in the log events body/message.
+                      Sets the Body field of the opentelemtry logs data model.
+                    type: string
                   logsBodyKeyAttributes:
                     description: If true, remaining unmatched keys are added as attributes.
                     type: boolean
