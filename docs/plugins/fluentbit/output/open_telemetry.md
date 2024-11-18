@@ -17,5 +17,6 @@ The OpenTelemetry plugin allows you to take logs, metrics, and traces from Fluen
 | logResponsePayload | Log the response payload within the Fluent Bit log. | *bool |
 | addLabel | This allows you to add custom labels to all metrics exposed through the OpenTelemetry exporter. You may have multiple of these fields. | map[string]string |
 | logsBodyKeyAttributes | If true, remaining unmatched keys are added as attributes. | *bool |
+| logsBodyKey | The log body key to look up in the log events body/message. Sets the Body field of the opentelemtry logs data model. | string |
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |

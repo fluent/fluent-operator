@@ -39,7 +39,9 @@ type OpenTelemetry struct {
 	AddLabel map[string]string `json:"addLabel,omitempty"`
 	// If true, remaining unmatched keys are added as attributes.
 	LogsBodyKeyAttributes *bool `json:"logsBodyKeyAttributes,omitempty"`
-	*plugins.TLS          `json:"tls,omitempty"`
+	// The log body key to look up in the log events body/message. Sets the Body field of the opentelemtry logs data model.
+	LogsBodyKey  string `json:"logsBodyKey,omitempty"`
+	*plugins.TLS `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
 }
@@ -95,6 +97,9 @@ func (o *OpenTelemetry) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	})
 	if o.LogsBodyKeyAttributes != nil {
 		kvs.Insert("logs_body_key_attributes", fmt.Sprint(*o.LogsBodyKeyAttributes))
+	}
+	if o.LogsBodyKey != "" {
+		kvs.Insert("logs_body_key", o.LogsBodyKey)
 	}
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
