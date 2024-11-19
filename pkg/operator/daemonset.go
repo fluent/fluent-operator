@@ -94,6 +94,7 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 					SecurityContext:               fb.Spec.SecurityContext,
 					HostNetwork:                   fb.Spec.HostNetwork,
 					TerminationGracePeriodSeconds: fb.Spec.TerminationGracePeriodSeconds,
+					HostAliases:                   fb.Spec.HostAliases,
 				},
 			},
 		},

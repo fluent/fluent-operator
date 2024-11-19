@@ -432,6 +432,7 @@ FluentBitSpec defines the desired state of FluentBit
 | service | Service represents configurations on the fluent-bit service. | [FluentBitService](#fluentbitservice) |
 | schedulerName | SchedulerName represents the desired scheduler for fluent-bit pods. | string |
 | terminationGracePeriodSeconds | Optional duration in seconds the pod needs to terminate gracefully. Value must be non-negative integer. | *int64 |
+| hostAliases | HostAliases is an optional list of IPs and hostnames that will be injected into the pod's hosts file if specified. | [][corev1.HostAlias](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostalias-v1-core) |
 
 [Back to TOC](#table-of-contents)
 # InputSpec

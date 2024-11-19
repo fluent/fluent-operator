@@ -362,6 +362,7 @@ FluentdSpec defines the desired state of Fluentd
 | positionDB | Storage for position db. You will use it if tail input is enabled. Applicable when the mode is \"agent\", and will be ignored when the mode is \"collector\" | [corev1.VolumeSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#volumesource-v1-core) |
 | livenessProbe | LivenessProbe represents the liveness probe for the fluentd container. | *[corev1.Probe](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#probe-v1-core) |
 | readinessProbe | ReadinessProbe represents the readiness probe for the fluentd container. | *[corev1.Probe](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#probe-v1-core) |
+| hostAliases | HostAliases is an optional list of IPs and hostnames that will be injected into the pod's hosts file if specified. | [][corev1.HostAlias](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostalias-v1-core) |
 
 [Back to TOC](#table-of-contents)
 # FluentdStatus

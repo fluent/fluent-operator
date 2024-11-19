@@ -114,6 +114,7 @@ func MakeFluentdDaemonSet(fd fluentdv1alpha1.Fluentd) *appsv1.DaemonSet {
 					NodeSelector: fd.Spec.NodeSelector,
 					Tolerations:  fd.Spec.Tolerations,
 					Affinity:     fd.Spec.Affinity,
+					HostAliases:  fd.Spec.HostAliases,
 				},
 			},
 		},

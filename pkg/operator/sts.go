@@ -112,6 +112,7 @@ func MakeStatefulSet(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 							LivenessProbe:  fd.Spec.LivenessProbe,
 						},
 					},
+					HostAliases:  fd.Spec.HostAliases,
 					NodeSelector: fd.Spec.NodeSelector,
 					Tolerations:  fd.Spec.Tolerations,
 					Affinity:     fd.Spec.Affinity,

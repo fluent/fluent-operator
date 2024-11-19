@@ -2813,6 +2813,32 @@ spec:
                       type: object
                   type: object
                 type: array
+              hostAliases:
+                description: HostAliases is an optional list of IPs and hostnames that will
+                  be injected into the pod's hosts file if specified.
+                items:
+                  description: HostAlias holds the mapping between IP and hostnames
+                  properties:
+                    ip:
+                      description: IP address of the host file entry.
+                      pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$"
+                      type: string
+                    hostnames:
+                      description: Hostnames for the above IP address.
+                      items:
+                        type: string
+                        pattern: "^[a-zA-Z0-9.-]+$"
+                      minItems: 1
+                      type: array
+                      x-kubernetes-list-type: atomic
+                  type: object
+                  required:
+                    - ip
+                    - hostnames
+                  x-kubernetes-list-map-keys:
+                  - ip
+                  x-kubernetes-list-type: map
+                type: array
               image:
                 description: Fluentd image.
                 type: string
