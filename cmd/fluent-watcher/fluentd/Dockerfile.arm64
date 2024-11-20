@@ -43,6 +43,7 @@ RUN apt-get update \
  && gem install elasticsearch -v 7.13.3 \
  && gem install elasticsearch-xpack -v 7.13.3 \
  && gem install fluent-plugin-detect-exceptions -v 0.0.14 \
+ && gem install rdkafka -v 0.19.0 \
  && gem install \
          fluent-plugin-s3 \
          fluent-plugin-grok-parser \
