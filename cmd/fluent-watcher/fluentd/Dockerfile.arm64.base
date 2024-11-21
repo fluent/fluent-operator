@@ -19,7 +19,7 @@ RUN apt-get update \
             ca-certificates \
  && buildDeps=" \
       make gcc g++ libc-dev \
-      wget bzip2 gnupg dirmngr\
+      wget bzip2 gnupg dirmngr bash openssl build-essential \
     " \
  && apt-get install -y --no-install-recommends $buildDeps \
  && echo 'gem: --no-document' >> /etc/gemrc \
