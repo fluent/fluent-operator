@@ -22,6 +22,8 @@ RUN apk update \
  && apk add --no-cache --virtual .build-deps \
         build-base linux-headers \
         ruby-dev gnupg \
+        bash \
+        openssl-dev \
  && echo 'gem: --no-document' >> /etc/gemrc \
  && gem install oj -v 3.13.22 \
  && gem install json -v 2.6.2 \
@@ -35,6 +37,7 @@ RUN apk update \
  && gem install elasticsearch -v 7.13.3 \
  && gem install elasticsearch-xpack -v 7.13.3 \
  && gem install fluent-plugin-detect-exceptions -v 0.0.14 \
+ && gem install rdkafka -v 0.19.0 \
  && gem install \
          fluent-plugin-s3 \
          fluent-plugin-grok-parser \

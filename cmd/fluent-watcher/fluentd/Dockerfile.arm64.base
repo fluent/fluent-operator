@@ -19,7 +19,7 @@ RUN apt-get update \
             ca-certificates \
  && buildDeps=" \
       make gcc g++ libc-dev \
-      wget bzip2 gnupg dirmngr\
+      wget bzip2 gnupg dirmngr bash openssl build-essential \
     " \
  && apt-get install -y --no-install-recommends $buildDeps \
  && echo 'gem: --no-document' >> /etc/gemrc \
@@ -33,6 +33,7 @@ RUN apt-get update \
  && gem install elasticsearch -v 7.13.3 \
  && gem install elasticsearch-xpack -v 7.13.3 \
  && gem install fluent-plugin-detect-exceptions -v 0.0.14 \
+ && gem install rdkafka -v 0.19.0 \
  && gem install \
          fluent-plugin-s3 \
          fluent-plugin-grok-parser \

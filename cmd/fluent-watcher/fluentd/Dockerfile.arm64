@@ -28,7 +28,7 @@ RUN apt-get update \
             ca-certificates \
  && buildDeps=" \
       make gcc g++ libc-dev \
-      wget bzip2 gnupg dirmngr \
+      wget bzip2 gnupg dirmngr bash openssl build-essential  \
     " \
  && apt-get install -y --no-install-recommends $buildDeps \
  && echo 'gem: --no-document' >> /etc/gemrc \
@@ -43,6 +43,7 @@ RUN apt-get update \
  && gem install elasticsearch -v 7.13.3 \
  && gem install elasticsearch-xpack -v 7.13.3 \
  && gem install fluent-plugin-detect-exceptions -v 0.0.14 \
+ && gem install rdkafka -v 0.19.0 \
  && gem install \
          fluent-plugin-s3 \
          fluent-plugin-grok-parser \
@@ -63,7 +64,7 @@ RUN apt-get update \
  && cd /tmp && tar -xjf jemalloc-5.3.0.tar.bz2 && cd jemalloc-5.3.0/ \
  && ./configure && make \
  && mv lib/libjemalloc.so.2 /usr/lib \
- && apt-get purge -y --auto-remove \
+ && apt-get purge -y --allow-remove-essential --auto-remove \
                   -o APT::AutoRemove::RecommendsImportant=false \
                   $buildDeps \
  && rm -rf /var/lib/apt/lists/* \
