@@ -117,6 +117,8 @@ type FluentdSpec struct {
 	LivenessProbe *corev1.Probe `json:"livenessProbe,omitempty"`
 	// ReadinessProbe represents the readiness probe for the fluentd container.
 	ReadinessProbe *corev1.Probe `json:"readinessProbe,omitempty"`
+	// HostAliases is an optional list of IPs and hostnames that will be injected into the pod's hosts file if specified.
+	HostAliases []corev1.HostAlias `json:"hostAliases,omitempty"`
 }
 
 // FluentDService the service of the FluentD

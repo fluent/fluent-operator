@@ -107,6 +107,8 @@ type FluentBitSpec struct {
 	SchedulerName string `json:"schedulerName,omitempty"`
 	// Optional duration in seconds the pod needs to terminate gracefully. Value must be non-negative integer.
 	TerminationGracePeriodSeconds *int64 `json:"terminationGracePeriodSeconds,omitempty"`
+	// HostAliases is an optional list of IPs and hostnames that will be injected into the pod's hosts file if specified.
+	HostAliases []corev1.HostAlias `json:"hostAliases,omitempty"`
 }
 
 // FluentBitService defines the service of the FluentBit
