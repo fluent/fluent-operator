@@ -185,113 +185,21 @@ func TestClusterFilterList_Load(t *testing.T) {
 	}
 }
 
-func TestClusterFilterList_Load_Before(t *testing.T) {
+func TestClusterFilterList_Load_With_Ordinals(t *testing.T) {
 	filtersExpected := `[Filter]
-    Name    grep
-    Match    *
-    Alias    third
-    Regex    ^.*$
-[Filter]
     Name    grep
     Match    *
     Alias    first
     Regex    ^.*$
-`
-
-	g := NewGomegaWithT(t)
-	sl := plugins.NewSecretLoader(nil, "testnamespace")
-
-	filterObj1 := &ClusterFilter{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "fluentbit.fluent.io/v1alpha2",
-			Kind:       "ClusterFilter",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: "first",
-		},
-		Spec: FilterSpec{
-			Match: "*",
-			FilterItems: []FilterItem{
-				{
-					Grep: &filter.Grep{
-						CommonParams: plugins.CommonParams{
-							Alias: "first",
-						},
-						Regex: "^.*$",
-					},
-				},
-			},
-		},
-	}
-
-	filterObj2 := &ClusterFilter{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "fluentbit.fluent.io/v1alpha2",
-			Kind:       "ClusterFilter",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: "second",
-		},
-		Spec: FilterSpec{
-			Ordinal: 10,
-			Match:   "*",
-			FilterItems: []FilterItem{
-				{
-					Grep: &filter.Grep{
-						CommonParams: plugins.CommonParams{
-							Alias: "second",
-						},
-						Regex: "^.*$",
-					},
-				},
-			},
-		},
-	}
-
-	filterObj3 := &ClusterFilter{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "fluentbit.fluent.io/v1alpha2",
-			Kind:       "ClusterFilter",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: "third",
-		},
-		Spec: FilterSpec{
-			Ordinal: -10,
-			Match:   "*",
-			FilterItems: []FilterItem{
-				{
-					Grep: &filter.Grep{
-						CommonParams: plugins.CommonParams{
-							Alias: "third",
-						},
-						Regex: "^.*$",
-					},
-				},
-			},
-		},
-	}
-
-	filters := ClusterFilterList{
-		Items: []ClusterFilter{*filterObj1, *filterObj2, *filterObj3},
-	}
-
-	i := 0
-	for i < 5 {
-		clusterFilters, err := filters.LoadBefore(sl)
-		g.Expect(err).NotTo(HaveOccurred())
-
-		g.Expect(clusterFilters).To(Equal(filtersExpected))
-
-		i++
-	}
-}
-
-func TestClusterFilterList_Load_After(t *testing.T) {
-	filtersExpected := `[Filter]
+[Filter]
     Name    grep
     Match    *
     Alias    second
+    Regex    ^.*$
+[Filter]
+    Name    grep
+    Match    *
+    Alias    third
     Regex    ^.*$
 `
 
@@ -312,7 +220,7 @@ func TestClusterFilterList_Load_After(t *testing.T) {
 				{
 					Grep: &filter.Grep{
 						CommonParams: plugins.CommonParams{
-							Alias: "first",
+							Alias: "second",
 						},
 						Regex: "^.*$",
 					},
@@ -336,7 +244,7 @@ func TestClusterFilterList_Load_After(t *testing.T) {
 				{
 					Grep: &filter.Grep{
 						CommonParams: plugins.CommonParams{
-							Alias: "second",
+							Alias: "third",
 						},
 						Regex: "^.*$",
 					},
@@ -360,7 +268,7 @@ func TestClusterFilterList_Load_After(t *testing.T) {
 				{
 					Grep: &filter.Grep{
 						CommonParams: plugins.CommonParams{
-							Alias: "third",
+							Alias: "first",
 						},
 						Regex: "^.*$",
 					},
@@ -375,8 +283,9 @@ func TestClusterFilterList_Load_After(t *testing.T) {
 
 	i := 0
 	for i < 5 {
-		clusterFilters, err := filters.LoadAfter(sl)
+		clusterFilters, err := filters.Load(sl)
 		g.Expect(err).NotTo(HaveOccurred())
+
 		g.Expect(clusterFilters).To(Equal(filtersExpected))
 
 		i++
