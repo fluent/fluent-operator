@@ -44,6 +44,8 @@ type FilterSpec struct {
 	LogLevel string `json:"logLevel,omitempty"`
 	// A set of filter plugins in order.
 	FilterItems []FilterItem `json:"filters,omitempty"`
+	// An ordinal to influence filter ordering
+	Ordinal int32 `json:"ordinal,omitempty"`
 }
 
 type FilterItem struct {
@@ -101,17 +103,25 @@ type ClusterFilterList struct {
 
 // +kubebuilder:object:generate:=false
 
-// FilterByName implements sort.Interface for []ClusterFilter based on the Name field.
-type FilterByName []ClusterFilter
+// FilterByOrdinalAndName implements sort.Interface for []ClusterFilter based on the Ordinal and Name field.
+type FilterByOrdinalAndName []ClusterFilter
 
-func (a FilterByName) Len() int           { return len(a) }
-func (a FilterByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a FilterByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
+func (a FilterByOrdinalAndName) Len() int      { return len(a) }
+func (a FilterByOrdinalAndName) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a FilterByOrdinalAndName) Less(i, j int) bool {
+	if a[i].Spec.Ordinal < a[j].Spec.Ordinal {
+		return true
+	} else if a[i].Spec.Ordinal == a[j].Spec.Ordinal {
+		return a[i].Name < a[j].Name
+	} else {
+		return false
+	}
+}
 
 func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
 
-	sort.Sort(FilterByName(list.Items))
+	sort.Sort(FilterByOrdinalAndName(list.Items))
 
 	for _, item := range list.Items {
 		merge := func(p plugins.Plugin) error {
@@ -156,7 +166,7 @@ func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
 	var buf bytes.Buffer
 
-	sort.Sort(FilterByName(list.Items))
+	sort.Sort(FilterByOrdinalAndName(list.Items))
 	if len(list.Items) == 0 {
 		return "", nil
 	}
@@ -202,43 +212,6 @@ func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (st
 	return buf.String(), nil
 }
 
-func (clusterFilter ClusterFilter) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
-	var buf bytes.Buffer
-	padding := utils.YamlIndent(depth + 2)
-	merge := func(p plugins.Plugin) error {
-		if p == nil || reflect.ValueOf(p).IsNil() {
-			return nil
-		}
-
-		if p.Name() != "" {
-			buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
-		}
-		if clusterFilter.Spec.LogLevel != "" {
-			buf.WriteString(fmt.Sprintf("%slog_level: %s\n", padding, clusterFilter.Spec.LogLevel))
-		}
-		if clusterFilter.Spec.Match != "" {
-			buf.WriteString(fmt.Sprintf("%smatch: \"%s\"\n", padding, clusterFilter.Spec.Match))
-		}
-		if clusterFilter.Spec.MatchRegex != "" {
-			buf.WriteString(fmt.Sprintf("%smatch_regex: %s\n", padding, clusterFilter.Spec.MatchRegex))
-		}
-		kvs, err := p.Params(sl)
-		if err != nil {
-			return err
-		}
-		buf.WriteString(kvs.YamlString(depth + 2))
-		return nil
-	}
-	for _, elem := range clusterFilter.Spec.FilterItems {
-		for i := 0; i < reflect.ValueOf(elem).NumField(); i++ {
-			p, _ := reflect.ValueOf(elem).Field(i).Interface().(plugins.Plugin)
-			if err := merge(p); err != nil {
-				return "", err
-			}
-		}
-	}
-	return buf.String(), nil
-}
 func init() {
 	SchemeBuilder.Register(&ClusterFilter{}, &ClusterFilterList{})
 }
