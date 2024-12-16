@@ -10,6 +10,7 @@ The Tail input plugin allows to monitor one or several text files. <br /> It has
 | path | Pattern specifying a specific log files or multiple ones through the use of common wildcards. | string |
 | pathKey | If enabled, it appends the name of the monitored file as part of the record. The value assigned becomes the key in the map. | string |
 | excludePath | Set one or multiple shell patterns separated by commas to exclude files matching a certain criteria, e.g: exclude_path=*.gz,*.zip | string |
+| offsetKey | If enabled, Fluent Bit appends the offset of the current monitored file as part of the record. The value assigned becomes the key in the map | string |
 | readFromHead | For new discovered files on start (without a database offset/position), read the content from the head of the file, not tail. | *bool |
 | refreshIntervalSeconds | The interval of refreshing the list of watched files in seconds. | *int64 |
 | rotateWaitSeconds | Specify the number of extra time in seconds to monitor a file once is rotated in case some pending data is flushed. | *int64 |

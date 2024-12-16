@@ -33,6 +33,9 @@ type Tail struct {
 	// Set one or multiple shell patterns separated by commas to exclude files matching a certain criteria,
 	// e.g: exclude_path=*.gz,*.zip
 	ExcludePath string `json:"excludePath,omitempty"`
+	// If enabled, Fluent Bit appends the offset of the current monitored file as part of the record.
+	// The value assigned becomes the key in the map
+	OffsetKey string `json:"offsetKey,omitempty"`
 	// For new discovered files on start (without a database offset/position),
 	// read the content from the head of the file, not tail.
 	ReadFromHead *bool `json:"readFromHead,omitempty"`
@@ -123,6 +126,9 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if t.ExcludePath != "" {
 		kvs.Insert("Exclude_Path", t.ExcludePath)
+	}
+	if t.OffsetKey != "" {
+		kvs.Insert("Offset_Key", t.OffsetKey)
 	}
 	if t.ReadFromHead != nil {
 		kvs.Insert("Read_from_Head", fmt.Sprint(*t.ReadFromHead))
