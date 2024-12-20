@@ -9,7 +9,7 @@ metadata:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging
 spec:
-  match: kube.*
+  match: {{ .Values.fluentbit.filter.kubernetes.match }}
   filters:
   - kubernetes:
       kubeURL: https://kubernetes.default.svc:443
