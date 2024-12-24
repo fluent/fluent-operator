@@ -104,6 +104,8 @@ type Tail struct {
 	PauseOnChunksOverlimit string `json:"pauseOnChunksOverlimit,omitempty"`
 	//Skips empty lines in the log file from any further processing or output.
 	SkipEmptyLines *bool `json:"skipEmptyLines,omitempty"`
+	// Threaded mechanism allows input plugin to run in a separate thread which helps to desaturate the main pipeline.
+	Threaded *string `json:"threaded,omitempty"`
 }
 
 func (_ *Tail) Name() string {
@@ -201,6 +203,9 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if t.SkipEmptyLines != nil {
 		kvs.Insert("Skip_Empty_Lines", fmt.Sprint(*t.SkipEmptyLines))
+	}
+	if t.Threaded != nil {
+		kvs.Insert("Threaded", *t.Threaded)
 	}
 	return kvs, nil
 }

@@ -840,6 +840,10 @@ spec:
                   tagRegex:
                     description: Set a regex to exctract fields from the file
                     type: string
+                  threaded:
+                    description: Threaded mechanism allows input plugin to run in
+                      a separate thread which helps to desaturate the main pipeline.
+                    type: string
                 type: object
               tcp:
                 description: TCP defines the TCP input plugin configuration

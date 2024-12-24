@@ -290,6 +290,7 @@ fluentbit:
     loki:
       # Switch for generation of fluentbit loki ClusterOutput (and loki basic auth http user and pass secrets if required)
       enable: false # Bool
+      retryLimit: "false"
       host: 127.0.0.1 # String
       port: 3100      # Int
       # Either, give http{User,Password},tenantID string values specifying them directly

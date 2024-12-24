@@ -59,6 +59,10 @@ type Loki struct {
 	*plugins.TLS `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
+	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+	TotalLimitSize string `json:"totalLimitSize,omitempty"`
+	// Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0.
+	Workers      *int32 `json:"workers,omitempty"`
 }
 
 // implement Section() method
@@ -143,6 +147,12 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 			return nil, err
 		}
 		kvs.Merge(net)
+	}
+	if l.TotalLimitSize != "" {
+		kvs.Insert("storage.total_limit_size", l.TotalLimitSize)
+	}
+	if l.Workers != nil {
+		kvs.Insert("workers", fmt.Sprint(*l.Workers))
 	}
 	return kvs, nil
 }

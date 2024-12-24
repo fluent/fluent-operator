@@ -37,6 +37,7 @@ metadata:
     fluentbit.fluent.io/component: logging
 spec:
   matchRegex: (?:kube|service)\.(.*)
+  retry_limit: "{{ .retryLimit }}"
   loki:
     {{ if .host }}host: {{ .host | quote }}{{ end }}
     {{ if .port }}port: {{ .port }}{{ end }}
