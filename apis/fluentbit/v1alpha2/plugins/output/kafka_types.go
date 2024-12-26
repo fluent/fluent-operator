@@ -44,6 +44,10 @@ type Kafka struct {
 	//The default value is 10 times, the interval between each retry is 1 second.
 	//Setting the queue_full_retries value to 0 set's an unlimited number of retries.
 	QueueFullRetries *int64 `json:"queueFullRetries,omitempty"`
+	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+	TotalLimitSize string `json:"totalLimitSize,omitempty"`
+	// Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0.
+	Workers      *int32 `json:"workers,omitempty"`
 }
 
 func (*Kafka) Name() string {
@@ -87,6 +91,13 @@ func (k *Kafka) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs.InsertStringMap(k.Rdkafka, func(k, v string) (string, string) {
 		return fmt.Sprintf("rdkafka.%s", k), v
 	})
+
+	if k.TotalLimitSize != "" {
+		kvs.Insert("storage.total_limit_size", k.TotalLimitSize)
+	}
+	if k.Workers != nil {
+		kvs.Insert("workers", fmt.Sprint(*k.Workers))
+	}
 
 	return kvs, nil
 }
