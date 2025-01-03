@@ -157,6 +157,7 @@ jobs:
 
   build-FluentBit-prod-image:
     needs: 
+      - get-version
       - build-prod-image-metadata
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -198,9 +199,12 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ needs.build-prod-image-metadata.outputs.tags }}
           labels: ${{ needs.build-prod-image-metadata.outputs.labels }}
+          build-args: |
+            FLUENT_BIT_BASE_VERSION=${{ needs.get-version.outputs.VERSION }}
 
   build-FluentBit-debug-image:
     needs: 
+      - get-version
       - build-debug-image-metadata
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -242,6 +246,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ needs.build-debug-image-metadata.outputs.tags }}
           labels: ${{ needs.build-debug-image-metadata.outputs.labels }}
+          build-args: |
+            FLUENT_BIT_BASE_VERSION=${{ needs.get-version.outputs.VERSION }}
 
   scan-FluentBit-image:
     name: Scan prod image
