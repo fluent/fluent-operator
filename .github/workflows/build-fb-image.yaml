@@ -2,11 +2,6 @@ name: Building Fluent Bit image
 
 on:
   workflow_dispatch:
-    inputs:
-      docker_tag_version:
-        description: 'Fluent Bit image release version'
-        required: true
-        default: '3.1.8'
 
 env:
   DOCKER_REPO: 'kubesphere'
@@ -18,7 +13,24 @@ permissions:
   packages: write
 
 jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    name: get fluent-bit version
+    outputs:
+      VERSION: ${{ steps.get-version.outputs.VERSION }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Read fluent-bit version from file
+        id: get-version
+        run: |
+          VERSION=$(cat cmd/fluent-watcher/fluentbit/VERSION)  # Read the version from the VERSION file
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
   determine-tags:
+    needs:
+      - get-version
     runs-on: ubuntu-latest
     name: Determine image tags
     outputs:
@@ -29,7 +41,7 @@ jobs:
       - name: Determine image version tag
         id: determine-tags
         run: |
-          VERSION=${{ github.event.inputs.docker_tag_version }}
+          VERSION=${{ steps.get-version.outputs.VERSION }}
           VERSION_WITHOUT_V=${VERSION#v}
           MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
 
