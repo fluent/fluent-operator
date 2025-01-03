@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
 
       - name: Read fluent-bit version from file
         id: get-version
@@ -41,7 +43,7 @@ jobs:
       - name: Determine image version tag
         id: determine-tags
         run: |
-          VERSION=${{ steps.get-version.outputs.VERSION }}
+          VERSION=${{ needs.get-version.outputs.VERSION }}
           VERSION_WITHOUT_V=${VERSION#v}
           MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
 
