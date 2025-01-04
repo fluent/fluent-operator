@@ -46,11 +46,6 @@ jobs:
             fi
           done
 
-      - name: Create bump branch
-        run: |
-          git checkout -b bump-fb-to-${{ github.event.inputs.version }}
-          git push --set-upstream origin bump-fb-to-${{ github.event.inputs.version }}
-
       - name: Update version in VERSION file
         run: |
           echo ${{ github.event.inputs.version }} > cmd/fluent-watcher/fluentbit/VERSION
@@ -85,19 +80,14 @@ jobs:
             exit 1
           fi
 
-      - name: Commit & Push changes
-        run: |
-          git add cmd/fluent-watcher/fluentbit/VERSION config/samples/fluentbit_v1alpha2_fluentbit.yaml docs/best-practice/forwarding-logs-via-http/deploy/fluentbit-fluentBit.yaml manifests/kubeedge/fluentbit-fluentbit-edge.yaml manifests/logging-stack/fluentbit-fluentBit.yaml manifests/quick-start/fluentbit.yaml manifests/regex-parser/fluentbit-fluentBit.yaml charts/fluent-operator/values.yaml
-          git commit -m "Bump fluent-bit version to ${{ github.event.inputs.version }}
-
-          - Updated VERSION file
-          - Updated manifest files
-          - Updated values.yaml in Helm chart
-          git push
-
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
+          commit-message: "Bump fluent-bit to ${{ github.event.inputs.version }}
+
+          - Updated VERSION file
+          - Updated manifest files
+          - Updated values.yaml in Helm chart"
           title: "Bump fluent-bit to ${{ github.event.inputs.version }}"
           body: |
             This PR updates the version to ${{ github.event.inputs.version }} in the following files:
@@ -112,6 +102,7 @@ jobs:
             
             Please review and merge to release the new version.
           branch: bump-fb-to-${{ github.event.inputs.version }}
+          base: master
           labels: |
             version-bump
             fluent-bit
