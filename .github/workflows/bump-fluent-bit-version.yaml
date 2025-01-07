@@ -15,11 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Git
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
-
       - name: Validate version format
         run: |
           if ! [[ ${{ github.event.inputs.version }} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -88,6 +83,7 @@ jobs:
           - Updated VERSION file
           - Updated manifest files
           - Updated values.yaml in Helm chart"
+          signoff: true
           title: "Bump fluent-bit to ${{ github.event.inputs.version }}"
           body: |
             This PR updates the version to ${{ github.event.inputs.version }} in the following files:
