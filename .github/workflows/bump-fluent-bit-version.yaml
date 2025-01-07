@@ -1,0 +1,108 @@
+name: Create Pull Request to bump fluent-bit version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'New fluent-bit version number (e.g., 3.2.4)'
+        required: true
+
+jobs:
+  create-bump-pr:
+    name: Create target bump pull request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Validate version format
+        run: |
+          if ! [[ ${{ github.event.inputs.version }} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version format. Please use X.Y.Z"
+            exit 1
+          fi
+
+      - name: Check file existence
+        run: |
+          files=(
+            "cmd/fluent-watcher/fluentbit/VERSION"
+            "config/samples/fluentbit_v1alpha2_fluentbit.yaml"
+            "docs/best-practice/forwarding-logs-via-http/deploy/fluentbit-fluentBit.yaml"
+            "manifests/kubeedge/fluentbit-fluentbit-edge.yaml"
+            "manifests/logging-stack/fluentbit-fluentBit.yaml"
+            "manifests/quick-start/fluentbit.yaml"
+            "manifests/regex-parser/fluentbit-fluentBit.yaml"
+            "charts/fluent-operator/values.yaml"
+          )
+          for file in "${files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "File not found: $file"
+              exit 1
+            fi
+          done
+
+      - name: Update version in VERSION file
+        run: |
+          echo ${{ github.event.inputs.version }} > cmd/fluent-watcher/fluentbit/VERSION
+          if [ $? -ne 0 ]; then
+            echo "Failed to update VERSION file"
+            exit 1
+          fi
+
+      - name: Update version in manifests
+        run: |
+          files=(
+            "config/samples/fluentbit_v1alpha2_fluentbit.yaml"
+            "docs/best-practice/forwarding-logs-via-http/deploy/fluentbit-fluentBit.yaml"
+            "manifests/kubeedge/fluentbit-fluentbit-edge.yaml"
+            "manifests/logging-stack/fluentbit-fluentBit.yaml"
+            "manifests/quick-start/fluentbit.yaml"
+            "manifests/regex-parser/fluentbit-fluentBit.yaml"
+          )
+          for file in "${files[@]}"; do
+            sed -i 's|image: ghcr.io/fluent/fluent-operator/fluent-bit:.*|image: ghcr.io/fluent/fluent-operator/fluent-bit:${{ github.event.inputs.version }}|' "$file"
+            if [ $? -ne 0 ]; then
+              echo "Failed to update $file"
+              exit 1
+            fi
+          done
+
+      - name: Update version in values.yaml
+        run: |
+          sed -i '/repository: "ghcr.io\/fluent\/fluent-operator\/fluent-bit"/!b;n;s/tag: .*/tag: "${{ github.event.inputs.version }}"/' charts/fluent-operator/values.yaml
+          if [ $? -ne 0 ]; then
+            echo "Failed to update values.yaml"
+            exit 1
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "Bump fluent-bit to ${{ github.event.inputs.version }}
+
+          - Updated VERSION file
+          - Updated manifest files
+          - Updated values.yaml in Helm chart"
+          title: "Bump fluent-bit to ${{ github.event.inputs.version }}"
+          body: |
+            This PR updates the version to ${{ github.event.inputs.version }} in the following files:
+            - cmd/fluent-watcher/fluentbit/VERSION
+            - config/samples/fluentbit_v1alpha2_fluentbit.yaml
+            - docs/best-practice/forwarding-logs-via-http/deploy/fluentbit-fluentBit.yaml
+            - manifests/kubeedge/fluentbit-fluentbit-edge.yaml
+            - manifests/logging-stack/fluentbit-fluentBit.yaml
+            - manifests/quick-start/fluentbit.yaml
+            - manifests/regex-parser/fluentbit-fluentBit.yaml
+            - charts/fluent-operator/values.yaml
+            
+            Please review and merge to release the new version.
+          branch: bump-fb-to-${{ github.event.inputs.version }}
+          base: master
+          labels: |
+            version-bump
+            fluent-bit
