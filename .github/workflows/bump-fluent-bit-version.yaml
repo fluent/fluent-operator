@@ -100,5 +100,5 @@ jobs:
           branch: bump-fb-to-${{ github.event.inputs.version }}
           base: master
           labels: |
-            version-bump
+            dependencies
             fluent-bit
