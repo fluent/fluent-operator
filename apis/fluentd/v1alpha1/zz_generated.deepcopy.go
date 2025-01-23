@@ -841,6 +841,13 @@ func (in *FluentdSpec) DeepCopyInto(out *FluentdSpec) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	if in.EnvFrom != nil {
+		in, out := &in.EnvFrom, &out.EnvFrom
+		*out = make([]corev1.EnvFromSource, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
 	in.FluentdCfgSelector.DeepCopyInto(&out.FluentdCfgSelector)
 	if in.BufferVolume != nil {
 		in, out := &in.BufferVolume, &out.BufferVolume

@@ -140,6 +140,10 @@ func MakeFluentdDaemonSet(fd fluentdv1alpha1.Fluentd) *appsv1.DaemonSet {
 		daemonSet.Spec.Template.Spec.Containers[0].Env = append(daemonSet.Spec.Template.Spec.Containers[0].Env, fd.Spec.EnvVars...)
 	}
 
+	if fd.Spec.EnvFrom != nil {
+		daemonSet.Spec.Template.Spec.Containers[0].EnvFrom = append(daemonSet.Spec.Template.Spec.Containers[0].EnvFrom, fd.Spec.EnvFrom...)
+	}
+
 	if fd.Spec.SecurityContext != nil {
 		daemonSet.Spec.Template.Spec.SecurityContext = fd.Spec.SecurityContext
 	}
