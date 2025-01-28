@@ -22,3 +22,5 @@ The loki output plugin, allows to ingest your records into a Loki service. <br /
 | tenantIDKey | Specify the name of the key from the original record that contains the Tenant ID. The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically. | string |
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |
+| workers | Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0. | *int32 |

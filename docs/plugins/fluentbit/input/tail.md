@@ -35,3 +35,4 @@ The Tail input plugin allows to monitor one or several text files. <br /> It has
 | storageType | Specify the buffering mechanism to use. It can be memory or filesystem | string |
 | pauseOnChunksOverlimit | Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached. | string |
 | skipEmptyLines | Skips empty lines in the log file from any further processing or output. | *bool |
+| threaded | Threaded mechanism allows input plugin to run in a separate thread which helps to desaturate the main pipeline. | *string |

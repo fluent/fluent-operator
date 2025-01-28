@@ -16,3 +16,5 @@ Kafka output plugin allows to ingest your records into an Apache Kafka service. 
 | rdkafka | {property} can be any librdkafka properties | map[string]string |
 | dynamicTopic | adds unknown topics (found in Topic_Key) to Topics. So in Topics only a default topic needs to be configured | *bool |
 | queueFullRetries | Fluent Bit queues data into rdkafka library, if for some reason the underlying library cannot flush the records the queue might fills up blocking new addition of records. The queue_full_retries option set the number of local retries to enqueue the data. The default value is 10 times, the interval between each retry is 1 second. Setting the queue_full_retries value to 0 set's an unlimited number of retries. | *int64 |
+| totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |
+| workers | Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0. | *int32 |
