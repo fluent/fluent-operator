@@ -148,6 +148,10 @@ func MakeStatefulSet(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 		sts.Spec.Template.Spec.Containers[0].Env = append(sts.Spec.Template.Spec.Containers[0].Env, fd.Spec.EnvVars...)
 	}
 
+	if fd.Spec.EnvFrom != nil {
+		sts.Spec.Template.Spec.Containers[0].EnvFrom = append(sts.Spec.Template.Spec.Containers[0].EnvFrom, fd.Spec.EnvFrom...)
+	}
+
 	if fd.Spec.SecurityContext != nil {
 		sts.Spec.Template.Spec.SecurityContext = fd.Spec.SecurityContext
 	}

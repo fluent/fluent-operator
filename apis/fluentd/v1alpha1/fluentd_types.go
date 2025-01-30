@@ -61,6 +61,8 @@ type FluentdSpec struct {
 	Args []string `json:"args,omitempty"`
 	// EnvVars represent environment variables that can be passed to fluentd pods.
 	EnvVars []corev1.EnvVar `json:"envVars,omitempty"`
+	// EnvFrom represent environment variables that can be passed to fluentd pods directly from secret or configmap
+	EnvFrom []corev1.EnvFromSource `json:"envFrom,omitempty"`
 	// FluentdCfgSelector defines the selectors to select the fluentd config CRs.
 	FluentdCfgSelector metav1.LabelSelector `json:"fluentdCfgSelector,omitempty"`
 	// Buffer definition

@@ -62,7 +62,7 @@ type Loki struct {
 	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
 	TotalLimitSize string `json:"totalLimitSize,omitempty"`
 	// Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0.
-	Workers      *int32 `json:"workers,omitempty"`
+	Workers *int32 `json:"workers,omitempty"`
 }
 
 // implement Section() method

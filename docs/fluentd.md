@@ -338,6 +338,7 @@ FluentdSpec defines the desired state of Fluentd
 | image | Fluentd image. | string |
 | args | Fluentd Watcher command line arguments. | []string |
 | envVars | EnvVars represent environment variables that can be passed to fluentd pods. | [][corev1.EnvVar](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#envvar-v1-core) |
+| envFrom | EnvFrom represent environment variables that can be passed to fluentd pods directly from secret or configmap | [][corev1.EnvFromSource](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#envfromsource-v1-core) |
 | fluentdCfgSelector | FluentdCfgSelector defines the selectors to select the fluentd config CRs. | [metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta) |
 | buffer | Buffer definition | *[BufferVolume](#buffervolume) |
 | imagePullPolicy | Fluentd image pull policy. | [corev1.PullPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#pullpolicy-v1-core) |
