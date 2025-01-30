@@ -86,6 +86,14 @@ fluentbit:
     tlsConfig: {}
     relabelings: []
     metricRelabelings: []
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 15
+    successThreshold: 1
+    failureThreshold: 8
+
   image:
     repository: "ghcr.io/fluent/fluent-operator/fluent-bit"
     tag: "3.1.8"
