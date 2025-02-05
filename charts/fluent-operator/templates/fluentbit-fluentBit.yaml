@@ -73,6 +73,19 @@ spec:
   volumes:
 {{ toYaml .Values.fluentbit.additionalVolumes | indent 4 }}
   {{- end }}
+{{- with .Values.fluentbit.livenessProbe }}
+{{- if .enabled }}
+  livenessProbe:
+    httpGet:
+      port: 2020
+      path: /
+    initialDelaySeconds: {{ .initialDelaySeconds }}
+    periodSeconds: {{ .periodSeconds }}
+    timeoutSeconds: {{ .timeoutSeconds }}
+    successThreshold: {{ .successThreshold }}
+    failureThreshold: {{ .failureThreshold }}
+{{- end }}
+{{- end }}
   {{- if .Values.fluentbit.additionalVolumesMounts }}
   volumesMounts:
 {{ toYaml .Values.fluentbit.additionalVolumesMounts | indent 4 }}
