@@ -427,6 +427,22 @@ func (o *Output) elasticsearchPluginCommon(common *ElasticsearchCommon, parent *
 		parent.InsertPairs("ca_file", fmt.Sprint(*common.CAFile))
 	}
 
+	if common.CloudAuth != nil {
+		cloudauth, err := loader.LoadSecret(*common.CloudAuth)
+		if err != nil {
+			return nil, err
+		}
+		parent.InsertPairs("cloud_auth", cloudauth)
+	}
+
+	if common.CloudId != nil {
+		cloudid, err := loader.LoadSecret(*common.CloudId)
+		if err != nil {
+			return nil, err
+		}
+		parent.InsertPairs("cloud_id", cloudid)
+	}
+
 	if common.ClientCert != nil {
 		parent.InsertPairs("client_cert", fmt.Sprint(*common.ClientCert))
 	}
