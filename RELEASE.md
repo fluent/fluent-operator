@@ -4,47 +4,47 @@ This page describes the release process and the currently planned schedule for u
 
 ## Release schedule
 
-| release series | date  (year-month-day) | release shepherd                      |
-|----------------|------------------------|---------------------------------------|
-| v0.1.0         | 2020-02-17             | Guangzhe Huang (GitHub: @huanggze)    |
-| v0.2.0         | 2020-08-27             | Guangzhe Huang (GitHub: @huanggze)    |
-| v0.3.0         | 2020-11-10             | Guangzhe Huang (GitHub: @huanggze)    |
-| v0.4.0         | 2021-04-01             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.5.0         | 2021-04-14             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.6.0         | 2021-06-03             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.6.1         | 2021-06-11             | Benjamin Huo (GitHub: @benjaminhuo)   |
-| v0.6.2         | 2021-06-11             | Benjamin Huo (GitHub: @benjaminhuo)   |
-| v0.7.0         | 2021-06-29             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.7.1         | 2021-07-09             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.8.0         | 2021-07-23             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.9.0         | 2021-08-13             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.10.0        | 2021-08-20             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.11.0        | 2021-09-01             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.12.0        | 2021-09-13             | Wanjun Lei (GitHub: @wanjunlei)       |
-| v0.13.0        | 2022-03-14             | Elon Cheng (GitHub: @wenchajun)       |
-| v1.0.0         | 2022-03-25             | Elon Cheng (GitHub: @wenchajun)       |
-| v1.0.1         | 2022-05-12             | Elon Cheng (GitHub: @wenchajun)       |
-| v1.0.2         | 2022-05-17             | Elon Cheng (GitHub: @wenchajun)       |
-| v1.1.0         | 2022-06-15             | Elon Cheng (GitHub: @wenchajun)       |
-| v1.5.0         | 2022-09-24             | Elon Cheng (GitHub: @wenchajun)       |
-| v1.5.1         | 2022-09-30             | Elon Cheng (GitHub: @wenchajun)       |
-| v1.6.0         | 2022-10-25             | Elon Cheng (GitHub: @wenchajun)       |
-| v1.6.1         | 2022-10-31             | Elon Cheng (GitHub: @wenchajun)       |
-| v1.7.0         | 2022-11-23             | Elon Cheng (GitHub: @wenchajun)       |
-| v2.0.0         | 2023-02-03             | Elon Cheng (GitHub: @wenchajun)       |
-| v2.0.1         | 2023-02-08             | Elon Cheng (GitHub: @wenchajun)       |
-| v2.1.0         | 2023-03-13             | Elon Cheng (GitHub: @wenchajun)       |
-| v2.2.0         | 2023-04-07             | Elon Cheng (GitHub: @wenchajun)       |
-| v2.3.0         | 2023-06-05             | Elon Cheng (GitHub: @wenchajun)       |
-| v2.4.0         | 2023-07-19             | Elon Cheng (GitHub: @wenchajun)       |
-| v2.5.0         | 2023-09-13             | Elon Cheng (GitHub: @wenchajun)       |
-| v2.6.0         | 2023-11-22             | Elon Cheng (GitHub: @wenchajun)       |
-| v2.7.0         | 2023-12-19             | Anthony Treuillier (GitHub: @antrema) |
-| v2.8.0         | 2024-04-22             | Zhang Peng (GitHub: @Gentleelephant)  |
-| v2.9.0         | 2024-06-13             | Elon Cheng (GitHub: @wenchajun)       |
-| v3.0.0         | 2024-07-09             | Elon Cheng (GitHub: @wenchajun)       |
-| v3.1.0         | 2024-08-14             | Zhang Peng (GitHub: @Gentleelephant)  |
-| v3.2.0         | 2024-09-21             | Chengwei Guo (GitHub: @cw-Guo)        |
+| release series | date (year-month-day) | release shepherd                      |
+| -------------- | --------------------- | ------------------------------------- |
+| v0.1.0         | 2020-02-17            | Guangzhe Huang (GitHub: @huanggze)    |
+| v0.2.0         | 2020-08-27            | Guangzhe Huang (GitHub: @huanggze)    |
+| v0.3.0         | 2020-11-10            | Guangzhe Huang (GitHub: @huanggze)    |
+| v0.4.0         | 2021-04-01            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.5.0         | 2021-04-14            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.6.0         | 2021-06-03            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.6.1         | 2021-06-11            | Benjamin Huo (GitHub: @benjaminhuo)   |
+| v0.6.2         | 2021-06-11            | Benjamin Huo (GitHub: @benjaminhuo)   |
+| v0.7.0         | 2021-06-29            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.7.1         | 2021-07-09            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.8.0         | 2021-07-23            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.9.0         | 2021-08-13            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.10.0        | 2021-08-20            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.11.0        | 2021-09-01            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.12.0        | 2021-09-13            | Wanjun Lei (GitHub: @wanjunlei)       |
+| v0.13.0        | 2022-03-14            | Elon Cheng (GitHub: @wenchajun)       |
+| v1.0.0         | 2022-03-25            | Elon Cheng (GitHub: @wenchajun)       |
+| v1.0.1         | 2022-05-12            | Elon Cheng (GitHub: @wenchajun)       |
+| v1.0.2         | 2022-05-17            | Elon Cheng (GitHub: @wenchajun)       |
+| v1.1.0         | 2022-06-15            | Elon Cheng (GitHub: @wenchajun)       |
+| v1.5.0         | 2022-09-24            | Elon Cheng (GitHub: @wenchajun)       |
+| v1.5.1         | 2022-09-30            | Elon Cheng (GitHub: @wenchajun)       |
+| v1.6.0         | 2022-10-25            | Elon Cheng (GitHub: @wenchajun)       |
+| v1.6.1         | 2022-10-31            | Elon Cheng (GitHub: @wenchajun)       |
+| v1.7.0         | 2022-11-23            | Elon Cheng (GitHub: @wenchajun)       |
+| v2.0.0         | 2023-02-03            | Elon Cheng (GitHub: @wenchajun)       |
+| v2.0.1         | 2023-02-08            | Elon Cheng (GitHub: @wenchajun)       |
+| v2.1.0         | 2023-03-13            | Elon Cheng (GitHub: @wenchajun)       |
+| v2.2.0         | 2023-04-07            | Elon Cheng (GitHub: @wenchajun)       |
+| v2.3.0         | 2023-06-05            | Elon Cheng (GitHub: @wenchajun)       |
+| v2.4.0         | 2023-07-19            | Elon Cheng (GitHub: @wenchajun)       |
+| v2.5.0         | 2023-09-13            | Elon Cheng (GitHub: @wenchajun)       |
+| v2.6.0         | 2023-11-22            | Elon Cheng (GitHub: @wenchajun)       |
+| v2.7.0         | 2023-12-19            | Anthony Treuillier (GitHub: @antrema) |
+| v2.8.0         | 2024-04-22            | Zhang Peng (GitHub: @Gentleelephant)  |
+| v2.9.0         | 2024-06-13            | Elon Cheng (GitHub: @wenchajun)       |
+| v3.0.0         | 2024-07-09            | Elon Cheng (GitHub: @wenchajun)       |
+| v3.1.0         | 2024-08-14            | Zhang Peng (GitHub: @Gentleelephant)  |
+| v3.2.0         | 2024-09-21            | Chengwei Guo (GitHub: @cw-Guo)        |
 
 # How to cut a new release
 
@@ -68,10 +68,10 @@ For a new major or minor release, work from the `main` branch. For a patch relea
 
 Add an entry for the new version to the `CHANGELOG.md` file. Entries in the `CHANGELOG.md` should be in this order:
 
-* `[CHANGE]`
-* `[FEATURE]`
-* `[ENHANCEMENT]`
-* `[BUGFIX]`
+- `[CHANGE]`
+- `[FEATURE]`
+- `[ENHANCEMENT]`
+- `[BUGFIX]`
 
 Create a PR for the changes to be reviewed.
 
@@ -83,6 +83,7 @@ From now on, all work happens on the `release-<major>.<minor>` branch.
 Bump the version in the `VERSION` file in the root of the repository.
 
 Regenerate setup.yaml based on latest code and then commit the changed bundle.yaml to the `release-<major>.<minor>` branch:
+
 ```bash
 make manifests
 git add ./
@@ -108,6 +109,7 @@ tag="$(< VERSION)"
 git tag -a "${tag}" -m "${tag}"
 git push origin "${tag}"
 ```
+
 Commit all the changes.
 
 Finally, create a new release:
@@ -121,7 +123,38 @@ For patch releases, cherry-pick the commits from the release branch into the mas
 
 ### Publish updated Helm chart
 
-This repo includes a "development" chart in the [charts/](./charts/fluent-operator/) directory.  For each release, this chart must be published to the [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/) repository which is where Fluent Operators install the chart from.  This is currently a manual process.  Follow these instructions to update and publish the chart:
+This repo includes a "development" chart in the [charts/](./charts/fluent-operator/) directory. For each release, this chart must be published to the [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/) repository which is where Fluent Operators install the chart from. This is currently a manual process. Follow these instructions to update and publish the chart:
 
-* Bump `version` and `appVersion` in the [charts/fluet-operator/Chart.yaml](./charts/fluent-operator/Chart.yaml) file in this repo
-* Manually "sync" (copy, open a PR) the local [chart](./charts/fluent-operator) to [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/)
+- Bump `version` and `appVersion` in the [charts/fluet-operator/Chart.yaml](./charts/fluent-operator/Chart.yaml) file in this repo
+- Manually "sync" (copy, open a PR) the local [chart](./charts/fluent-operator) to [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/)
+
+# Automations
+
+## Bump fluent-bit version
+
+To bump the fluent-bit version, you can run the [pipeline](https://github.com/fluent/fluent-operator/actions/workflows/bump-fluent-bit-version.yaml), by simply providing a x.y.z version number. You can check the [fluent-bit releases](https://github.com/fluent/fluent-bit/releases) to get the version number.
+
+Or you can run the following command. Note that we need to remove the leading 'v'.
+
+```bash
+curl --silent "https://api.github.com/repos/fluent/fluent-bit/releases/latest" |
+grep '"tag_name":' |
+sed -E 's/.*"([^"]+)".*/\1/'
+```
+
+The pipeline will use sed to replace the outdated fluent-bit version with the wanted one. A list of files can be found below:
+
+- cmd/fluent-watcher/fluentbit/VERSION
+- config/samples/fluentbit_v1alpha2_fluentbit.yaml
+- docs/best-practice/forwarding-logs-via-http/deploy/fluentbit-fluentBit.yaml
+- manifests/kubeedge/fluentbit-fluentbit-edge.yaml
+- manifests/logging-stack/fluentbit-fluentBit.yaml
+- manifests/quick-start/fluentbit.yaml
+- manifests/regex-parser/fluentbit-fluentBit.yaml
+- charts/fluent-operator/values.yaml
+
+After the pipeline finishes, we just need to review and merge the pull requests.
+
+## Build the fluent-watcher image for fluent-bit
+
+This [pipeline](https://github.com/fluent/fluent-operator/actions/workflows/build-fb-image.yaml) is used to build the image. It will read the version number from `cmd/fluent-watcher/fluentbit/VERSION`, which can be update automatically via the [pipeline](#bump-fluent-bit-version).
