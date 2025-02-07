@@ -467,6 +467,10 @@ func (o *Output) elasticsearchPluginCommon(common *ElasticsearchCommon, parent *
 		parent.InsertPairs("reconnect_on_error", fmt.Sprint(*common.ReconnectOnError))
 	}
 
+	if common.ReloadAfter != nil {
+		parent.InsertPairs("reload_after", fmt.Sprint(*common.ReloadAfter))
+	}
+
 	if common.ReloadConnections != nil {
 		parent.InsertPairs("reload_connections", fmt.Sprint(*common.ReloadConnections))
 	}
@@ -477,6 +481,10 @@ func (o *Output) elasticsearchPluginCommon(common *ElasticsearchCommon, parent *
 
 	if common.RequestTimeout != nil {
 		parent.InsertPairs("request_timeout", fmt.Sprint(*common.RequestTimeout))
+	}
+
+	if common.SnifferClassName != nil {
+		parent.InsertPairs("sniffer_class_name", fmt.Sprint(*common.SnifferClassName))
 	}
 
 	if common.SuppressTypeName != nil {

@@ -43,6 +43,8 @@ type ElasticsearchCommon struct {
 	FailOnPuttingTemplateRetryExceeded *bool `json:"failOnPuttingTemplateRetryExceeded,omitempty"`
 	// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
 	ReconnectOnError *bool `json:"reconnectOnError,omitempty"`
+	// Optional, When ReloadConnections true, this is the integer number of operations after which the plugin will reload the connections. The default value is 10000.
+	ReloadAfter *uint32 `json:"reloadAfter,omitempty"`
 	// Optional, Automatically reload connection after 10000 documents (default: true)
 	ReloadConnections *bool `json:"reloadConnections,omitempty"`
 	// Optional, Indicates that the elasticsearch-transport will try to reload the nodes addresses if there is a failure while making the request, this can be useful to quickly remove a dead node from the list of addresses (default: false)
@@ -50,6 +52,8 @@ type ElasticsearchCommon struct {
 	// Optional, HTTP Timeout (default: 5)
 	// +kubebuilder:validation:Pattern:="^\\d+(s|m|h|d)$"
 	RequestTimeout *string `json:"requestTimeout,omitempty"`
+	// Optional, Provide a different sniffer class name
+	SnifferClassName *string `json:"snifferClassName,omitempty"`
 	// Optional, Suppress '[types removal]' warnings on elasticsearch 7.x
 	SuppressTypeName *bool `json:"suppressTypeName,omitempty"`
 	// Optional, Enable Index Lifecycle Management (ILM)
