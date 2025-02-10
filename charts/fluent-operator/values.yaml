@@ -192,8 +192,10 @@ fluentbit:
   #     mountPropagation: HostToContainer
   #     name: hostBuffer
 
-
   namespaceFluentBitCfgSelector: {}
+
+  # Configure the format of the config file to either classic or yaml. Default to classic when this value is not set
+  # configFileFormat: yaml
 
   # Set a limit of memory that Tail plugin can use when appending data to the Engine.
   # You can find more details here: https://docs.fluentbit.io/manual/pipeline/inputs/tail#config
