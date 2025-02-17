@@ -1,4 +1,4 @@
-name: Building Fluentd image
+name: Building Fluentd image (new)
 
 on:
   workflow_dispatch:
