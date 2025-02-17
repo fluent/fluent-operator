@@ -1,0 +1,185 @@
+name: Building Fluentd image
+
+on:
+  workflow_dispatch:
+    inputs:
+      docker_tag_version:
+        description: 'Fluentd image release version'
+        required: true
+        default: '1.17.1'
+
+env:
+  DOCKER_IMAGE: 'fluentd'
+  GITHUB_IMAGE: '${{ github.repository }}/fluentd'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  determine-tags:
+    runs-on: ubuntu-latest
+    name: Determine image tags
+    outputs:
+      IMAGE_BASE_TAG: ${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
+      IMAGE_MAJOR_MINOR: ${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+
+    steps:
+      - name: Determine image version tag
+        id: determine-tags
+        run: |
+          VERSION=${{ github.event.inputs.docker_tag_version }}
+          VERSION_WITHOUT_V=${VERSION#v}
+          MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
+
+          if skopeo inspect docker://ghcr.io/${{ env.GITHUB_IMAGE }}:${VERSION}; then
+            echo "${VERSION} tag already exists, assuming we're building a patch release!"
+            LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GITHUB_IMAGE }} | grep -E "${VERSION}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
+            NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
+            IMAGE_BASE_TAG="${VERSION}-${NEW_PATCH_VERSION}"
+            echo "Building patch release ${IMAGE_BASE_TAG}!"
+          else
+            echo "${VERSION} tag does not exist, assuming we're building a new release!"
+            IMAGE_BASE_TAG="${VERSION}"
+          fi
+  
+          echo "IMAGE_BASE_TAG=$IMAGE_BASE_TAG" >> $GITHUB_OUTPUT
+          echo "IMAGE_MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_OUTPUT
+
+  build-amd64-prod-image-metadata:
+    needs:
+      - determine-tags
+    runs-on: ubuntu-latest
+    name: Build prod image metadata for amd64
+    outputs:
+      IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
+      version: ${{ steps.image-metadata.outputs.version }}
+      tags: ${{ steps.image-metadata.outputs.tags }}
+      labels: ${{ steps.image-metadata.outputs.labels }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: docker metadata for amd64
+        id: image-metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
+          flavor: |
+            latest=false
+            suffix=-amd64
+          tags: |
+            raw,latest
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+
+      - name: Set outputs
+        id: set-outputs
+        run: |
+          echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
+  
+  build-amd64:
+    runs-on: ubuntu-latest
+    needs: build-amd64-prod-image-metadata
+    timeout-minutes: 30
+    name: Build amd64 Image for Fluentd
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22.0
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push amd64 base Image for Fluentd
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: cmd/fluent-watcher/fluentd/Dockerfile.amd64
+          push: true
+          platforms: linux/amd64
+          tags: ${{ needs.build-amd64-prod-image-metadata.outputs.tags }}
+          labels: ${{ needs.build-amd64-prod-image-metadata.outputs.labels }}
+
+  prod-image-manifest:
+    needs: 
+      - determine-tags
+      - build-amd64-prod-image-metadata
+      - build-amd64
+    runs-on: ubuntu-latest
+    name: Create image manifest
+    outputs:
+      IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
+      DOCKER_IMG_NAME: ${{ steps.set-outputs.outputs.DOCKER_IMG_NAME }}
+      version: ${{ steps.image-metadata.outputs.version }}
+      tags: ${{ steps.image-metadata.outputs.tags }}
+      labels: ${{ steps.image-metadata.outputs.labels }}
+      release_tags: ${{ steps.image-tags.outputs.tags }}
+
+    steps:
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+              
+      - name: docker metadata for manifest
+        id: image-metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+        env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+          MAJOR_MINOR: ${{ env.MAJOR_MINOR }}
+      
+      - name: docker tags for cloning
+        id: image-tags
+        uses: docker/metadata-action@v5
+        with:
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            
+      - name: Set outputs
+        id: set-outputs
+        run: |
+          echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
+    
+      - name: Create image manifest
+        uses: int128/docker-manifest-create-action@v2
+        with:
+          push: true
+          tags: ${{ steps.image-metadata.outputs.tags }}
+          sources: |
+            ghcr.io/${{ needs.build-amd64-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-amd64-prod-image-metadata.outputs.version }}
