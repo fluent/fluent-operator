@@ -1,7 +1,6 @@
 name: Building Fluentd image (new)
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       docker_tag_version:
@@ -118,7 +117,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: cmd/fluent-watcher/fluentd/Dockerfile.amd64
+          file: cmd/fluent-watcher/fluentd/Dockerfile.amd64.new
           push: true
           platforms: linux/amd64
           tags: ${{ needs.build-amd64-prod-image-metadata.outputs.tags }}
