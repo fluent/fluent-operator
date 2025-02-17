@@ -119,7 +119,7 @@ jobs:
           context: .
           file: cmd/fluent-watcher/fluentd/Dockerfile.amd64.new
           push: true
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           tags: ${{ needs.build-image-metadata-amd64.outputs.tags }}
           labels: ${{ needs.build-image-metadata-amd64.outputs.labels }}
 
