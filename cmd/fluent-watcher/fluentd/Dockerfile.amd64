@@ -30,7 +30,6 @@ RUN apk update \
  && gem install async -v 1.30.3 \
  && gem install async-http -v 0.56.6 \
  && gem install fluentd -v 1.17.1 \
- && gem install bigdecimal -v 1.4.4 \
 # NOTE: resolv v0.2.1 includes the fix for CPU spike issue due to DNS resolver.
 # This hack is needed for Ruby 2.6.7, 2.7.3 and 3.0.1. (alpine image is still kept on 2.7.3)
  && gem install resolv -v 0.2.1 \
@@ -55,8 +54,16 @@ RUN apk update \
          fluent-plugin-cloudwatch-logs \
          fluent-plugin-datadog \
          fluent-plugin-prometheus \
+ && export GEM_DIR=$(ruby -e 'puts Gem.dir') \
+ && echo GEM_DIR=$GEM_DIR \
+ && rm -rf $GEM_DIR/cache/*.gem \
+ # Don't purge $GEM_DIR/gems/GEM/lib/GEM/ext because it might contain runtime .so (e.g json)
+ && find $GEM_DIR -maxdepth 3 -type d -name test -or -name ext -or -name spec -or -name benchmark | xargs -r rm -rfv \
+ && find $GEM_DIR -name "*.so" | xargs -r strip \
+ && gem install bigdecimal -v 1.4.4 \
  && apk del .build-deps \
- && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem /usr/lib/ruby/gems/2.*/gems/fluentd-*/test
+ && rm -rf /var/cache/apk/* \
+ && rm -rf /tmp/* /var/tmp/*
 
 RUN addgroup -S fluent && adduser -S -G fluent fluent \
     # for log storage (maybe shared with host)
