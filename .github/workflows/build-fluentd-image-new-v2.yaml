@@ -97,7 +97,7 @@ jobs:
           file: cmd/fluent-watcher/fluentd/Dockerfile.amd64.new
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.image-metadata.outputs.labels }}
-          outputs: type=image,"name=${{ env.GHCR_REPO }},push-by-digest=true,name-canonical=true,push=true"
+          outputs: type=image,"name=${{ env.GHCR_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
   manifest:
     name: Create image manifest
