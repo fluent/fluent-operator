@@ -50,8 +50,8 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     needs: determine-tags
     outputs:
+      matrix-digest: ${{ steps.matrix-digest.outputs.digest }}
       tags: ${{ steps.image-metadata.outputs.tags }}
-      digests: ${{ steps.build.outputs.digest }}
     strategy:
       fail-fast: false
       matrix:
@@ -99,6 +99,12 @@ jobs:
           labels: ${{ steps.image-metadata.outputs.labels }}
           outputs: type=image,"name=${{ env.GHCR_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
+      - name: Output digest for matrix
+        id: matrix-digest
+        run: |
+          digest="${{ steps.build.outputs.digest }}"
+          echo "digest=${digest}" >> $GITHUB_OUTPUT
+
   manifest:
     name: Create image manifest
     runs-on: ubuntu-latest
@@ -115,6 +121,6 @@ jobs:
         with:
           push: true
           tags: ${{ needs.build.outputs.tags }}
-          sources: ${{ needs.build.outputs.digests }}
+          sources: ${{ toJSON(needs.build.outputs.matrix-digest) }}
             
     

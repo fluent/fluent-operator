@@ -9,6 +9,8 @@ RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cm
 
 FROM fluent/fluentd:v1.17.1-debian-1.2
 
+LABEL org.opencontainers.image.description "A Fluentd image for use with fluent-operator"
+
 USER root
 
 RUN buildDeps="sudo make gcc g++ libc-dev" \
