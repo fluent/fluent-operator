@@ -17,7 +17,7 @@ permissions:
   packages: write
 
 jobs:
-  determine-tags:
+  determine-tags: 
     runs-on: ubuntu-latest
     name: Determine image tags
     outputs:
