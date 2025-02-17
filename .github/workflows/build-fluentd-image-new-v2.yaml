@@ -104,6 +104,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, determine-tags]
     steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
       - uses: int128/docker-manifest-create-action@v2
         with:
           push: true
