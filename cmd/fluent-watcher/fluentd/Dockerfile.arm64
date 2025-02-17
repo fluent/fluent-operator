@@ -7,38 +7,32 @@ WORKDIR /code
 RUN echo $(ls -al /code)
 RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
 
-# To set multiarch build for Docker hub automated build.
-FROM golang:alpine AS builderqemu
-WORKDIR /go
-ENV QEMU_DOWNLOAD_SHA256 5db25cccb40ac7b1ca857653b883376b931d91b06ff34ffe70dcf6180bd07bb8
-RUN apk add curl --no-cache
-RUN curl -sL -o qemu-6.0.0.balena1-aarch64.tar.gz https://github.com/balena-io/qemu/releases/download/v6.0.0%2Bbalena1/qemu-6.0.0.balena1-aarch64.tar.gz && echo "$QEMU_DOWNLOAD_SHA256 *qemu-6.0.0.balena1-aarch64.tar.gz" | sha256sum -c - | tar zxvf qemu-6.0.0.balena1-aarch64.tar.gz -C . && mv qemu-6.0.0+balena1-aarch64/qemu-aarch64-static .
-
-# Fluentd main image
-FROM arm64v8/ruby:3.4-slim-bullseye
-COPY --from=builderqemu /go/qemu-aarch64-static /usr/bin/
+FROM --platform=linux/arm64 arm64v8/ruby:3.4-slim-bookworm
+COPY --from=builder /go/qemu-aarch64-static /usr/bin/
+LABEL maintainer "Fluentd developers <fluentd@googlegroups.com>"
 LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.17.1"
-ENV TINI_VERSION=0.18.0
+ARG CROSS_BUILD_START="cross-build-start"
+ARG CROSS_BUILD_END="cross-build-end"
+RUN [ ${CROSS_BUILD_START} ]
 
 # Do not split this into multiple RUN!
 # Docker creates a layer for every RUN-Statement
 # therefore an 'apt-get purge' has no effect
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-            ca-certificates \
+            ca-certificates tini \
  && buildDeps=" \
       make gcc g++ libc-dev \
-      wget bzip2 gnupg dirmngr bash openssl build-essential  \
+      wget bzip2 gnupg dirmngr \
     " \
  && apt-get install -y --no-install-recommends $buildDeps \
  && echo 'gem: --no-document' >> /etc/gemrc \
- && gem install oj -v 3.13.22 \
- && gem install json -v 2.6.2 \
- && gem install rexml -v 3.2.5 \
- && gem install async -v 1.30.3 \
- && gem install async-http -v 0.56.6 \
+ && gem install oj -v 3.16.5 \
+ && gem install json -v 2.7.4 \
+ && gem install rexml -v 3.3.9 \
+ && gem install async -v 1.32.1 \
+ && gem install async-http -v 0.64.2 \
  && gem install fluentd -v 1.17.1 \
- && gem install bigdecimal -v 1.4.4 \
  && gem install resolv -v 0.2.1 \
  && gem install elasticsearch -v 7.13.3 \
  && gem install elasticsearch-xpack -v 7.13.3 \
@@ -58,17 +52,26 @@ RUN apt-get update \
          fluent-plugin-aws-elasticsearch-service \
          fluent-plugin-opensearch \
          fluent-plugin-datadog \
-         fluent-plugin-prometheus \
- && echo "plugin installed." \
+         fluent-plugin-prometheus \ 
+ && export GEM_DIR=$(ruby -e 'puts Gem.dir') \
+ && echo GEM_DIR=$GEM_DIR \
+ && rm -rf $GEM_DIR/cache/*.gem \
+ # Don't purge $GEM_DIR/gems/GEM/lib/GEM/ext because it might contain runtime .so (e.g json)
+ && find $GEM_DIR -maxdepth 3 -type d -name test -or -name ext -or -name spec -or -name benchmark | xargs -r rm -rfv \
+ && find $GEM_DIR -name "*.so" | xargs -r strip \
+ && dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
  && wget -O /tmp/jemalloc-5.3.0.tar.bz2 https://github.com/jemalloc/jemalloc/releases/download/5.3.0/jemalloc-5.3.0.tar.bz2 \
- && cd /tmp && tar -xjf jemalloc-5.3.0.tar.bz2 && cd jemalloc-5.3.0/ \
- && ./configure && make \
+ && cd /tmp && tar -xjf jemalloc-5.3.0.tar.bz2 --no-same-owner && cd jemalloc-5.3.0/ \
+ # Don't use MADV_FREE to reduce memory usage and improve stability
+ # https://github.com/fluent/fluentd-docker-image/pull/350
+ && (echo "je_cv_madv_free=no" > config.cache) && ./configure -C && make \
  && mv lib/libjemalloc.so.2 /usr/lib \
- && apt-get purge -y --allow-remove-essential --auto-remove \
+ && apt-get purge -y --auto-remove \
                   -o APT::AutoRemove::RecommendsImportant=false \
                   $buildDeps \
+                  '*-dev' \
  && rm -rf /var/lib/apt/lists/* \
- && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem /usr/lib/ruby/gems/2.*/gems/fluentd-*/test
+ && rm -rf /tmp/* /var/tmp/*
 
 RUN groupadd -r fluent && useradd -r -g fluent fluent \
     # for log storage (maybe shared with host)
