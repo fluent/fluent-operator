@@ -8,7 +8,7 @@ RUN curl -sL -o qemu-6.0.0.balena1-aarch64.tar.gz https://github.com/balena-io/q
 # Fluentd main image
 FROM arm64v8/ruby:3.4-slim-bullseye
 COPY --from=builderqemu /go/qemu-aarch64-static /usr/bin/
-LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.17.0"
+LABEL Description="Fluentd docker image" Vendor="Fluent Organization" Version="1.17.1"
 ENV TINI_VERSION=0.18.0
 
 # Do not split this into multiple RUN!
