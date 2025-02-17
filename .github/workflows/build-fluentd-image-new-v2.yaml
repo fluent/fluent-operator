@@ -1,7 +1,6 @@
 name: Building Fluentd image (new)
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       docker_tag_version:
