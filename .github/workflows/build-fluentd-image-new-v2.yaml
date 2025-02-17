@@ -9,7 +9,7 @@ on:
         default: '1.17.1'
 
 env:
-  GHCR_REPO: '${{ github.repository }}/fluentd'
+  GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluentd'
 
 permissions:
   contents: read
@@ -31,9 +31,9 @@ jobs:
           VERSION_WITHOUT_V=${VERSION#v}
           MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
 
-          if skopeo inspect docker://ghcr.io/${{ env.GHCR_REPO }}:${VERSION}; then
+          if skopeo inspect docker://${{ env.GHCR_REPO }}:${VERSION}; then
             echo "${VERSION} tag already exists, assuming we're building a patch release!"
-            LATEST_PATCH_VERSION=$(skopeo list-tags docker://ghcr.io/${{ env.GHCR_REPO }} | grep -E "${VERSION}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
+            LATEST_PATCH_VERSION=$(skopeo list-tags docker://${{ env.GHCR_REPO }} | grep -E "${VERSION}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
             IMAGE_BASE_TAG="${VERSION}-${NEW_PATCH_VERSION}"
             echo "Building patch release ${IMAGE_BASE_TAG}!"
@@ -81,7 +81,7 @@ jobs:
         id: image-metadata
         uses: docker/metadata-action@v5
         with:
-          images: "ghcr.io/${{ env.GHCR_REPO }}"
+          images: "${{ env.GHCR_REPO }}"
           flavor:
             latest=false
           tags: |
