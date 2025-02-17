@@ -46,11 +46,11 @@ jobs:
           echo "IMAGE_BASE_TAG=$IMAGE_BASE_TAG" >> $GITHUB_OUTPUT
           echo "IMAGE_MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_OUTPUT
 
-  build-amd64-prod-image-metadata:
+  build-image-metadata-amd64:
     needs:
       - determine-tags
     runs-on: ubuntu-latest
-    name: Build prod image metadata for amd64
+    name: Build image metadata (amd64)
     outputs:
       IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
       version: ${{ steps.image-metadata.outputs.version }}
@@ -83,14 +83,14 @@ jobs:
   
   build-amd64:
     runs-on: ubuntu-latest
-    needs: build-amd64-prod-image-metadata
+    needs: build-image-metadata-amd64
     timeout-minutes: 30
-    name: Build amd64 Image for Fluentd
+    name: Build image (amd64)
     steps:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.22.0
+          go-version: 1.24.0
 
       - uses: actions/cache@v4
         with:
@@ -120,13 +120,13 @@ jobs:
           file: cmd/fluent-watcher/fluentd/Dockerfile.amd64.new
           push: true
           platforms: linux/amd64
-          tags: ${{ needs.build-amd64-prod-image-metadata.outputs.tags }}
-          labels: ${{ needs.build-amd64-prod-image-metadata.outputs.labels }}
+          tags: ${{ needs.build-image-metadata-amd64.outputs.tags }}
+          labels: ${{ needs.build-image-metadata-amd64.outputs.labels }}
 
-  prod-image-manifest:
+  image-manifest:
     needs: 
       - determine-tags
-      - build-amd64-prod-image-metadata
+      - build-image-metadata-amd64
       - build-amd64
     runs-on: ubuntu-latest
     name: Create image manifest
@@ -182,4 +182,4 @@ jobs:
           push: true
           tags: ${{ steps.image-metadata.outputs.tags }}
           sources: |
-            ghcr.io/${{ needs.build-amd64-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-amd64-prod-image-metadata.outputs.version }}
+            ghcr.io/${{ needs.build-image-metadata-amd64.outputs.IMG_NAME }}:${{ needs.build-image-metadata-amd64.outputs.version }}
