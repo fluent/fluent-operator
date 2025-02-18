@@ -46,7 +46,7 @@ jobs:
           echo "IMAGE_MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_OUTPUT
 
   build:
-    name: Build/push image 
+    name: Build/push image (${{ matrix.platform }})
     runs-on: ${{ matrix.runs-on }}
     needs: determine-tags
     permissions:
