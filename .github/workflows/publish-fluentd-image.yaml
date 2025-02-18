@@ -65,7 +65,7 @@ jobs:
           - linux/arm64
         include:
           - runs-on: ubuntu-latest
-          - runs-on: ubuntu-24.04-arm
+          - runs-on: ubuntu-24.04-arm # Builds arm64 on arm64 hosts 
             platform: linux/arm64
     steps:
       - uses: actions/checkout@v4
