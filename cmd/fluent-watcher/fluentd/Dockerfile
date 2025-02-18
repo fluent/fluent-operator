@@ -9,7 +9,7 @@ RUN echo $(ls -al /code)
 RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
 
 # See https://github.com/fluent/fluentd-docker-image/issues/425
-FROM fluent/fluentd:${FLUENTD_BASE_VERSION}-debian-1
+FROM fluent/fluentd:${FLUENTD_BASE_VERSION}-debian-1.0
 
 LABEL org.opencontainers.image.description "A Fluentd image for use with fluent-operator"
 
