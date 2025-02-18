@@ -1,7 +1,6 @@
 name: Publish Fluentd image 
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       docker_tag_version:
@@ -11,7 +10,7 @@ on:
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluentd'
-  DOCKERHUB_REPO: 'kubesphere/fluentd'
+  DOCKERHUB_REPO: 'joshuabaird/fluentd'
 
 permissions:
   contents: read
@@ -47,7 +46,7 @@ jobs:
       - name: Determine image version tag
         id: determine-tags
         run: |
-          VERSION=${{ github.event.inputs.docker_tag_version }}
+          VERSION=${{ needs.get-version.outputs.VERSION }}
           VERSION_WITHOUT_V=${VERSION#v}
           MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
 
