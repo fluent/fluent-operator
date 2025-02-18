@@ -92,6 +92,8 @@ jobs:
             type=raw,value=latest
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
 
       - name: Build and push image
         id: build
@@ -126,7 +128,7 @@ jobs:
       - uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+          tags: ${{ needs.build.outputs.tags }}
           sources: | 
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}

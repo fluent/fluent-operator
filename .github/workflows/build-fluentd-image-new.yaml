@@ -180,6 +180,6 @@ jobs:
         uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ steps.image-metadata.outputs.tags }}
+          tags: ${{ env.GHCR_REPO }}:${{ steps.image-metadata.outputs.tags }}
           sources: |
             ghcr.io/${{ needs.build-image-metadata-amd64.outputs.IMG_NAME }}:${{ needs.build-image-metadata-amd64.outputs.version }}
