@@ -117,10 +117,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           
+      - name: Format matrix digests
+        id: format-digests
+        run: |
+          # Convert matrix output to newline-separated list
+          echo "${{ needs.build.outputs.matrix-digest }}" | tr ' ' '\n' > digests.txt
+          FORMATTED_DIGESTS=$(cat digests.txt)
+          echo "digests<<EOF" >> $GITHUB_OUTPUT
+          echo "$FORMATTED_DIGESTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ needs.build.outputs.tags }}
-          sources: ${{ toJSON(needs.build.outputs.matrix-digest) }}
+          tags: ${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+          sources: ${{ steps.format-digests.outputs.digests }}
             
     
