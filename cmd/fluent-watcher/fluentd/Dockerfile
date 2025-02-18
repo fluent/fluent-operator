@@ -1,3 +1,4 @@
+ARG FLUENTD_BASE_VERSION
 FROM golang:1.24.0 as builder
 
 RUN mkdir -p /fluentd
