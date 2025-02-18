@@ -1,6 +1,7 @@
 name: Publish Fluentd image 
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       docker_tag_version:
@@ -17,7 +18,25 @@ permissions:
   packages: write
 
 jobs:
+  get-version:
+    name: Fetch fluentd version 
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.get-version.outputs.VERSION }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      
+      - name: Read fluentd version from VERSION file
+        id: get-version
+        run: |
+          VERSION=$(cat cmd/fluent-watcher/fluentd/VERSION)
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+
   determine-tags: 
+    needs: [get-version]
     runs-on: ubuntu-latest
     name: Determine image tags
     outputs:
@@ -49,7 +68,7 @@ jobs:
   build:
     name: Build/push image (${{ matrix.platform }})
     runs-on: ${{ matrix.runs-on }}
-    needs: determine-tags
+    needs: [get-version,determine-tags]
     permissions:
       actions: read
       packages: write
@@ -114,6 +133,8 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.image-metadata.outputs.labels }}
           provenance: false
+          build-args:
+            FLUENTD_BASE_VERSION=${{ needs.get-version.outputs.VERSION }}
           outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests

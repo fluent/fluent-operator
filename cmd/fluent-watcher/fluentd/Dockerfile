@@ -7,7 +7,7 @@ WORKDIR /code
 RUN echo $(ls -al /code)
 RUN CGO_ENABLED=0 go build -ldflags '-w -s' -o /fluentd/fluentd-watcher /code/cmd/fluent-watcher/fluentd/main.go
 
-FROM fluent/fluentd:v1.17.1-debian-1.2
+FROM fluent/fluentd:${FLUENTD_BASE_VERSION}
 
 LABEL org.opencontainers.image.description "A Fluentd image for use with fluent-operator"
 
