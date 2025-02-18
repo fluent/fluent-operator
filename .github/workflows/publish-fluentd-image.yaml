@@ -52,7 +52,7 @@ jobs:
 
           if skopeo inspect docker://${{ env.GHCR_REPO }}:${VERSION}; then
             echo "${VERSION} tag already exists, assuming we're building a patch release!"
-            LATEST_PATCH_VERSION=$(skopeo list-tags docker://${{ env.GHCR_REPO }} | grep -E "${VERSION}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2)
+            LATEST_PATCH_VERSION=$(skopeo list-tags docker://${{ env.GHCR_REPO }} | grep -E "${VERSION}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2 | tr -d ',')
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
             IMAGE_BASE_TAG="${VERSION}-${NEW_PATCH_VERSION}"
             echo "Building patch release ${IMAGE_BASE_TAG}!"
