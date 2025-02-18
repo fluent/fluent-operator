@@ -176,10 +176,10 @@ jobs:
         run: |
           echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
     
-      - name: Create image manifest
+      - name: Publish image manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ env.GHCR_REPO }}:${{ steps.image-metadata.outputs.tags }}
+          tags: ${{ steps.image-metadata.outputs.tags }}
           sources: |
             ghcr.io/${{ needs.build-image-metadata-amd64.outputs.IMG_NAME }}:${{ needs.build-image-metadata-amd64.outputs.version }}
