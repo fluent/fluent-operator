@@ -2,11 +2,6 @@ name: Publish Fluentd image
 
 on:
   workflow_dispatch:
-    inputs:
-      docker_tag_version:
-        description: 'Fluentd image release version'
-        required: true
-        default: '1.17.1'
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluentd'
