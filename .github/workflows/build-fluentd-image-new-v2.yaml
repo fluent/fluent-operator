@@ -1,3 +1,5 @@
+# TODO:  Switch REGISTRY_USER back to secret 
+
 name: Building Fluentd image (new)
 
 on:
@@ -86,14 +88,16 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ vars.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Configure image tags 
         id: image-metadata
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.GHCR_REPO }}
+          images: |
+            ${{ env.GHCR_REPO }}
+            ${{ env.DOCKERHUB_REPO }}
           flavor:
             latest=false
           tags: |
@@ -138,8 +142,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ vars.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Create image manifest
         uses: int128/docker-manifest-create-action@v2
