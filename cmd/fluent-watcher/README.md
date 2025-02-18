@@ -14,6 +14,6 @@ We strive to never overwrite existing image tags (eg, `ghcr.io/fluent/fluent-ope
 
 ## Building
 
-As a maintainer, to build the `ghcr.io/fluent/fluent-operator/fluent-bit` and `ghcr.io/fluent/fluent-operator/fluentd` images, you can run the "Build Fluent Bit image" or "Build Fluentd image" Github Action workflows in the "Actions" tab of this repository.
+As a maintainer, to build the `ghcr.io/fluent/fluent-operator/fluent-bit` and `ghcr.io/fluent/fluent-operator/fluentd` images, you can run the "Build Fluent Bit image" or "Publish Fluentd image" Github Action workflows in the "Actions" tab of this repository.
 
 Always specify the upstream Fluent Bit version (eg, `3.1.2`, `3.1.3`, etc) when running this workflow.  If the CI workflow detects that an image tag already exists for the version specified, it will assume that a patch release needs to be built and will automatically add a patch version to the image tag (eg, `3.1.2-1`, `3.1.2-2`, etc).
