@@ -51,6 +51,7 @@ jobs:
     needs: determine-tags
     permissions:
       actions: read
+      packages: write
     outputs:
       digests: ${{ steps.matrix-output.outputs.json }}
       tags: ${{ steps.image-metadata.outputs.tags }}
