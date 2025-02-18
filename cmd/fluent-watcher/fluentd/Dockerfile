@@ -43,8 +43,8 @@ RUN buildDeps="sudo make gcc g++ libc-dev" \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
- COPY ./cmd/fluent-watcher/fluentd/base/fluent.conf /fluentd/etc/
- COPY ./cmd/fluent-watcher/fluentd/app/app.conf /fluentd/etc/
+ COPY ./cmd/fluent-watcher/fluentd/etc/fluent.conf /fluentd/etc/
+ COPY ./cmd/fluent-watcher/fluentd/etc/app.conf /fluentd/etc/
  
  COPY --from=builder /fluentd/fluentd-watcher /fluentd/bin/fluentd-watcher
 
