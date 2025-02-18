@@ -10,7 +10,7 @@ on:
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluentd'
-  DOCKERHUB_REPO: 'joshuabaird/fluent-operator/fluentd'
+  DOCKERHUB_REPO: 'joshuabaird/fluentd'
 
 permissions:
   contents: read
