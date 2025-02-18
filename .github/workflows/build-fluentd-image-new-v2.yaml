@@ -1,6 +1,4 @@
-# TODO:  Switch REGISTRY_USER back to secret 
-
-name: Building Fluentd image (new)
+name: Publish Fluentd image 
 
 on:
   workflow_dispatch:
@@ -12,7 +10,7 @@ on:
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluentd'
-  DOCKERHUB_REPO: 'joshuabaird/fluentd'
+  DOCKERHUB_REPO: 'kubesphere/fluentd'
 
 permissions:
   contents: read
@@ -88,7 +86,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: docker.io
-          username: ${{ vars.REGISTRY_USER }}
+          username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Configure image tags 
@@ -142,14 +140,14 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: docker.io
-          username: ${{ vars.REGISTRY_USER }}
+          username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Create image manifest
         uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ needs.build.outputs.tags }}
+          tags: ${{ needs.build.outputs.tags }} # Includes GHCR and Docker Hub 
           sources: | 
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}
