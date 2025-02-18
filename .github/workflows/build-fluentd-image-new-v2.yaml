@@ -53,7 +53,8 @@ jobs:
       actions: read
       packages: write
     outputs:
-      digests: ${{ steps.matrix-output.outputs.json }}
+      digest_amd64: ${{ steps.output-digests.outputs.amd64 }}
+      digest_arm64: ${{ steps.output-digests.outputs.arm64 }}
       tags: ${{ steps.image-metadata.outputs.tags }}
     strategy:
       fail-fast: false
@@ -102,12 +103,13 @@ jobs:
           labels: ${{ steps.image-metadata.outputs.labels }}
           outputs: type=image,"name=${{ env.GHCR_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
-      - name: Export image digests
-        uses: beacon-biosignals/matrix-output@v1
-        id: matrix-output
-        with: 
-          yaml: |
-            digest: ${{ steps.build.outputs.digest }}
+      - name: Output image digests
+        id: output-digests
+        run: |
+          platform="${{ matrix.platform }}"
+          # Convert "linux/amd64" to just amd64 for the output variable name
+          arch=${platform#linux/}
+          echo "${arch}=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
 
   manifest:
     name: Create image manifest
@@ -126,6 +128,7 @@ jobs:
           push: true
           tags: ${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
           sources: | 
-            ${{ fromJSON(needs.build.outputs.digests) }}
+            ${{ needs.build.outputs.digest_amd64 }}
+            ${{ needs.build.outputs.digest_arm64 }}
             
     
