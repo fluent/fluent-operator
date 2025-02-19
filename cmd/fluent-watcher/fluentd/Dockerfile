@@ -18,7 +18,7 @@ USER root
 RUN buildDeps="sudo make gcc g++ libc-dev" \
  && apt-get update \
  && apt-get install -y --no-install-recommends $buildDeps \
- && sudo gem install \
+ && gem install \
         fluent-plugin-s3 \
         fluent-plugin-grok-parser \
         fluent-plugin-rewrite-tag-filter \
@@ -35,17 +35,28 @@ RUN buildDeps="sudo make gcc g++ libc-dev" \
         fluent-plugin-cloudwatch-logs \
         fluent-plugin-datadog \
         fluent-plugin-prometheus \
- && sudo gem sources --clear-all \
- && SUDO_FORCE_REMOVE=yes \
-    apt-get purge -y --auto-remove \
+ && gem sources --clear-all \
+ && apt-get purge -y --auto-remove \
                   -o APT::AutoRemove::RecommendsImportant=false \
                   $buildDeps \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
+#  RUN groupadd -r fluent && useradd -r -g fluent fluent \
+#     # for log storage (maybe shared with host)
+#     && mkdir -p /fluentd/log \
+#     # configuration/plugins path (default: copied from .)
+#     && mkdir -p /fluentd/etc /fluentd/plugins \
+#     && chown -R fluent /fluentd && chgrp -R fluent /fluentd
+
  COPY ./cmd/fluent-watcher/fluentd/etc/fluent.conf /fluentd/etc/
  COPY ./cmd/fluent-watcher/fluentd/etc/app.conf /fluentd/etc/
  
  COPY --from=builder /fluentd/fluentd-watcher /fluentd/bin/fluentd-watcher
+
+#  ENV FLUENTD_CONF="fluent.conf"
+#  ENV LD_PRELOAD="/usr/lib/libjemalloc.so.2"
+
+ USER fluent
 
  ENTRYPOINT ["/fluentd/bin/fluentd-watcher"]
