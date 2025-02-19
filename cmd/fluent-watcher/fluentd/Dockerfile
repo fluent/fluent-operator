@@ -15,7 +15,7 @@ LABEL org.opencontainers.image.description "A Fluentd image for use with fluent-
 
 USER root
 
-RUN buildDeps="sudo make gcc g++ libc-dev" \
+RUN buildDeps="make gcc g++ libc-dev" \
  && apt-get update \
  && apt-get install -y --no-install-recommends $buildDeps \
  && gem install \
