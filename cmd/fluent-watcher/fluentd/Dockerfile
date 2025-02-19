@@ -42,13 +42,6 @@ RUN buildDeps="make gcc g++ libc-dev" \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
-#  RUN groupadd -r fluent && useradd -r -g fluent fluent \
-#     # for log storage (maybe shared with host)
-#     && mkdir -p /fluentd/log \
-#     # configuration/plugins path (default: copied from .)
-#     && mkdir -p /fluentd/etc /fluentd/plugins \
-#     && chown -R fluent /fluentd && chgrp -R fluent /fluentd
-
  COPY ./cmd/fluent-watcher/fluentd/etc/fluent.conf /fluentd/etc/
  COPY ./cmd/fluent-watcher/fluentd/etc/app.conf /fluentd/etc/
  
@@ -57,6 +50,6 @@ RUN buildDeps="make gcc g++ libc-dev" \
 #  ENV FLUENTD_CONF="fluent.conf"
 #  ENV LD_PRELOAD="/usr/lib/libjemalloc.so.2"
 
- USER fluent
+#  USER fluent
 
  ENTRYPOINT ["/fluentd/bin/fluentd-watcher"]
