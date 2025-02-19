@@ -47,9 +47,6 @@ RUN buildDeps="make gcc g++ libc-dev" \
  
  COPY --from=builder /fluentd/fluentd-watcher /fluentd/bin/fluentd-watcher
 
-#  ENV FLUENTD_CONF="fluent.conf"
-#  ENV LD_PRELOAD="/usr/lib/libjemalloc.so.2"
-
-#  USER fluent
+ USER fluent
 
  ENTRYPOINT ["/fluentd/bin/fluentd-watcher"]
