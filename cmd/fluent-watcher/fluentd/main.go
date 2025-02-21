@@ -20,7 +20,7 @@ import (
 )
 
 const (
-	defaultBinPath      = "/usr/bin/fluentd"
+	defaultBinPath      = "/usr/local/bundle/bin/fluentd"
 	defaultArm64BinPath = "/usr/local/bundle/bin/fluentd"
 	defaultCfgPath      = "/fluentd/etc/fluent.conf"
 	defaultWatchDir     = "/fluentd/etc"
