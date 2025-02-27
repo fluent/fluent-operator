@@ -1,3 +1,69 @@
+## 3.3.0 / 2025-02-27
+### Features
+- Add skip empty lines in tail input (#1352) @smallc2009
+- Update the module path to github.com/fluent/fluent-operator/v3 (#1355) @jiuxia211
+- Update fluentd image references (#1357) @reegnz
+- Update fluent-bit to 3.1.8 (#1356) @reegnz
+- Remove influxdb host validation in ClusterOutput (#1363) @smallc2009
+- Add release-tool workflow to generate release PR (#1362) @cw-Guo
+- Align CRDs with fluentbit out_azure (#1371) @felfa01
+- Support rollout restart for daemonset and statefulset (#1375) @cw-Guo
+- Add namespaceClusterFbCfg to ClusterFluentBitConfig custom resource (#1382) @btalakola
+- Add affinity support for fluent-operator deployment (#1401) @smallc2009
+- Add support for logs_body_key parameter on Opentelemetry output (#1411) @yilmazo
+- Add HostAliases support to Fluent Bit and Fluentd specifications (#1413) @MioOgbeni
+- Add rdkafka gem installation to Dockerfiles for fluent-watcher (#1415) @MioOgbeni
+- Add filter ordinals (#1386) @reegnz
+- Support fluentbit tail offsetKey parameters (#1437) @cw-Guo
+- Add additional params for input & output APIs and retry_limit for default loki output (#1442) @chrono2002
+- Add VERSION file for fluentbit image (#1447) @cw-Guo
+- Add pipeline to bump fluent bit version (#1448) @cw-Guo
+- Add envFrom support for fluentd daemonset and statefulsets (#1458) @thapabishwa
+- Add livenessProbe to FluentBit template (#1460) @CharlieR-o-o-t
+- Add support for reload_after, sniffer_class_name es output parameters (#1462) @penekk
+
+### ENHANCEMENT
+- Fix indentation bug (#1360) @harshvora10101
+- Fix documentation links (#1361) @reegnz
+- Update helm chart version and clarify helm-related docs (#1378) @joshuabaird
+- Add README to Helm chart (#1381) @joshuabaird
+- Change fluentbit flushSeconds type to float64 (#1406) @jjsiv
+- Improve pipelines and add documents (#1450) @cw-Guo
+- Support setting configFileFormat in helmchart (#1466) @truongnht
+- Bump fluent-bit to 3.2.5 (#1464) @github-actions
+- Re-factor fluentd CI workflows (#1472) @joshuabaird
+- Update fluentd to v1.17.1 (#1478) @joshuabaird
+
+### Dependencies
+- Bump golang from 1.22.6-alpine3.19 to 1.23.2-alpine3.19 in /cmd/fluent-manager (#1369) @dependabot
+- Bump golang from 1.22.6-alpine3.19 to 1.23.2-alpine3.19 in /cmd/fluent-watcher/fluentbit (#1368) @dependabot
+- Bump golang from 1.22.6-alpine3.19 to 1.23.2-alpine3.19 in /cmd/fluent-watcher/fluentd (#1367) @dependabot
+- Bump golang from 1.22.4 to 1.23.1 in /docs/best-practice/forwarding-logs-via-http (#1366) @dependabot
+- Bump github.com/onsi/gomega from 1.34.1 to 1.34.2 (#1331) @dependabot
+- Bump golang from 1.23.1 to 1.23.4 in /docs/best-practice/forwarding-logs-via-http (#1446) @dependabot
+- Bump helm/kind-action from 1.10.0 to 1.12.0 (#1445) @dependabot
+- Bump aquasecurity/trivy-action from 0.24.0 to 0.29.0 (#1426) @dependabot
+- Bump golang from 1.23.2-alpine3.19 to 1.23.4-alpine3.19 in /cmd/fluent-watcher/fluentbit (#1429) @dependabot
+- Bump golang from 1.23.2-alpine3.19 to 1.23.4-alpine3.19 in /cmd/fluent-manager (#1430) @dependabot
+- Bump golang from 1.23.2-alpine3.19 to 1.23.4-alpine3.19 in /cmd/fluent-watcher/fluentd (#1431) @dependabot
+- Bump alpine from 3.20 to 3.21 in /cmd/fluent-watcher/fluentd (#1434) @dependabot
+- Bump arm64v8/ruby from 3.3-slim-bullseye to 3.4-slim-bullseye in /cmd/fluent-watcher/fluentd (#1443) @dependabot
+- Bump actions/checkout from 3 to 4 (#1394) @dependabot
+- Bump github.com/fsnotify/fsnotify from 1.7.0 to 1.8.0 (#1396) @dependabot
+- Bump golang.org/x/net from 0.28.0 to 0.33.0 (#1467) @dependabot
+
+### BUGFIX
+- Fix missing cloudAuth/cloudId pair inserts (#1463) @penekk
+
+## New Contributors
+- @harshvora10101 made their first contribution in #1360
+- @btalakola made their first contribution in #1382
+- @yilmazo made their first contribution in #1411
+- @thapabishwa made their first contribution in #1458
+- @CharlieR-o-o-t made their first contribution in #1460
+- @penekk made their first contribution in #1462
+- @truongnht made their first contribution in #1466
+
 ## 3.2.0 / 2024-09-21
 ### Features
 - Expose args and command attributes for FluentBit CRD (#1350) @reegnz
