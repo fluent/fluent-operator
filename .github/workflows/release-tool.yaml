@@ -78,6 +78,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           title: "Release ${{ github.event.inputs.version }}"
+          signoff: true
           body: |
             This PR updates the version to ${{ github.event.inputs.version }} in the following files:
             - manifests/setup/fluent-operator-deployment.yaml
@@ -88,3 +89,5 @@ jobs:
             Please review and merge to release the new version.
           branch: release-${{ github.event.inputs.version }}-work
           base: release-${{ github.event.inputs.version }}
+          labels: |
+            release
