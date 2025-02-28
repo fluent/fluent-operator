@@ -24,7 +24,7 @@ operator:
         memory: 64Mi
   container:
     repository: "kubesphere/fluent-operator"
-    tag: "latest"
+    tag: "v3.3.0"
   # If set to false, this will disable the creation of ClusterRole, ClusterRoleBinding,
   # Deployment, and ServiceAccount resources to avoid conflicts when deploying multiple instances. 
   enable: true
