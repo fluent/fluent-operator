@@ -5197,7 +5197,7 @@ spec:
                     minimum: 1
                     type: integer
                   compress:
-                    description: Set payload compression mechanism. Option available is 'gzip'
+                    description: Set payload compression mechanism. Option available  is 'gzip'
                     type: string
                   requireAckResponse:
                     description: |-
