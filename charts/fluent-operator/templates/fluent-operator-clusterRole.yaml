@@ -39,7 +39,6 @@ rules:
       - secrets
       - configmaps
       - serviceaccounts
-      - configmaps
       - services
       - namespaces
     verbs:
