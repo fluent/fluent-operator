@@ -1,14 +1,11 @@
 name: Publish Fluent-bit image 
 
 on:
-  #workflow_dispatch:
-  push:
-    branches:
-      - chore/fluentbit-ci-refactor
+  workflow_dispatch:
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-bit'
-  DOCKERHUB_REPO: 'kubesphere/fluent-bit'
+  DOCKERHUB_REPO: 'joshuabaird/fluent-bit'
 
 permissions:
   contents: read
@@ -102,8 +99,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: docker.io
-          username: ${{ secrets.REGISTRY_USER }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Configure image tags 
         id: image-metadata
@@ -143,7 +140,7 @@ jobs:
           echo "${arch}=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
 
   build-debug:
-    name: Build/push debugimage (${{ matrix.platform }})
+    name: Build/push debug image (${{ matrix.platform }})
     runs-on: ${{ matrix.runs-on }}
     needs: [get-version,determine-tags]
     permissions:
@@ -182,8 +179,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: docker.io
-          username: ${{ secrets.REGISTRY_USER }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Configure image tags 
         id: image-metadata
