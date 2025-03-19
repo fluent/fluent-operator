@@ -119,16 +119,16 @@ jobs:
           title: "Release v${{ needs.validate-and-prepare.outputs.version_without_v }}"
           body: |
             ## Release v${{ needs.validate-and-prepare.outputs.version_without_v }}
-            
+
             This PR updates version references for the v${{ needs.validate-and-prepare.outputs.version_without_v }} release.
-            
+
             ### Changes
             The following files have been updated:
             - manifests/setup/fluent-operator-deployment.yaml
             - manifests/setup/setup.yaml
             - charts/fluent-operator/values.yaml
             - VERSION
-            
+
             Please review the changes carefully before merging.
           branch: ${{ needs.validate-and-prepare.outputs.release_branch }}-work
           base: ${{ needs.validate-and-prepare.outputs.release_branch }}

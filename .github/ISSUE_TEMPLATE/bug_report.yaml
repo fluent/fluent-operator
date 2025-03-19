@@ -10,7 +10,7 @@ body:
         _The more information you share, the faster we can identify and fix the bug._
 
         Prior to opening the issue, please make sure that you:
-        
+
         - Check [CONTRIBUTING guideline](https://github.com/fluent/fluent-operator/blob/master/CONTRIBUTING.md) first and here is the list to help us investigate the problem.
         - Search the [open issues](https://github.com/fluent/fluent-operator/issues) and [discussion forum](https://github.com/fluent/fluent-operator/discussions) to avoid duplicating the issue.
   - type: textarea
@@ -39,8 +39,8 @@ body:
     attributes:
       label: Your Environment
       description: |
-        - Fluent Operator version: 
-        - Container Runtime: 
+        - Fluent Operator version:
+        - Container Runtime:
         - Operating system: `cat /etc/os-release`
         - Kernel version: `uname -r`
 

@@ -3,7 +3,7 @@
   on:
     workflow_call:
       inputs:
-        source_image: 
+        source_image:
           description: The source image to clone
           required: true
           type: string
@@ -28,7 +28,7 @@
           description: 'The tags to apply to the target image'
           required: false
           type: string
-      secrets: 
+      secrets:
         source_registry_token:
           description: The Github token or similar to authenticate with for the registry.
           required: true
@@ -41,7 +41,7 @@
         target_registry_username:
           description: The target registry username
           required: true
-  
+
   jobs:
     create-tags:
       runs-on: ubuntu-latest
@@ -62,7 +62,7 @@
 
             # Initialize an empty array
             JSON_TAGS="["
-            
+
             # Loop through each tag and append to the JSON array
             while read -r tag; do
               JSON_TAGS+="\"$tag\","
@@ -73,12 +73,12 @@
 
             # print the JSON array
             echo "TAGS=$JSON_TAGS"
-            
+
             # Output the JSON array
             echo "TAGS=$JSON_TAGS" >> $GITHUB_OUTPUT
-  
+
     push-image:
-      needs: 
+      needs:
         - create-tags
       strategy:
         matrix:

@@ -135,7 +135,7 @@ Install the latest stable version
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/release-3.3/manifests/setup/setup.yaml
 
-# You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch 
+# You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch
 # and then use command below to install to another namespace
 # kubectl kustomize manifests/setup/ | kubectl apply -f -
 ```
@@ -145,7 +145,7 @@ Install the development version
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/master/manifests/setup/setup.yaml
 
-# You can change the namespace in manifests/setup/kustomization.yaml 
+# You can change the namespace in manifests/setup/kustomization.yaml
 # and then use command below to install to another namespace
 # kubectl kustomize manifests/setup/ | kubectl apply -f -
 ```
@@ -161,13 +161,13 @@ export FLUENT_OPERATOR_CONTAINER_RUNTIME="containerd" # or "cri-o", "docker" dep
 
 helm repo add fluent https://fluent.github.io/helm-charts
 helm upgrade --install fluent-operator fluent/fluent-operator \
-  --create-namespace \ 
+  --create-namespace \
   --set containerRuntime=${FLUENT_OPERATOR_CONTAINER_RUNTIME}
 ```
 
-By default, all CRDs required for Fluent Operator will be installed.  To prevent `helm install` from installing CRDs, you can set `fluent-bit.crdsEnable` or `fluentd.crdsEnable` to `false`.  
+By default, all CRDs required for Fluent Operator will be installed.  To prevent `helm install` from installing CRDs, you can set `fluent-bit.crdsEnable` or `fluentd.crdsEnable` to `false`.
 
-Helm [does not manage the lifecycle of CRDs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/), so if the Fluent Operator CRDs already exist, subsequent 
+Helm [does not manage the lifecycle of CRDs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/), so if the Fluent Operator CRDs already exist, subsequent
 chart upgrades will not add or remove CRDs even if they have changed.  During upgrades, users should manually update CRDs:
 
 ```
@@ -193,7 +193,7 @@ This guide provisions a logging pipeline including the Fluent Bit DaemonSet and 
 ```shell
 kubectl apply -f manifests/logging-stack
 
-# You can change the namespace in manifests/logging-stack/kustomization.yaml 
+# You can change the namespace in manifests/logging-stack/kustomization.yaml
 # and then use command below to install to another namespace
 # kubectl kustomize manifests/logging-stack/ | kubectl apply -f -
 ```
@@ -228,7 +228,7 @@ The Linux audit framework provides a CAPP-compliant (Controlled Access Protectio
 ```shell
 kubectl apply -f manifests/logging-stack/auditd
 
-# You can change the namespace in manifests/logging-stack/auditd/kustomization.yaml 
+# You can change the namespace in manifests/logging-stack/auditd/kustomization.yaml
 # and then use command below to install to another namespace
 # kubectl kustomize manifests/logging-stack/auditd/ | kubectl apply -f -
 ```
@@ -240,14 +240,14 @@ $ curl localhost:9200/_cat/indices
 green open ks-logstash-log-2021.04.06 QeI-k_LoQZ2h1z23F3XiHg  5 1 404879 0 298.4mb 149.2mb
 ```
 
-### Fluentd 
+### Fluentd
 
 Fluentd acts as a log forward layer that receives logs from Fluent Bit or other Apps through the network.
 
 For more info on various use cases of Fluent Operator Fluentd CRDs, you can refer to [Fluent-Operator-Walkthrough](https://github.com/kubesphere-sigs/fluent-operator-walkthrough#fluent-bit--fluentd-mode).
 
 
-## Plugins 
+## Plugins
 
 ### Fluent Bit
 
@@ -296,10 +296,10 @@ If you want to learn more about Fluent-Operator, please refer to the [misc](docs
 
 ### Running
 
-Make sure you have a KUBECONFIG file loaded for your local developement kubernetes cluster. 
+Make sure you have a KUBECONFIG file loaded for your local developement kubernetes cluster.
 
 1. Install CRDs: `make install`
-2. `export NAMESPACE=something` to set the namespace for the operator 
+2. `export NAMESPACE=something` to set the namespace for the operator
 3. Run: `make run`
 
 ## Contributing
@@ -316,9 +316,9 @@ Most files under the folder [manifests/setup](manifests/setup) are automatically
 
 ### About the community
 
-Fluent Operator is sponsored and open-sourced by the [KubeSphere](http://kubesphere.io/) Team and maintained by the Fluent community. 
+Fluent Operator is sponsored and open-sourced by the [KubeSphere](http://kubesphere.io/) Team and maintained by the Fluent community.
 
-This project was accepted by the Fluent community as a sub-project in 2021 and is currently a vendor-neutral and community-driven project. 
+This project was accepted by the Fluent community as a sub-project in 2021 and is currently a vendor-neutral and community-driven project.
 
 ### Contact us
 

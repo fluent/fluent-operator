@@ -8,7 +8,7 @@
           required: true
           type: string
           default: '["linux/arm64", "linux/amd64"]'
-        source_image: 
+        source_image:
           description: The image to clone
           required: true
           type: string
@@ -16,14 +16,14 @@
           description: Image registry from which to pull the image
           required: true
           type: string
-      secrets: 
+      secrets:
         registry_password:
           description: The Github token or similar to authenticate with for the registry.
           required: true
         registry_username:
           description: The username to authenticate with for the registry.
           required: true
-  
+
   jobs:
     scan:
       strategy:
@@ -32,7 +32,7 @@
       runs-on: ubuntu-latest
       name: Trivy + Dockle image scan
       steps:
-            
+
         - name: Login to ${{ inputs.source_registry }}
           uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
           with:
@@ -43,7 +43,7 @@
         - name: Display platform
           run: |
             echo "Platform: ${{ matrix.platform }}"
-        
+
         - name: check docker image exists
           run: |
             docker pull --platform ${{ matrix.platform }} ${{ inputs.source_registry }}/${{ inputs.source_image }}
@@ -60,7 +60,7 @@
             trivy-config: trivy.yaml
           env:
             TRIVY_PLATFORM: ${{ matrix.platform }}
-        
+
         - name: Dockle - multi-arch
           uses: hands-lab/dockle-action@v1
           with:
