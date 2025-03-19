@@ -1,5 +1,7 @@
-ARG FLUENTD_BASE_VERSION
-FROM golang:1.24.0 as builder
+ARG FLUENTD_BASE_VERSION \
+    GO_VERSION=1.24.1
+
+FROM golang:${GO_VERSION} as builder
 
 RUN mkdir -p /fluentd
 RUN mkdir -p /code
@@ -44,7 +46,7 @@ RUN buildDeps="make gcc g++ libc-dev" \
 
  COPY ./cmd/fluent-watcher/fluentd/etc/fluent.conf /fluentd/etc/
  COPY ./cmd/fluent-watcher/fluentd/etc/app.conf /fluentd/etc/
- 
+
  COPY --from=builder /fluentd/fluentd-watcher /fluentd/bin/fluentd-watcher
 
  USER fluent
