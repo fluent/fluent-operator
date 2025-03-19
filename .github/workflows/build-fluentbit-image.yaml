@@ -1,7 +1,10 @@
 name: Publish Fluent-bit image 
 
 on:
-  workflow_dispatch:
+  #workflow_dispatch:
+  push:
+    branches:
+      - main
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-bit'
