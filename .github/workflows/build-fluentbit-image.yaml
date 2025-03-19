@@ -4,7 +4,7 @@ on:
   #workflow_dispatch:
   push:
     branches:
-      - main
+      - chore/fluentbit-ci-refactor
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-bit'
