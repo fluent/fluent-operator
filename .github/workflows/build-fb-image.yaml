@@ -79,7 +79,7 @@ jobs:
             
       - name: docker metadata for building
         id: image-metadata
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
           tags: |
@@ -91,7 +91,7 @@ jobs:
 
       - name: docker tags for cloning
         id: image-tags
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
           tags: |
             raw,latest
@@ -124,7 +124,7 @@ jobs:
 
       - name: docker metadata
         id: image-metadata
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
           flavor: |
@@ -138,7 +138,7 @@ jobs:
 
       - name: docker tags for cloning
         id: image-tags
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
           flavor: |
             latest=false
