@@ -190,7 +190,6 @@ jobs:
             ${{ env.GHCR_REPO }}
             ${{ env.DOCKERHUB_REPO }}
           flavor:
-            latest=false
             suffix=-debug
           tags: |
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
