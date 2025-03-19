@@ -1,6 +1,11 @@
 name: Building Fluent Bit image
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - cmd/fluent-watcher/fluentbit/VERSION
   workflow_dispatch:
 
 env:
