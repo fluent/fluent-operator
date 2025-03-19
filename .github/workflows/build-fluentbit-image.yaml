@@ -193,7 +193,6 @@ jobs:
             latest=false
             suffix=-debug
           tags: |
-            type=raw,value=latest
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
