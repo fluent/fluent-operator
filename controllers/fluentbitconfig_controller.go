@@ -157,7 +157,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 			var ns string
 			if cfg.Spec.Namespace != nil {
-				ns = fmt.Sprintf(*cfg.Spec.Namespace)
+				ns = fmt.Sprint(*cfg.Spec.Namespace)
 			} else {
 				ns = os.Getenv("NAMESPACE")
 			}
@@ -402,8 +402,8 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 		return ""
 	}
 	var buf bytes.Buffer
-	buf.WriteString(fmt.Sprintf("[Filter]\n"))
-	buf.WriteString(fmt.Sprintf("    Name    rewrite_tag\n"))
+	buf.WriteString(fmt.Sprintln("[Filter]"))
+	buf.WriteString(fmt.Sprintln("    Name    rewrite_tag"))
 	buf.WriteString(fmt.Sprintf("    Match    %s\n", tag))
 	buf.WriteString(
 		fmt.Sprintf(

@@ -18,13 +18,14 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -105,7 +106,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	var fluentdList fluentdv1alpha1.FluentdList
 	// List all fluentd instances to bind the generated runtime configuration to each fluentd
 	if err := r.List(ctx, &fluentdList); err != nil {
-		if errors.IsNotFound(err) {
+		if apierrors.IsNotFound(err) {
 			r.Log.Info("can not find fluentd CR definition.")
 			return ctrl.Result{Requeue: true, RequeueAfter: time.Duration(1)}, nil
 		}
@@ -146,13 +147,13 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			cfgResouces, errs := gpr.PatchAndFilterNamespacedLevelResources(sl, fmt.Sprintf("%s-%s-%s", fd.Kind, fd.Namespace, fd.Name), inputs, filters, outputs)
 			if len(errs) > 0 {
 				r.Log.Info("Patch and filter namespace level resources failed", "config", "default", "err", strings.Join(errs, ","))
-				return ctrl.Result{}, fmt.Errorf(strings.Join(errs, ","))
+				return ctrl.Result{}, errors.New(strings.Join(errs, ","))
 			}
 
 			err = gpr.IdentifyCopyAndPatchOutput(cfgResouces)
 			if err != nil {
 				r.Log.Info("IdentifyCopy and PatchOutput namespace level resources failed", "config", "default", "err", strings.Join(errs, ","))
-				return ctrl.Result{}, fmt.Errorf(strings.Join(errs, ","))
+				return ctrl.Result{}, errors.New(strings.Join(errs, ","))
 			}
 
 			// WithCfgResources will collect all plugins to generate main config
@@ -172,7 +173,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		var clustercfgs fluentdv1alpha1.ClusterFluentdConfigList
 		// Use fluentd selector to match the cluster config.
 		if err := r.List(ctx, &clustercfgs, client.MatchingLabelsSelector{Selector: fdSelector}); err != nil {
-			if !errors.IsNotFound(err) {
+			if !apierrors.IsNotFound(err) {
 				return ctrl.Result{}, err
 			}
 		}
@@ -184,7 +185,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		var cfgs fluentdv1alpha1.FluentdConfigList
 		// Use fluentd selector to match the cluster config
 		if err := r.List(ctx, &cfgs, client.MatchingLabelsSelector{Selector: fdSelector}); err != nil {
-			if !errors.IsNotFound(err) {
+			if !apierrors.IsNotFound(err) {
 				return ctrl.Result{}, err
 			}
 		}
