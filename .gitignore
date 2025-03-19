@@ -22,3 +22,5 @@ vendor/
 .vscode/
 
 testbin/
+
+.DS_Store
