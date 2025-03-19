@@ -265,7 +265,6 @@ jobs:
       registry_password: ${{ secrets.GITHUB_TOKEN }}
 
   release-prod-image-to-docker-hub:
-    if: ${{ github.event_name != 'pull_request' }}
     name: Release prod image to Docker Hub
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs:
@@ -285,7 +284,6 @@ jobs:
       target_registry_token: ${{ secrets.REGISTRY_PASSWORD }}
 
   release-debug-image-to-docker-hub:
-    if: ${{ github.event_name != 'pull_request' }}
     name: Release debug image to Docker Hub
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs:
