@@ -69,7 +69,7 @@ jobs:
     outputs:
       digest_amd64: ${{ steps.output-digests.outputs.amd64 }}
       digest_arm64: ${{ steps.output-digests.outputs.arm64 }}
-      tags: ${{ steps.image-metadata.outputs.tags }}
+      tags: ${{ steps.set-tags.outputs.tags }}
     strategy:
       fail-fast: false
       matrix:
@@ -116,7 +116,13 @@ jobs:
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}    
+
+      - name: Set tags output
+        id: set-tags
+        run: |
+          TAGS=$(echo '${{ steps.image-metadata.outputs.tags }}' | jq -R -s -c 'split("\n")')
+          echo "tags=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Debug metadata outputs
         run: |
@@ -173,7 +179,7 @@ jobs:
         uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ needs.build.outputs.tags }} # Includes GHCR and Docker Hub 
+          tags: ${{ fromJSON(needs.build.outputs.tags) }}
           sources: | 
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}
