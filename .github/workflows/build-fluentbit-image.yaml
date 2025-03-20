@@ -118,8 +118,12 @@ jobs:
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
 
-      - name: Output tags
-        run: echo "tags=${{ steps.image-metadata.outputs.tags }}" >> $GITHUB_OUTPUT
+      - name: Set job output
+        run: |
+          delimiter="EOF"
+          echo "tags<<$delimiter" >> $GITHUB_OUTPUT
+          echo "${{ steps.image-metadata.outputs.tags }}" >> $GITHUB_OUTPUT
+          echo "$delimiter" >> $GITHUB_OUTPUT
 
       - name: Build and push image
         id: build
