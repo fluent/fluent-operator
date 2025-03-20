@@ -173,6 +173,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Debug
+        run: |
+          echo "TAGS: ${{ needs.determine-tags.outputs.tags }}"
+
       - name: Create image manifest
         uses: int128/docker-manifest-create-action@v2
         with:
