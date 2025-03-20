@@ -1,5 +1,6 @@
+GO_VERSION=1.24.1
 # Build the manager binary
-FROM golang:1.23.4 as builder
+FROM golang:${GO_VERSION} as builder
 
 WORKDIR /
 COPY main.go /go/src/main.go
