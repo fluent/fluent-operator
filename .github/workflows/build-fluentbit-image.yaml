@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      VERSION: ${{ steps.determine-tags.outputs.VERSION }}
-      IMAGE_BASE_TAG: ${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
-      IMAGE_MAJOR_MINOR: ${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}      
+      version: ${{ steps.determine-tags.outputs.version }}
+      image-base-tag: ${{ steps.determine-tags.outputs.image-base-tag }}
+      image-major-minor: ${{ steps.determine-tags.outputs.image-major-minor }}      
       tags: ${{ steps.image-metadata.outputs.tags }}
       labels: ${{ steps.image-metadata.outputs.labels }}      
 
@@ -47,9 +47,9 @@ jobs:
             IMAGE_BASE_TAG="${VERSION}"
           fi
   
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "IMAGE_BASE_TAG=$IMAGE_BASE_TAG" >> $GITHUB_OUTPUT
-          echo "IMAGE_MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "image-base-tag=$IMAGE_BASE_TAG" >> $GITHUB_OUTPUT
+          echo "image-major-minor=$MAJOR_MINOR" >> $GITHUB_OUTPUT
 
       - name: Configure image tags 
         id: image-metadata
@@ -62,10 +62,10 @@ jobs:
               latest=false
             tags: |
               type=raw,value=latest
-              type=raw,value=${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
-              type=raw,value=v${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
-              type=raw,value=${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-              type=raw,value=v${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}            
+              type=raw,value=${{ steps.determine-tags.outputs.image-base-tag }}
+              type=raw,value=v${{ steps.determine-tags.outputs.image-base-tag }}
+              type=raw,value=${{ steps.determine-tags.outputs.image-major-minor }}
+              type=raw,value=v${{ steps.determine-tags.outputs.image-major-minor }}            
 
   build:
     name: Build/push image (${{ matrix.platform }})
@@ -119,7 +119,7 @@ jobs:
           labels: ${{ needs.build-info.outputs.labels }}
           provenance: false
           build-args:
-            FLUENT_BIT_BASE_VERSION=${{ needs.build-info.outputs.VERSION }}
+            FLUENT_BIT_BASE_VERSION=${{ needs.build-info.outputs.version }}
           outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests
