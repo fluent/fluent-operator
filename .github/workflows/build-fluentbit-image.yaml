@@ -5,7 +5,7 @@ on:
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-bit'
-  DOCKERHUB_REPO: 'joshuabaird/fluent-bot'
+  DOCKERHUB_REPO: 'joshuabaird/fluent-bit'
 
 permissions:
   contents: read
@@ -117,6 +117,11 @@ jobs:
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+
+      - name: Debug metadata outputs
+        run: |
+            echo "Tags: ${{ steps.image-metadata.outputs.tags }}"
+            echo "Raw tags output: ${{ toJSON(steps.image-metadata.outputs.tags) }}"            
 
       - name: Build and push image
         id: build
