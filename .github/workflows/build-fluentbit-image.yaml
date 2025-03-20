@@ -66,6 +66,7 @@ jobs:
         with:
             images: |
               ${{ env.GHCR_REPO }}
+              ${{ env.DOCKERHUB_REPO }}
             flavor:
               latest=false
             tags: |
