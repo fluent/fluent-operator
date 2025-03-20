@@ -118,26 +118,6 @@ jobs:
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}    
 
-      - name: Set tags output
-        id: set-tags
-        run: |
-          # Use delimiter syntax for multiline output
-          delimiter="EOF"
-          {
-            echo "tags<<$delimiter"
-            echo '${{ steps.image-metadata.outputs.tags }}'
-            echo "$delimiter"
-          } >> $GITHUB_OUTPUT
-
-      - name: Debug job outputs
-        run: |
-              echo "Debug: set-tags outputs:"
-              echo "tags: ${{ steps.set-tags.outputs.tags }}"
-              echo "Debug: metadata outputs:"
-              echo "tags: ${{ steps.image-metadata.outputs.tags }}"
-              echo "Debug: job outputs:"
-              echo "tags: ${{ job.outputs.tags }}"
-
       - name: Build and push image
         id: build
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
@@ -182,7 +162,7 @@ jobs:
         uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ needs.build.outputs.tags }}
+          tags: ${{ needs.build.outputs.tags_0 }}
           sources: | 
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}
