@@ -73,7 +73,7 @@ install-setup-envtest: ## Install the setup-envtest tool if it is not already in
 	fi
 
 setup-envtest: install-setup-envtest ## Download and set up the envtest binary
-	source <(setup-envtest use -p env) 
+	source <(setup-envtest use -p env)
 
 test: manifests generate fmt vet setup-envtest ## Run tests.
 	go test ./apis/... -coverprofile cover.out

@@ -95,7 +95,7 @@ jobs:
             - manifests/quick-start/fluentbit.yaml
             - manifests/regex-parser/fluentbit-fluentBit.yaml
             - charts/fluent-operator/values.yaml
-            
+
             Please review and merge to release the new version.
           branch: bump-fb-to-${{ github.event.inputs.version }}
           base: master

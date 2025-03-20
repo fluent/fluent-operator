@@ -1,4 +1,4 @@
-name: Publish Fluentd image 
+name: Publish Fluentd image
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   get-version:
-    name: Fetch fluentd version 
+    name: Fetch fluentd version
     runs-on: ubuntu-latest
     outputs:
       VERSION: ${{ steps.get-version.outputs.VERSION }}
@@ -22,14 +22,14 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: ${{ github.ref }}
-      
+
       - name: Read fluentd version from VERSION file
         id: get-version
         run: |
           VERSION=$(cat cmd/fluent-watcher/fluentd/VERSION)
           echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
 
-  determine-tags: 
+  determine-tags:
     needs: [get-version]
     runs-on: ubuntu-latest
     name: Determine image tags
@@ -55,7 +55,7 @@ jobs:
             echo "${VERSION} tag does not exist, assuming we're building a new release!"
             IMAGE_BASE_TAG="${VERSION}"
           fi
-  
+
           echo "IMAGE_BASE_TAG=$IMAGE_BASE_TAG" >> $GITHUB_OUTPUT
           echo "IMAGE_MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_OUTPUT
 
@@ -78,7 +78,7 @@ jobs:
           - linux/arm64
         include:
           - runs-on: ubuntu-latest
-          - runs-on: ubuntu-24.04-arm # Builds arm64 on arm64 hosts 
+          - runs-on: ubuntu-24.04-arm # Builds arm64 on arm64 hosts
             platform: linux/arm64
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -87,7 +87,7 @@ jobs:
         uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
         with:
           platforms: linux/amd64,linux/arm64
-    
+
       - name: Login to GHCR
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
@@ -102,7 +102,7 @@ jobs:
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Configure image tags 
+      - name: Configure image tags
         id: image-metadata
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
@@ -162,7 +162,7 @@ jobs:
         uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ needs.build.outputs.tags }} # Includes GHCR and Docker Hub 
-          sources: | 
+          tags: ${{ needs.build.outputs.tags }} # Includes GHCR and Docker Hub
+          sources: |
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}
