@@ -121,9 +121,21 @@ jobs:
       - name: Set tags output
         id: set-tags
         run: |
-          # Convert newlines to commas and wrap in quotes
-          TAGS=$(echo '${{ steps.image-metadata.outputs.tags }}' | tr '\n' ',' | sed 's/,$//')
-          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+            # Convert newlines to commas and wrap in quotes
+            TAGS=$(echo '${{ steps.image-metadata.outputs.tags }}' | tr '\n' ',' | sed 's/,$//')
+            echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+            echo "Debug: TAGS value is: ${TAGS}"
+            echo "Debug: GITHUB_OUTPUT content:"
+            cat $GITHUB_OUTPUT
+    
+      - name: Debug job outputs
+        run: |
+              echo "Debug: set-tags outputs:"
+              echo "tags: ${{ steps.set-tags.outputs.tags }}"
+              echo "Debug: metadata outputs:"
+              echo "tags: ${{ steps.image-metadata.outputs.tags }}"
+              echo "Debug: job outputs:"
+              echo "tags: ${{ job.outputs.tags }}"
 
       - name: Build and push image
         id: build
