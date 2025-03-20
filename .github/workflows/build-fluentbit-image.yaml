@@ -36,8 +36,8 @@ jobs:
     outputs:
       IMAGE_BASE_TAG: ${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
       IMAGE_MAJOR_MINOR: ${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-      tags: ${{ steps.determine-tags.outputs.tags }}
-      labels: ${{ steps.determine-tags.outputs.labels }}
+      tags: ${{ steps.image-metadata.outputs.tags }}
+      labels: ${{ steps.image-metadata.outputs.labels }}
     steps:
       - name: Determine image version tag
         id: determine-tags
