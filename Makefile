@@ -1,5 +1,13 @@
-VERSION?=$(shell cat VERSION | tr -d " \t\n\r")
-FB_VERSION?=$(shell cat cmd/fluent-watcher/fluentbit/VERSION | tr -d " \t\n\r")
+MAKEFLAGS = --warn-undefined-variables
+
+# Setting SHELL to bash allows bash commands to be executed by recipes.
+# This is a requirement for 'setup-envtest.sh' in the test target.
+# Options are set to exit when a recipe line exits non-zero or a piped command fails.
+SHELL = /usr/bin/env bash -o pipefail
+.SHELLFLAGS = -ec
+
+VERSION ?= $(shell cat VERSION | tr -d " \t\n\r")
+FB_VERSION ?= $(shell cat cmd/fluent-watcher/fluentbit/VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
 FB_IMG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}
 FB_IMG_DEBUG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}-debug
@@ -10,20 +18,14 @@ FD_IMG_BASE ?= ghcr.io/fluent/fluent-operator/fluentd:v1.17.0-arm64-base
 ARCH ?= arm64
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
-CRD_OPTIONS ?= "crd:generateEmbeddedObjectMeta=true,allowDangerousTypes=true"
+CRD_OPTIONS ?= crd:generateEmbeddedObjectMeta=true,allowDangerousTypes=true
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
-GOBIN=$(shell go env GOPATH)/bin
+	GOBIN = $(shell go env GOPATH)/bin
 else
-GOBIN=$(shell go env GOBIN)
+	GOBIN = $(shell go env GOBIN)
 endif
-
-# Setting SHELL to bash allows bash commands to be executed by recipes.
-# This is a requirement for 'setup-envtest.sh' in the test target.
-# Options are set to exit when a recipe line exits non-zero or a piped command fails.
-SHELL = /usr/bin/env bash -o pipefail
-.SHELLFLAGS = -ec
 
 all: build
 
@@ -86,10 +88,10 @@ binary:
 verify: verify-crds verify-codegen
 
 verify-crds:
-	chmod a+x ./hack/verify-crds.sh && ./hack/verify-crds.sh
+	./hack/verify-crds.sh
 
 verify-codegen:
-	chmod a+x ./hack/verify-codegen.sh && ./hack/verify-codegen.sh
+	./hack/verify-codegen.sh
 
 build: generate fmt vet ## Build manager binary.
 	go build -o bin/fluent-manager cmd/fluent-manager/main.go
@@ -134,7 +136,7 @@ build-fd-arm64: prepare-build
 
 # Prepare for arm64 building
 prepare-build:
-	chmod +x cmd/fluent-watcher/hooks/post-hook.sh && bash cmd/fluent-watcher/hooks/post-hook.sh
+	cmd/fluent-watcher/hooks/post-hook.sh
 
 # Push the amd64 docker image
 push-amd64:
@@ -193,10 +195,10 @@ docs-update: # update api docs
 	go run ./cmd/doc-gen/main.go
 
 e2e: ginkgo # make e2e tests
-	chmod a+x tests/scripts/fluentd_e2e.sh && bash tests/scripts/fluentd_e2e.sh
+	tests/scripts/fluentd_e2e.sh
 
 helm-e2e: ginkgo # make helm e2e tests
-	chmod a+x tests/scripts/fluentd_helm_e2e.sh && bash tests/scripts/fluentd_helm_e2e.sh
+	tests/scripts/fluentd_helm_e2e.sh
 
 update-helm-package: # update helm repo
-	chmod a+x ./hack/update-helm-package.sh && ./hack/update-helm-package.sh
+	./hack/update-helm-package.sh
