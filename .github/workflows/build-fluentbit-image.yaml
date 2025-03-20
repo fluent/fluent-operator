@@ -37,6 +37,7 @@ jobs:
       IMAGE_BASE_TAG: ${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
       IMAGE_MAJOR_MINOR: ${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
       tags: ${{ steps.determine-tags.outputs.tags }}
+      labels: ${{ steps.determine-tags.outputs.labels }}
     steps:
       - name: Determine image version tag
         id: determine-tags
@@ -117,22 +118,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    #   - name: Configure image tags 
-    #     id: image-metadata
-    #     uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
-    #     with:
-    #       images: |
-    #         ${{ env.GHCR_REPO }}
-    #         ${{ env.DOCKERHUB_REPO }}
-    #       flavor:
-    #         latest=false
-    #       tags: |
-    #         type=raw,value=latest
-    #         type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-    #         type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-    #         type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-    #         type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}    
-
       - name: Build and push image
         id: build
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
@@ -140,7 +125,7 @@ jobs:
           context: .
           file: cmd/fluent-watcher/fluentbit/Dockerfile
           platforms: ${{ matrix.platform }}
-          labels: ${{ steps.image-metadata.outputs.labels }}
+          labels: ${{ needs.determine-tags.outputs.labels }}
           provenance: false
           build-args:
             FLUENT_BIT_BASE_VERSION=${{ needs.get-version.outputs.VERSION }}
@@ -176,6 +161,7 @@ jobs:
       - name: Debug
         run: |
           echo "TAGS: ${{ needs.determine-tags.outputs.tags }}"
+          echo "LABELS: ${{ needs.determine-tags.outputs.labels }}"
 
       - name: Create image manifest
         uses: int128/docker-manifest-create-action@v2
