@@ -118,10 +118,8 @@ jobs:
             type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
             type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
 
-      - name: Debug metadata outputs
-        run: |
-            echo "Tags: ${{ steps.image-metadata.outputs.tags }}"
-            echo "Raw tags output: ${{ toJSON(steps.image-metadata.outputs.tags) }}"            
+      - name: Output tags
+        run: echo "tags=${{ steps.image-metadata.outputs.tags }}" >> $GITHUB_OUTPUT
 
       - name: Build and push image
         id: build
