@@ -36,7 +36,7 @@ jobs:
     outputs:
       IMAGE_BASE_TAG: ${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
       IMAGE_MAJOR_MINOR: ${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-      TAGS: ${{ steps.determine-tags.outputs.tags }}
+      tags: ${{ steps.determine-tags.outputs.tags }}
     steps:
       - name: Determine image version tag
         id: determine-tags
@@ -84,7 +84,7 @@ jobs:
     outputs:
       digest_amd64: ${{ steps.output-digests.outputs.amd64 }}
       digest_arm64: ${{ steps.output-digests.outputs.arm64 }}
-      tags: ${{ steps.image-metadata.outputs.tags }}
+      # tags: ${{ steps.image-metadata.outputs.tags }}
     strategy:
       fail-fast: false
       matrix:
