@@ -121,8 +121,9 @@ jobs:
       - name: Set tags output
         id: set-tags
         run: |
-          TAGS=$(echo '${{ steps.image-metadata.outputs.tags }}' | jq -R -s -c 'split("\n")')
-          echo "tags=$TAGS" >> $GITHUB_OUTPUT
+          # Convert newlines to commas and wrap in quotes
+          TAGS=$(echo '${{ steps.image-metadata.outputs.tags }}' | tr '\n' ',' | sed 's/,$//')
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
       - name: Build and push image
         id: build
@@ -168,7 +169,7 @@ jobs:
         uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ fromJSON(needs.build.outputs.tags) }}
+          tags: ${{ needs.build.outputs.tags }}
           sources: | 
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}
