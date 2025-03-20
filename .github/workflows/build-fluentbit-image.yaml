@@ -150,11 +150,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, determine-tags]
     steps:
-      - name: Debug manifest job
-        run: |
-          echo "Build job tags: ${{ needs.build.outputs.tags }}"
-          echo "All build outputs: ${{ toJSON(needs.build.outputs) }}        
-
       - name: Login to GHCR
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
