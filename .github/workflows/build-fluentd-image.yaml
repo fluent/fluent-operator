@@ -5,7 +5,7 @@ on:
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluentd'
-  DOCKERHUB_REPO: 'joshuabaird/fluentd'
+  DOCKERHUB_REPO: 'kubesphere/fluentd'
 
 permissions:
   contents: read
@@ -99,8 +99,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Configure image tags 
         id: image-metadata
@@ -155,8 +155,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Create image manifest
         uses: int128/docker-manifest-create-action@v2
