@@ -36,7 +36,7 @@ jobs:
     outputs:
       IMAGE_BASE_TAG: ${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
       IMAGE_MAJOR_MINOR: ${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-
+      TAGS: ${{ steps.determine-tags.outputs.tags }}
     steps:
       - name: Determine image version tag
         id: determine-tags
@@ -58,6 +58,22 @@ jobs:
   
           echo "IMAGE_BASE_TAG=$IMAGE_BASE_TAG" >> $GITHUB_OUTPUT
           echo "IMAGE_MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_OUTPUT
+
+      - name: Configure image tags 
+        id: image-metadata
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
+        with:
+            images: |
+              ${{ env.GHCR_REPO }}
+              ${{ env.DOCKERHUB_REPO }}
+            flavor:
+              latest=false
+            tags: |
+              type=raw,value=latest
+              type=raw,value=${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
+              type=raw,value=v${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
+              type=raw,value=${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+              type=raw,value=v${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}            
 
   build:
     name: Build/push image (${{ matrix.platform }})
@@ -102,21 +118,21 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Configure image tags 
-        id: image-metadata
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
-        with:
-          images: |
-            ${{ env.GHCR_REPO }}
-            ${{ env.DOCKERHUB_REPO }}
-          flavor:
-            latest=false
-          tags: |
-            type=raw,value=latest
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}    
+    #   - name: Configure image tags 
+    #     id: image-metadata
+    #     uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
+    #     with:
+    #       images: |
+    #         ${{ env.GHCR_REPO }}
+    #         ${{ env.DOCKERHUB_REPO }}
+    #       flavor:
+    #         latest=false
+    #       tags: |
+    #         type=raw,value=latest
+    #         type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+    #         type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
+    #         type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+    #         type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}    
 
       - name: Build and push image
         id: build
@@ -162,7 +178,7 @@ jobs:
         uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: "TEST" # ${{ needs.build.outputs.tags_0 }}
+          tags: ${{ needs.determine-tags.outputs.tags }}
           sources: | 
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}
