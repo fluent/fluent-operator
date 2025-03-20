@@ -69,7 +69,7 @@ jobs:
     outputs:
       digest_amd64: ${{ steps.output-digests.outputs.amd64 }}
       digest_arm64: ${{ steps.output-digests.outputs.arm64 }}
-      tags: ${{ steps.set-tags.outputs.tags }}
+      tags: ${{ steps.image-metadata.outputs.tags }}
     strategy:
       fail-fast: false
       matrix:
