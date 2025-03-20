@@ -162,7 +162,7 @@ jobs:
         uses: int128/docker-manifest-create-action@v2
         with:
           push: true
-          tags: ${{ needs.build.outputs.tags_0 }}
+          tags: "TEST" # ${{ needs.build.outputs.tags_0 }}
           sources: | 
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}
