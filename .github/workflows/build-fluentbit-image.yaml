@@ -82,7 +82,7 @@ jobs:
               type=raw,value=${{ needs.build-info.outputs.image-major-minor }}
               type=raw,value=v${{ needs.build-info.outputs.image-major-minor }}   
 
-      - name: Configure image tags 
+      - name: Configure debugimage tags 
         id: debug-image-metadata
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
@@ -90,7 +90,6 @@ jobs:
             ${{ env.GHCR_REPO }}
             ${{ env.DOCKERHUB_REPO }}
           flavor:
-            latest=false
             suffix=-debug
           tags: |
             type=raw,value=latest
