@@ -14,7 +14,6 @@ env:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   build-info:
@@ -99,7 +98,7 @@ jobs:
   build:
     name: Build/push image (${{ matrix.platform }})
     runs-on: ${{ matrix.runs-on }}
-    needs: [build-info,build-tags]
+    needs: [build-info, build-tags]
     permissions:
       actions: read
       packages: write
@@ -155,16 +154,15 @@ jobs:
         id: output-digests
         run: |
           platform="${{ matrix.platform }}"
-          # Convert "linux/amd64" to just amd64 for the output variable name
+          # Convert "linux/amd64" or "linux/arm64" to just amd64 or arm64 for the output variable name
           arch=${platform#linux/}
           echo "${arch}=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
 
   build-debug:
     name: Build/push debug image (${{ matrix.platform }})
     runs-on: ${{ matrix.runs-on }}
-    needs: [build-info,build-tags]
+    needs: [build-info, build-tags]
     permissions:
-      actions: read
       packages: write
     outputs:
       digest_amd64: ${{ steps.output-digests.outputs.amd64 }}
@@ -225,7 +223,7 @@ jobs:
   manifest:
     name: Publish image manifests
     runs-on: ubuntu-latest
-    needs: [build, build-debug,build-tags]
+    needs: [build, build-debug, build-tags]
     steps:
       - name: Login to GHCR
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
