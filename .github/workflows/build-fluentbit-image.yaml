@@ -255,5 +255,4 @@ jobs:
           tags: ${{ needs.build-tags.outputs.debug-tags }}
           sources: | 
             ${{ env.GHCR_REPO }}@${{ needs.build-debug.outputs.digest_amd64 }}
-            ${{ env.GHCR_REPO }}@${{ needs.build-debug.outputs.digest_arm64 }}                        
-     
+            ${{ env.GHCR_REPO }}@${{ needs.build-debug.outputs.digest_arm64 }}
