@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-SCRIPT_ROOT=$(dirname "${BASH_SOURCE}")/..
+SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
 CRD_OPTIONS="crd:generateEmbeddedObjectMeta=true,allowDangerousTypes=true"
 
 DIFFROOT="${SCRIPT_ROOT}/config/crd/bases/"
@@ -21,8 +21,8 @@ cleanup
 mkdir -p "${TMP_DIFFROOT}"
 cp -a "${DIFFROOT}"/* "${TMP_DIFFROOT}"
 
-./bin/controller-gen $CRD_OPTIONS rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=config/crd/bases/
-./bin/controller-gen $CRD_OPTIONS rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=config/crd/bases/
+./bin/controller-gen "$CRD_OPTIONS" rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=config/crd/bases/
+./bin/controller-gen "$CRD_OPTIONS" rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=config/crd/bases/
 echo "diffing ${DIFFROOT} against freshly generated crds"
 ret=0
 diff -Naupr "${DIFFROOT}" "${TMP_DIFFROOT}" || ret=$?

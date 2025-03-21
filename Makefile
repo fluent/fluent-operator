@@ -47,6 +47,9 @@ help: ## Display this help.
 
 ##@ Development
 
+shellcheck:
+	@find . -type f -name *.sh -exec docker run --rm -v $(shell pwd):/mnt koalaman/shellcheck:stable {} +
+
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=config/crd/bases
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=config/crd/bases
@@ -69,7 +72,7 @@ ENVTEST_ASSETS_DIR=$(shell pwd)/testbin
 
 install-setup-envtest: ## Install the setup-envtest tool if it is not already installed
 	if ! command -v setup-envtest &> /dev/null; then \
-	    go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest; \
+		go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest; \
 	fi
 
 setup-envtest: install-setup-envtest ## Download and set up the envtest binary

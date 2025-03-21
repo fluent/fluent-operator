@@ -8,6 +8,7 @@ on:
     tags:
       - 'v*'
     paths:
+      - ".github/workflows/main.yaml"
       - ".github/workflows/build-op-image.yaml"
       - "apis/**"
       - "cmd/**"
@@ -16,6 +17,7 @@ on:
       - "manifests/setup/setup.yaml"
       - "tests/**"
       - "pkg/**"
+      - "**/*.sh"
       - "Makefile"
       - "go.mod"
       - "go.sum"
@@ -24,6 +26,7 @@ on:
       - 'master'
       - 'release-*'
     paths:
+      - ".github/workflows/main.yaml"
       - ".github/workflows/build-op-image.yaml"
       - "apis/**"
       - "cmd/**"
@@ -32,6 +35,7 @@ on:
       - "manifests/setup/setup.yaml"
       - "tests/**"
       - "pkg/**"
+      - "**/*.sh"
       - "Makefile"
       - "go.mod"
       - "go.sum"
@@ -53,6 +57,9 @@ jobs:
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
+
+      - name: Check shell scripts
+        run: make shellcheck
 
       - name: Go mod
         run: |

@@ -8,7 +8,6 @@ set -o pipefail
 
 SCRIPT_ROOT=$(git rev-parse --show-toplevel)
 
-
 DIFFROOT="${SCRIPT_ROOT}/apis"
 TMP_DIFFROOT="${SCRIPT_ROOT}/_tmp/apis"
 
@@ -16,7 +15,7 @@ _tmp="${SCRIPT_ROOT}/_tmp"
 
 cleanup() {
     echo ">> Removing ${_tmp}"
-    rm -rf ${_tmp}
+    rm -rf "${_tmp}"
 }
 trap "cleanup" EXIT SIGINT
 
