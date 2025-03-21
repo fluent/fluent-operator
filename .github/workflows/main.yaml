@@ -54,11 +54,6 @@ jobs:
           go-version-file: go.mod
           cache-dependency-path: go.sum
 
-      - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
       - name: Go mod
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
@@ -93,11 +88,6 @@ jobs:
           go-version-file: go.mod
           cache-dependency-path: go.sum
 
-      - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
       - name: Install dependences
         run: |
           command -v ginkgo || go install github.com/onsi/ginkgo/ginkgo@latest
@@ -124,11 +114,6 @@ jobs:
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
-
-      - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
       - name: Install dependences
         run: |
@@ -160,11 +145,6 @@ jobs:
           go-version-file: go.mod
           cache-dependency-path: go.sum
 
-      - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-
       - name: Run build all binaries
         run: make binary
 
@@ -183,11 +163,6 @@ jobs:
   #       with:
   #         go-version-file: go.mod
   #         cache-dependency-path: go.sum
-
-  #     - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
-  #       with:
-  #         path: ~/go/pkg/mod
-  #         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
   #     - name: Run docker build
   #       run: make build-amd64
