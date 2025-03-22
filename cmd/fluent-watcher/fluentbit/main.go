@@ -86,7 +86,7 @@ func main() {
 		_ = level.Error(logger).Log("msg", "failed to start fluent-bit", "error", err)
 		os.Exit(1)
 	}
-	_ = level.Info(logger).Log("msg", "fluent-bit started")
+	_ = level.Info(logger).Log("msg", "fluent-bit watcher started")
 
 	grp, grpCtx := errgroup.WithContext(context.Background())
 	grp.Go(func() error {
