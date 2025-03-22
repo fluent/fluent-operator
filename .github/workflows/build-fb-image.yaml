@@ -1,6 +1,11 @@
 name: Building Fluent Bit image
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - cmd/fluent-watcher/fluentbit/VERSION
   workflow_dispatch:
 
 env:
@@ -13,37 +18,23 @@ permissions:
   packages: write
 
 jobs:
-  get-version:
+  build-info:
+    name: get fluent-bit build info
     runs-on: ubuntu-latest
-    name: get fluent-bit version
+
     outputs:
-      VERSION: ${{ steps.get-version.outputs.VERSION }}
+      version: ${{ steps.version-info.outputs.version }}
+      image-base-tag: ${{ steps.version-info.outputs.image-base-tag }}
+      image-major-minor: ${{ steps.version-info.outputs.image-major-minor }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          ref: ${{ github.ref }}
 
-      - name: Read fluent-bit version from file
-        id: get-version
+      - name: Determine image version tag
+        id: version-info
         run: |
           VERSION=$(cat cmd/fluent-watcher/fluentbit/VERSION)  # Read the version from the VERSION file
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-
-  determine-tags:
-    needs:
-      - get-version
-    runs-on: ubuntu-latest
-    name: Determine image tags
-    outputs:
-      IMAGE_BASE_TAG: ${{ steps.determine-tags.outputs.IMAGE_BASE_TAG }}
-      IMAGE_MAJOR_MINOR: ${{ steps.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-
-    steps:
-      - name: Determine image version tag
-        id: determine-tags
-        run: |
-          VERSION=${{ needs.get-version.outputs.VERSION }}
           VERSION_WITHOUT_V=${VERSION#v}
           MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
 
@@ -58,21 +49,24 @@ jobs:
             IMAGE_BASE_TAG="${VERSION}"
           fi
 
-          echo "IMAGE_BASE_TAG=$IMAGE_BASE_TAG" >> $GITHUB_OUTPUT
-          echo "IMAGE_MAJOR_MINOR=$MAJOR_MINOR" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "image-base-tag=$IMAGE_BASE_TAG" >> $GITHUB_OUTPUT
+          echo "image-major-minor=$MAJOR_MINOR" >> $GITHUB_OUTPUT
 
   build-prod-image-metadata:
-    needs:
-      - determine-tags
-    runs-on: ubuntu-latest
     name: Build prod image metadata
+    runs-on: ubuntu-latest
+    needs:
+      - build-info
+
     outputs:
-      IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
-      DOCKER_IMG_NAME: ${{ steps.set-outputs.outputs.DOCKER_IMG_NAME }}
+      image-name: ${{ steps.set-outputs.outputs.image-name }}
+      docker-image-name: ${{ steps.set-outputs.outputs.docker-image-name }}
       version: ${{ steps.image-metadata.outputs.version }}
       tags: ${{ steps.image-metadata.outputs.tags }}
       release_tags: ${{ steps.image-tags.outputs.tags }}
       labels: ${{ steps.image-metadata.outputs.labels }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -84,10 +78,10 @@ jobs:
           images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
           tags: |
             raw,latest
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=${{ needs.build-info.outputs.image-base-tag }}
+            type=raw,value=v${{ needs.build-info.outputs.image-base-tag }}
+            type=raw,value=${{ needs.build-info.outputs.image-major-minor }}
+            type=raw,value=v${{ needs.build-info.outputs.image-major-minor }}
 
       - name: docker tags for cloning
         id: image-tags
@@ -95,25 +89,25 @@ jobs:
         with:
           tags: |
             raw,latest
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=${{ needs.build-info.outputs.image-base-tag }}
+            type=raw,value=v${{ needs.build-info.outputs.image-base-tag }}
+            type=raw,value=${{ needs.build-info.outputs.image-major-minor }}
+            type=raw,value=v${{ needs.build-info.outputs.image-major-minor }}
 
       - name: Set outputs
         id: set-outputs
         run: |
-          echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
-          echo "DOCKER_IMG_NAME=${{env.DOCKER_REPO}}/${{ env.DOCKER_IMAGE }}" >> $GITHUB_OUTPUT
+          echo "image-name=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
+          echo "docker-image-name=${{env.DOCKER_REPO}}/${{ env.DOCKER_IMAGE }}" >> $GITHUB_OUTPUT
 
   build-debug-image-metadata:
-    needs:
-      - determine-tags
-    runs-on: ubuntu-latest
     name: Build debug image metadata
+    runs-on: ubuntu-latest
+    needs:
+      - build-info
     outputs:
-      IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
-      DOCKER_IMG_NAME: ${{ steps.set-outputs.outputs.DOCKER_IMG_NAME }}
+      image-name: ${{ steps.set-outputs.outputs.image-name }}
+      docker-image-name: ${{ steps.set-outputs.outputs.docker-image-name }}
       version: ${{ steps.image-metadata.outputs.version }}
       tags: ${{ steps.image-metadata.outputs.tags }}
       labels: ${{ steps.image-metadata.outputs.labels }}
@@ -131,10 +125,10 @@ jobs:
             latest=false
             suffix=-debug
           tags: |
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=${{ needs.build-info.outputs.image-base-tag }}
+            type=raw,value=v${{ needs.build-info.outputs.image-base-tag }}
+            type=raw,value=${{ needs.build-info.outputs.image-major-minor }}
+            type=raw,value=v${{ needs.build-info.outputs.image-major-minor }}
 
       - name: docker tags for cloning
         id: image-tags
@@ -144,24 +138,26 @@ jobs:
             latest=false
             suffix=-debug
           tags: |
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_BASE_TAG }}
-            type=raw,value=${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
-            type=raw,value=v${{ needs.determine-tags.outputs.IMAGE_MAJOR_MINOR }}
+            type=raw,value=${{ needs.build-info.outputs.image-base-tag }}
+            type=raw,value=v${{ needs.build-info.outputs.image-base-tag }}
+            type=raw,value=${{ needs.build-info.outputs.image-major-minor }}
+            type=raw,value=v${{ needs.build-info.outputs.image-major-minor }}
 
       - name: Set outputs
         id: set-outputs
         run: |
-          echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
-          echo "DOCKER_IMG_NAME=${{env.DOCKER_REPO}}/${{ env.DOCKER_IMAGE }}" >> $GITHUB_OUTPUT
+          echo "image-name=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
+          echo "docker-image-name=${{env.DOCKER_REPO}}/${{ env.DOCKER_IMAGE }}" >> $GITHUB_OUTPUT
 
   build-FluentBit-prod-image:
-    needs:
-      - get-version
-      - build-prod-image-metadata
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     name: Build Fluent Bit prod image
+    runs-on: ubuntu-latest
+    needs:
+      - build-info
+      - build-prod-image-metadata
+
+    timeout-minutes: 30
+
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -198,15 +194,17 @@ jobs:
           labels: ${{ needs.build-prod-image-metadata.outputs.labels }}
           build-args: |
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
-            FLUENT_BIT_BASE_VERSION=${{ needs.get-version.outputs.VERSION }}
+            FLUENT_BIT_BASE_VERSION=${{ needs.build-info.outputs.version }}
 
   build-FluentBit-debug-image:
-    needs:
-      - get-version
-      - build-debug-image-metadata
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     name: Build Fluent Bit debug image
+    runs-on: ubuntu-latest
+    needs:
+      - build-info
+      - build-debug-image-metadata
+
+    timeout-minutes: 30
+
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -248,7 +246,7 @@ jobs:
           labels: ${{ needs.build-debug-image-metadata.outputs.labels }}
           build-args: |
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
-            FLUENT_BIT_BASE_VERSION=${{ needs.get-version.outputs.VERSION }}
+            FLUENT_BIT_BASE_VERSION=${{ needs.build-info.outputs.version }}
 
   scan-FluentBit-image:
     name: Scan prod image
@@ -257,7 +255,7 @@ jobs:
       - build-FluentBit-prod-image
     uses: ./.github/workflows/scan-docker-image-action.yaml
     with:
-      source_image: "${{ needs.build-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-prod-image-metadata.outputs.version }}"
+      source_image: "${{ needs.build-prod-image-metadata.outputs.image-name }}:${{ needs.build-prod-image-metadata.outputs.version }}"
       source_registry: ghcr.io
       platforms: "['linux/arm64', 'linux/amd64']"
     secrets:
@@ -265,7 +263,6 @@ jobs:
       registry_password: ${{ secrets.GITHUB_TOKEN }}
 
   release-prod-image-to-docker-hub:
-    if: ${{ github.event_name != 'pull_request' }}
     name: Release prod image to Docker Hub
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs:
@@ -273,9 +270,9 @@ jobs:
       - scan-FluentBit-image
       - build-prod-image-metadata
     with:
-      source_image: "${{ needs.build-prod-image-metadata.outputs.IMG_NAME }}:${{ needs.build-prod-image-metadata.outputs.version }}"
+      source_image: "${{ needs.build-prod-image-metadata.outputs.image-name }}:${{ needs.build-prod-image-metadata.outputs.version }}"
       source_registry: ghcr.io
-      target_image: "${{ needs.build-prod-image-metadata.outputs.DOCKER_IMG_NAME }}"
+      target_image: "${{ needs.build-prod-image-metadata.outputs.docker-image-name }}"
       target_registry: docker.io
       tags: ${{ needs.build-prod-image-metadata.outputs.release_tags }}
     secrets:
@@ -285,16 +282,15 @@ jobs:
       target_registry_token: ${{ secrets.REGISTRY_PASSWORD }}
 
   release-debug-image-to-docker-hub:
-    if: ${{ github.event_name != 'pull_request' }}
     name: Release debug image to Docker Hub
     uses: ./.github/workflows/clone-docker-image-action.yaml
     needs:
       - build-FluentBit-debug-image
       - build-debug-image-metadata
     with:
-      source_image: "${{ needs.build-debug-image-metadata.outputs.IMG_NAME }}:${{ needs.build-debug-image-metadata.outputs.version }}"
+      source_image: "${{ needs.build-debug-image-metadata.outputs.image-name }}:${{ needs.build-debug-image-metadata.outputs.version }}"
       source_registry: ghcr.io
-      target_image: "${{ needs.build-debug-image-metadata.outputs.DOCKER_IMG_NAME }}"
+      target_image: "${{ needs.build-debug-image-metadata.outputs.docker-image-name }}"
       target_registry: docker.io
       tags: ${{ needs.build-debug-image-metadata.outputs.release_tags }}
     secrets:
