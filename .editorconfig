@@ -1,0 +1,15 @@
+root = true
+
+[*]
+trim_trailing_whitespace = true
+insert_final_newline = true
+charset = utf-8
+end_of_line = lf
+tab_width = 2
+indent_size = 2
+indent_style = space
+
+[{Makefile,*.go,go.*}]
+indent_style = tab
+indent_size = 4
+tab_width = 4

@@ -9,7 +9,7 @@ set -e
 
 HOST_ARCH=$(uname -m)
 
-if [ x"${HOST_ARCH}" == x"aarch64" ]; then
+if [ "${HOST_ARCH}" == "aarch64" ]; then
     echo "Building arm64 image natively"
     exit
 fi

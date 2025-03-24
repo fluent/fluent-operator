@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Validate version format
         run: |
@@ -95,7 +95,7 @@ jobs:
             - manifests/quick-start/fluentbit.yaml
             - manifests/regex-parser/fluentbit-fluentBit.yaml
             - charts/fluent-operator/values.yaml
-            
+
             Please review and merge to release the new version.
           branch: bump-fb-to-${{ github.event.inputs.version }}
           base: master

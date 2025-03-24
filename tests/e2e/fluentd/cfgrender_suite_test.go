@@ -45,7 +45,7 @@ func TestCompareFluentdMainAppConfig(t *testing.T) {
 		k8sClient = kc
 		Expect(k8sClient).NotTo(BeNil())
 
-		fmt.Fprintf(GinkgoWriter, time.Now().Format(time.StampMilli)+": Info: Setup Suite Execution\n")
+		fmt.Fprintf(GinkgoWriter, "%s: Info: Setup Suite Execution\n", time.Now().Format(time.StampMilli))
 	}, 60)
 
 	AfterSuite(func() {

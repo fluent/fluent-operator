@@ -1,6 +1,7 @@
-ARG FLUENT_BIT_BASE_VERSION=3.2.4
+ARG FLUENT_BIT_BASE_VERSION=3.2.4 \
+    GO_VERSION=1.24.1
 
-FROM golang:1.23.4-alpine3.19 as buildergo
+FROM golang:${GO_VERSION}-alpine3.21 as buildergo
 RUN mkdir -p /fluent-bit
 RUN mkdir -p /code
 COPY . /code/

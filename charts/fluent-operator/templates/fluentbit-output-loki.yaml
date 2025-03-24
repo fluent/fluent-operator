@@ -114,12 +114,12 @@ spec:
 {{ .labels | toYaml | indent 6 }}
     {{ end -}}
     
-    {{ if .labelKeys -}}
+    {{- if .labelKeys }}
     labelKeys:
 {{ .labelKeys | toYaml | indent 6 }}
     {{ end -}}
 
-    {{ if .removeKeys -}}
+    {{- if .removeKeys }}
     removeKeys:
 {{ .removeKeys | toYaml | indent 6 }}
     {{ end -}}
