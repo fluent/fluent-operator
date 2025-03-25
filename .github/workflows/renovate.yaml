@@ -9,7 +9,6 @@ on:
   workflow_dispatch:
 
 env:
-  RENOVATE_VERSION: 38.70.0
   ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
 
 jobs:
@@ -27,7 +26,6 @@ jobs:
       - name: Self-hosted Renovate
         uses: renovatebot/github-action@e084b5ac6fd201023db6dd7743aec023babb02c8 # v41.0.13
         with:
-          renovate-version: ${{ env.RENOVATE_VERSION }}
           configurationFile: ".github/renovate-config.js"
           token: "${{ secrets.RENOVATE_TOKEN }}"
         env:
