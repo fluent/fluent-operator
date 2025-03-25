@@ -5,6 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
+  # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-bit
   image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.0
   positionDB:
     hostPath:
