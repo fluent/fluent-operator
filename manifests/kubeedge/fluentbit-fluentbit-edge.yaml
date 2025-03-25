@@ -24,10 +24,10 @@ spec:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: node-role.kubernetes.io/edge
-            operator: Exists
-  hostNetwork : true
+          - matchExpressions:
+              - key: node-role.kubernetes.io/edge
+                operator: Exists
+  hostNetwork: true
   volumes:
     - name: host-proc
       hostPath:
