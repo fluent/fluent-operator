@@ -15,7 +15,7 @@ module.exports = {
   onboarding: false,
   platform: "github",
   dryRun: null,
-  repositories: ["truongnht/fluent-operator"],
+  repositories: ["fluent/fluent-operator"],
   enabledManagers: ["custom.regex"],
   extends: ["config:recommended"],
   customManagers: [
