@@ -223,6 +223,8 @@ jobs:
   manifest:
     name: Publish image manifests
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     needs: [build, build-debug, build-tags]
     steps:
       - name: Login to GHCR
