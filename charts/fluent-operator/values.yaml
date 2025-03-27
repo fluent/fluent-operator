@@ -97,7 +97,7 @@ fluentbit:
 
   image:
     repository: "ghcr.io/fluent/fluent-operator/fluent-bit"
-    tag: "3.2.9"
+    tag: "3.2.10"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
   resources:
