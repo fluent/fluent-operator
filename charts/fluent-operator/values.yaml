@@ -26,7 +26,7 @@ operator:
     repository: "kubesphere/fluent-operator"
     tag: "latest"
   # If set to false, this will disable the creation of ClusterRole, ClusterRoleBinding,
-  # Deployment, and ServiceAccount resources to avoid conflicts when deploying multiple instances. 
+  # Deployment, and ServiceAccount resources to avoid conflicts when deploying multiple instances.
   enable: true
   # nodeSelector configuration for Fluent Operator. Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
@@ -96,7 +96,7 @@ fluentbit:
 
   image:
     repository: "ghcr.io/fluent/fluent-operator/fluent-bit"
-    tag: "3.2.9"
+    tag: "3.2.10"
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
   resources:
@@ -135,7 +135,7 @@ fluentbit:
   # List of volumes that can be mounted by containers belonging to the pod.
   additionalVolumes: []
   # Additional rbac rules which will be applied to the fluent-bit clusterrole. Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding
-  # NOTE: As fluent-bit is managed by the fluent-operator, fluent-bit can only be granted permissions the operator also has 
+  # NOTE: As fluent-bit is managed by the fluent-operator, fluent-bit can only be granted permissions the operator also has
   rbacRules: {}
   # Pod volumes to mount into the container's filesystem.
   additionalVolumesMounts: []
@@ -215,7 +215,7 @@ fluentbit:
       # Use storageType as "filesystem" if you want to use filesystem as the buffering mechanism for tail input.
       storageType: memory
       pauseOnChunksOverlimit: "off"
-      # multiline.parser 
+      # multiline.parser
       # multilineParser: "docker, cri"
     systemd:
       enable: true
@@ -367,7 +367,7 @@ fluentbit:
       enable: false
       keyContent: log
       # emitterMemBufLimit 120 (MB)
-      emitterMemBufLimit: 120 
+      emitterMemBufLimit: 120
       parsers:
         - go
         - python
