@@ -75,6 +75,7 @@ spec:
               logfmt:
                 description: Logfmt defines logfmt parser configuration.
                 type: object
+                nullable: false
               ltsv:
                 description: LTSV defines ltsv parser configuration.
                 properties:
