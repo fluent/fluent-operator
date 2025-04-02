@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
-  image: ghcr.io/fluent/fluent-operator/fluent-bit:3.2.10
+  image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.0
   fluentBitConfigName: fluent-bit-config
 
 ---
