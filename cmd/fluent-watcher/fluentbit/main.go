@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"flag"
@@ -8,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -124,7 +126,14 @@ func main() {
 				if !isValidEvent(event) {
 					continue
 				}
-				_ = level.Info(logger).Log("msg", "Config file changed, reloading...")
+				_ = level.Info(logger).Log("msg", "Config file changed, verifying configuration using dry-run...")
+
+				// Verify the configuration using the extracted function
+				if err := verifyConfiguration(binPath, args, logger); err != nil {
+					continue
+				}
+
+				_ = level.Info(logger).Log("msg", "Reloading configuration...")
 				if err := cmd.Process.Signal(syscall.SIGHUP); err != nil {
 					return fmt.Errorf("failed to reload config: %w", err)
 				}
@@ -155,4 +164,43 @@ func main() {
 // Inspired by https://github.com/jimmidyson/configmap-reload
 func isValidEvent(event fsnotify.Event) bool {
 	return event.Op == fsnotify.Create || event.Op == fsnotify.Write
+}
+
+// verifyConfiguration runs a dry-run of fluent-bit to verify the configuration is valid
+// It returns an error if the verification fails
+func verifyConfiguration(binPath string, args []string, logger log.Logger) error {
+	// Copy the original args and append --dry-run to preserve all configuration parameters
+	verifyArgs := make([]string, len(args))
+	copy(verifyArgs, args)
+	verifyArgs = append([]string{"--dry-run"}, verifyArgs...)
+
+	// Create a context with timeout to prevent the verification process from running too long
+	verifyCtx, verifyCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer verifyCancel()
+
+	// Capture both stdout and stderr for better error reporting
+	var stdout, stderr bytes.Buffer
+	verifyCmd := exec.CommandContext(verifyCtx, binPath, verifyArgs...)
+	verifyCmd.Stdout = &stdout
+	verifyCmd.Stderr = &stderr
+
+	// Run the dry-run command and wait for it to complete
+	err := verifyCmd.Run()
+
+	// Check if the output contains the success message, regardless of exit code
+	outputStr := stdout.String()
+	if strings.Contains(outputStr, "configuration test is successful") {
+		_ = level.Info(logger).Log("msg", "Configuration verified successfully with dry-run")
+		return nil
+	}
+
+	// If we didn't find the success message or there was an error, report failure
+	if err != nil {
+		_ = level.Error(logger).Log("msg", "Configuration verification failed", "error", err, "stderr", stderr.String())
+		return err
+	}
+
+	// If we get here, there was no explicit success message but also no error
+	_ = level.Info(logger).Log("msg", "Configuration verified successfully with dry-run")
+	return nil
 }
