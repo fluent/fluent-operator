@@ -42,6 +42,7 @@ type ParserSpec struct {
 	// LTSV defines ltsv parser configuration.
 	LTSV *parser.LSTV `json:"ltsv,omitempty"`
 	// Logfmt defines logfmt parser configuration.
+	// +kubebuilder:validation:XValidation:rule="self != null",message="logfmt must not be null"
 	Logfmt *parser.Logfmt `json:"logfmt,omitempty"`
 	// Decoders are a built-in feature available through the Parsers file, each Parser definition can optionally set one or multiple decoders.
 	// There are two type of decoders type: Decode_Field and Decode_Field_As.

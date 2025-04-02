@@ -75,6 +75,9 @@ spec:
               logfmt:
                 description: Logfmt defines logfmt parser configuration.
                 type: object
+                x-kubernetes-validations:
+                - message: logfmt must not be null
+                  rule: self != null
               ltsv:
                 description: LTSV defines ltsv parser configuration.
                 properties:
