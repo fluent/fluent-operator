@@ -22,8 +22,7 @@ spec:
 {{ toYaml .Values.fluentbit.imagePullSecrets | indent 4 }}
   {{- end }}
   positionDB:
-    hostPath:
-      path: /var/lib/fluent-bit/
+{{- toYaml .Values.fluentbit.positionDB | nindent 4 }}
   resources:
 {{- toYaml .Values.fluentbit.resources | nindent 4  }}
   fluentBitConfigName: fluent-bit-config
