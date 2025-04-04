@@ -120,6 +120,12 @@ fluentbit:
   # Specify additional custom annotations for fluentbit-serviceaccount
   serviceAccountAnnotations: {}
 
+  # Specify storage for position db. You will use it if tail input is enabled.
+  ## Ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#volumesource-v1-core
+  positionDB:
+    hostPath:
+      path: /var/lib/fluent-bit/
+
   ## Reference to one or more secrets to be used when pulling images
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
