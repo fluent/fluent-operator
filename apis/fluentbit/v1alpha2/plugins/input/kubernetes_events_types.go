@@ -61,7 +61,7 @@ func (k *KubernetesEvents) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("DB", k.DB)
 	}
 	if k.DBSync != "" {
-		kvs.Insert("DB_Sync", k.DBSync)
+		kvs.Insert("DB.Sync", k.DBSync)
 	}
 	if k.IntervalSec != nil {
 		kvs.Insert("Interval_Sec", fmt.Sprint(*k.IntervalSec))
