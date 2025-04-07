@@ -7,7 +7,7 @@ SHELL = /usr/bin/env bash -o pipefail
 .SHELLFLAGS = -ec
 
 VERSION ?= $(shell cat VERSION | tr -d " \t\n\r")
-FB_VERSION ?= $(shell cat cmd/fluent-watcher/fluentbit/VERSION | tr -d " \t\n\r")
+FB_VERSION?=$(shell grep -v '^#' cmd/fluent-watcher/fluentbit/VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
 FB_IMG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}
 FB_IMG_DEBUG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}-debug
