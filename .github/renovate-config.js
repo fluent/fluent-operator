@@ -24,12 +24,9 @@ module.exports = {
       matchStringsStrategy: "any",
       fileMatch: [
         "charts/fluent-operator/values.yaml",
-        "config/samples/fluentbit_v1alpha2_fluentbit.yaml",
-        "docs/best-practice/forwarding-logs-via-http/deploy/fluentbit-fluentBit.yaml",
-        "manifests/kubeedge/fluentbit-fluentbit-edge.yaml",
-        "manifests/logging-stack/fluentbit-fluentBit.yaml",
-        "manifests/quick-start/fluentbit.yaml",
-        "manifests/regex-parser/fluentbit-fluentBit.yaml",
+        "config/.*\\.yaml",
+        "docs/.*\\.yaml",
+        "manifests/.*\\.yaml",
         "cmd/fluent-watcher/fluentbit/VERSION",
       ],
       matchStrings: [
