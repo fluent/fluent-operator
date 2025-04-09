@@ -16,8 +16,8 @@ spec:
   {{- else if .Values.fluentbit.hostNetwork }}
   dnsPolicy: ClusterFirstWithHostNet
   {{- end }}
-  image: {{ .Values.fluentbit.image.repository }}:{{ .Values.fluentbit.image.tag }}
-  {{- with .Values.fluentbit.imagePullSecrets }}
+  image: {{ template "fluent-operator.image" (tuple .Values.fluentbit.image "") }}
+  {{- if .Values.fluentbit.imagePullSecrets }}
   imagePullSecrets:
     {{- toYaml . | nindent 4 }}
   {{- end }}
