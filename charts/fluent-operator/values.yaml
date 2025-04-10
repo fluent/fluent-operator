@@ -38,6 +38,9 @@ operator:
   priorityClassName: ""
   # Pod security context for Fluent Operator. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   podSecurityContext: {}
+  rbac:
+    # -- Specifies whether to create the ClusterRole and ClusterRoleBinding.
+    create: true
   # Container security context for Fluent Operator container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   securityContext: {}
   # Fluent Operator resources. Usually user needn't to adjust these.
