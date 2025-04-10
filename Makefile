@@ -161,20 +161,20 @@ undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/confi
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: go-deps ## Download controller-gen locally if necessary.
-	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.15.0)
+	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.17.3)
 
 GINKGO = $(shell pwd)/bin/ginkgo
 ginkgo: go-deps ## Download controller-gen locally if necessary.
-	$(call go-get-tool,$(GINKGO),github.com/onsi/ginkgo/ginkgo@v1.16.5)
+	$(call go-get-tool,$(GINKGO),github.com/onsi/ginkgo/v2/ginkgo@v2.23.4)
 
 
 KUSTOMIZE = $(shell pwd)/bin/kustomize
 kustomize: go-deps ## Download kustomize locally if necessary.
-	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5@v5.0.0)
+	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5@v5.6.0)
 
-CODE_GENERATOR = $(shell go env GOPATH)/pkg/mod/k8s.io/code-generator@v0.30.3
+CODE_GENERATOR = $(shell go env GOPATH)/pkg/mod/k8s.io/code-generator@v0.32.3
 code-generator: go-deps ## Download code-generator locally if necessary
-	$(call go-get-tool,$(CODE_GENERATOR),k8s.io/code-generator@v0.30.3)
+	$(call go-get-tool,$(CODE_GENERATOR),k8s.io/code-generator@v0.32.3)
 
 # go-get-tool will 'go get' any package $2 and install it to $1.
 PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
