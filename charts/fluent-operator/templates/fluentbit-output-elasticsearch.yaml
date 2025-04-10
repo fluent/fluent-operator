@@ -1,6 +1,6 @@
-{{- if .Values.Kubernetes -}}
-{{- if .Values.fluentbit.enable -}}
-{{- if .Values.fluentbit.output.es.enable -}}
+{{- if .Values.Kubernetes }}
+{{- if .Values.fluentbit.enable }}
+{{- if .Values.fluentbit.output.es.enable }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
@@ -11,44 +11,40 @@ metadata:
 spec:
   matchRegex: (?:kube|service)\.(.*)
   es:
-    host: {{ .Values.fluentbit.output.es.host }}
+    host: {{ .Values.fluentbit.output.es.host | quote }}
     port: {{ .Values.fluentbit.output.es.port }}
-{{- if .Values.fluentbit.output.es.path }}
-    path: {{ .Values.fluentbit.output.es.path }}
-{{- end }}
-{{- if .Values.fluentbit.output.es.suppressTypeName }}
+    {{- with .Values.fluentbit.output.es.path }}
+    path: {{ . | quote }}
+    {{- end }}
     suppressTypeName: {{ .Values.fluentbit.output.es.suppressTypeName | default "Off" | quote }}
-{{- end }}
-{{- if .Values.fluentbit.output.es.bufferSize }}
-    bufferSize: {{ .Values.fluentbit.output.es.bufferSize }}
-{{- end }}
-{{- if .Values.fluentbit.output.es.index }}
-    index: {{ .Values.fluentbit.output.es.index }}
-{{- end }}
-{{- if .Values.fluentbit.output.es.httpUser }}
-    httpUser:
-{{ toYaml .Values.fluentbit.output.es.httpUser | indent 6 }}
-{{- end }}
-{{- if .Values.fluentbit.output.es.httpPassword }}
-    httpPassword:
-{{ toYaml .Values.fluentbit.output.es.httpPassword | indent 6 }}
-{{- end }}
+    {{- with .Values.fluentbit.output.es.bufferSize }}
+    bufferSize: {{ . | quote }}
+    {{- end }}
+    {{- with .Values.fluentbit.output.es.index }}
+    index: {{ . | quote }}
+    {{- end }}
+    {{- with .Values.fluentbit.output.es.httpUser }}
+    httpUser: {{ . | quote }}
+    {{- end }}
+    {{- with .Values.fluentbit.output.es.httpPassword }}
+    httpPassword: {{ . | quote }}
+    {{- end }}
     logstashFormat: {{ .Values.fluentbit.output.es.logstashFormat | default true }}
-{{- if .Values.fluentbit.output.es.logstashPrefix }}
-    logstashPrefix: {{ .Values.fluentbit.output.es.logstashPrefix | quote }}
-{{- end }}
-{{- if .Values.fluentbit.output.es.logstashPrefixKey }}
-    logstashPrefixKey: {{ .Values.fluentbit.output.es.logstashPrefixKey | quote }}
-{{- end }}
+    {{- with .Values.fluentbit.output.es.logstashPrefix }}
+    logstashPrefix: {{ . | quote }}
+    {{- end }}
+    {{- with .Values.fluentbit.output.es.logstashPrefixKey }}
+    logstashPrefixKey: {{ . | quote }}
+    {{- end }}
     replaceDots: {{ .Values.fluentbit.output.es.replaceDots | default false }}
     writeOperation: {{ .Values.fluentbit.output.es.writeOperation | default "create" | quote }}
     traceError: {{ .Values.fluentbit.output.es.traceError | default false }}
     generateID: true
     timeKey: "@timestamp"
-{{- if .Values.fluentbit.output.es.enableTLS }}
+    {{- if .Values.fluentbit.output.es.enableTLS }}
     tls:
-{{ toYaml .Values.fluentbit.output.es.tls | indent 6 }}
-{{- end }}
+      {{- toYaml .Values.fluentbit.output.es.tls | nindent 6 }}
+    {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

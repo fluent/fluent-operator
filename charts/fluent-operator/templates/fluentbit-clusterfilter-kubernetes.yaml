@@ -1,6 +1,6 @@
-{{- if .Values.Kubernetes -}}
-{{- if .Values.fluentbit.enable -}}
-{{- if .Values.fluentbit.filter.kubernetes.enable -}}
+{{- if .Values.Kubernetes }}
+{{- if .Values.fluentbit.enable }}
+{{- if .Values.fluentbit.filter.kubernetes.enable }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterFilter
 metadata:
@@ -17,7 +17,7 @@ spec:
       kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
       {{- $params := omit .Values.fluentbit.filter.kubernetes "enable" }}
       {{- if .Values.fluentbit.output.stdout.enable }}
-      {{- $_ := set $params "k8sLoggingExclude" true -}}
+      {{- $_ := set $params "k8sLoggingExclude" true }}
       {{- end }}
       {{- with $params }}
       {{- . | toYaml | nindent 6 }}

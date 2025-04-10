@@ -51,7 +51,7 @@ helm.sh/chart: {{ include "fluent-operator.chart" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 {{- end }}
 
 {{/*
@@ -59,7 +59,7 @@ Selector labels
 */}}
 {{- define "fluent-operator.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "fluent-operator.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end }}
 
 {{/*

@@ -1,4 +1,4 @@
-{{- if .Values.fluentbit.kubeedge.enable -}}
+{{- if .Values.fluentbit.kubeedge.enable }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: FluentBit
 metadata:
@@ -12,7 +12,7 @@ spec:
     hostPath:
       path: /var/lib/fluent-bit/
   resources:
-{{- toYaml .Values.fluentbit.resources | nindent 4  }}
+    {{- toYaml .Values.fluentbit.resources | nindent 4 }}
   fluentBitConfigName: fluent-bit-config-edge
   tolerations:
     - operator: Exists

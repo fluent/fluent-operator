@@ -1,6 +1,7 @@
-{{- if .Values.Kubernetes -}}
-{{- if .Values.fluentd.enable -}}
-{{- if .Values.fluentd.output.es.enable -}}
+{{- if .Values.Kubernetes }}
+{{- if .Values.fluentd.enable }}
+{{- if .Values.fluentd.output.es.enable }}
+{{- with .Values.fluentd.output.es }}
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
 metadata:
@@ -10,15 +11,16 @@ metadata:
 spec:
   outputs:
     - elasticsearch:
-        host: {{ .Values.fluentd.output.es.host }}
-        port: {{ .Values.fluentd.output.es.port }}
+        host: {{ .host | quote }}
+        port: {{ .port }}
         logstashFormat: true
-        logstashPrefix: {{ .Values.fluentd.output.es.logstashPrefix }}
-      {{- if .Values.fluentd.output.es.buffer }}
+        logstashPrefix: {{ .logstashPrefix }}
+      {{- with .buffer }}
       buffer:
-        type: {{ .Values.fluentd.output.es.buffer.type }}
-        path: {{ .Values.fluentd.output.es.buffer.path }}
+        type: {{ .type | quote }}
+        path: {{ .path | quote }}
       {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

@@ -1,4 +1,5 @@
-{{- if .Values.fluentbit.kubeedge.enable -}}
+{{- if .Values.fluentbit.kubeedge.enable }}
+{{- with .Values.fluentbit.kubeedge.prometheusRemoteWrite }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
@@ -9,11 +10,12 @@ metadata:
 spec:
   match: kubeedge.metrics.*
   prometheusRemoteWrite:
-    host: {{ .Values.fluentbit.kubeedge.prometheusRemoteWrite.host }}
-    port: {{ .Values.fluentbit.kubeedge.prometheusRemoteWrite.port }}
+    host: {{ .host | quote }}
+    port: {{ .port }}
     uri: /api/v1/write
-    addLabels : 
+    addLabels :
       app : fluentbit
       node: ${NODE_NAME}
       job : kubeedge
+{{- end }}
 {{- end }}
