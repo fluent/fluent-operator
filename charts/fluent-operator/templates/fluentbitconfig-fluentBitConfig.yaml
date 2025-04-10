@@ -1,5 +1,5 @@
-{{- if .Values.Kubernetes -}}
-{{- if .Values.fluentbit.enable -}}
+{{- if .Values.Kubernetes }}
+{{- if .Values.fluentbit.enable }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterFluentBitConfig
 metadata:
@@ -7,22 +7,22 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
-  {{- if .Values.fluentbit.namespaceClusterFbCfg }}
-  namespace: {{ .Values.fluentbit.namespaceClusterFbCfg }}
+  {{- with .Values.fluentbit.namespaceClusterFbCfg }}
+  namespace: {{ . | quote }}
   {{- end }}
-  configFileFormat: {{ .Values.fluentbit.configFileFormat | default "classic" }}
+  configFileFormat: {{ .Values.fluentbit.configFileFormat | default "classic" | quote }}
   service:
     parsersFiles:
       - /fluent-bit/etc/parsers.conf
       - /fluent-bit/config/parsers_multiline.conf
     httpServer: true
-  {{- if .Values.fluentbit.logLevel }}
-    logLevel: {{ .Values.fluentbit.logLevel }}
+    {{- with .Values.fluentbit.logLevel }}
+    logLevel: {{ . }}
     {{- end }}
-{{- if .Values.fluentbit.service.storage }}
+    {{- with .Values.fluentbit.service.storage }}
     storage:
-{{ toYaml .Values.fluentbit.service.storage | indent 6 }}
-{{- end }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
   inputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"

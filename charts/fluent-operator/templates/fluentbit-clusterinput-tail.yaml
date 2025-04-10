@@ -1,6 +1,6 @@
-{{- if .Values.Kubernetes -}}
-{{- if .Values.fluentbit.enable -}}
-{{- if .Values.fluentbit.input.tail.enable -}}
+{{- if .Values.Kubernetes }}
+{{- if .Values.fluentbit.enable }}
+{{- if .Values.fluentbit.input.tail.enable }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
@@ -11,7 +11,7 @@ metadata:
 spec:
   tail:
     tag: kube.*
-    path: {{ .Values.fluentbit.input.tail.path }}
+    path: {{ .Values.fluentbit.input.tail.path | quote }}
     readFromHead: {{ .Values.fluentbit.input.tail.readFromHead }}
     {{- if eq .Values.containerRuntime "docker" }}
     parser: docker
@@ -20,13 +20,13 @@ spec:
     {{- else if eq .Values.containerRuntime "crio" }}
     parser: cri
     {{- end }}
-    {{- if .Values.fluentbit.input.tail.multilineParser }}
-    multilineParser: {{ .Values.fluentbit.input.tail.multilineParser | quote }}
+    {{- with .Values.fluentbit.input.tail.multilineParser }}
+    multilineParser: {{ . | quote }}
     {{- end }}
     refreshIntervalSeconds: {{ .Values.fluentbit.input.tail.refreshIntervalSeconds }}
     memBufLimit: {{ .Values.fluentbit.input.tail.memBufLimit }}
-    {{- if .Values.fluentbit.input.tail.bufferMaxSize }}
-    bufferMaxSize: {{ .Values.fluentbit.input.tail.bufferMaxSize }}
+    {{- with .Values.fluentbit.input.tail.bufferMaxSize }}
+    bufferMaxSize: {{ . | quote }}
     {{- end }}
     skipLongLines: {{ .Values.fluentbit.input.tail.skipLongLines }}
     db: /fluent-bit/tail/pos.db

@@ -1,4 +1,4 @@
-{{- if .Values.fluentbit.kubeedge.enable -}}
+{{- if .Values.fluentbit.kubeedge.enable }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterFluentBitConfig
 metadata:
@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
-  configFileFormat: {{ .Values.fluentbit.configFileFormat | default "classic" }}
+  configFileFormat: {{ .Values.fluentbit.configFileFormat | default "classic" | quote }}
   service:
     parsersFile: parsers.conf
   inputSelector:

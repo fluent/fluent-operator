@@ -1,4 +1,4 @@
-{{- if .Values.fluentbit.kubeedge.enable -}}
+{{- if .Values.fluentbit.kubeedge.enable }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
@@ -12,5 +12,5 @@ spec:
     host: 127.0.0.1
     port: 10350
     scrapeInterval: 1m
-    metricsPath : /metrics/cadvisor 
+    metricsPath : /metrics/cadvisor
 {{- end }}

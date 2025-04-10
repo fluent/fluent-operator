@@ -1,5 +1,5 @@
-{{- if .Values.Kubernetes -}}
-{{- if .Values.fluentd.enable -}}
+{{- if .Values.Kubernetes }}
+{{- if .Values.fluentd.enable }}
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterFluentdConfig
 metadata:

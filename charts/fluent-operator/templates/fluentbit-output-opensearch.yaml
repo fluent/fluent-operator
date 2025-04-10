@@ -1,6 +1,6 @@
-{{- if .Values.Kubernetes -}}
-{{- if .Values.fluentbit.enable -}}
-{{- if .Values.fluentbit.output.opensearch -}}
+{{- if .Values.Kubernetes }}
+{{- if .Values.fluentbit.enable }}
+{{- with .Values.fluentbit.output.opensearch }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
@@ -11,7 +11,7 @@ metadata:
 spec:
   matchRegex: (?:kube|service)\.(.*)
   opensearch:
-{{ toYaml .Values.fluentbit.output.opensearch | indent 4}}
+    {{- toYaml . | nindent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}

@@ -1,32 +1,30 @@
-{{ if .Values.Kubernetes -}}
-{{ if .Values.fluentbit.enable -}}
-{{ if .Values.fluentbit.output.loki -}}
-{{ if .Values.fluentbit.output.loki.enable -}}
-
-{{ with .Values.fluentbit.output.loki -}}
-{{/* 
+{{- if .Values.Kubernetes }}
+{{- if .Values.fluentbit.enable }}
+{{- if .Values.fluentbit.output.loki }}
+{{- if .Values.fluentbit.output.loki.enable }}
+{{- with .Values.fluentbit.output.loki }}
+{{/*
 When http{User,Password}, bearerToken, or tenantID is a string, make a secret for them
-When these keys are objects, they specify a secret to use generated elsewhere, assumed to exist in the k8s cluster 
+When these keys are objects, they specify a secret to use generated elsewhere, assumed to exist in the k8s cluster
 */}}
-{{ $userSecret := "loki-http-auth" -}}
-{{ $passSecret := "loki-http-pass" -}}
-{{ $bearerTokenSecret := "loki-bearer-token" -}}
-{{ $tenantIDSecret := "loki-tenant-id" -}}
+{{- $userSecret := "loki-http-auth" }}
+{{- $passSecret := "loki-http-pass" }}
+{{- $bearerTokenSecret := "loki-bearer-token" }}
+{{- $tenantIDSecret := "loki-tenant-id" }}
 
-{{ range $k, $v := dict $userSecret .httpUser $passSecret .httpPassword $tenantIDSecret .tenantID $bearerTokenSecret .bearerToken -}}
-{{ if kindIs "string" $v -}}
+{{- range $k, $v := dict $userSecret .httpUser $passSecret .httpPassword $tenantIDSecret .tenantID $bearerTokenSecret .bearerToken }}
+{{- if kindIs "string" $v }}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ $k |quote }}
+  name: {{ $k | quote }}
   namespace: {{ $.Release.Namespace | quote }}
 type: Opaque
 data:
   value: {{ $v | b64enc | quote }}
-{{ end -}}
-{{ end -}}
-
+{{- end }}
+{{- end }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
@@ -39,98 +37,92 @@ spec:
   matchRegex: (?:kube|service)\.(.*)
   retry_limit: "{{ .retryLimit }}"
   loki:
-    {{ if .host }}host: {{ .host | quote }}{{ end }}
-    {{ if .port }}port: {{ .port }}{{ end }}
-    {{- if ne .autoKubernetesLabels nil }}
-    autoKubernetesLabels: {{ .autoKubernetesLabels | quote }}
+    {{- with .host }}
+    host: {{ . | quote }}
     {{- end }}
-    {{- if .labelMapPath }}
-    labelMapPath: {{ .labelMapPath }}
+    {{- with .port }}
+    port: {{ . }}
     {{- end }}
-    {{- if ne .dropSingleKey nil }}
-    dropSingleKey: {{ .dropSingleKey | quote }}
+    {{- with .autoKubernetesLabels }}
+    autoKubernetesLabels: {{ . | quote }}
     {{- end }}
-    {{- if .lineFormat }}
-    lineFormat: {{ .lineFormat }}
+    {{- with .labelMapPath }}
+    labelMapPath: {{ . }}
     {{- end }}
-    {{- if .tenantIDKey }}
-    tenantIDKey: {{ .tenantIDKey }}
+    {{- with .dropSingleKey }}
+    dropSingleKey: {{ . | quote }}
     {{- end }}
-
-    {{- if .httpUser }}
-    httpUser: 
-      {{- if kindIs "string" .httpUser }}
+    {{- with .lineFormat }}
+    lineFormat: {{ . }}
+    {{- end }}
+    {{- with .tenantIDKey }}
+    tenantIDKey: {{ . }}
+    {{- end }}
+    {{- with .httpUser }}
+    httpUser:
+      {{- if kindIs "string" . }}
       valueFrom:
         secretKeyRef:
           key: 'value'
           name: {{ $userSecret }}
           optional: false
-        {{- else }}
-{{ .httpUser | toYaml | indent 6 }}
+      {{- else }}
+      {{- . | toYaml | nindent 6 }}
       {{- end }}
     {{- end }}
-
-    {{- if .httpPassword }}
-    httpPassword: 
-      {{- if kindIs "string" .httpPassword }}
+    {{- with .httpPassword }}
+    httpPassword:
+      {{- if kindIs "string" . }}
       valueFrom:
         secretKeyRef:
           key: 'value'
           name: {{ $passSecret }}
           optional: false
       {{- else }}
-{{ .httpPassword | toYaml | indent 6 }}
+      {{- . | toYaml | nindent 6 }}
       {{- end }}
     {{- end }}
-
-    {{- if .bearerToken }}
-    bearerToken: 
-      {{- if kindIs "string" .bearerToken }}
+    {{- with .bearerToken }}
+    bearerToken:
+      {{- if kindIs "string" . }}
       valueFrom:
         secretKeyRef:
           key: 'value'
           name: {{ $bearerTokenSecret }}
           optional: false
       {{- else }}
-{{ .bearerToken | toYaml | indent 6 }}
+      {{- . | toYaml | nindent 6 }}
       {{- end }}
     {{- end }}
-
-    {{- if .tenantID }}
-    tenantID: 
-      {{- if kindIs "string" .tenantID }}
+    {{- with .tenantID }}
+    tenantID:
+      {{- if kindIs "string" . }}
       valueFrom:
         secretKeyRef:
           key: 'value'
           name: {{ $tenantIDSecret }}
           optional: false
       {{- else }}
-{{ .tenantID | toYaml | indent 6 }}
+      {{- . | toYaml | nindent 6 }}
       {{- end }}
     {{- end }}
-
-    {{- if .labels }}
+    {{- with .labels }}
     labels:
-{{ .labels | toYaml | indent 6 }}
-    {{ end -}}
-    
-    {{- if .labelKeys }}
+      {{- . | toYaml | nindent 6 }}
+    {{- end }}
+    {{- with .labelKeys }}
     labelKeys:
-{{ .labelKeys | toYaml | indent 6 }}
-    {{ end -}}
-
-    {{- if .removeKeys }}
+      {{- . | toYaml | nindent 6 }}
+    {{- end }}
+    {{- with .removeKeys }}
     removeKeys:
-{{ .removeKeys | toYaml | indent 6 }}
-    {{ end -}}
-    
-    {{ if .tls }}
+      {{- . | toYaml | nindent 6 }}
+    {{- end }}
+    {{ with .tls }}
     tls:
-{{ .tls | toYaml | indent 6 }}
-    {{ end -}}
-
-{{ end -}}
-
+      {{- . | toYaml | nindent 6 }}
+    {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

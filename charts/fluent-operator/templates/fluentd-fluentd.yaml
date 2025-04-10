@@ -1,52 +1,54 @@
-{{- if .Values.Kubernetes -}}
-{{- if .Values.fluentd.enable -}}
+{{- if .Values.Kubernetes }}
+{{- if .Values.fluentd.enable }}
+{{- with  .Values.fluentd }}
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
 metadata:
-  name: {{ .Values.fluentd.name }}
-  namespace: {{ .Release.Namespace | quote }}
+  name: {{ .name | quote }}
+  namespace: {{ $.Release.Namespace | quote }}
   labels:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
     - forward:
         bind: 0.0.0.0
-        port: {{ .Values.fluentd.port }}
-  replicas: {{ .Values.fluentd.replicas }}
-  image: {{ .Values.fluentd.image.repository }}:{{ .Values.fluentd.image.tag }}
-  {{- if .Values.fluentd.imagePullSecrets }}
+        port: {{ .port }}
+  replicas: {{ .replicas }}
+  image: {{ .image.repository }}:{{ .image.tag }}
+  {{- with .imagePullSecrets }}
   imagePullSecrets:
-  {{ toYaml .Values.fluentd.imagePullSecrets | indent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
-  mode: {{ .Values.fluentd.mode }}
+  mode: {{ .mode }}
   resources:
-  {{- toYaml .Values.fluentd.resources | nindent 4  }}
+    {{- toYaml .resources | nindent 4  }}
   fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
-  {{- if .Values.fluentd.envVars }}
+  {{- if .envVars }}
   envVars:
-  {{- toYaml .Values.fluentd.envVars | nindent 4 }}
+    {{- toYaml .envVars | nindent 4 }}
   {{- end }}
-  {{- if .Values.fluentd.securityContext }}
+  {{- with .securityContext }}
   containerSecurityContext:
-  {{ toYaml .Values.fluentd.securityContext | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- if .Values.fluentd.podSecurityContext }}
+  {{- with .podSecurityContext }}
   securityContext:
-  {{ toYaml .Values.fluentd.podSecurityContext | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- if .Values.fluentd.schedulerName }}
-  schedulerName: {{ .Values.fluentd.schedulerName }}
+  {{- with .schedulerName }}
+  schedulerName: {{ . | quote }}
   {{- end }}
-  {{- if .Values.fluentd.logLevel }}
-  logLevel: {{ .Values.fluentd.logLevel }}
+  {{- with .logLevel }}
+  logLevel: {{ . }}
   {{- end }}
-  {{- with .Values.fluentd.priorityClassName }}
+  {{- with .priorityClassName }}
   priorityClassName: {{ . }}
   {{- end }}
-  {{- if .Values.fluentd.extras }}
-  {{ .Values.fluentd.extras | toYaml | nindent 2 }}
+  {{- with .extras }}
+  {{ toYaml . | nindent 2 }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

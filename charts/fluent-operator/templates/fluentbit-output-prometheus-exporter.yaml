@@ -1,5 +1,5 @@
-{{- if .Values.fluentbit.enable -}}
-{{- if .Values.fluentbit.output.prometheusMetricsExporter -}}
+{{- if .Values.fluentbit.enable }}
+{{- with .Values.fluentbit.output.prometheusMetricsExporter }}
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
@@ -8,8 +8,8 @@ metadata:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging
 spec:
-  match: {{ .Values.fluentbit.output.prometheusMetricsExporter.match }}
+  match: {{ .match }}
   prometheusExporter:
-{{ toYaml .Values.fluentbit.output.prometheusMetricsExporter.metricsExporter | indent 4}}
+    {{- toYaml .metricsExporter | nindent 4 }}
 {{- end }}
 {{- end }}
