@@ -25,3 +25,4 @@ Http defines the parameters for out_http output plugin
 | tlsCiphers | TlsCiphers defines the cipher suites configuration of TLS. | *string |
 | errorResponseAsUnrecoverable | Raise UnrecoverableError when the response code is not SUCCESS. | *bool |
 | retryableResponseCodes | The list of retryable response codes. If the response code is included in this list, out_http retries the buffer flush. | *string |
+| compress | Compress enables the given compression method for HTTP requests. | *string |
