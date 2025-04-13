@@ -1868,6 +1868,13 @@ spec:
                                   type: object
                               type: object
                           type: object
+                        compress:
+                          description: Compress enables the given compression method
+                            for HTTP requests.
+                          enum:
+                          - text
+                          - gzip
+                          type: string
                         contentType:
                           description: ContentType defines Content-Type for HTTP request.
                             out_http automatically set Content-Type for built-in formatters

@@ -49,4 +49,7 @@ type Http struct {
 	ErrorResponseAsUnrecoverable *bool `json:"errorResponseAsUnrecoverable,omitempty"`
 	// The list of retryable response codes. If the response code is included in this list, out_http retries the buffer flush.
 	RetryableResponseCodes *string `json:"retryableResponseCodes,omitempty"`
+	// Compress enables the given compression method for HTTP requests.
+	// +kubebuilder:validation:Enum:=text;gzip
+	Compress *string `json:"compress,omitempty"`
 }

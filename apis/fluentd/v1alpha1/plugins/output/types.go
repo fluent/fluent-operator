@@ -387,6 +387,10 @@ func (o *Output) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 		parent.InsertPairs("retryable_response_codes", fmt.Sprint(*o.Http.RetryableResponseCodes))
 	}
 
+	if o.Http.Compress != nil {
+		parent.InsertPairs("compress", fmt.Sprint(*o.Http.Compress))
+	}
+
 	return parent
 }
 
