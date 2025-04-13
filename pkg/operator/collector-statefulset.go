@@ -24,6 +24,7 @@ func MakefbStatefulset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 			Labels:    co.Labels,
 		},
 		Spec: appsv1.StatefulSetSpec{
+			Replicas: co.Spec.Replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: co.Labels,
 			},
