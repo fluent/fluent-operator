@@ -5336,6 +5336,14 @@ spec:
                   name:
                     description: Name is the name of the FluentD service.
                     type: string
+                  type:
+                    description: Type is the service type to deploy.
+                    enum:
+                    - ClusterIP
+                    - NodePort
+                    - LoadBalancer
+                    - ExternalName
+                    type: string
                 type: object
               serviceAccountAnnotations:
                 additionalProperties:
