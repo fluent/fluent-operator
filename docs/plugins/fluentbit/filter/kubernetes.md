@@ -40,3 +40,4 @@ Kubernetes filter allows to enrich your log files with Kubernetes metadata. <br 
 | namespaceAnnotations | Include Kubernetes namespace resource annotations in the extra metadata. | *bool |
 | namespaceMetadataOnly | Include Kubernetes namespace metadata only and no pod metadata. If this is set, the values of Labels and Annotations are ignored. | *bool |
 | ownerReferences | Include Kubernetes owner references in the extra metadata. | *bool |
+| useTagForMeta | If true, Kubernetes metadata (e.g., pod_name, container_name, namespace_name etc) will be extracted from the tag itself. | *bool |

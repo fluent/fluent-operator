@@ -317,6 +317,11 @@ spec:
                             instead of calling Kube Server API to enhance the log.
                             This could mitigate the Kube API heavy traffic issue for large cluster.
                           type: boolean
+                        useTagForMeta:
+                          description: If true, Kubernetes metadata (e.g., pod_name,
+                            container_name, namespace_name etc) will be extracted
+                            from the tag itself.
+                          type: boolean
                       type: object
                     logToMetrics:
                       description: LogToMetrics defines a Log to Metrics Filter configuration.
