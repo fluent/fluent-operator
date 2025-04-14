@@ -105,6 +105,8 @@ type Kubernetes struct {
 	NamespaceMetadataOnly *bool `json:"namespaceMetadataOnly,omitempty"`
 	// Include Kubernetes owner references in the extra metadata.
 	OwnerReferences *bool `json:"ownerReferences,omitempty"`
+	// If true, Kubernetes metadata (e.g., pod_name, container_name, namespace_name etc) will be extracted from the tag itself.
+	UseTagForMeta *bool `json:"useTagForMeta,omitempty"`
 }
 
 func (_ *Kubernetes) Name() string {
@@ -221,6 +223,9 @@ func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if k.OwnerReferences != nil {
 		kvs.Insert("Owner_References", fmt.Sprint(*k.OwnerReferences))
+	}
+	if k.UseTagForMeta != nil {
+		kvs.Insert("Use_Tag_For_Meta", fmt.Sprint(*k.UseTagForMeta))
 	}
 	return kvs, nil
 }
