@@ -131,6 +131,9 @@ type FluentDService struct {
 	Annotations map[string]string `json:"annotations,omitempty"`
 	// Labels to add to each FluentD service
 	Labels map[string]string `json:"labels,omitempty"`
+	// Type is the service type to deploy.
+	// +kubebuilder:validation:Enum:=ClusterIP;NodePort;LoadBalancer;ExternalName
+	Type *corev1.ServiceType `json:"type,omitempty"`
 }
 
 type BufferVolume struct {

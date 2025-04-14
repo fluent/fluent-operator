@@ -33,6 +33,11 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 		}
 	}
 
+	serviceType := corev1.ServiceTypeClusterIP
+	if fd.Spec.Service.Type != nil {
+		serviceType = *fd.Spec.Service.Type
+	}
+
 	svc := corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -41,7 +46,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 		},
 		Spec: corev1.ServiceSpec{
 			Selector: labels,
-			Type:     corev1.ServiceTypeClusterIP,
+			Type:     serviceType,
 		},
 	}
 

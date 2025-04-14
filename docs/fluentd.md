@@ -241,6 +241,7 @@ FluentDService the service of the FluentD
 | name | Name is the name of the FluentD service. | string |
 | annotations | Annotations to add to each FluentD service. | map[string]string |
 | labels | Labels to add to each FluentD service | map[string]string |
+| type | Type is the service type to deploy. | *[corev1.ServiceType](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#servicetype-v1-core) |
 
 [Back to TOC](#table-of-contents)
 # Fluentd
