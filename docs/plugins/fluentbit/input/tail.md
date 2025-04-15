@@ -18,6 +18,7 @@ The Tail input plugin allows to monitor one or several text files. <br /> It has
 | skipLongLines | When a monitored file reach it buffer capacity due to a very long line (Buffer_Max_Size), the default behavior is to stop monitoring that file. Skip_Long_Lines alter that behavior and instruct Fluent Bit to skip long lines and continue processing other lines that fits into the buffer size. | *bool |
 | db | Specify the database file to keep track of monitored files and offsets. | string |
 | dbSync | Set a default synchronization (I/O) method. Values: Extra, Full, Normal, Off. | string |
+| dbLocking | Specify that the database will be accessed only by Fluent Bit. | *bool |
 | memBufLimit | Set a limit of memory that Tail plugin can use when appending data to the Engine. If the limit is reach, it will be paused; when the data is flushed it resumes. | string |
 | parser | Specify the name of a parser to interpret the entry as a structured message. | string |
 | key | When a message is unstructured (no parser applied), it's appended as a string under the key name log. This option allows to define an alternative name for that key. | string |
