@@ -28,6 +28,9 @@ spec:
     {{- with .Values.fluentbit.input.tail.bufferMaxSize }}
     bufferMaxSize: {{ . | quote }}
     {{- end }}
+    {{- with .Values.fluentbit.input.tail.bufferChunkSize }}
+    bufferChunkSize: {{ . | quote }}
+    {{- end }}
     skipLongLines: {{ .Values.fluentbit.input.tail.skipLongLines }}
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
