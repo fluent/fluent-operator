@@ -457,6 +457,11 @@ func (in *Tail) DeepCopyInto(out *Tail) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.DBLocking != nil {
+		in, out := &in.DBLocking, &out.DBLocking
+		*out = new(bool)
+		**out = **in
+	}
 	if in.Multiline != nil {
 		in, out := &in.Multiline, &out.Multiline
 		*out = new(bool)
