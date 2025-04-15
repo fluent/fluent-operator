@@ -2806,6 +2806,10 @@ spec:
                     description: Specify the database file to keep track of monitored
                       files and offsets.
                     type: string
+                  dbLocking:
+                    description: Specify that the database will be accessed only by
+                      Fluent Bit.
+                    type: boolean
                   dbSync:
                     description: 'Set a default synchronization (I/O) method. Values:
                       Extra, Full, Normal, Off.'

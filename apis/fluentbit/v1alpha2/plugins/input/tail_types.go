@@ -59,6 +59,8 @@ type Tail struct {
 	// Set a default synchronization (I/O) method. Values: Extra, Full, Normal, Off.
 	// +kubebuilder:validation:Enum:=Extra;Full;Normal;Off
 	DBSync string `json:"dbSync,omitempty"`
+	// Specify that the database will be accessed only by Fluent Bit.
+	DBLocking *bool `json:"dbLocking,omitempty"`
 	// Set a limit of memory that Tail plugin can use when appending data to the Engine.
 	// If the limit is reach, it will be paused; when the data is flushed it resumes.
 	MemBufLimit string `json:"memBufLimit,omitempty"`
@@ -152,6 +154,9 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if t.DBSync != "" {
 		kvs.Insert("DB.Sync", t.DBSync)
+	}
+	if t.DBLocking != nil {
+		kvs.Insert("DB.locking", fmt.Sprint(*t.DBLocking))
 	}
 	if t.MemBufLimit != "" {
 		kvs.Insert("Mem_Buf_Limit", t.MemBufLimit)
