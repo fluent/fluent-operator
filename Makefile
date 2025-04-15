@@ -191,7 +191,6 @@ rm -rf $$TMP_DIR ;\
 endef
 
 go-deps: # download go dependencies
-	go get k8s.io/code-generator@v0.30.3
 	go mod download
 
 docs-update: # update api docs
