@@ -103,6 +103,8 @@ type Kubernetes struct {
 	// Include Kubernetes namespace metadata only and no pod metadata.
 	// If this is set, the values of Labels and Annotations are ignored.
 	NamespaceMetadataOnly *bool `json:"namespaceMetadataOnly,omitempty"`
+	// Include Kubernetes owner references in the extra metadata.
+	OwnerReferences *bool `json:"ownerReferences,omitempty"`
 }
 
 func (_ *Kubernetes) Name() string {
@@ -216,6 +218,9 @@ func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if k.NamespaceMetadataOnly != nil {
 		kvs.Insert("Namespace_Metadata_Only", fmt.Sprint(*k.NamespaceMetadataOnly))
+	}
+	if k.OwnerReferences != nil {
+		kvs.Insert("Owner_References", fmt.Sprint(*k.OwnerReferences))
 	}
 	return kvs, nil
 }
