@@ -4,7 +4,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
-  name: {{ .Values.containerRuntime }}
+  name: {{ .Values.containerRuntime | quote }}
   labels:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging
@@ -17,7 +17,7 @@ spec:
     stripUnderscores: {{ .Values.fluentbit.input.systemd.stripUnderscores | quote }}
     systemdFilter:
       {{- if .Values.fluentbit.input.systemd.systemdFilter.enable }}
-      - _SYSTEMD_UNIT={{ .Values.containerRuntime }}.service
+      - {{ printf "_SYSTEMD_UNIT=%s.service" .Values.containerRuntime }}
       {{- if .Values.fluentbit.input.systemd.includeKubelet }}
       - _SYSTEMD_UNIT=kubelet.service
       {{- end }}
