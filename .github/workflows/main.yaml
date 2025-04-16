@@ -63,6 +63,11 @@ jobs:
           go-version-file: go.mod
           cache-dependency-path: go.sum
 
+      - name: Ensure all generated code is committed
+        run: |
+          make generate manifests docs-update
+          git diff --exit-code
+
       - name: Check shell scripts
         run: make shellcheck
 
