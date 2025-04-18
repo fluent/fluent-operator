@@ -29,6 +29,11 @@ func MakeFluentbitService(fb fluentbitv1alpha2.FluentBit) *corev1.Service {
 		labels = fb.Labels
 	}
 
+	podLabelSelector := fb.Labels
+	if len(fb.Spec.Labels) > 0 {
+		podLabelSelector = fb.Spec.Labels
+	}
+
 	var FluentBitMetricsPort int32
 	if fb.Spec.MetricsPort != 0 {
 		FluentBitMetricsPort = fb.Spec.MetricsPort
@@ -43,7 +48,7 @@ func MakeFluentbitService(fb fluentbitv1alpha2.FluentBit) *corev1.Service {
 			Labels:    labels,
 		},
 		Spec: corev1.ServiceSpec{
-			Selector: fb.Labels,
+			Selector: podLabelSelector,
 			Type:     corev1.ServiceTypeClusterIP,
 			Ports: []corev1.ServicePort{
 				{
