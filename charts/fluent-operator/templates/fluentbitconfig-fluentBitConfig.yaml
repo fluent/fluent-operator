@@ -12,9 +12,7 @@ spec:
   {{- end }}
   configFileFormat: {{ .Values.fluentbit.configFileFormat | default "classic" | quote }}
   service:
-    parsersFiles:
-      - /fluent-bit/etc/parsers.conf
-      - /fluent-bit/config/parsers_multiline.conf
+    parsersFile: /fluent-bit/etc/parsers.conf
     httpServer: true
     {{- with .Values.fluentbit.logLevel }}
     logLevel: {{ . | quote }}
