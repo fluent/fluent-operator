@@ -79,6 +79,8 @@ type CollectorSpec struct {
 	Service CollectorService `json:"service,omitempty"`
 	// SchedulerName represents the desired scheduler for the Fluentbit collector pods
 	SchedulerName string `json:"schedulerName,omitempty"`
+	// Replicas is the number of collector replicas to deploy
+	Replicas *int32 `json:"replicas,omitempty"`
 }
 
 // CollectorService defines the service of the FluentBit
