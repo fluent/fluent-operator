@@ -414,3 +414,109 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 		i++
 	}
 }
+
+func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+	
+	lokiOutput := ClusterOutput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterOutput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "loki_output_with_metadata",
+		},
+		Spec: OutputSpec{
+			Match: "kube.*",
+			Loki: &output.Loki{
+				Host: "loki-gateway",
+				Port: ptrInt32(int32(3100)),
+				Labels: []string{
+					"job=fluentbit",
+					"environment=production",
+				},
+				StructuredMetadata: map[string]string{
+					"pod": "${record['kubernetes']['pod_name']}",
+					"container": "${record['kubernetes']['container_name']}",
+					"trace_id": "${record['trace_id']}",
+				},
+				StructuredMetadataKeys: []string{
+					"level",
+					"caller",
+				},
+			},
+		},
+	}
+	
+	outputs := ClusterOutputList{
+		Items: []ClusterOutput{lokiOutput},
+	}
+	
+	expected := `[Output]
+    Name    loki
+    Match    kube.*
+    host    loki-gateway
+    port    3100
+    labels    environment=production,job=fluentbit
+    structured_metadata    container=${record['kubernetes']['container_name']},pod=${record['kubernetes']['pod_name']},trace_id=${record['trace_id']}
+    structured_metadata_keys    level,caller
+`
+	
+	result, err := outputs.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(result).To(Equal(expected))
+}
+
+func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+	
+	lokiOutput := ClusterOutput{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterOutput",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "loki_output_with_metadata",
+		},
+		Spec: OutputSpec{
+			Match: "kube.*",
+			Loki: &output.Loki{
+				Host: "loki-gateway",
+				Port: ptrInt32(int32(3100)),
+				Labels: []string{
+					"job=fluentbit",
+					"environment=production",
+				},
+				StructuredMetadata: map[string]string{
+					"pod": "${record['kubernetes']['pod_name']}",
+					"container": "${record['kubernetes']['container_name']}",
+					"trace_id": "${record['trace_id']}",
+				},
+				StructuredMetadataKeys: []string{
+					"level",
+					"caller",
+				},
+			},
+		},
+	}
+	
+	outputs := ClusterOutputList{
+		Items: []ClusterOutput{lokiOutput},
+	}
+	
+	expected := `outputs:
+  - name: loki
+    match: "kube.*"
+    host: loki-gateway
+    port: 3100
+    labels: environment=production,job=fluentbit
+    structured_metadata: container=${record['kubernetes']['container_name']},pod=${record['kubernetes']['pod_name']},trace_id=${record['trace_id']}
+    structured_metadata_keys: level,caller
+`
+	
+	result, err := outputs.LoadAsYaml(sl, 0)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(result).To(Equal(expected))
+}

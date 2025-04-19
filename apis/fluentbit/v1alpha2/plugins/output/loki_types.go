@@ -3,6 +3,7 @@ package output
 import (
 	"fmt"
 	"strings"
+	"sort"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
@@ -56,6 +57,13 @@ type Loki struct {
 	// Specify the name of the key from the original record that contains the Tenant ID.
 	// The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically.
 	TenantIDKey  string `json:"tenantIDKey,omitempty"`
+	// Stream structured metadata for API request. It can be multiple comma separated key=value pairs.
+	// This is used for high cardinality data that isn't suited for using labels.
+	// Only supported in Loki 3.0+ with schema v13 and TSDB storage.
+	StructuredMetadata map[string]string `json:"structuredMetadata,omitempty"`
+	// Optional list of record keys that will be placed as structured metadata.
+	// This allows using record accessor patterns (e.g. $kubernetes['pod_name']) to reference record keys.
+	StructuredMetadataKeys []string `json:"structuredMetadataKeys,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
@@ -133,6 +141,21 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if l.TenantIDKey != "" {
 		kvs.Insert("tenant_id_key", l.TenantIDKey)
+	}
+	// Handle structured metadata
+	if l.StructuredMetadata != nil && len(l.StructuredMetadata) > 0 {
+		var metadataPairs []string
+		for k, v := range l.StructuredMetadata {
+			metadataPairs = append(metadataPairs, fmt.Sprintf("%s=%s", k, v))
+		}
+		if len(metadataPairs) > 0 {
+			sort.Strings(metadataPairs)
+			kvs.Insert("structured_metadata", strings.Join(metadataPairs, ","))
+		}
+	}
+	// Handle structured metadata keys
+	if l.StructuredMetadataKeys != nil && len(l.StructuredMetadataKeys) > 0 {
+		kvs.Insert("structured_metadata_keys", strings.Join(l.StructuredMetadataKeys, ","))
 	}
 	if l.TLS != nil {
 		tls, err := l.TLS.Params(sl)
