@@ -73,6 +73,7 @@ const (
 	CloudWatchOutputType              OutputType = "cloudwatch_logs"
 	DatadogOutputType                 OutputType = "datadog"
 	CopyOutputType                    OutputType = "copy"
+	NullOutputType                    OutputType = "null"
 )
 
 var (

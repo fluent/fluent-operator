@@ -27,3 +27,4 @@ Output defines all available output plugins and their parameters
 | cloudWatch | out_cloudwatch plugin | *[CloudWatch](#cloudwatch) |
 | datadog | datadog plugin | *[Datadog](#datadog) |
 | copy | copy plugin | *[Copy](#copy) |
+| nullPlugin | null plugin | *[Null](#null) |

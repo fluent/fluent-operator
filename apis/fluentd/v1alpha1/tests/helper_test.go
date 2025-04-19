@@ -381,6 +381,31 @@ func Test_ClusterCfgOutput2Datadog(t *testing.T) {
 	}
 }
 
+func Test_ClusterCfgOutput2Null(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
+
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
+	g.Expect(err).NotTo(HaveOccurred())
+	clusterFilters := []fluentdv1alpha1.ClusterFilter{FluentdClusterFilter1}
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutput2Null}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterInput{}, clusterFilters, clusterOutputs)
+	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	i := 0
+	for i < maxRuntimes {
+		config, errs := psr.RenderMainConfig(false)
+		g.Expect(errs).NotTo(HaveOccurred())
+		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-null.cfg")))).To(Equal(config))
+
+		i++
+	}
+
+}
 func Test_MixedCfgCopy1(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := NewSecretLoader(logr.Logger{}, lokiHttpCredentials, lokiTenantName)
