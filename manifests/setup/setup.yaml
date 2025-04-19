@@ -10723,6 +10723,14 @@ spec:
                       required:
                       - url
                       type: object
+                    nullPlugin:
+                      description: null plugin
+                      properties:
+                        neverFlush:
+                          description: NeverFlush for testing to simulate the output
+                            plugin that never succeeds to flush.
+                          type: boolean
+                      type: object
                     opensearch:
                       description: out_opensearch plugin
                       properties:
@@ -39579,6 +39587,14 @@ spec:
                           type: string
                       required:
                       - url
+                      type: object
+                    nullPlugin:
+                      description: null plugin
+                      properties:
+                        neverFlush:
+                          description: NeverFlush for testing to simulate the output
+                            plugin that never succeeds to flush.
+                          type: boolean
                       type: object
                     opensearch:
                       description: out_opensearch plugin
