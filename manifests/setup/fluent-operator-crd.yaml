@@ -5209,6 +5209,12 @@ spec:
                     maximum: 65535
                     minimum: 1
                     type: integer
+                  compress:
+                    description: Set payload compression mechanism. Option available 
+                      is 'gzip'
+                    enum:
+                    - gzip
+                    type: string
                   requireAckResponse:
                     description: |-
                       Send "chunk"-option and wait for "ack" response from server.
@@ -34066,6 +34072,11 @@ spec:
                     maximum: 65535
                     minimum: 1
                     type: integer
+                  compress:
+                    description: Set payload compression mechanism. Option available is 'gzip'
+                    enum:
+                    - gzip
+                    type: string
                   requireAckResponse:
                     description: |-
                       Send "chunk"-option and wait for "ack" response from server.
