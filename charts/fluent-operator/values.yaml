@@ -383,8 +383,11 @@ fluentbit:
     multiline:
       enable: false
       keyContent: log
+      buffer: false
       # emitterMemBufLimit 120 (MB)
       emitterMemBufLimit: 120
+      emitterType: memory
+      flushMs: 2000
       parsers:
         - go
         - python
