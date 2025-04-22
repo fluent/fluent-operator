@@ -13,7 +13,10 @@ spec:
   filters:
   - multiline:
       keyContent: {{ .Values.fluentbit.filter.multiline.keyContent | quote }}
+      buffer: {{ .Values.fluentbit.filter.multiline.buffer }}
       emitterMemBufLimit: {{ .Values.fluentbit.filter.multiline.emitterMemBufLimit }}
+      emitterType: {{ .Values.fluentbit.filter.multiline.emitterType }}
+      flushMs: {{ .Values.fluentbit.filter.multiline.flushMs }}
       parser: "{{- join "," .Values.fluentbit.filter.multiline.parsers -}}"
 {{- end }}
 {{- end }}
