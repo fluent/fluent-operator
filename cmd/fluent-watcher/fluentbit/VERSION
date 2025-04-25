@@ -1,2 +1,1 @@
-# renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-bit version=
-4.0.0
+4.0.1
