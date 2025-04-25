@@ -105,7 +105,7 @@ fluentbit:
     registry: ghcr.io
     repository: fluent/fluent-operator/fluent-bit
     # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-bit
-    tag: "4.0.0"
+    tag: "4.0.1"
 
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
