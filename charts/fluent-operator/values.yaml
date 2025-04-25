@@ -388,6 +388,10 @@ fluentbit:
       emitterMemBufLimit: 120
       emitterType: memory
       flushMs: 2000
+      # Optional: mode can be either "parser" or "partial_message"
+      # mode: parser
+      # Optional: Name for the emitter input instance which re-emits the completed records at the beginning of the pipeline.
+      # emitterName: my-emitter
       parsers:
         - go
         - python
