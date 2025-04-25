@@ -18,6 +18,12 @@ spec:
       emitterType: {{ .Values.fluentbit.filter.multiline.emitterType }}
       flushMs: {{ .Values.fluentbit.filter.multiline.flushMs }}
       parser: "{{- join "," .Values.fluentbit.filter.multiline.parsers -}}"
+      {{- if .Values.fluentbit.filter.multiline.mode }}
+      mode: {{ .Values.fluentbit.filter.multiline.mode }}
+      {{- end }}
+      {{- if .Values.fluentbit.filter.multiline.emitterName }}
+      emitterName: {{ .Values.fluentbit.filter.multiline.emitterName }}
+      {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
