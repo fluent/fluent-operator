@@ -1,0 +1,26 @@
+{{- if .Values.operator.enable }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pre-delete-fluent-bit-hook
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: fluent-operator
+      containers:
+        - name: cleanup
+          image: {{.Values.cleanImage}}
+          imagePullPolicy: IfNotPresent
+          command:
+            - "kubectl"
+            - "delete"
+            - "FluentBit"
+            - "fluent-bit"
+            - "--namespace={{ .Release.Namespace }}"
+      restartPolicy: Never
+{{- end }}
