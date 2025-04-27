@@ -79,6 +79,8 @@ type Storage struct {
 type Service struct {
 	// If true go to background on start
 	Daemon *bool `json:"daemon,omitempty"`
+	// Enable input/output tracing on debug images, controlled more granualry via the http API
+	EnableChunkTrace *bool `json:"enableChunkTrace,omitempty"`
 	// Interval to flush output
 	FlushSeconds *float64 `json:"flushSeconds,omitempty"`
 	// Wait time on exit
@@ -152,6 +154,9 @@ func (s *Service) Params() *params.KVs {
 	m := params.NewKVs()
 	if s.Daemon != nil {
 		m.Insert("Daemon", fmt.Sprint(*s.Daemon))
+	}
+	if s.EnableChunkTrace != nil {
+		m.Insert("Enable_Chunk_Trace", fmt.Sprint(*s.EnableChunkTrace))
 	}
 	if s.FlushSeconds != nil {
 		m.Insert("Flush", fmt.Sprint(*s.FlushSeconds))
