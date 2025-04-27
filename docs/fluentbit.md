@@ -623,6 +623,7 @@ ParserSpec defines the desired state of ClusterParser
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | daemon | If true go to background on start | *bool |
+| enableChunkTrace | Enable input/output tracing on debug images, controlled more granualry via the http API | *bool |
 | flushSeconds | Interval to flush output | *float64 |
 | graceSeconds | Wait time on exit | *int64 |
 | hcErrorsCount | the error count to meet the unhealthy requirement, this is a sum for all output plugins in a defined HC_Period, example for output error: [2022/02/16 10:44:10] [ warn] [engine] failed to flush chunk '1-1645008245.491540684.flb', retry in 7 seconds: task_id=0, input=forward.1 > output=cloudwatch_logs.3 (out_id=3) | *int64 |
