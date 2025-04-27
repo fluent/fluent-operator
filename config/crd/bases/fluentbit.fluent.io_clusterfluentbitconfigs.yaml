@@ -299,6 +299,10 @@ spec:
                     type: string
                   emitterStorageType:
                     type: string
+                  enableChunkTrace:
+                    description: Enable input/output tracing on debug images, controlled
+                      more granualry via the http API
+                    type: boolean
                   flushSeconds:
                     description: Interval to flush output
                     type: number

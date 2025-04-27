@@ -1715,6 +1715,11 @@ func (in *Service) DeepCopyInto(out *Service) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.EnableChunkTrace != nil {
+		in, out := &in.EnableChunkTrace, &out.EnableChunkTrace
+		*out = new(bool)
+		**out = **in
+	}
 	if in.FlushSeconds != nil {
 		in, out := &in.FlushSeconds, &out.FlushSeconds
 		*out = new(float64)
