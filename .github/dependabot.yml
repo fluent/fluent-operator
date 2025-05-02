@@ -6,17 +6,10 @@ updates:
       interval: "monthly"
 
   - package-ecosystem: "docker"
-    directory: "/cmd/fluent-manager"
-    schedule:
-      interval: "daily"
-
-  - package-ecosystem: "docker"
-    directory: "/cmd/fluent-watcher/fluentbit"
-    schedule:
-      interval: "daily"
-
-  - package-ecosystem: "docker"
-    directory: "/cmd/fluent-watcher/fluentd"
+    directories:
+      - "/cmd/fluent-manager"
+      - "/cmd/fluent-watcher/fluentbit"
+      - "/cmd/fluent-watcher/fluentd"
     schedule:
       interval: "daily"
 
