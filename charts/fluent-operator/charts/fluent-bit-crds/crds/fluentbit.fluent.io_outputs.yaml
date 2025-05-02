@@ -2371,6 +2371,21 @@ spec:
                     items:
                       type: string
                     type: array
+                  structuredMetadata:
+                    additionalProperties:
+                      type: string
+                    description: |-
+                      Stream structured metadata for API request. It can be multiple comma separated key=value pairs.
+                      This is used for high cardinality data that isn't suited for using labels.
+                      Only supported in Loki 3.0+ with schema v13 and TSDB storage.
+                    type: object
+                  structuredMetadataKeys:
+                    description: |-
+                      Optional list of record keys that will be placed as structured metadata.
+                      This allows using record accessor patterns (e.g. $kubernetes['pod_name']) to reference record keys.
+                    items:
+                      type: string
+                    type: array
                   tenantID:
                     description: |-
                       Tenant ID used by default to push logs to Loki.
