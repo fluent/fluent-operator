@@ -396,16 +396,14 @@ func Test_ClusterCfgOutput2Null(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-null.cfg")))).To(Equal(config))
-
-		i++
 	}
 
 }
+
 func Test_MixedCfgCopy1(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := NewSecretLoader(logr.Logger{}, lokiHttpCredentials, lokiTenantName)
