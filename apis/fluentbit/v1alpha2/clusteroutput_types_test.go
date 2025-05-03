@@ -418,7 +418,7 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, "testnamespace")
-	
+
 	lokiOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
@@ -437,9 +437,9 @@ func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
 					"environment=production",
 				},
 				StructuredMetadata: map[string]string{
-					"pod": "${record['kubernetes']['pod_name']}",
+					"pod":       "${record['kubernetes']['pod_name']}",
 					"container": "${record['kubernetes']['container_name']}",
-					"trace_id": "${record['trace_id']}",
+					"trace_id":  "${record['trace_id']}",
 				},
 				StructuredMetadataKeys: []string{
 					"level",
@@ -448,11 +448,11 @@ func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
 			},
 		},
 	}
-	
+
 	outputs := ClusterOutputList{
 		Items: []ClusterOutput{lokiOutput},
 	}
-	
+
 	expected := `[Output]
     Name    loki
     Match    kube.*
@@ -462,7 +462,7 @@ func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
     structured_metadata    container=${record['kubernetes']['container_name']},pod=${record['kubernetes']['pod_name']},trace_id=${record['trace_id']}
     structured_metadata_keys    level,caller
 `
-	
+
 	result, err := outputs.Load(sl)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(result).To(Equal(expected))
@@ -471,7 +471,7 @@ func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
 func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, "testnamespace")
-	
+
 	lokiOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "fluentbit.fluent.io/v1alpha2",
@@ -490,9 +490,9 @@ func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
 					"environment=production",
 				},
 				StructuredMetadata: map[string]string{
-					"pod": "${record['kubernetes']['pod_name']}",
+					"pod":       "${record['kubernetes']['pod_name']}",
 					"container": "${record['kubernetes']['container_name']}",
-					"trace_id": "${record['trace_id']}",
+					"trace_id":  "${record['trace_id']}",
 				},
 				StructuredMetadataKeys: []string{
 					"level",
@@ -501,11 +501,11 @@ func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
 			},
 		},
 	}
-	
+
 	outputs := ClusterOutputList{
 		Items: []ClusterOutput{lokiOutput},
 	}
-	
+
 	expected := `outputs:
   - name: loki
     match: "kube.*"
@@ -515,7 +515,7 @@ func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
     structured_metadata: container=${record['kubernetes']['container_name']},pod=${record['kubernetes']['pod_name']},trace_id=${record['trace_id']}
     structured_metadata_keys: level,caller
 `
-	
+
 	result, err := outputs.LoadAsYaml(sl, 0)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(result).To(Equal(expected))
