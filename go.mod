@@ -12,7 +12,7 @@ require (
 	github.com/oklog/run v1.1.0
 	github.com/onsi/ginkgo/v2 v2.23.4
 	github.com/onsi/gomega v1.37.0
-	golang.org/x/sync v0.13.0
+	golang.org/x/sync v0.14.0
 	k8s.io/api v0.30.3
 	k8s.io/apimachinery v0.30.3
 	k8s.io/client-go v0.30.3
