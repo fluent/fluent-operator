@@ -616,6 +616,18 @@ func (in *Loki) DeepCopyInto(out *Loki) {
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
+	if in.StructuredMetadata != nil {
+		in, out := &in.StructuredMetadata, &out.StructuredMetadata
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
+	if in.StructuredMetadataKeys != nil {
+		in, out := &in.StructuredMetadataKeys, &out.StructuredMetadataKeys
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
 		*out = new(plugins.TLS)

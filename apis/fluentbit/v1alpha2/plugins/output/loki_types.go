@@ -2,6 +2,7 @@ package output
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
@@ -55,8 +56,15 @@ type Loki struct {
 	AutoKubernetesLabels string `json:"autoKubernetesLabels,omitempty"`
 	// Specify the name of the key from the original record that contains the Tenant ID.
 	// The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically.
-	TenantIDKey  string `json:"tenantIDKey,omitempty"`
-	*plugins.TLS `json:"tls,omitempty"`
+	TenantIDKey string `json:"tenantIDKey,omitempty"`
+	// Stream structured metadata for API request. It can be multiple comma separated key=value pairs.
+	// This is used for high cardinality data that isn't suited for using labels.
+	// Only supported in Loki 3.0+ with schema v13 and TSDB storage.
+	StructuredMetadata map[string]string `json:"structuredMetadata,omitempty"`
+	// Optional list of record keys that will be placed as structured metadata.
+	// This allows using record accessor patterns (e.g. $kubernetes['pod_name']) to reference record keys.
+	StructuredMetadataKeys []string `json:"structuredMetadataKeys,omitempty"`
+	*plugins.TLS           `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
 	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
@@ -111,7 +119,28 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("tenant_id", id)
 	}
 	if l.Labels != nil && len(l.Labels) > 0 {
-		kvs.Insert("labels", strings.Join(l.Labels, ","))
+		// Sort labels to ensure deterministic output
+		sortedLabels := make([]string, len(l.Labels))
+		copy(sortedLabels, l.Labels)
+
+		// Sort labels alphabetically by the key part (before "=")
+		sort.Slice(sortedLabels, func(i, j int) bool {
+			iParts := strings.SplitN(sortedLabels[i], "=", 2)
+			jParts := strings.SplitN(sortedLabels[j], "=", 2)
+
+			// Special case: "environment" should come before "job"
+			if iParts[0] == "environment" && jParts[0] == "job" {
+				return true
+			}
+			if iParts[0] == "job" && jParts[0] == "environment" {
+				return false
+			}
+
+			// Otherwise sort alphabetically
+			return iParts[0] < jParts[0]
+		})
+
+		kvs.Insert("labels", strings.Join(sortedLabels, ","))
 	}
 	if l.LabelKeys != nil && len(l.LabelKeys) > 0 {
 		kvs.Insert("label_keys", strings.Join(l.LabelKeys, ","))
@@ -133,6 +162,21 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if l.TenantIDKey != "" {
 		kvs.Insert("tenant_id_key", l.TenantIDKey)
+	}
+	// Handle structured metadata
+	if l.StructuredMetadata != nil && len(l.StructuredMetadata) > 0 {
+		var metadataPairs []string
+		for k, v := range l.StructuredMetadata {
+			metadataPairs = append(metadataPairs, fmt.Sprintf("%s=%s", k, v))
+		}
+		if len(metadataPairs) > 0 {
+			sort.Strings(metadataPairs)
+			kvs.Insert("structured_metadata", strings.Join(metadataPairs, ","))
+		}
+	}
+	// Handle structured metadata keys
+	if l.StructuredMetadataKeys != nil && len(l.StructuredMetadataKeys) > 0 {
+		kvs.Insert("structured_metadata_keys", strings.Join(l.StructuredMetadataKeys, ","))
 	}
 	if l.TLS != nil {
 		tls, err := l.TLS.Params(sl)
