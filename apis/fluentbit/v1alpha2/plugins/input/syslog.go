@@ -41,13 +41,15 @@ type Syslog struct {
 	ReceiveBufferSize string `json:"receiveBufferSize,omitempty"`
 	// Specify the key where the source address will be injected.
 	SourceAddressKey string `json:"sourceAddressKey,omitempty"`
+	// Specify TLS connector options.
+	*plugins.TLS `json:"tls,omitempty"`
 }
 
 func (_ *Syslog) Name() string {
 	return "syslog"
 }
 
-func (s *Syslog) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+func (s *Syslog) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 
 	if s.Mode != "" {
@@ -79,6 +81,13 @@ func (s *Syslog) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if s.SourceAddressKey != "" {
 		kvs.Insert("Source_Address_Key", s.SourceAddressKey)
+	}
+	if s.TLS != nil {
+		tls, err := s.TLS.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(tls)
 	}
 
 	return kvs, nil
