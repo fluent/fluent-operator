@@ -34,15 +34,11 @@ func Test_Cfg2ES(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-namespaced-cfg-output-es.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -66,7 +62,6 @@ func Test_ClusterCfgInputTail(t *testing.T) {
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-global-cfg-input-tail.cfg"))).To(Equal(config))
 	}
-
 }
 
 func Test_ClusterCfgInputSample(t *testing.T) {
@@ -127,14 +122,10 @@ func Test_ClusterCfgOutput2ES(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-es.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -153,14 +144,10 @@ func Test_ClusterCfgOutput2ESDataStream(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-es-data-stream.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -180,14 +167,10 @@ func Test_ClusterCfgOutput2CopyESDataStream(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-copy-es-data-stream.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -205,14 +188,10 @@ func Test_Cfg2OpenSearch(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-namespaced-cfg-output-opensearch.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -231,15 +210,11 @@ func Test_ClusterCfgOutput2OpenSearch(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		//fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-opensearch.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -258,15 +233,11 @@ func Test_ClusterCfgOutput2Kafka(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-kafka.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -285,15 +256,11 @@ func Test_ClusterCfgOutput2Loki(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-loki.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -317,15 +284,11 @@ func Test_MixedCfgs2ES(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-es.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -344,14 +307,10 @@ func Test_ClusterCfgOutput2CloudWatch(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-cloudwatch.cfg")))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -370,14 +329,32 @@ func Test_ClusterCfgOutput2Datadog(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-datadog.cfg")))).To(Equal(config))
+	}
+}
 
-		i++
+func Test_ClusterCfgOutput2Null(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
+
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
+	g.Expect(err).NotTo(HaveOccurred())
+	clusterFilters := []fluentdv1alpha1.ClusterFilter{FluentdClusterFilter1}
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdClusterOutput2Null}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterInput{}, clusterFilters, clusterOutputs)
+	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	for i := 0; i < maxRuntimes; i++ {
+		config, errs := psr.RenderMainConfig(false)
+		g.Expect(errs).NotTo(HaveOccurred())
+		g.Expect(strings.TrimSpace(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-null.cfg")))).To(Equal(config))
 	}
 }
 
@@ -403,15 +380,11 @@ func Test_MixedCfgCopy1(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-copy-1.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -436,15 +409,11 @@ func Test_MixedCfgCopy2(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-copy-2.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -469,15 +438,11 @@ func Test_MixedCfgCopy3(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-copy-3.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -505,14 +470,10 @@ func Test_MixedCfgCopy4(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-copy-4.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -534,15 +495,11 @@ func Test_ClusterCfgOutput2StdoutAndLoki(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-stdout-and-loki.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -566,15 +523,11 @@ func Test_MixedCfgs2OpenSearch(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-opensearch.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -603,15 +556,11 @@ func Test_MixedCfgs2MultiTenant(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResourcesForUser1)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-multi-tenant-output.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -630,15 +579,11 @@ func Test_OutputWithBuffer(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-buffer-example.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -657,15 +602,11 @@ func Test_OutputWithMemoryBuffer(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-memory-buffer.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -864,15 +805,11 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/duplicate-removal-cr-specs.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
@@ -891,15 +828,11 @@ func Test_RecordTransformer(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	// we should not see any permutations in serialized config
-	i := 0
-	for i < maxRuntimes {
+	for i := 0; i < maxRuntimes; i++ {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-filter-recordTransformer.cfg"))).To(Equal(config))
-
-		i++
 	}
 }
 
