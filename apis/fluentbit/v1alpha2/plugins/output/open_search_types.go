@@ -80,11 +80,11 @@ type OpenSearch struct {
 	IdKey string `json:"idKey,omitempty"`
 	// Operation to use to write in bulk requests.
 	WriteOperation string `json:"writeOperation,omitempty"`
-	// When enabled, replace field name dots with underscore, required by Elasticsearch 2.0-2.3.
+	// When enabled, replace field name dots with underscore, required by Opensearch 2.0-2.3.
 	ReplaceDots *bool `json:"replaceDots,omitempty"`
-	// When enabled print the elasticsearch API calls to stdout (for diag only)
+	// When enabled print the Opensearch API calls to stdout (for diag only)
 	TraceOutput *bool `json:"traceOutput,omitempty"`
-	// When enabled print the elasticsearch API calls to stdout when elasticsearch returns an error
+	// When enabled print the Opensearch API calls to stdout when Opensearch returns an error
 	TraceError *bool `json:"traceError,omitempty"`
 	// Use current time for index generation instead of message record
 	CurrentTimeIndex *bool `json:"currentTimeIndex,omitempty"`
