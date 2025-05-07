@@ -30,9 +30,9 @@ OpenSearch is the opensearch output plugin, allows to ingest your records into a
 | generateID | When enabled, generate _id for outgoing records. This prevents duplicate records when retrying OpenSearch. | *bool |
 | idKey | If set, _id will be the value of the key from incoming record and Generate_ID option is ignored. | string |
 | writeOperation | Operation to use to write in bulk requests. | string |
-| replaceDots | When enabled, replace field name dots with underscore, required by Elasticsearch 2.0-2.3. | *bool |
-| traceOutput | When enabled print the elasticsearch API calls to stdout (for diag only) | *bool |
-| traceError | When enabled print the elasticsearch API calls to stdout when elasticsearch returns an error | *bool |
+| replaceDots | When enabled, replace field name dots with underscore, required by Opensearch 2.0-2.3. | *bool |
+| traceOutput | When enabled print the Opensearch API calls to stdout (for diag only) | *bool |
+| traceError | When enabled print the Opensearch API calls to stdout when Opensearch returns an error | *bool |
 | currentTimeIndex | Use current time for index generation instead of message record | *bool |
 | logstashPrefixKey | Prefix keys with this string | string |
 | suppressTypeName | When enabled, mapping types is removed and Type option is ignored. Types are deprecated in APIs in v7.0. This options is for v7.0 or later. | *bool |
