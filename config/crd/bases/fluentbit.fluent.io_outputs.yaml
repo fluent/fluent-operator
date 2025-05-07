@@ -2753,7 +2753,7 @@ spec:
                     type: integer
                   replaceDots:
                     description: When enabled, replace field name dots with underscore,
-                      required by Elasticsearch 2.0-2.3.
+                      required by Opensearch 2.0-2.3.
                     type: boolean
                   suppressTypeName:
                     description: When enabled, mapping types is removed and Type option
@@ -2854,12 +2854,12 @@ spec:
                       for the current output logical destination.
                     type: string
                   traceError:
-                    description: When enabled print the elasticsearch API calls to
-                      stdout when elasticsearch returns an error
+                    description: When enabled print the Opensearch API calls to stdout
+                      when Opensearch returns an error
                     type: boolean
                   traceOutput:
-                    description: When enabled print the elasticsearch API calls to
-                      stdout (for diag only)
+                    description: When enabled print the Opensearch API calls to stdout
+                      (for diag only)
                     type: boolean
                   type:
                     description: Type name
