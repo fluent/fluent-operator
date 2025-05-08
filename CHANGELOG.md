@@ -1,3 +1,100 @@
+# Change Log
+
+## 3.4.0 / 2025-05-08
+
+### Features
+
+- feat(helm/fluent-operator): add option to disable rbac creation by @gbloquel in https://github.com/fluent/fluent-operator/pull/1556
+- Added support for deploying multiple fluentbit collector replicas by @solidDoWant in https://github.com/fluent/fluent-operator/pull/1561
+- feat(fluentd): add null output plugin by @cw-Guo in https://github.com/fluent/fluent-operator/pull/1578
+- adding support for Syslog over TLS by @matelang in https://github.com/fluent/fluent-operator/pull/1603
+- Add structured metadata support for Loki output plugin by @error9098x in https://github.com/fluent/fluent-operator/pull/1579
+- expose Enable_Chunk_Trace in the crd, enabling TAP debuging by @danielpodwysocki in https://github.com/fluent/fluent-operator/pull/1588
+- feat(charts): Add ability for custom `positionDB` for `FluentBit` by @kiblik in https://github.com/fluent/fluent-operator/pull/1548
+- Added the ability to specify Fluentd service type by @solidDoWant in https://github.com/fluent/fluent-operator/pull/1564
+- Added the ability to set `Use_Tag_For_Meta` on fluentbit kubernetes filter by @solidDoWant in https://github.com/fluent/fluent-operator/pull/1565
+- Add support for compression to the Fluentd HTTP output plugin by @solidDoWant in https://github.com/fluent/fluent-operator/pull/1560
+- Added the ability to set `DB.locking` on fluentbit tail inputs by @solidDoWant in https://github.com/fluent/fluent-operator/pull/1567
+- Added the ability to set `Owner_References` on fluentbit kubernetes filter by @solidDoWant in https://github.com/fluent/fluent-operator/pull/1566
+
+### Enhancements
+
+- Update fluent-operator-clusterRole.yaml by @duj4 in https://github.com/fluent/fluent-operator/pull/1502
+- Pin GitHub actions on commit hash according to best practices by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1513
+- Use go.mod version in workflows by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1514
+- Move dash so that labelKeys and removeKeys on separate line by @heytrav in https://github.com/fluent/fluent-operator/pull/1509
+- makefile: Remove chmod+x by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1521
+- gitignore: remove gitignore file and move content to .gitignore by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1519
+- editorconfig: Add .editorconfig to ensure files are formatted consistently by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1518
+- go-vet: Fix the Go vet findings by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1517
+- actions: Remove cache action for Go by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1528
+- hack: Fix shellcheck findings in bash scripts by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1527
+- chore: update watcher start log by @cw-Guo in https://github.com/fluent/fluent-operator/pull/1529
+- Re-factors CI workflow for building & publishing fluent-bit image by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1531
+- Update formatting based on prettier plugin by @truongnht in https://github.com/fluent/fluent-operator/pull/1536
+- build-fb-image: Update release documentation by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1515
+- Bump fluent-bit to 4.0.0 by @github-actions in https://github.com/fluent/fluent-operator/pull/1544
+- Add renovate workflow to bump fluent-bit version by @truongnht in https://github.com/fluent/fluent-operator/pull/1535
+- renovate wf: Runs renovate job on ubuntu-latest by @truongnht in https://github.com/fluent/fluent-operator/pull/1549
+- helm-chart: Improve templates by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1555
+- helm-chart: Streamline image values and usage by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1550
+- Support setting fluent-bit bufferChunkSize for tail input by @truongnht in https://github.com/fluent/fluent-operator/pull/1569
+- makefile: Update Makefile by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1571
+- ci: Ensure all generated code is committed by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1570
+- helm-chart: Prevent few more occasions of template injection by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1572
+- charts/fluent-operator: Add `namespace` to the ServiceAccount by @TeddyAndrieux in https://github.com/fluent/fluent-operator/pull/1590
+- ci: Ensure helm tests run on changes to the chart by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1597
+- dependabot: Group the k8s.io/- dependency updates in single PR by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1594
+- dependabot: Refactor docker ecosystem to new syntax by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1595
+- Fix(doc): open_search.md referencing elasticsearch name by @Anghille in https://github.com/fluent/fluent-operator/pull/1408
+- fix: Update outdated crds by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1605
+
+### Dependencies
+
+- actions: Pin setup-helm to v4.3.0 + Bump Helm to v3.17.2 by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1520
+- Bump fluent-bit to 3.2.9 by @github-actions in https://github.com/fluent/fluent-operator/pull/1511
+- images: Align Go version to be 1.24.1 based on go.mod defined version by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1516
+- build(deps): Bump actions/setup-go from 5.3.0 to 5.4.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1525
+- build(deps): Bump actions/cache from 4.2.2 to 4.2.3 by @dependabot in https://github.com/fluent/fluent-operator/pull/1524
+- build(deps): Bump aquasecurity/trivy-action from 0.29.0 to 0.30.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1523
+- build(deps): Bump github.com/onsi/gomega from 1.34.2 to 1.36.3 by @dependabot in https://github.com/fluent/fluent-operator/pull/1533
+- build(deps): Bump helm/chart-testing-action from 2.6.1 to 2.7.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1487
+- fluent-bit: Bump fluent-bit from 3.2.9 to 3.2.10 by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1537
+- dependencies: Update go dependencies by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1552
+- Bump fluent-bit to 4.0.1 by @github-actions in https://github.com/fluent/fluent-operator/pull/1584
+- build(deps): Bump docker/build-push-action from 6.15.0 to 6.16.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1599
+- build(deps): Bump renovatebot/github-action from 41.0.13 to 41.0.22 by @dependabot in https://github.com/fluent/fluent-operator/pull/1598
+- chore(deps): update ghcr.io/fluent/fluent-operator/fluent-bit docker tag to v4.0.1 by @github-actions in https://github.com/fluent/fluent-operator/pull/1585
+- build(deps): Bump golang.org/x/sync from 0.13.0 to 0.14.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1604
+
+### Bugfixes
+
+- Fix Kubernetes Events DBSync config by @ZephireNZ in https://github.com/fluent/fluent-operator/pull/1546
+- Add missing multiline ClusterFilter values by @discostur in https://github.com/fluent/fluent-operator/pull/1581
+- (ci/fluentbit) fix: Adds permission to publish packages  by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1538
+- (ci/fluentbit) fix: provide packages:write permission by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1539
+- Fixed nil pointer dereference (panic) when port numbers are unset by @solidDoWant in https://github.com/fluent/fluent-operator/pull/1563
+- Fix ClusterFluentBitConfig rendering in helm chart when using yaml configFileFormat by @truongnht in https://github.com/fluent/fluent-operator/pull/1573
+- fix(crd): disallow null values for logfmt parser to prevent fluent-bit crash by @sandy2008 in https://github.com/fluent/fluent-operator/pull/1543
+- Fix fluentbit service selector not using pod labels when defined by @solidDoWant in https://github.com/fluent/fluent-operator/pull/1575
+
+## New Contributors
+
+- @duj4 made their first contribution in https://github.com/fluent/fluent-operator/pull/1502
+- @marcofranssen made their first contribution in https://github.com/fluent/fluent-operator/pull/1513
+- @heytrav made their first contribution in https://github.com/fluent/fluent-operator/pull/1509
+- @sandy2008 made their first contribution in https://github.com/fluent/fluent-operator/pull/1543
+- @ZephireNZ made their first contribution in https://github.com/fluent/fluent-operator/pull/1546
+- @kiblik made their first contribution in https://github.com/fluent/fluent-operator/pull/1548
+- @gbloquel made their first contribution in https://github.com/fluent/fluent-operator/pull/1556
+- @solidDoWant made their first contribution in https://github.com/fluent/fluent-operator/pull/1563
+- @discostur made their first contribution in https://github.com/fluent/fluent-operator/pull/1581
+- @danielpodwysocki made their first contribution in https://github.com/fluent/fluent-operator/pull/1588
+- @TeddyAndrieux made their first contribution in https://github.com/fluent/fluent-operator/pull/1590
+- @matelang made their first contribution in https://github.com/fluent/fluent-operator/pull/1603
+- @error9098x made their first contribution in https://github.com/fluent/fluent-operator/pull/1579
+- @Anghille made their first contribution in https://github.com/fluent/fluent-operator/pull/1408
+
 ## 3.3.0 / 2025-02-27
 ### Features
 - Add skip empty lines in tail input (#1352) @smallc2009
