@@ -242,6 +242,7 @@ CollectorSpec defines the desired state of FluentBit
 | ports | Ports represents the pod's ports. | [][corev1.ContainerPort](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#containerport-v1-core) |
 | service | Service represents configurations on the fluent-bit service. | [CollectorService](#collectorservice) |
 | schedulerName | SchedulerName represents the desired scheduler for the Fluentbit collector pods | string |
+| replicas | Replicas is the number of collector replicas to deploy | *int32 |
 
 [Back to TOC](#table-of-contents)
 # Decorder

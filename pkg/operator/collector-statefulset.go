@@ -17,6 +17,11 @@ var (
 )
 
 func MakefbStatefulset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
+	replicas := int32(1)
+	if co.Spec.Replicas != nil {
+		replicas = *co.Spec.Replicas
+	}
+
 	statefulset := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      co.Name,
@@ -24,6 +29,7 @@ func MakefbStatefulset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 			Labels:    co.Labels,
 		},
 		Spec: appsv1.StatefulSetSpec{
+			Replicas: &replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: co.Labels,
 			},

@@ -15,3 +15,4 @@ Syslog input plugins allows to collect Syslog messages through a Unix socket ser
 | bufferMaxSize | Specify the maximum buffer size to receive a Syslog message. If not set, the default size will be the value of Buffer_Chunk_Size. | string |
 | receiveBufferSize | Specify the maximum socket receive buffer size. If not set, the default value is OS-dependant, but generally too low to accept thousands of syslog messages per second without loss on udp or unix_udp sockets. Note that on Linux the value is capped by sysctl net.core.rmem_max. | string |
 | sourceAddressKey | Specify the key where the source address will be injected. | string |
+| tls | Specify TLS connector options. | *[plugins.TLS](../tls.md) |
