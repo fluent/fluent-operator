@@ -97,7 +97,7 @@ type Service struct {
 	// enable Health check feature at http://127.0.0.1:2020/api/v1/health Note: Enabling this will not automatically configure kubernetes to use fluentbit's healthcheck endpoint
 	HealthCheck *bool `json:"healthCheck,omitempty"`
 	// Address to listen
-	// +kubebuilder:validation:Pattern:="^\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}$"
+	// +kubebuilder:validation:Pattern:="^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(([A-Fa-f0-9:]+:+)+[A-Fa-f0-9]*)$"
 	HttpListen string `json:"httpListen,omitempty"`
 	// Port to listen
 	// +kubebuilder:validation:Minimum:=1

@@ -5,7 +5,7 @@ Fluent Bit comes with a built-in HTTP Server. According to the official [documen
 ```conf
 [SERVICE]
     HTTP_Server  On
-    HTTP_Listen  0.0.0.0
+    HTTP_Listen  '::'
     HTTP_PORT    2020
 ```
 
@@ -29,7 +29,7 @@ spec:
     matchLabels:
       fluentbit.fluent.io/enabled: 'true'
   service:
-    httpListen: 0.0.0.0
+    httpListen: '::'
     httpPort: 2020
     httpServer: true
     parsersFile: parsers.conf
