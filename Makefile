@@ -83,7 +83,7 @@ setup-envtest: install-setup-envtest ## Download and set up the envtest binary
 	source <(setup-envtest use -p env)
 
 test: manifests generate fmt vet setup-envtest ## Run tests.
-	go test ./apis/... -coverprofile cover.out
+	go test ./apis/... ./pkg/... -coverprofile cover.out
 
 # Utilize Kind or modify the e2e tests to load the image locally, enabling compatibility with other vendors.
 .PHONY: test-e2e  # Run the e2e tests against a Kind k8s instance that is spun up.
