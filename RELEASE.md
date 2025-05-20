@@ -83,6 +83,10 @@ For new minor and major releases, create the `release-<major>.<minor>` branch st
 From now on, all work happens on the `release-<major>.<minor>` branch.
 
 Bump the version in the `VERSION` file in the root of the repository.
+Bump `version`, `appVersion` and the `version` of the dependencies in following files in this repo
+- [charts/fluet-operator/Chart.yaml](./charts/fluent-operator/Chart.yaml)
+- [charts/fluent-operator/charts/fluentd-crds/Chart.yaml](./charts/fluent-operator/charts/fluentd-crds/Chart.yaml)
+- [charts/fluent-operator/charts/fluent-bit-crds/Chart.yaml](./charts/fluent-operator/charts/fluent-bit-crds/Chart.yaml)
 
 Regenerate setup.yaml based on latest code and then commit the changed bundle.yaml to the `release-<major>.<minor>` branch:
 
@@ -127,7 +131,6 @@ For patch releases, cherry-pick the commits from the release branch into the mas
 
 This repo includes a "development" chart in the [charts/](./charts/fluent-operator/) directory. For each release, this chart must be published to the [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/) repository which is where Fluent Operators install the chart from. This is currently a manual process. Follow these instructions to update and publish the chart:
 
-- Bump `version` and `appVersion` in the [charts/fluet-operator/Chart.yaml](./charts/fluent-operator/Chart.yaml) file in this repo
 - Manually "sync" (copy, open a PR) the local [chart](./charts/fluent-operator) to [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/)
 
 ## Fluentd/Fluent-bit Images
