@@ -21,4 +21,4 @@ version: 3.3.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-operator
-appVersion: "3.3.0"
+appVersion: "3.4.0"
