@@ -6,7 +6,7 @@ keywords:
   - fluent-bit
   - fluentd
   - operator
-version: 3.4.0
+version: 3.4.1
 # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-operator
 appVersion: "3.4.0"
 icon: https://raw.githubusercontent.com/fluent/fluent-operator/master/docs/images/fluent-operator-icon.svg
@@ -19,9 +19,9 @@ maintainers:
 dependencies:
   - name: fluent-bit-crds
     repository: "file://charts/fluent-bit-crds"
-    version: 3.3.0
+    version: 3.4.1
     condition: fluentbit.crdsEnable
   - name: fluentd-crds
     repository: "file://charts/fluentd-crds"
-    version: 3.3.0
+    version: 3.4.1
     condition: fluentd.crdsEnable
