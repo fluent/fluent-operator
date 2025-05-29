@@ -95,6 +95,9 @@ fluentbit:
     metricRelabelings: []
   livenessProbe:
     enabled: true
+    httpGet:
+      port: 2020
+      path: /
     initialDelaySeconds: 10
     periodSeconds: 10
     timeoutSeconds: 15
