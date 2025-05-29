@@ -22,7 +22,7 @@ Once installed, the Fluent Operator provides the following features:
 - **Fluentd Management**: Deploy and destroy Fluentd StatefulSet automatically.
 - **Custom Configuration**: Select input/filter/output plugins via labels.
 - **Dynamic Reloading**: Update configuration without rebooting Fluent Bit and Fluentd pods.
-- **Multi-tenant log isolation**: Fluentd supports multi-tenant log isolation through `label_router` plugin.
+- **Multi-tenant log isolation**: Fluentd supports multi-tenant log isolation through the [label-router](https://github.com/kube-logging/fluent-plugin-label-router) plugin.
 - **Pluggable deployment components**: Either Fluent Bit or Fluentd can be deployed separately.
 
 ## Table of contents
