@@ -72,17 +72,10 @@ spec:
   volumes:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.fluentbit.livenessProbe }}
-  {{- if .enabled }}
+  {{- if .Values.fluentbit.livenessProbe.enabled }}
   livenessProbe:
-    httpGet:
-      port: 2020
-      path: /
-    initialDelaySeconds: {{ .initialDelaySeconds }}
-    periodSeconds: {{ .periodSeconds }}
-    timeoutSeconds: {{ .timeoutSeconds }}
-    successThreshold: {{ .successThreshold }}
-    failureThreshold: {{ .failureThreshold }}
+  {{- with omit .Values.fluentbit.livenessProbe "enabled" }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- end }}
   {{- with .Values.fluentbit.additionalVolumesMounts }}
