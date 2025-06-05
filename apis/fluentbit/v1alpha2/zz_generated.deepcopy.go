@@ -1693,7 +1693,7 @@ func (in *ParserSpec) DeepCopyInto(out *ParserSpec) {
 	if in.Logfmt != nil {
 		in, out := &in.Logfmt, &out.Logfmt
 		*out = new(parser.Logfmt)
-		**out = **in
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Decoders != nil {
 		in, out := &in.Decoders, &out.Decoders
