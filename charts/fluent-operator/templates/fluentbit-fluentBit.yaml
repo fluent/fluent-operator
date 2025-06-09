@@ -17,7 +17,7 @@ spec:
   dnsPolicy: ClusterFirstWithHostNet
   {{- end }}
   image: {{ template "fluent-operator.image" (tuple .Values.fluentbit.image "") }}
-  {{- if .Values.fluentbit.imagePullSecrets }}
+  {{- with .Values.fluentbit.imagePullSecrets }}
   imagePullSecrets:
     {{- toYaml . | nindent 4 }}
   {{- end }}
