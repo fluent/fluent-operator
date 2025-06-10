@@ -231,6 +231,7 @@ fluentbit:
       bufferChunkSize: ""
       path: "/var/log/containers/*.log"
       skipLongLines: true
+      skipEmptyLines: true
       readFromHead: false
       # Use storageType as "filesystem" if you want to use filesystem as the buffering mechanism for tail input.
       storageType: memory
@@ -296,6 +297,7 @@ fluentbit:
     #        vhost: "<Hostname to be used for TLS SNI extension>"
     kafka:
       enable: false
+      logLevel: info
       brokers: "<kafka broker list like xxx.xxx.xxx.xxx:9092,yyy.yyy.yyy.yyy:9092>"
       topics: ks-log
     opentelemetry: {}
@@ -321,6 +323,7 @@ fluentbit:
       # Switch for generation of fluentbit loki ClusterOutput (and loki basic auth http user and pass secrets if required)
       enable: false # Bool
       retryLimit: "no_limits"
+      logLevel: "info"
       host: 127.0.0.1 # String
       port: 3100 # Int
       # Either, give http{User,Password},tenantID string values specifying them directly

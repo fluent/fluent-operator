@@ -36,6 +36,7 @@ metadata:
 spec:
   matchRegex: (?:kube|service)\.(.*)
   retry_limit: "{{ .retryLimit }}"
+  logLevel: "{{ .logLevel }}"
   loki:
     {{- with .host }}
     host: {{ . | quote }}
