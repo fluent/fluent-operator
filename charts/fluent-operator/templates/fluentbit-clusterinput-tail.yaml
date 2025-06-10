@@ -32,6 +32,10 @@ spec:
     bufferChunkSize: {{ . | quote }}
     {{- end }}
     skipLongLines: {{ .Values.fluentbit.input.tail.skipLongLines }}
+    skipEmptyLines: {{ .Values.fluentbit.input.tail.skipEmptyLines }}
+    {{- if .Values.fluentbit.input.tail.ignoredOlder }}
+    ignoredOlder: {{ .Values.fluentbit.input.tail.ignoredOlder }}
+    {{- end }}
     db: /fluent-bit/tail/pos.db
     dbSync: Normal
     storageType: {{ .Values.fluentbit.input.tail.storageType }}

@@ -10,6 +10,7 @@ metadata:
     fluentbit.fluent.io/enabled: "true"
     fluentbit.fluent.io/component: logging
 spec:
+  logLevel: "{{ .logLevel }}"
   matchRegex: (?:kube|service)\.(.*)
   kafka:
     brokers: {{ .brokers | quote }}
