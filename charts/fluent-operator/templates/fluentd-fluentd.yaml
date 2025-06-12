@@ -14,7 +14,7 @@ spec:
         bind: 0.0.0.0
         port: {{ .port }}
   replicas: {{ .replicas }}
-  image: {{ template "fluent-operator.image" (tuple .Values.fluentd.image "") }}
+  image: {{ template "fluent-operator.image" (tuple .image "") }}
   {{- with .imagePullSecrets }}
   imagePullSecrets:
     {{- toYaml . | nindent 4 }}
