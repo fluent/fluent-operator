@@ -2109,6 +2109,7 @@ spec:
                     type: string
                   region:
                     description: The AWS region.
+                    minLength: 1
                     type: string
                   roleARN:
                     description: ARN of an IAM role to assume (for cross account access).

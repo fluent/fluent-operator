@@ -15,6 +15,8 @@ import (
 // https://github.com/aws/amazon-kinesis-streams-for-fluent-bit <br />
 type Kinesis struct {
 	// The AWS region.
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:MinLength=1
 	Region string `json:"region"`
 	// The name of the Kinesis Streams Delivery stream that you want log records sent to.
 	Stream string `json:"stream"`
