@@ -41,9 +41,9 @@ spec:
     traceError: {{ .Values.fluentbit.output.es.traceError | default false }}
     generateID: true
     timeKey: "@timestamp"
-    {{- if .Values.fluentbit.output.es.enableTLS }}
+    {{- if and .Values.fluentbit.output.es.tls .Values.fluentbit.output.es.tls.enable }}
     tls:
-      {{- toYaml .Values.fluentbit.output.es.tls | nindent 6 }}
+       {{- omit .Values.fluentbit.output.es.tls "enable" | toYaml | nindent 6 }}
     {{- end }}
 {{- end }}
 {{- end }}
