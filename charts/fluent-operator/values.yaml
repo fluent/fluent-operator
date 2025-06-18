@@ -284,9 +284,9 @@ fluentbit:
     #      httpPassword:
     #      logstashFormat: true
     #      replaceDots: false
-    #      enableTLS: false
     #      writeOperation: upsert
     #      tls:
+    #        enable: false
     #        verify: On
     #        debug: 1
     #        caFile: "<Absolute path to CA certificate file>"
