@@ -3523,6 +3523,11 @@ spec:
                     description: Use the S3 PutObject API, instead of the multipart
                       upload API.
                     type: boolean
+                  Workers:
+                    description: Specify number of worker threads to use to output
+                      to S3
+                    format: int32
+                    type: integer
                   tls:
                     description: Fluent Bit provides integrated support for Transport
                       Layer Security (TLS) and it predecessor Secure Sockets Layer
