@@ -65,7 +65,9 @@ type S3 struct {
 	// Specify an external ID for the STS API, can be used with the role_arn parameter if your role requires an external ID.
 	ExternalId string `json:"ExternalId,omitempty"`
 	// Option to specify an AWS Profile for credentials.
-	Profile      string `json:"Profile,omitempty"`
+	Profile string `json:"Profile,omitempty"`
+	// Specify number of worker threads to use to output to S3
+	Workers      *int32 `json:"Workers,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
 }
 
@@ -158,6 +160,9 @@ func (o *S3) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if o.Profile != "" {
 		kvs.Insert("profile", o.Profile)
+	}
+	if o.Workers != nil {
+		kvs.Insert("workers", fmt.Sprint(*o.Workers))
 	}
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
