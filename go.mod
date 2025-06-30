@@ -9,7 +9,7 @@ require (
 	github.com/go-logr/logr v1.4.2
 	github.com/go-openapi/errors v0.22.1
 	github.com/joho/godotenv v1.5.1
-	github.com/oklog/run v1.1.0
+	github.com/oklog/run v1.2.0
 	github.com/onsi/ginkgo/v2 v2.23.4
 	github.com/onsi/gomega v1.37.0
 	golang.org/x/sync v0.17.0
