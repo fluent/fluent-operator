@@ -19,9 +19,9 @@ maintainers:
 dependencies:
   - name: fluent-bit-crds
     repository: "file://charts/fluent-bit-crds"
-    version: 3.4.1
+    version: 3.4.2
     condition: fluentbit.crdsEnable
   - name: fluentd-crds
     repository: "file://charts/fluentd-crds"
-    version: 3.4.1
+    version: 3.4.2
     condition: fluentd.crdsEnable
