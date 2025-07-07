@@ -1,6 +1,6 @@
 apiVersion: v2
 name: fluent-operator
-description: Fluent Operator provides great flexibility in building a logging layer based on Fluent Bit and Fluentd.
+description: Fluent Operator provides great flexibility in building a logging layer based on Fluent Bit and Fluentd. Testing.
 keywords:
   - logging
   - fluent-bit
