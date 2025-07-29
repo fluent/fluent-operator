@@ -30,6 +30,9 @@ type Forward struct {
 	// Enables at-least-once and receiving server can control rate of traffic.
 	// (Requires Fluentd v0.14.0+ server)
 	RequireAckResponse *bool `json:"requireAckResponse,omitempty"`
+	// Set payload compression mechanism. Option available is 'gzip'
+	// +kubebuilder:validation:Enum=gzip
+	Compress string `json:"compress,omitempty"`
 	// A key string known by the remote Fluentd used for authorization.
 	SharedKey string `json:"sharedKey,omitempty"`
 	// Use this option to connect to Fluentd with a zero-length secret.
@@ -69,6 +72,9 @@ func (f *Forward) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if f.RequireAckResponse != nil {
 		kvs.Insert("Require_ack_response", fmt.Sprint(*f.RequireAckResponse))
+	}
+	if f.Compress != nil {
+		kvs.Insert("Compress", fmt.Sprint(*f.Compress))
 	}
 	if f.SharedKey != "" {
 		kvs.Insert("Shared_Key", f.SharedKey)
