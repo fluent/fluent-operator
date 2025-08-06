@@ -126,6 +126,9 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		// Deploy Fluentd StatefulSet
 		sts := operator.MakeStatefulSet(fd)
 		_, err = controllerutil.CreateOrPatch(ctx, r.Client, sts, r.mutate(sts, &fd))
+		if err != nil {
+			return ctrl.Result{}, err
+		}
 		ds := appsv1.DaemonSet{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      fd.Name,
