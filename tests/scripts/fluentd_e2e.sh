@@ -14,6 +14,7 @@ function build_ginkgo_test() {
   popd >/dev/null
 }
 
+# shellcheck disable=SC2329
 function cleanup() {
   # shellcheck disable=SC2317
   pushd "$PROJECT_ROOT" >/dev/null
