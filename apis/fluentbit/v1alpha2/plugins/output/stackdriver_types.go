@@ -57,6 +57,8 @@ type Stackdriver struct {
 	CustomK8sRegex string `json:"customK8sRegex,omitempty"`
 	// Optional list of comma seperated strings. Setting these fields overrides the Stackdriver monitored resource API values
 	ResourceLabels []string `json:"resourceLabels,omitempty"`
+	// the key to used to select the text payload from the record
+	TextPayloadKey string `json:"textPayloadKey,omitempty"`
 }
 
 // Name implement Section() method
@@ -140,6 +142,9 @@ func (o *Stackdriver) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if o.ResourceLabels != nil && len(o.ResourceLabels) > 0 {
 		kvs.Insert("resource_labels", strings.Join(o.ResourceLabels, ","))
+	}
+	if o.TextPayloadKey != "" {
+		kvs.Insert("text_payload_key", o.TextPayloadKey)
 	}
 	return kvs, nil
 }
