@@ -110,6 +110,9 @@ spec:
         volumeMounts:
         - name: env
           mountPath: /fluent-operator
+        ports:
+          - containerPort: {{ .Values.operator.service.port }}
+            name: {{ .Values.operator.service.portName }}
       serviceAccountName: fluent-operator
       {{- with .Values.operator.priorityClassName }}
       priorityClassName: {{ . | quote }}
