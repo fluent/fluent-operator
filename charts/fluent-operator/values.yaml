@@ -89,7 +89,7 @@ operator:
     labels: {}
 
   serviceMonitor:
-    enable: true
+    enable: false
     interval: 30s
     path: /metrics
     scrapeTimeout: 10s
