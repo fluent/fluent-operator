@@ -16,38 +16,29 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Set up Helm
       - name: Set up Helm
         uses: azure/setup-helm@b9e51907a09c216f16ebe8536097933489208112 # v4.3.0
         with:
           version: v3.17.2
 
-      # Set up chart-testing (ct)
       - name: Set up chart-testing
         uses: helm/chart-testing-action@0d28d3144d3a25ea2cc349d6e59901c4ff469b3b # v2.7.0
 
-      # Check if any charts changed in this PR
-      - name: Check for changed charts
+      - name: Run chart-testing (list-changed)
         id: list-changed
         run: |
-          changed=$(ct list-changed --charts charts/fluent-operator --config .github/ct.yaml)
+          changed=$(ct list-changed --config .github/ct.yaml)
           if [[ -n "$changed" ]]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "changed=true" >> "${GITHUB_OUTPUT}"
           fi
 
-      # Lint only changed charts
-      - name: Lint changed charts
-        if: steps.list-changed.outputs.changed == 'true'
-        run: ct lint --charts charts/fluent-operator --config .github/ct.yaml
+      - name: Lint chart
+        run: ct lint --config .github/ct.yaml
 
-      # Create KinD cluster only if charts changed
-      - name: Create KinD cluster
+      - name: Create kind cluster
         if: steps.list-changed.outputs.changed == 'true'
         uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # v1.12.0
 
-      # Install only changed charts
-      - name: Install changed charts
+      - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
-        run: ct install --charts charts/fluent-operator --config .github/ct.yaml
+        run: ct install --config .github/ct.yaml
