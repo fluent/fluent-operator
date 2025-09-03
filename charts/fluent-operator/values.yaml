@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+test: true
+
 # Set this to containerd or crio if you want to collect CRI format logs
 containerRuntime: docker
 #  If you want to deploy a default Fluent Bit pipeline (including Fluent Bit Input, Filter, and output) to collect Kubernetes logs, you'll need to set the Kubernetes parameter to true
