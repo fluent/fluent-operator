@@ -1,14 +1,10 @@
-# charts/ct.yaml
+# .github/ct.yaml
+
 remote: origin
-target-branch: master
+target-branch: master   # change to main if your default branch is main
 
-# Directories containing Helm charts (relative to repo root)
 chart-dirs:
-  - charts
+  - charts/fluent-operator
 
-# Optional: you can list charts to exclude if needed
-excluded-charts: []
-
-# Lint settings
 check-version-increment: true
-validate-maintainers: false
+validate-maintainers: true
