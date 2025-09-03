@@ -1,12 +1,12 @@
 apiVersion: v2
 name: fluent-operator
-description: Fluent Operator provides great flexibility in building a logging layer based on Fluent Bit and Fluentd. (Test change)
+description: Fluent Operator provides great flexibility in building a logging layer based on Fluent Bit and Fluentd.
 keywords:
   - logging
   - fluent-bit
   - fluentd
   - operator
-version: 3.4.3
+version: 3.4.2
 # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-operator
 appVersion: "3.4.0"
 icon: https://raw.githubusercontent.com/fluent/fluent-operator/master/docs/images/fluent-operator-icon.svg
