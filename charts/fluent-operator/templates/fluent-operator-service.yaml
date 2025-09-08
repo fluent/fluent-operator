@@ -1,0 +1,27 @@
+{{- if .Values.operator.enable }}
+{{- if .Values.operator.service.enable }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluent-operator
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
+{{- if .Values.operator.service.labels }}
+{{ toYaml .Values.operator.service.labels | indent 4 }}
+{{- end }}
+{{- if .Values.operator.service.annotations }}
+  annotations:
+{{ toYaml .Values.operator.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.operator.service.type }}
+  selector:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
+  ports:
+    - name: {{ .Values.operator.service.portName }}
+      port:  {{ .Values.operator.service.port }}
+{{- end }}
+{{- end }}

@@ -80,6 +80,24 @@ operator:
     []
     # - --watch-namespaces=logging
 
+  service:
+    enable: true
+    type: ClusterIP
+    portName: metrics
+    port: 8080
+    annotations: {}
+    labels: {}
+
+  serviceMonitor:
+    enable: false
+    interval: 30s
+    path: /metrics
+    scrapeTimeout: 10s
+    secure: false
+    tlsConfig: {}
+    relabelings: []
+    metricRelabelings: []
+
 fluentbit:
   # Installs a sub chart carrying the CRDs for the fluent-bit controller. The sub chart is enabled by default.
   crdsEnable: true
