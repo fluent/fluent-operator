@@ -7,5 +7,5 @@ metadata:
     app.kubernetes.io/name: fluent-bit
 spec:
   # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-bit
-  image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.1
+  image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9
   fluentBitConfigName: fluent-bit-config
