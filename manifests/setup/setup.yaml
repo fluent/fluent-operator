@@ -8199,6 +8199,10 @@ spec:
                     description: Identifier for a task within a namespace. Required
                       if Resource is generic_task
                     type: string
+                  textPayloadKey:
+                    description: the key to used to select the text payload from the
+                      record
+                    type: string
                   workers:
                     description: Number of dedicated threads for the Stackdriver Output
                       Plugin
@@ -37102,6 +37106,10 @@ spec:
                   taskID:
                     description: Identifier for a task within a namespace. Required
                       if Resource is generic_task
+                    type: string
+                  textPayloadKey:
+                    description: the key to used to select the text payload from the
+                      record
                     type: string
                   workers:
                     description: Number of dedicated threads for the Stackdriver Output
