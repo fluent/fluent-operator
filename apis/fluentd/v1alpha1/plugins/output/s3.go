@@ -1,11 +1,13 @@
 package output
 
+import "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins"
+
 // S3 defines the parameters for out_s3 output plugin
 type S3 struct {
 	// The AWS access key id.
-	AwsKeyId *string `json:"awsKeyId,omitempty"`
+	AwsKeyId *plugins.Secret `json:"awsKeyId,omitempty"`
 	// The AWS secret key.
-	AwsSecKey *string `json:"awsSecKey,omitempty"`
+	AwsSecKey *plugins.Secret `json:"awsSecKey,omitempty"`
 	// The Amazon S3 bucket name.
 	S3Bucket *string `json:"s3Bucket,omitempty"`
 	// The Amazon S3 region name

@@ -678,10 +678,18 @@ func (o *Output) kafka2Plugin(parent *params.PluginStore, loader plugins.SecretL
 
 func (o *Output) s3Plugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
 	if o.S3.AwsKeyId != nil {
-		parent.InsertPairs("aws_key_id", fmt.Sprint(*o.S3.AwsKeyId))
+		value, err := loader.LoadSecret(*o.S3.AwsKeyId)
+		if err != nil {
+			return nil
+		}
+		parent.InsertPairs("aws_key_id", value)
 	}
 	if o.S3.AwsSecKey != nil {
-		parent.InsertPairs("aws_sec_key", fmt.Sprint(*o.S3.AwsSecKey))
+		value, err := loader.LoadSecret(*o.S3.AwsSecKey)
+		if err != nil {
+			return nil
+		}
+		parent.InsertPairs("aws_sec_key", value)
 	}
 	if o.S3.S3Bucket != nil {
 		parent.InsertPairs("s3_bucket", fmt.Sprint(*o.S3.S3Bucket))
