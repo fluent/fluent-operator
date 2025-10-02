@@ -25,3 +25,4 @@ testbin/
 
 .DS_Store
 .envrc
+charts/fluent-operator.tgz
