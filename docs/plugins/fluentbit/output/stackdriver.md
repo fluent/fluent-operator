@@ -26,4 +26,4 @@ Stackdriver is the Stackdriver output plugin, allows you to ingest your records 
 | autoformatStackdriverTrace | Rewrite the trace field to be formatted for use with GCP Cloud Trace | *bool |
 | workers | Number of dedicated threads for the Stackdriver Output Plugin | *int32 |
 | customK8sRegex | A custom regex to extract fields from the local_resource_id of the logs | string |
-| resourceLabels | Optional list of comma seperated strings. Setting these fields overrides the Stackdriver monitored resource API values | []string |
+| resourceLabels | Optional list of comma separated strings. Setting these fields overrides the Stackdriver monitored resource API values | []string |

@@ -5,7 +5,7 @@ The KubernetesEvents input plugin allows you to collect kubernetes cluster event
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| tag | Tag name associated to all records comming from this plugin. | string |
+| tag | Tag name associated to all records coming from this plugin. | string |
 | db | Set a database file to keep track of recorded Kubernetes events | string |
 | dbSync | Set a database sync method. values: extra, full, normal and off | string |
 | intervalSec | Set the polling interval for each channel. | *int32 |

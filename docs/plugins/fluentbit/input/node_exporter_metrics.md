@@ -5,7 +5,7 @@ A plugin based on Prometheus Node Exporter to collect system / host level metric
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| tag | Tag name associated to all records comming from this plugin. | string |
+| tag | Tag name associated to all records coming from this plugin. | string |
 | scrapeInterval | The rate at which metrics are collected from the host operating system, default is 5 seconds. | string |
 | path |  | *[Path](#path) |
 # Path
