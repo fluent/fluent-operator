@@ -61,7 +61,7 @@ Transport defines the commont parameters for the transport plugin
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| protocol | The protocal name of this plugin, i.e: tls | *string |
+| protocol | The protocol name of this plugin, i.e: tls | *string |
 | version |  | *string |
 | ciphers |  | *string |
 | insecure |  | *bool |

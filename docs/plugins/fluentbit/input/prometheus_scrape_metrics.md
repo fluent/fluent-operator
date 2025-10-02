@@ -5,7 +5,7 @@ Fluent Bit 1.9 includes additional metrics features to allow you to collect both
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| tag | Tag name associated to all records comming from this plugin | string |
+| tag | Tag name associated to all records coming from this plugin | string |
 | host | The host of the prometheus metric endpoint that you want to scrape | string |
 | port | The port of the promethes metric endpoint that you want to scrape | *int32 |
 | scrapeInterval | The interval to scrape metrics, default: 10s | string |
