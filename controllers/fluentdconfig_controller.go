@@ -594,19 +594,22 @@ func (r *FluentdConfigReconciler) PatchObjects(ctx context.Context, obj client.O
 
 // SetupWithManager sets up the controller with the Manager
 func (r *FluentdConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.ServiceAccount{}, fluentdOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner
-		sa := rawObj.(*corev1.ServiceAccount)
-		owner := metav1.GetControllerOf(sa)
-		if owner == nil {
-			return nil
-		}
-		// Make sure it's a Fluentd. If so, return it
-		if owner.APIVersion != fluentdApiGVStr || owner.Kind != "Fluentd" {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+	ctx := context.Background()
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &corev1.ServiceAccount{}, fluentdOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner
+			sa := rawObj.(*corev1.ServiceAccount)
+			owner := metav1.GetControllerOf(sa)
+			if owner == nil {
+				return nil
+			}
+			// Make sure it's a Fluentd. If so, return it
+			if owner.APIVersion != fluentdApiGVStr || owner.Kind != "Fluentd" {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 

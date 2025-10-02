@@ -121,7 +121,13 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 			return nil
 		}
 	case *corev1.ServiceAccount:
-		_, expected, _ := operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
+		_, expected, _ := operator.MakeRBACObjects(
+			fd.Name,
+			fd.Namespace,
+			"fluentd",
+			fd.Spec.RBACRules,
+			fd.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.Labels = expected.Labels
@@ -132,7 +138,13 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 			return nil
 		}
 	case *rbacv1.ClusterRoleBinding:
-		_, _, expected := operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
+		_, _, expected := operator.MakeRBACObjects(
+			fd.Name,
+			fd.Namespace,
+			"fluentd",
+			fd.Spec.RBACRules,
+			fd.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.RoleRef = expected.RoleRef

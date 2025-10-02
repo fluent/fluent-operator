@@ -121,7 +121,9 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			}
 
 			// List all the namespace level resources if they exist and generate configs to mutate tags
-			nsFilterLists, nsOutputLists, nsParserLists, nsClusterParserLists, nsMultilineParserLists, nsClusterMultilineParserLists, rewriteTagConfigs, err := r.processNamespacedFluentBitCfgs(
+			nsFilterLists, nsOutputLists, nsParserLists,
+				nsClusterParserLists, nsMultilineParserLists, nsClusterMultilineParserLists,
+				rewriteTagConfigs, err := r.processNamespacedFluentBitCfgs(
 				ctx, fb, inputs,
 			)
 
@@ -241,11 +243,15 @@ func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 
 	// Form a slice of list of resources per namespace
 	for _, cfg := range nsCfgs.Items {
-		filterList, outputList, parserList, clusterParserList, multilineParsersList, clusterMultilineParsersList, err := r.ListNamespacedResources(
+		filterList, outputList, parserList,
+			clusterParserList, multilineParsersList,
+			clusterMultilineParsersList, err := r.ListNamespacedResources(
 			ctx, cfg,
 		)
 		if err != nil {
-			return filters, outputs, parsers, clusterParsers, multilineParsers, clusterMultilineParsers, nil, err
+			return filters, outputs, parsers,
+				clusterParsers, multilineParsers, clusterMultilineParsers,
+				nil, err
 		}
 		filters = append(filters, filterList)
 		outputs = append(outputs, outputList)
@@ -393,8 +399,9 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 }
 
 func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	ctx := context.Background()
 	if err := mgr.GetFieldIndexer().IndexField(
-		context.Background(), &corev1.Secret{}, fluentbitOwnerKey, func(rawObj client.Object) []string {
+		ctx, &corev1.Secret{}, fluentbitOwnerKey, func(rawObj client.Object) []string {
 			// Grab the job object, extract the owner.
 			sec := rawObj.(*corev1.Secret)
 			owner := metav1.GetControllerOf(sec)

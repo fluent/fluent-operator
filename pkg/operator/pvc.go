@@ -47,7 +47,9 @@ func makeDefaultFluentdPVC(fd fluentdv1alpha1.Fluentd) *corev1.PersistentVolumeC
 	}
 
 	r := corev1.VolumeResourceRequirements{
-		Requests: corev1.ResourceList(map[corev1.ResourceName]resource.Quantity{corev1.ResourceStorage: resource.MustParse("1Gi")}),
+		Requests: corev1.ResourceList(map[corev1.ResourceName]resource.Quantity{
+			corev1.ResourceStorage: resource.MustParse("1Gi"),
+		}),
 	}
 
 	fsmode := corev1.PersistentVolumeFilesystem

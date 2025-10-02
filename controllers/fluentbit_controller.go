@@ -102,9 +102,19 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	// Install RBAC resources for the filter plugin kubernetes
 	var role, sa, binding client.Object
 	if r.Namespaced {
-		role, sa, binding = operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
+		role, sa, binding = operator.MakeScopedRBACObjects(
+			fb.Name,
+			fb.Namespace,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 	} else {
-		role, sa, binding = operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
+		role, sa, binding = operator.MakeRBACObjects(
+			fb.Name,
+			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 	}
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &fb)); err != nil {
 		return ctrl.Result{}, err
@@ -196,7 +206,12 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *rbacv1.ClusterRole:
-		expected, _, _ := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
+		expected, _, _ := operator.MakeRBACObjects(fb.Name,
+			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 		return func() error {
 			o.Rules = expected.Rules
 			return nil
@@ -222,7 +237,13 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *rbacv1.ClusterRoleBinding:
-		_, _, expected := operator.MakeRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
+		_, _, expected := operator.MakeRBACObjects(
+			fb.Name,
+			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 		return func() error {
 			o.Subjects = expected.Subjects
 			o.RoleRef = expected.RoleRef
@@ -293,35 +314,40 @@ func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.
 }
 
 func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.ServiceAccount{}, fluentbitOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		sa := rawObj.(*corev1.ServiceAccount)
-		owner := metav1.GetControllerOf(sa)
-		if owner == nil {
-			return nil
-		}
-		// Make sure it's a FluentBit. If so, return it.
-		if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "FluentBit" {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+	ctx := context.Background()
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &corev1.ServiceAccount{}, fluentbitOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			sa := rawObj.(*corev1.ServiceAccount)
+			owner := metav1.GetControllerOf(sa)
+			if owner == nil {
+				return nil
+			}
+			// Make sure it's a FluentBit. If so, return it.
+			if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "FluentBit" {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.DaemonSet{}, fluentbitOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		ds := rawObj.(*appsv1.DaemonSet)
-		owner := metav1.GetControllerOf(ds)
-		if owner == nil {
-			return nil
-		}
-		// Make sure it's a FluentBit. If so, return it.
-		if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "FluentBit" {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &appsv1.DaemonSet{}, fluentbitOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			ds := rawObj.(*appsv1.DaemonSet)
+			owner := metav1.GetControllerOf(ds)
+			if owner == nil {
+				return nil
+			}
+			// Make sure it's a FluentBit. If so, return it.
+			if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "FluentBit" {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 

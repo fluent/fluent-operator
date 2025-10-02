@@ -158,67 +158,76 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 }
 
 func (r *FluentdReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Secret{}, fluentdOwnerKey, func(rawObj client.Object) []string {
-		// Grab the job object, extract the owner.
-		sec := rawObj.(*corev1.Secret)
-		owner := metav1.GetControllerOf(sec)
-		if owner == nil {
-			return nil
-		}
+	ctx := context.Background()
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &corev1.Secret{}, fluentdOwnerKey,
+		func(rawObj client.Object) []string {
+			// Grab the job object, extract the owner.
+			sec := rawObj.(*corev1.Secret)
+			owner := metav1.GetControllerOf(sec)
+			if owner == nil {
+				return nil
+			}
 
-		if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+			if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.DaemonSet{}, fluentdOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		ds := rawObj.(*appsv1.DaemonSet)
-		owner := metav1.GetControllerOf(ds)
-		if owner == nil {
-			return nil
-		}
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &appsv1.DaemonSet{}, fluentdOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			ds := rawObj.(*appsv1.DaemonSet)
+			owner := metav1.GetControllerOf(ds)
+			if owner == nil {
+				return nil
+			}
 
-		if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+			if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.StatefulSet{}, fluentdOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		sts := rawObj.(*appsv1.StatefulSet)
-		owner := metav1.GetControllerOf(sts)
-		if owner == nil {
-			return nil
-		}
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &appsv1.StatefulSet{}, fluentdOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			sts := rawObj.(*appsv1.StatefulSet)
+			owner := metav1.GetControllerOf(sts)
+			if owner == nil {
+				return nil
+			}
 
-		if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+			if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Service{}, fluentdOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		svc := rawObj.(*corev1.Service)
-		owner := metav1.GetControllerOf(svc)
-		if owner == nil {
-			return nil
-		}
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &corev1.Service{}, fluentdOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			svc := rawObj.(*corev1.Service)
+			owner := metav1.GetControllerOf(svc)
+			if owner == nil {
+				return nil
+			}
 
-		if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+			if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 

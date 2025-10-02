@@ -100,52 +100,53 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 		},
 	}
 
+	specTemplateSpec := &ds.Spec.Template.Spec
 	if fb.Spec.Args != nil {
-		ds.Spec.Template.Spec.Containers[0].Args = fb.Spec.Args
+		specTemplateSpec.Containers[0].Args = fb.Spec.Args
 	}
 
 	if fb.Spec.Command != nil {
-		ds.Spec.Template.Spec.Containers[0].Command = fb.Spec.Command
+		specTemplateSpec.Containers[0].Command = fb.Spec.Command
 	}
 
 	if fb.Spec.Ports != nil {
-		ds.Spec.Template.Spec.Containers[0].Ports = append(ds.Spec.Template.Spec.Containers[0].Ports, fb.Spec.Ports...)
+		specTemplateSpec.Containers[0].Ports = append(specTemplateSpec.Containers[0].Ports, fb.Spec.Ports...)
 	}
 
 	if fb.Spec.EnvVars != nil {
-		ds.Spec.Template.Spec.Containers[0].Env = append(ds.Spec.Template.Spec.Containers[0].Env, fb.Spec.EnvVars...)
+		specTemplateSpec.Containers[0].Env = append(specTemplateSpec.Containers[0].Env, fb.Spec.EnvVars...)
 	}
 
 	if fb.Spec.RuntimeClassName != "" {
-		ds.Spec.Template.Spec.RuntimeClassName = &fb.Spec.RuntimeClassName
+		specTemplateSpec.RuntimeClassName = &fb.Spec.RuntimeClassName
 	}
 
 	if fb.Spec.DNSPolicy != "" {
-		ds.Spec.Template.Spec.DNSPolicy = fb.Spec.DNSPolicy
+		specTemplateSpec.DNSPolicy = fb.Spec.DNSPolicy
 	}
 
 	if fb.Spec.PriorityClassName != "" {
-		ds.Spec.Template.Spec.PriorityClassName = fb.Spec.PriorityClassName
+		specTemplateSpec.PriorityClassName = fb.Spec.PriorityClassName
 	}
 
 	if fb.Spec.SchedulerName != "" {
-		ds.Spec.Template.Spec.SchedulerName = fb.Spec.SchedulerName
+		specTemplateSpec.SchedulerName = fb.Spec.SchedulerName
 	}
 
 	// Mount Position DB
 	if fb.Spec.PositionDB != (corev1.VolumeSource{}) {
-		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, corev1.Volume{
+		specTemplateSpec.Volumes = append(specTemplateSpec.Volumes, corev1.Volume{
 			Name:         "positions",
 			VolumeSource: fb.Spec.PositionDB,
 		})
-		ds.Spec.Template.Spec.Containers[0].VolumeMounts = append(ds.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+		specTemplateSpec.Containers[0].VolumeMounts = append(specTemplateSpec.Containers[0].VolumeMounts, corev1.VolumeMount{
 			Name:      "positions",
 			MountPath: "/fluent-bit/tail",
 		})
 	}
 	// Mount Secrets
 	for _, secret := range fb.Spec.Secrets {
-		ds.Spec.Template.Spec.Volumes = append(ds.Spec.Template.Spec.Volumes, corev1.Volume{
+		specTemplateSpec.Volumes = append(specTemplateSpec.Volumes, corev1.Volume{
 			Name: secret,
 			VolumeSource: corev1.VolumeSource{
 				Secret: &corev1.SecretVolumeSource{
@@ -153,7 +154,7 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 				},
 			},
 		})
-		ds.Spec.Template.Spec.Containers[0].VolumeMounts = append(ds.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+		specTemplateSpec.Containers[0].VolumeMounts = append(specTemplateSpec.Containers[0].VolumeMounts, corev1.VolumeMount{
 			Name:      secret,
 			ReadOnly:  true,
 			MountPath: fmt.Sprintf("/fluent-bit/secrets/%s", secret),
@@ -210,7 +211,6 @@ func makeVolumeMounts(fb fluentbitv1alpha2.FluentBit, logPath string) []corev1.V
 }
 
 func makeVolumes(fb fluentbitv1alpha2.FluentBit, logPath string) []corev1.Volume {
-
 	volumes := []corev1.Volume{
 		{
 			Name: "config",
