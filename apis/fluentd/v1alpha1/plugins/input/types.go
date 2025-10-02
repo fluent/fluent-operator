@@ -352,7 +352,7 @@ func (i *Input) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoad
 	return parent
 }
 
-func (i *Input) samplePlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+func (i *Input) samplePlugin(parent *params.PluginStore, _ plugins.SecretLoader) *params.PluginStore {
 	sampleModel := i.Sample
 	if sampleModel.Tag != nil {
 		parent.InsertPairs("tag", fmt.Sprint(*sampleModel.Tag))
@@ -372,7 +372,7 @@ func (i *Input) samplePlugin(parent *params.PluginStore, loader plugins.SecretLo
 	return parent
 }
 
-func (i *Input) monitorAgentPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+func (i *Input) monitorAgentPlugin(parent *params.PluginStore, _ plugins.SecretLoader) *params.PluginStore {
 	monitorAgentModel := i.MonitorAgent
 	if monitorAgentModel.Port != nil {
 		parent.InsertPairs("port", fmt.Sprint(*monitorAgentModel.Port))

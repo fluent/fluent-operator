@@ -21,14 +21,22 @@ var (
 
 func init() {
 	once.Do(func() {
-		ExpectedFluentdClusterCfgOutputES = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-es.cfg")
-		ExpectedFluentdClusterCfgOutputKafka = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-kafka.cfg")
-		ExpectedFluentdClusterCfgOutputWithBuffer = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-buffer-example.cfg")
-		ExpectedFluentdMixedCfgsMultiTenant = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-mixed-cfgs-multi-tenant-output.cfg")
-		ExpectedFluentdMixedCfgsOutputES = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-mixed-cfgs-output-es.cfg")
-		ExpectedFluentdNamespacedCfgOutputES = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-namespaced-cfg-output-es.cfg")
-		ExpectedDuplicateRemovalCRSPECS = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/duplicate-removal-cr-specs.cfg")
-		ExpectedFluentdClusterCfgOutputCustom = getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-custom.cfg")
+		ExpectedFluentdClusterCfgOutputES =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-es.cfg")
+		ExpectedFluentdClusterCfgOutputKafka =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-kafka.cfg")
+		ExpectedFluentdClusterCfgOutputWithBuffer =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-buffer-example.cfg")
+		ExpectedFluentdMixedCfgsMultiTenant =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-mixed-cfgs-multi-tenant-output.cfg")
+		ExpectedFluentdMixedCfgsOutputES =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-mixed-cfgs-output-es.cfg")
+		ExpectedFluentdNamespacedCfgOutputES =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-namespaced-cfg-output-es.cfg")
+		ExpectedDuplicateRemovalCRSPECS =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/duplicate-removal-cr-specs.cfg")
+		ExpectedFluentdClusterCfgOutputCustom =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-custom.cfg")
 	})
 }
 

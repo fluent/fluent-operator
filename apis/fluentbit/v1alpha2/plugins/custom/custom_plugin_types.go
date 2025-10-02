@@ -58,11 +58,10 @@ func (c *CustomPlugin) MakeNamespaced(ns string) {
 }
 
 func indentation(str string) string {
-	splits := strings.Split(str, "\n")
 	var buf bytes.Buffer
-	for _, i := range splits {
-		if i != "" {
-			buf.WriteString(fmt.Sprintf("    %s\n", strings.TrimSpace(i)))
+	for s := range strings.SplitSeq(str, "\n") {
+		if s != "" {
+			buf.WriteString(fmt.Sprintf("    %s\n", strings.TrimSpace(s)))
 		}
 	}
 	return buf.String()
@@ -70,8 +69,7 @@ func indentation(str string) string {
 
 func MakeCustomConfigNamespaced(customConfig string, namespace string) string {
 	var buf bytes.Buffer
-	sections := strings.Split(customConfig, "\n")
-	for _, section := range sections {
+	for section := range strings.SplitSeq(customConfig, "\n") {
 		section = strings.TrimSpace(section)
 		idx := strings.LastIndex(section, " ")
 		if strings.HasPrefix(section, "Match_Regex") {

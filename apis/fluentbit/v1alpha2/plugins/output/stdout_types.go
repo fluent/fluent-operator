@@ -20,7 +20,7 @@ type Stdout struct {
 	JsonDateFormat string `json:"jsonDateFormat,omitempty"`
 }
 
-func (_ *Stdout) Name() string {
+func (*Stdout) Name() string {
 	return "stdout"
 }
 

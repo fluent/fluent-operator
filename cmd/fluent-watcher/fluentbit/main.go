@@ -58,18 +58,18 @@ func main() {
 	// check  the config file format
 	_, err := os.Stat(defaultSecretYamlPath)
 	if os.IsNotExist(err) {
-		level.Info(logger).Log("msg", "No fluent-bit secret yaml found, using classic one.")
+		_ = level.Info(logger).Log("msg", "No fluent-bit secret yaml found, using classic one.")
 		flag.StringVar(&configPath, "c", defaultCfgPath, "The classic config file path.")
 	} else {
-		level.Info(logger).Log("msg", "fluent-bit secret yaml found, using yaml one.")
+		_ = level.Info(logger).Log("msg", "fluent-bit secret yaml found, using yaml one.")
 		flag.StringVar(&configPath, "c", defaultYamlCfgPath, "The yaml config file path.")
 	}
 
 	if exitOnFailure {
-		level.Warn(logger).Log("--exit-on-failure is deprecated. The process will exit no matter what if fluent-bit exits so this can safely be removed.")
+		_ = level.Warn(logger).Log("--exit-on-failure is deprecated. The process will exit no matter what if fluent-bit exits so this can safely be removed.")
 	}
 	if flbTerminationTimeout > 0 {
-		level.Warn(logger).Log("--flb-timeout is deprecated. Consider setting the terminationGracePeriod field on the `(Cluster)FluentBit` instance.")
+		_ = level.Warn(logger).Log("--flb-timeout is deprecated. Consider setting the terminationGracePeriod field on the `(Cluster)FluentBit` instance.")
 	}
 
 	flag.Parse()

@@ -25,7 +25,7 @@ type File struct {
 	Template string `json:"template,omitempty"`
 }
 
-func (_ *File) Name() string {
+func (*File) Name() string {
 	return "file"
 }
 

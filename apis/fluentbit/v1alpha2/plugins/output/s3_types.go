@@ -72,7 +72,7 @@ type S3 struct {
 }
 
 // Name implement Section() method
-func (_ *S3) Name() string {
+func (*S3) Name() string {
 	return "s3"
 }
 

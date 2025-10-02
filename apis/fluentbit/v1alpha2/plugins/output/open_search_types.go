@@ -104,7 +104,7 @@ type OpenSearch struct {
 }
 
 // Name implement Section() method
-func (_ *OpenSearch) Name() string {
+func (*OpenSearch) Name() string {
 	return "opensearch"
 }
 

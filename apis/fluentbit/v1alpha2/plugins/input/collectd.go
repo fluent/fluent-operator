@@ -22,7 +22,7 @@ type Collectd struct {
 	TypesDB string `json:"typesDB,omitempty"`
 }
 
-func (_ *Collectd) Name() string {
+func (*Collectd) Name() string {
 	return "collectd"
 }
 

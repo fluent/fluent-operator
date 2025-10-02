@@ -45,7 +45,7 @@ type Forward struct {
 	*plugins.Networking `json:"networking,omitempty"`
 }
 
-func (_ *Forward) Name() string {
+func (*Forward) Name() string {
 	return "forward"
 }
 

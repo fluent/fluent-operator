@@ -39,7 +39,7 @@ type Firehose struct {
 }
 
 // implement Section() method
-func (_ *Firehose) Name() string {
+func (*Firehose) Name() string {
 	return "kinesis_firehose"
 }
 

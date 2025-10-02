@@ -24,7 +24,7 @@ type RecordModifier struct {
 	UUIDKeys []string `json:"uuidKeys,omitempty"`
 }
 
-func (_ *RecordModifier) Name() string {
+func (*RecordModifier) Name() string {
 	return "record_modifier"
 }
 

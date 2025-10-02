@@ -34,7 +34,7 @@ type TCP struct {
 	*plugins.Networking `json:"networking,omitempty"`
 }
 
-func (_ *TCP) Name() string {
+func (*TCP) Name() string {
 	return "tcp"
 }
 

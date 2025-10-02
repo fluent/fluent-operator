@@ -15,7 +15,7 @@ import (
 // endpoint at a set interval. These metrics can be routed to metric supported endpoints such as Prometheus Exporter, InfluxDB, or Prometheus Remote Write. <br />
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/prometheus-scrape-metrics**
 type PrometheusScrapeMetrics struct {
-	// Tag name associated to all records comming from this plugin
+	// Tag name associated to all records coming from this plugin
 	Tag string `json:"tag,omitempty"`
 	// The host of the prometheus metric endpoint that you want to scrape
 	Host string `json:"host,omitempty"`
@@ -29,7 +29,7 @@ type PrometheusScrapeMetrics struct {
 	MetricsPath string `json:"metricsPath,omitempty"`
 }
 
-func (_ *PrometheusScrapeMetrics) Name() string {
+func (*PrometheusScrapeMetrics) Name() string {
 	return "prometheus_scrape"
 }
 

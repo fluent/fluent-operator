@@ -20,7 +20,7 @@ type Logfmt struct {
 	TimeKeep *bool `json:"timeKeep,omitempty"`
 }
 
-func (_ *Logfmt) Name() string {
+func (*Logfmt) Name() string {
 	return "logfmt"
 }
 

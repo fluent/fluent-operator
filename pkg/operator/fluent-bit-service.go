@@ -73,7 +73,7 @@ func MakeFluentbitService(fb fluentbitv1alpha2.FluentBit) *corev1.Service {
 	}
 
 	if len(fb.Spec.Service.Annotations) != 0 {
-		svc.ObjectMeta.Annotations = fb.Spec.Service.Annotations
+		svc.Annotations = fb.Spec.Service.Annotations
 	}
 
 	return &svc

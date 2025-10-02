@@ -24,9 +24,8 @@ func (c *CustomPlugin) Params(_ plugins.SecretLoader) (*params.PluginStore, erro
 }
 
 func indentation(config string) string {
-	splits := strings.Split(config, "\n")
 	var buf bytes.Buffer
-	for _, split := range splits {
+	for split := range strings.SplitSeq(config, "\n") {
 		if split != "" {
 			buf.WriteString(fmt.Sprintf("  %s\n", split))
 		}

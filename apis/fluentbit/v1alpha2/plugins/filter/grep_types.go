@@ -19,7 +19,7 @@ type Grep struct {
 	Exclude string `json:"exclude,omitempty"`
 }
 
-func (_ *Grep) Name() string {
+func (*Grep) Name() string {
 	return "grep"
 }
 

@@ -20,7 +20,7 @@ type JSON struct {
 	TimeKeep *bool `json:"timeKeep,omitempty"`
 }
 
-func (_ *JSON) Name() string {
+func (*JSON) Name() string {
 	return "json"
 }
 

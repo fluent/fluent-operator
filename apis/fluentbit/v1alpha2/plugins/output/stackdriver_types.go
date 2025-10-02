@@ -55,12 +55,12 @@ type Stackdriver struct {
 	Workers *int32 `json:"workers,omitempty"`
 	// A custom regex to extract fields from the local_resource_id of the logs
 	CustomK8sRegex string `json:"customK8sRegex,omitempty"`
-	// Optional list of comma seperated strings. Setting these fields overrides the Stackdriver monitored resource API values
+	// Optional list of comma separated strings. Setting these fields overrides the Stackdriver monitored resource API values
 	ResourceLabels []string `json:"resourceLabels,omitempty"`
 }
 
 // Name implement Section() method
-func (_ *Stackdriver) Name() string {
+func (*Stackdriver) Name() string {
 	return "stackdriver"
 }
 
@@ -117,7 +117,7 @@ func (o *Stackdriver) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.LabelsKey != "" {
 		kvs.Insert("labels_key", o.LabelsKey)
 	}
-	if o.Labels != nil && len(o.Labels) > 0 {
+	if len(o.Labels) > 0 {
 		kvs.Insert("labels", strings.Join(o.Labels, ","))
 	}
 	if o.LogNameKey != "" {
@@ -138,7 +138,7 @@ func (o *Stackdriver) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.CustomK8sRegex != "" {
 		kvs.Insert("custom_k8s_regex", o.CustomK8sRegex)
 	}
-	if o.ResourceLabels != nil && len(o.ResourceLabels) > 0 {
+	if len(o.ResourceLabels) > 0 {
 		kvs.Insert("resource_labels", strings.Join(o.ResourceLabels, ","))
 	}
 	return kvs, nil

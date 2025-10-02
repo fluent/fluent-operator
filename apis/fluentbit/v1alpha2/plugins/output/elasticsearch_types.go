@@ -111,7 +111,7 @@ type Elasticsearch struct {
 }
 
 // Name implement Section() method
-func (_ *Elasticsearch) Name() string {
+func (*Elasticsearch) Name() string {
 	return "es"
 }
 

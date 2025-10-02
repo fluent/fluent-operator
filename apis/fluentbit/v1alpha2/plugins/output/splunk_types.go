@@ -38,13 +38,13 @@ type Splunk struct {
 	// When enabled, the record keys and values are set in the top level of the map instead of under the event key. Refer to
 	// the Sending Raw Events section from the docs more details to make this option work properly.
 	SplunkSendRaw *bool `json:"splunkSendRaw,omitempty"`
-	//Specify the key name that will be used to send a single value as part of the record.
+	// Specify the key name that will be used to send a single value as part of the record.
 	EventKey string `json:"eventKey,omitempty"`
-	//Specify the key name that contains the host value. This option allows a record accessors pattern.
+	// Specify the key name that contains the host value. This option allows a record accessors pattern.
 	EventHost string `json:"eventHost,omitempty"`
-	//Set the source value to assign to the event data.
+	// Set the source value to assign to the event data.
 	EventSource string `json:"eventSource,omitempty"`
-	//Set the sourcetype value to assign to the event data.
+	// Set the sourcetype value to assign to the event data.
 	EventSourcetype string `json:"eventSourcetype,omitempty"`
 	// Set a record key that will populate 'sourcetype'. If the key is found, it will have precedence
 	// over the value set in event_sourcetype.
@@ -54,7 +54,7 @@ type Splunk struct {
 	// Set a record key that will populate the index field. If the key is found, it will have precedence
 	// over the value set in event_index.
 	EventIndexKey string `json:"eventIndexKey,omitempty"`
-	//Set event fields for the record. This option is an array and the format is "key_name
+	// Set event fields for the record. This option is an array and the format is "key_name
 	// record_accessor_pattern".
 	EventFields []string `json:"eventFields,omitempty"`
 
@@ -66,7 +66,7 @@ type Splunk struct {
 }
 
 // Name implement Section() method
-func (_ *Splunk) Name() string {
+func (*Splunk) Name() string {
 	return "splunk"
 }
 
@@ -136,7 +136,7 @@ func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if o.EventIndexKey != "" {
 		kvs.Insert("event_index_key", o.EventIndexKey)
 	}
-	if o.EventFields != nil && len(o.EventFields) > 0 {
+	if len(o.EventFields) > 0 {
 		for _, v := range o.EventFields {
 			kvs.Insert("event_field", v)
 		}

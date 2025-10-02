@@ -550,11 +550,11 @@ func (cfg ClusterFluentBitConfig) RenderNamespacedLuaScript(
 		for _, f := range nsfilters.Items {
 			for _, p := range f.Spec.FilterItems {
 				if p.Lua != nil && p.Lua.Script.Key != "" {
-					script, err := cl.LoadConfigMap(p.Lua.Script, f.ObjectMeta.Namespace)
+					script, err := cl.LoadConfigMap(p.Lua.Script, f.Namespace)
 					if err != nil {
 						return nil, err
 					}
-					namespacedScriptName := fmt.Sprintf("%x-%s", md5.Sum([]byte(f.ObjectMeta.Namespace)), p.Lua.Script.Key)
+					namespacedScriptName := fmt.Sprintf("%x-%s", md5.Sum([]byte(f.Namespace)), p.Lua.Script.Key)
 					scripts = append(scripts, Script{Name: namespacedScriptName, Content: script})
 				}
 			}

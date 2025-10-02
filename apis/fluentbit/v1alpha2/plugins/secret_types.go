@@ -45,6 +45,6 @@ func (sl SecretLoader) LoadSecret(s Secret) (string, error) {
 	if v, ok := secret.Data[s.ValueFrom.SecretKeyRef.Key]; !ok {
 		return "", errors.NotFound(fmt.Sprintf("The key %s is not found.", s.ValueFrom.SecretKeyRef.Key))
 	} else {
-		return strings.TrimSuffix(fmt.Sprintf("%s", v), "\n"), nil
+		return strings.TrimSuffix(string(v), "\n"), nil
 	}
 }

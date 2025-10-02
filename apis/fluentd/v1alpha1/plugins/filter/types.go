@@ -148,7 +148,7 @@ func (f *Filter) grepPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 	return parent
 }
 
-func (f *Filter) recordTransformerPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+func (f *Filter) recordTransformerPlugin(parent *params.PluginStore, _ plugins.SecretLoader) *params.PluginStore {
 	childs := make([]*params.PluginStore, 0)
 	if f.RecordTransformer != nil {
 		if len(f.RecordTransformer.Records) > 0 {

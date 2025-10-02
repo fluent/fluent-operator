@@ -27,15 +27,15 @@ type PrometheusRemoteWrite struct {
 	Port *int32 `json:"port,omitempty"`
 	// Specify an HTTP Proxy. The expected format of this value is http://HOST:PORT.
 	Proxy string `json:"proxy,omitempty"`
-	//Specify an optional HTTP URI for the target web server, e.g: /something ,default: /
+	// Specify an optional HTTP URI for the target web server, e.g: /something ,default: /
 	URI string `json:"uri,omitempty"`
-	//Add a HTTP header key/value pair. Multiple headers can be set.
+	// Add a HTTP header key/value pair. Multiple headers can be set.
 	Headers map[string]string `json:"headers,omitempty"`
-	//Log the response payload within the Fluent Bit log,default: false
+	// Log the response payload within the Fluent Bit log,default: false
 	LogResponsePayload *bool `json:"logResponsePayload,omitempty"`
-	//This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields
+	// This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields
 	AddLabels map[string]string `json:"addLabels,omitempty"`
-	//Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0,default : 2
+	// Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0,default : 2
 	Workers *int32 `json:"workers,omitempty"`
 
 	*plugins.TLS `json:"tls,omitempty"`
@@ -44,7 +44,7 @@ type PrometheusRemoteWrite struct {
 }
 
 // implement Section() method
-func (_ *PrometheusRemoteWrite) Name() string {
+func (*PrometheusRemoteWrite) Name() string {
 	return "prometheus_remote_write"
 }
 

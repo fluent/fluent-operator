@@ -164,10 +164,11 @@ func Test_ClusterCfgOutput2CopyESDataStream(t *testing.T) {
 	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2CopyESDataStream}
 	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterInput{}, clusterFilters, clusterOutputs)
 	err = psr.IdentifyCopyAndPatchOutput(clustercfgResources)
+	g.Expect(err).NotTo(HaveOccurred())
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-copy-es-data-stream.cfg"))).To(Equal(config))
@@ -210,9 +211,9 @@ func Test_ClusterCfgOutput2OpenSearch(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
-		//fmt.Println(config)
+		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-opensearch.cfg"))).To(Equal(config))
 	}
@@ -700,7 +701,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 				Name:      "filter1",
 				Namespace: "testnamespace",
 			},
-			Spec: fluentdv1alpha1.FilterSpec(filterspec1),
+			Spec: filterspec1,
 		},
 		{
 			TypeMeta: metav1.TypeMeta{
@@ -711,7 +712,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 				Name:      "filter2",
 				Namespace: "testnamespace",
 			},
-			Spec: fluentdv1alpha1.FilterSpec(filterspec2),
+			Spec: filterspec2,
 		},
 		{
 			TypeMeta: metav1.TypeMeta{
@@ -722,7 +723,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 				Name:      "filter3",
 				Namespace: "testnamespace",
 			},
-			Spec: fluentdv1alpha1.FilterSpec(filterspec3),
+			Spec: filterspec3,
 		},
 	}
 
@@ -736,7 +737,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 				Name:      "output1",
 				Namespace: "testnamespace",
 			},
-			Spec: fluentdv1alpha1.OutputSpec(outputspec1),
+			Spec: outputspec1,
 		},
 		{
 			TypeMeta: metav1.TypeMeta{
@@ -747,7 +748,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 				Name:      "output2",
 				Namespace: "testnamespace",
 			},
-			Spec: fluentdv1alpha1.OutputSpec(outputspec2),
+			Spec: outputspec2,
 		},
 		{
 			TypeMeta: metav1.TypeMeta{
@@ -758,7 +759,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 				Name:      "output3",
 				Namespace: "testnamespace",
 			},
-			Spec: fluentdv1alpha1.OutputSpec(outputspec3),
+			Spec: outputspec3,
 		},
 	}
 
@@ -860,6 +861,6 @@ func (sl SecretLoaderStruct) LoadSecret(s plugins.Secret) (string, error) {
 	if v, ok := secret.StringData[s.ValueFrom.SecretKeyRef.Key]; !ok {
 		return "", errors.NotFound(fmt.Sprintf("The key %s is not found.", s.ValueFrom.SecretKeyRef.Key))
 	} else {
-		return strings.TrimSuffix(fmt.Sprintf("%s", v), "\n"), nil
+		return strings.TrimSuffix(v, "\n"), nil
 	}
 }

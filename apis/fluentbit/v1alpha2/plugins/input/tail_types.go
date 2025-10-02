@@ -96,7 +96,7 @@ type Tail struct {
 	// DisableInotifyWatcher will disable inotify and use the file stat watcher instead.
 	DisableInotifyWatcher *bool `json:"disableInotifyWatcher,omitempty"`
 	// This will help to reassembly multiline messages originally split by Docker or CRI
-	//Specify one or Multiline Parser definition to apply to the content.
+	// Specify one or Multiline Parser definition to apply to the content.
 	MultilineParser string `json:"multilineParser,omitempty"`
 	// Specify the buffering mechanism to use. It can be memory or filesystem
 	// +kubebuilder:validation:Enum:=filesystem;memory
@@ -104,13 +104,13 @@ type Tail struct {
 	// Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached.
 	// +kubebuilder:validation:Enum:=on;off
 	PauseOnChunksOverlimit string `json:"pauseOnChunksOverlimit,omitempty"`
-	//Skips empty lines in the log file from any further processing or output.
+	// Skips empty lines in the log file from any further processing or output.
 	SkipEmptyLines *bool `json:"skipEmptyLines,omitempty"`
 	// Threaded mechanism allows input plugin to run in a separate thread which helps to desaturate the main pipeline.
 	Threaded *string `json:"threaded,omitempty"`
 }
 
-func (_ *Tail) Name() string {
+func (*Tail) Name() string {
 	return "tail"
 }
 

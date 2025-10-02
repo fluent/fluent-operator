@@ -18,23 +18,23 @@ type AWS struct {
 	ImdsVersion string `json:"imdsVersion,omitempty"`
 	// The availability zone; for example, "us-east-1a". Default is true.
 	AZ *bool `json:"az,omitempty"`
-	//The EC2 instance ID.Default is true.
+	// The EC2 instance ID.Default is true.
 	EC2InstanceID *bool `json:"ec2InstanceID,omitempty"`
-	//The EC2 instance type.Default is false.
+	// The EC2 instance type.Default is false.
 	EC2InstanceType *bool `json:"ec2InstanceType,omitempty"`
-	//The EC2 instance private ip.Default is false.
+	// The EC2 instance private ip.Default is false.
 	PrivateIP *bool `json:"privateIP,omitempty"`
-	//The EC2 instance image id.Default is false.
+	// The EC2 instance image id.Default is false.
 	AmiID *bool `json:"amiID,omitempty"`
-	//The account ID for current EC2 instance.Default is false.
+	// The account ID for current EC2 instance.Default is false.
 	AccountID *bool `json:"accountID,omitempty"`
-	//The hostname for current EC2 instance.Default is false.
+	// The hostname for current EC2 instance.Default is false.
 	HostName *bool `json:"hostName,omitempty"`
-	//The VPC ID for current EC2 instance.Default is false.
+	// The VPC ID for current EC2 instance.Default is false.
 	VpcID *bool `json:"vpcID,omitempty"`
 }
 
-func (_ *AWS) Name() string {
+func (*AWS) Name() string {
 	return "aws"
 }
 

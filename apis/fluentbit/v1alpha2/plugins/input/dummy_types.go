@@ -13,7 +13,7 @@ import (
 // It is useful for testing, debugging, benchmarking and getting started with Fluent Bit. <br />
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/dummy**
 type Dummy struct {
-	// Tag name associated to all records comming from this plugin.
+	// Tag name associated to all records coming from this plugin.
 	Tag string `json:"tag,omitempty"`
 	// Dummy JSON record.
 	Dummy string `json:"dummy,omitempty"`
@@ -23,7 +23,7 @@ type Dummy struct {
 	Samples *int32 `json:"samples,omitempty"`
 }
 
-func (_ *Dummy) Name() string {
+func (*Dummy) Name() string {
 	return "dummy"
 }
 

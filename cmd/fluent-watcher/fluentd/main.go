@@ -14,8 +14,8 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/pkg/filenotify"
 	"github.com/fsnotify/fsnotify"
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/oklog/run"
 )
 

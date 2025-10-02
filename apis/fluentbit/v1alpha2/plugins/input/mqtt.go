@@ -21,7 +21,7 @@ type MQTT struct {
 	Port *int32 `json:"port,omitempty"`
 }
 
-func (_ *MQTT) Name() string {
+func (*MQTT) Name() string {
 	return "mqtt"
 }
 

@@ -49,7 +49,7 @@ type Syslog struct {
 	TotalLimitSize string `json:"totalLimitSize,omitempty"`
 }
 
-func (_ *Syslog) Name() string {
+func (*Syslog) Name() string {
 	return "syslog"
 }
 

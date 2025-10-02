@@ -88,7 +88,7 @@ func plugins(docsLocations []DocumentsLocation) {
 				return err
 			}
 			if strings.HasSuffix(path, ".go") {
-				var flag bool = true
+				var flag = true
 				for _, keyword := range unincludedKeyWords {
 					flag = flag && !strings.Contains(path, keyword)
 				}
@@ -114,7 +114,7 @@ func plugins(docsLocations []DocumentsLocation) {
 
 					buffer.WriteString("| Field | Description | Scheme |\n")
 					buffer.WriteString("| ----- | ----------- | ------ |\n")
-					fields := t[1:(len(t))]
+					fields := t[1:]
 					for _, f := range fields {
 						buffer.WriteString(fmt.Sprintf("| %s | %s | %s |\n", f.Name, f.Doc, f.Type))
 					}
@@ -140,7 +140,7 @@ func plugins(docsLocations []DocumentsLocation) {
 				fmt.Printf("Error while generating documentation: %s\n", err.Error())
 			}
 
-			f.WriteString(buffer.String())
+			_, _ = f.WriteString(buffer.String())
 		}
 	}
 }
@@ -180,7 +180,7 @@ func crds(docsLocations []DocumentsLocation) {
 
 				buffer.WriteString("| Field | Description | Scheme |\n")
 				buffer.WriteString("| ----- | ----------- | ------ |\n")
-				fields := t[1:(len(t))]
+				fields := t[1:]
 				for _, f := range fields {
 					buffer.WriteString(fmt.Sprintf("| %s | %s | %s |\n", f.Name, f.Doc, f.Type))
 				}
@@ -190,7 +190,7 @@ func crds(docsLocations []DocumentsLocation) {
 		}
 
 		f, _ := os.Create(fmt.Sprintf("./docs/%s.md", dl.name))
-		f.WriteString(fmt.Sprintf(firstParagraph, dl.name) + buffer.String())
+		_, _ = f.WriteString(fmt.Sprintf(firstParagraph, dl.name) + buffer.String())
 	}
 }
 
@@ -204,7 +204,7 @@ func genDocDirs(docPath string) error {
 
 func toSectionLink(name string) string {
 	name = strings.ToLower(name)
-	name = strings.Replace(name, " ", "-", -1)
+	name = strings.ReplaceAll(name, " ", "-")
 	return name
 }
 
@@ -231,7 +231,18 @@ type KubeTypes []Pair
 func ParseDocumentationFrom(src string, dl_name string, shouldSort bool) []KubeTypes {
 	var docForTypes []KubeTypes
 
-	pkg := astFrom(src)
+	fset := token.NewFileSet()
+	f, err := parser.ParseFile(fset, src, nil, parser.ParseComments)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	pkg, err := doc.NewFromFiles(fset, []*ast.File{f}, "")
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
 
 	var types []*doc.Type
 	for _, kubType := range pkg.Types {
@@ -266,22 +277,6 @@ func ParseDocumentationFrom(src string, dl_name string, shouldSort bool) []KubeT
 	return docForTypes
 }
 
-func astFrom(filePath string) *doc.Package {
-	fset := token.NewFileSet()
-	m := make(map[string]*ast.File)
-
-	f, err := parser.ParseFile(fset, filePath, nil, parser.ParseComments)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-
-	m[filePath] = f
-	apkg, _ := ast.NewPackage(fset, m, nil, nil)
-
-	return doc.New(apkg, "", 0)
-}
-
 func fmtRawDoc(rawDoc string) string {
 	var buffer bytes.Buffer
 	delPrevChar := func() {
@@ -290,7 +285,7 @@ func fmtRawDoc(rawDoc string) string {
 		}
 	}
 
-	for _, line := range strings.Split(rawDoc, "\n") {
+	for line := range strings.SplitSeq(rawDoc, "\n") {
 		line = strings.TrimRight(line, " ")
 		leading := strings.TrimLeft(line, " ")
 		switch {
@@ -305,11 +300,11 @@ func fmtRawDoc(rawDoc string) string {
 	}
 
 	postDoc := strings.TrimRight(buffer.String(), "\n")
-	postDoc = strings.Replace(postDoc, "\\\"", "\"", -1) // replace user's \" to "
-	postDoc = strings.Replace(postDoc, "\"", "\\\"", -1) // Escape "
-	postDoc = strings.Replace(postDoc, "\n", "\\n", -1)
-	postDoc = strings.Replace(postDoc, "\t", "\\t", -1)
-	postDoc = strings.Replace(postDoc, "|", "\\|", -1)
+	postDoc = strings.ReplaceAll(postDoc, "\\\"", "\"") // replace user's \" to "
+	postDoc = strings.ReplaceAll(postDoc, "\"", "\\\"") // Escape "
+	postDoc = strings.ReplaceAll(postDoc, "\n", "\\n")
+	postDoc = strings.ReplaceAll(postDoc, "\t", "\\t")
+	postDoc = strings.ReplaceAll(postDoc, "|", "\\|")
 
 	return postDoc
 }
@@ -403,21 +398,19 @@ func fieldName(field *ast.Field) string {
 }
 
 func fieldType(typ ast.Expr, dl_name string) string {
-	switch typ.(type) {
+	switch typ := typ.(type) {
 	case *ast.Ident:
-		return toLink(typ.(*ast.Ident).Name, dl_name)
+		return toLink(typ.Name, dl_name)
 	case *ast.StarExpr:
-		return "*" + fieldType(typ.(*ast.StarExpr).X, dl_name)
+		return "*" + fieldType(typ.X, dl_name)
 	case *ast.SelectorExpr:
-		e := typ.(*ast.SelectorExpr)
-		pkg := e.X.(*ast.Ident)
-		t := e.Sel
+		pkg := typ.X.(*ast.Ident)
+		t := typ.Sel
 		return toLink(pkg.Name+"."+t.Name, dl_name)
 	case *ast.ArrayType:
-		return "[]" + fieldType(typ.(*ast.ArrayType).Elt, dl_name)
+		return "[]" + fieldType(typ.Elt, dl_name)
 	case *ast.MapType:
-		mapType := typ.(*ast.MapType)
-		return "map[" + toLink(fieldType(mapType.Key, dl_name), dl_name) + "]" + toLink(fieldType(mapType.Value, dl_name), dl_name)
+		return "map[" + toLink(fieldType(typ.Key, dl_name), dl_name) + "]" + toLink(fieldType(typ.Value, dl_name), dl_name)
 	default:
 		return ""
 	}

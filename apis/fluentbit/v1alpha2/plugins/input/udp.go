@@ -40,7 +40,7 @@ type UDP struct {
 	Threaded *string `json:"threaded,omitempty"`
 }
 
-func (_ *UDP) Name() string {
+func (*UDP) Name() string {
 	return "udp"
 }
 

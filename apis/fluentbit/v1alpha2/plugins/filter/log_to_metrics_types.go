@@ -51,7 +51,7 @@ type LogToMetrics struct {
 	DiscardLogs *bool `json:"discardLogs,omitempty"`
 }
 
-func (_ *LogToMetrics) Name() string {
+func (*LogToMetrics) Name() string {
 	return "log_to_metrics"
 }
 

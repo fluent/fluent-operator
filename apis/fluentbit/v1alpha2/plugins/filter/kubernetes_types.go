@@ -109,7 +109,7 @@ type Kubernetes struct {
 	UseTagForMeta *bool `json:"useTagForMeta,omitempty"`
 }
 
-func (_ *Kubernetes) Name() string {
+func (*Kubernetes) Name() string {
 	return "kubernetes"
 }
 

@@ -62,7 +62,7 @@ func MakeCollectorService(co fluentbitv1alpha2.Collector) *corev1.Service {
 	}
 
 	if len(co.Spec.Service.Annotations) != 0 {
-		svc.ObjectMeta.Annotations = co.Spec.Service.Annotations
+		svc.Annotations = co.Spec.Service.Annotations
 	}
 
 	return &svc

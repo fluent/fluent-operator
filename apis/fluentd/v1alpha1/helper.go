@@ -212,7 +212,7 @@ func (r *CfgResources) filterForInputs(
 ) error {
 	for n, input := range inputs {
 		inputId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
-		input.InputCommon.Id = &inputId
+		input.Id = &inputId
 		// if input.InputCommon.Tag == nil {
 		// 	input.InputCommon.Tag = &params.DefaultTag
 		// }
@@ -241,9 +241,9 @@ func (r *CfgResources) filterForFilters(
 ) error {
 	for n, filter := range filters {
 		filterId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
-		filter.FilterCommon.Id = &filterId
-		if filter.FilterCommon.Tag == nil {
-			filter.FilterCommon.Tag = &params.DefaultTag
+		filter.Id = &filterId
+		if filter.Tag == nil {
+			filter.Tag = &params.DefaultTag
 		}
 
 		ps, err := filter.Params(sl)
@@ -270,9 +270,9 @@ func (r *CfgResources) filterForOutputs(
 ) error {
 	for n, output := range outputs {
 		outputId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
-		output.OutputCommon.Id = &outputId
-		if output.OutputCommon.Tag == nil {
-			output.OutputCommon.Tag = &params.DefaultTag
+		output.Id = &outputId
+		if output.Tag == nil {
+			output.Tag = &params.DefaultTag
 		}
 
 		ps, err := output.Params(sl)

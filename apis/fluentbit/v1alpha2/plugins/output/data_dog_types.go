@@ -44,7 +44,7 @@ type DataDog struct {
 	// *plugins.HTTP `json:"tls,omitempty"`
 }
 
-func (_ *DataDog) Name() string {
+func (*DataDog) Name() string {
 	return "datadog"
 }
 

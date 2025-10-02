@@ -20,7 +20,7 @@ type StatsD struct {
 	Port *int32 `json:"port,omitempty"`
 }
 
-func (_ *StatsD) Name() string {
+func (*StatsD) Name() string {
 	return "statsd"
 }
 

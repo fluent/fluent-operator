@@ -34,7 +34,7 @@ type ExecWasi struct {
 	Threaded *bool `json:"threaded,omitempty"`
 }
 
-func (_ *ExecWasi) Name() string {
+func (*ExecWasi) Name() string {
 	return "exec_wasi"
 }
 
