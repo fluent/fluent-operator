@@ -8,7 +8,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1.PolicyRule, saAnnotations map[string]string) (*rbacv1.ClusterRole, *corev1.ServiceAccount, *rbacv1.ClusterRoleBinding) {
+func MakeRBACObjects(
+	name, namespace, component string,
+	additionalRules []rbacv1.PolicyRule,
+	saAnnotations map[string]string,
+) (*rbacv1.ClusterRole, *corev1.ServiceAccount, *rbacv1.ClusterRoleBinding) {
 	crName, saName, crbName := MakeRBACNames(name, component)
 	cr := rbacv1.ClusterRole{
 		ObjectMeta: metav1.ObjectMeta{
@@ -56,7 +60,11 @@ func MakeRBACObjects(name, namespace, component string, additionalRules []rbacv1
 	return &cr, &sa, &crb
 }
 
-func MakeScopedRBACObjects(name, namespace string, saAnnotations map[string]string) (*rbacv1.Role, *corev1.ServiceAccount, *rbacv1.RoleBinding) {
+func MakeScopedRBACObjects(
+	name,
+	namespace string,
+	saAnnotations map[string]string,
+) (*rbacv1.Role, *corev1.ServiceAccount, *rbacv1.RoleBinding) {
 	rName, saName, rbName := MakeScopedRBACNames(name)
 	r := rbacv1.Role{
 		ObjectMeta: metav1.ObjectMeta{

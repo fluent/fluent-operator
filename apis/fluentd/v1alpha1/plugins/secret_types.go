@@ -41,7 +41,8 @@ func NewSecretLoader(c client.Client, ns string, l logr.Logger) SecretLoader {
 
 func (sl SecretLoaderStruct) LoadSecret(s Secret) (string, error) {
 	var secret corev1.Secret
-	if err := sl.client.Get(context.Background(), client.ObjectKey{Name: s.ValueFrom.SecretKeyRef.Name, Namespace: sl.namespace}, &secret); err != nil {
+	ctx := context.Background()
+	if err := sl.client.Get(ctx, client.ObjectKey{Name: s.ValueFrom.SecretKeyRef.Name, Namespace: sl.namespace}, &secret); err != nil {
 		return "", err
 	}
 
