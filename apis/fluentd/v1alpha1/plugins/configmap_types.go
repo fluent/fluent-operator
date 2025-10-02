@@ -31,6 +31,6 @@ func (cl ConfigMapLoader) LoadConfigMap(selector v1.ConfigMapKeySelector) (strin
 	if v, ok := configMap.Data[selector.Key]; !ok {
 		return "", errors.NotFound(fmt.Sprintf("The key %s is not found.", selector.Key))
 	} else {
-		return strings.TrimSuffix(fmt.Sprintf("%s", v), "\n"), nil
+		return strings.TrimSuffix(v, "\n"), nil
 	}
 }

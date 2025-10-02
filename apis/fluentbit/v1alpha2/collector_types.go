@@ -114,7 +114,7 @@ type Collector struct {
 
 // IsBeingDeleted returns true if a deletion timestamp is set
 func (co *Collector) IsBeingDeleted() bool {
-	return !co.ObjectMeta.DeletionTimestamp.IsZero()
+	return !co.DeletionTimestamp.IsZero()
 }
 
 // CollectorFinalizerName is the name of the fluentbit finalizer
@@ -122,17 +122,17 @@ const CollectorFinalizerName = "collector.fluent.io"
 
 // HasFinalizer returns true if the item has the specified finalizer
 func (co *Collector) HasFinalizer(finalizerName string) bool {
-	return slices.Contains(co.ObjectMeta.Finalizers, finalizerName)
+	return slices.Contains(co.Finalizers, finalizerName)
 }
 
 // AddFinalizer adds the specified finalizer
 func (co *Collector) AddFinalizer(finalizerName string) {
-	co.ObjectMeta.Finalizers = append(co.ObjectMeta.Finalizers, finalizerName)
+	co.Finalizers = append(co.Finalizers, finalizerName)
 }
 
 // RemoveFinalizer removes the specified finalizer
 func (co *Collector) RemoveFinalizer(finalizerName string) {
-	co.ObjectMeta.Finalizers = slices.DeleteFunc(co.ObjectMeta.Finalizers, func(s string) bool { return s == finalizerName })
+	co.Finalizers = slices.DeleteFunc(co.Finalizers, func(s string) bool { return s == finalizerName })
 }
 
 // +kubebuilder:object:root=true

@@ -3,10 +3,11 @@ package plugins
 import (
 	"context"
 	"fmt"
-	"github.com/go-openapi/errors"
-	"k8s.io/api/core/v1"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
+
+	"github.com/go-openapi/errors"
+	v1 "k8s.io/api/core/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type ConfigMapLoader struct {
@@ -30,6 +31,6 @@ func (cl ConfigMapLoader) LoadConfigMap(selector v1.ConfigMapKeySelector, namesp
 	if v, ok := configMap.Data[selector.Key]; !ok {
 		return "", errors.NotFound(fmt.Sprintf("The key %s is not found.", selector.Key))
 	} else {
-		return strings.TrimSuffix(fmt.Sprintf("%s", v), "\n"), nil
+		return strings.TrimSuffix(v, "\n"), nil
 	}
 }

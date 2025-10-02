@@ -93,16 +93,16 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 		ps.InsertPairs("tag", fmt.Sprint(*o.Tag))
 	}
 
-	if o.BufferSection.Buffer != nil {
-		child, _ := o.BufferSection.Buffer.Params(loader)
+	if o.Buffer != nil {
+		child, _ := o.Buffer.Params(loader)
 		childs = append(childs, child)
 	}
-	if o.BufferSection.Inject != nil {
-		child, _ := o.BufferSection.Inject.Params(loader)
+	if o.Inject != nil {
+		child, _ := o.Inject.Params(loader)
 		childs = append(childs, child)
 	}
-	if o.BufferSection.Format != nil {
-		child, _ := o.BufferSection.Format.Params(loader)
+	if o.Format != nil {
+		child, _ := o.Format.Params(loader)
 		childs = append(childs, child)
 	}
 
@@ -128,7 +128,7 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 					Type: &params.DefaultFormatType,
 				},
 			}
-			child, _ := o.BufferSection.Format.Params(loader)
+			child, _ := o.Format.Params(loader)
 			ps.InsertChilds(child)
 		}
 		return o.kafka2Plugin(ps, loader), nil
@@ -653,7 +653,7 @@ func (o *Output) opensearchPlugin(parent *params.PluginStore, loader plugins.Sec
 	return parent, nil
 }
 
-func (o *Output) kafka2Plugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+func (o *Output) kafka2Plugin(parent *params.PluginStore, _ plugins.SecretLoader) *params.PluginStore {
 	if o.Kafka.Brokers != nil {
 		parent.InsertPairs("brokers", fmt.Sprint(*o.Kafka.Brokers))
 	}
@@ -771,7 +771,7 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 		}
 		parent.InsertPairs("tenant", id)
 	}
-	if o.Loki.Labels != nil && len(o.Loki.Labels) > 0 {
+	if len(o.Loki.Labels) > 0 {
 		labels := make(map[string]string)
 		for _, l := range o.Loki.Labels {
 			key, value, found := strings.Cut(l, "=")
@@ -789,10 +789,10 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 			}
 		}
 	}
-	if o.Loki.RemoveKeys != nil && len(o.Loki.RemoveKeys) > 0 {
+	if len(o.Loki.RemoveKeys) > 0 {
 		parent.InsertPairs("remove_keys", strings.Join(o.Loki.RemoveKeys, ","))
 	}
-	if o.Loki.LabelKeys != nil && len(o.Loki.LabelKeys) > 0 {
+	if len(o.Loki.LabelKeys) > 0 {
 		ps := params.NewPluginStore("label")
 		for _, n := range o.Loki.LabelKeys {
 			ps.InsertPairs(n, n)
@@ -1086,14 +1086,14 @@ func (o *Output) datadogPlugin(parent *params.PluginStore, sl plugins.SecretLoad
 	return parent
 }
 
-func (o *Output) copyPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
+func (o *Output) copyPlugin(parent *params.PluginStore, _ plugins.SecretLoader) *params.PluginStore {
 	if o.Copy.CopyMode != nil {
 		parent.InsertPairs("copy_mode", fmt.Sprint(*o.Copy.CopyMode))
 	}
 	return parent
 }
 
-func (o *Output) nullPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
+func (o *Output) nullPlugin(parent *params.PluginStore, _ plugins.SecretLoader) *params.PluginStore {
 	if o.Null.NeverFlush != nil {
 		parent.InsertPairs("never_flush", fmt.Sprint(*o.Null.NeverFlush))
 	}

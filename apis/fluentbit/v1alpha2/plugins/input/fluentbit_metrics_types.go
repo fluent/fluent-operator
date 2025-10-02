@@ -24,7 +24,7 @@ type FluentbitMetrics struct {
 	ScrapeOnStart *bool `json:"scrapeOnStart,omitempty"`
 }
 
-func (_ *FluentbitMetrics) Name() string {
+func (*FluentbitMetrics) Name() string {
 	return "fluentbit_metrics"
 }
 

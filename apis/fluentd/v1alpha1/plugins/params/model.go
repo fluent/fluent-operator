@@ -194,7 +194,7 @@ func (ps *PluginStore) processBody(buf *bytes.Buffer) {
 
 // write the tail directive to the buffer, i.e.: </match>
 func (ps *PluginStore) processTail(buf *bytes.Buffer) {
-	buf.WriteString(fmt.Sprintf("%s</%s>\n", ps.PrefixWhitespaces, ps.Name))
+	fmt.Fprintf(buf, "%s</%s>\n", ps.PrefixWhitespaces, ps.Name)
 }
 
 // decide to return the head directive with our without a filter - <match> or <match xx>

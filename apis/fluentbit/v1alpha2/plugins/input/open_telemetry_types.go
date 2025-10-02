@@ -29,7 +29,7 @@ type OpenTelemetry struct {
 	// This sets the chunk size for incoming incoming JSON messages. These chunks are then stored/managed in the space available by buffer_max_size(default 512K).
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferChunkSize string `json:"bufferChunkSize,omitempty"`
-	//It allows to set successful response code. 200, 201 and 204 are supported(default 201).
+	// It allows to set successful response code. 200, 201 and 204 are supported(default 201).
 	SuccessfulResponseCode *int32 `json:"successfulResponseCode,omitempty"`
 	// opentelemetry uses the tag value for incoming metrics.
 	Tag string `json:"tag,omitempty"`
@@ -37,7 +37,7 @@ type OpenTelemetry struct {
 	TagFromURI *bool `json:"tagFromURI,omitempty"`
 }
 
-func (_ *OpenTelemetry) Name() string {
+func (*OpenTelemetry) Name() string {
 	return "opentelemetry"
 }
 

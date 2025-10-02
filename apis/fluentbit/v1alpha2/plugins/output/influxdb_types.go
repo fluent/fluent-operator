@@ -47,7 +47,7 @@ type InfluxDB struct {
 }
 
 // Name implement Section() method
-func (_ *InfluxDB) Name() string {
+func (*InfluxDB) Name() string {
 	return "influxdb"
 }
 

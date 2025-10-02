@@ -51,7 +51,7 @@ type CloudWatch struct {
 }
 
 // Name implement Section() method
-func (_ *CloudWatch) Name() string {
+func (*CloudWatch) Name() string {
 	return "cloudwatch_logs"
 }
 

@@ -20,12 +20,12 @@ type PrometheusExporter struct {
 	// +kubebuilder:validation:Minimum:=1
 	// +kubebuilder:validation:Maximum:=65535
 	Port *int32 `json:"port,omitempty"`
-	//This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields
+	// This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields
 	AddLabels map[string]string `json:"addLabels,omitempty"`
 }
 
 // implement Section() method
-func (_ *PrometheusExporter) Name() string {
+func (*PrometheusExporter) Name() string {
 	return "prometheus_exporter"
 }
 

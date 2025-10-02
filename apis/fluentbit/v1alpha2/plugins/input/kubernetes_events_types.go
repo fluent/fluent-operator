@@ -12,7 +12,7 @@ import (
 // The KubernetesEvents input plugin allows you to collect kubernetes cluster events from kube-api server
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/kubernetes-events*
 type KubernetesEvents struct {
-	// Tag name associated to all records comming from this plugin.
+	// Tag name associated to all records coming from this plugin.
 	Tag string `json:"tag,omitempty"`
 	// Set a database file to keep track of recorded Kubernetes events
 	DB string `json:"db,omitempty"`
@@ -47,7 +47,7 @@ type KubernetesEvents struct {
 	TLSVhost string `json:"tlsVhost,omitempty"`
 }
 
-func (_ *KubernetesEvents) Name() string {
+func (*KubernetesEvents) Name() string {
 	return "kubernetes_events"
 }
 

@@ -32,7 +32,7 @@ type TCP struct {
 	Separator string `json:"separator,omitempty"`
 }
 
-func (_ *TCP) Name() string {
+func (*TCP) Name() string {
 	return "tcp"
 }
 

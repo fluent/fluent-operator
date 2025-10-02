@@ -118,7 +118,10 @@ func (w *filePoller) Close() error {
 	w.closed = true
 	close(w.done)
 	for name := range w.watches {
-		w.remove(name)
+		err := w.remove(name)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -215,7 +218,7 @@ func (r *recording) record(filename string) error {
 			}
 			return err
 		}
-		defer f.Close()
+		defer func() { _ = f.Close() }()
 
 		fis, err := f.Readdir(-1)
 		if err != nil {
@@ -271,7 +274,7 @@ func (item *itemToWatch) checkForChanges() ([]fsnotify.Event, error) {
 	dirOp := checkChange(item.left.FileInfo, item.right.FileInfo)
 
 	if dirOp != 0 {
-		evs := []fsnotify.Event{fsnotify.Event{Op: dirOp, Name: item.filename}}
+		evs := []fsnotify.Event{{Op: dirOp, Name: item.filename}}
 		return evs, nil
 	}
 

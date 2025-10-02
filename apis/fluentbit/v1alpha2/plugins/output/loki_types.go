@@ -74,7 +74,7 @@ type Loki struct {
 }
 
 // implement Section() method
-func (_ *Loki) Name() string {
+func (*Loki) Name() string {
 	return "loki"
 }
 
@@ -118,7 +118,7 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Insert("tenant_id", id)
 	}
-	if l.Labels != nil && len(l.Labels) > 0 {
+	if len(l.Labels) > 0 {
 		// Sort labels to ensure deterministic output
 		sortedLabels := make([]string, len(l.Labels))
 		copy(sortedLabels, l.Labels)
@@ -142,13 +142,13 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 
 		kvs.Insert("labels", strings.Join(sortedLabels, ","))
 	}
-	if l.LabelKeys != nil && len(l.LabelKeys) > 0 {
+	if len(l.LabelKeys) > 0 {
 		kvs.Insert("label_keys", strings.Join(l.LabelKeys, ","))
 	}
 	if l.LabelMapPath != "" {
 		kvs.Insert("label_map_path", l.LabelMapPath)
 	}
-	if l.RemoveKeys != nil && len(l.RemoveKeys) > 0 {
+	if len(l.RemoveKeys) > 0 {
 		kvs.Insert("remove_keys", strings.Join(l.RemoveKeys, ","))
 	}
 	if l.DropSingleKey != "" {
@@ -164,7 +164,7 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("tenant_id_key", l.TenantIDKey)
 	}
 	// Handle structured metadata
-	if l.StructuredMetadata != nil && len(l.StructuredMetadata) > 0 {
+	if len(l.StructuredMetadata) > 0 {
 		var metadataPairs []string
 		for k, v := range l.StructuredMetadata {
 			metadataPairs = append(metadataPairs, fmt.Sprintf("%s=%s", k, v))
@@ -175,7 +175,7 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 	}
 	// Handle structured metadata keys
-	if l.StructuredMetadataKeys != nil && len(l.StructuredMetadataKeys) > 0 {
+	if len(l.StructuredMetadataKeys) > 0 {
 		kvs.Insert("structured_metadata_keys", strings.Join(l.StructuredMetadataKeys, ","))
 	}
 	if l.TLS != nil {

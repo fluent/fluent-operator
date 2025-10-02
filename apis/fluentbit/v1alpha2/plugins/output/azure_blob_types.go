@@ -36,7 +36,7 @@ type AzureBlob struct {
 }
 
 // Name implement Section() method
-func (_ *AzureBlob) Name() string {
+func (*AzureBlob) Name() string {
 	return "azure_blob"
 }
 

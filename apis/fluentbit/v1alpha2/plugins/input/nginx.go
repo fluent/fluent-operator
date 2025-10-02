@@ -24,7 +24,7 @@ type Nginx struct {
 	NginxPlus *bool `json:"nginxPlus,omitempty"`
 }
 
-func (_ *Nginx) Name() string {
+func (*Nginx) Name() string {
 	return "nginx_metrics"
 }
 

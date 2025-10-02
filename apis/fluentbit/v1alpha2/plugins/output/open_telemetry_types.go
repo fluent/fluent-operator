@@ -47,7 +47,7 @@ type OpenTelemetry struct {
 }
 
 // Name implement Section() method
-func (_ *OpenTelemetry) Name() string {
+func (*OpenTelemetry) Name() string {
 	return "opentelemetry"
 }
 

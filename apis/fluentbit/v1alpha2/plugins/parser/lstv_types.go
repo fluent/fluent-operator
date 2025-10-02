@@ -21,7 +21,7 @@ type LSTV struct {
 	Types    string `json:"types,omitempty"`
 }
 
-func (_ *LSTV) Name() string {
+func (*LSTV) Name() string {
 	return "ltsv"
 }
 

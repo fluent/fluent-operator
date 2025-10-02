@@ -34,7 +34,7 @@ type HTTP struct {
 	*plugins.TLS     `json:"tls,omitempty"`
 }
 
-func (_ *HTTP) Name() string {
+func (*HTTP) Name() string {
 	return "http"
 }
 

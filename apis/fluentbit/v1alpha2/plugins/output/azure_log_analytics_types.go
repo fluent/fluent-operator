@@ -27,7 +27,7 @@ type AzureLogAnalytics struct {
 }
 
 // Name implement Section() method
-func (_ *AzureLogAnalytics) Name() string {
+func (*AzureLogAnalytics) Name() string {
 	return "azure"
 }
 

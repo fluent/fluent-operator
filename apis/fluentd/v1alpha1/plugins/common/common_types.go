@@ -75,7 +75,7 @@ type User struct {
 
 // Transport defines the commont parameters for the transport plugin
 type Transport struct {
-	// The protocal name of this plugin, i.e: tls
+	// The protocol name of this plugin, i.e: tls
 	Protocol *string `json:"protocol,omitempty"`
 
 	Version  *string `json:"version,omitempty"`
@@ -251,7 +251,7 @@ func (s *Security) Params(loader plugins.SecretLoader) (*params.PluginStore, err
 		ps.InsertPairs("allow_anonymous_source", fmt.Sprint(*s.AllowAnonymousSource))
 	}
 	if s.User != nil {
-		if s.User.Username != nil && s.User.Password != nil {
+		if s.Username != nil && s.Password != nil {
 			subchild, _ := s.User.Params(loader)
 			ps.InsertChilds(subchild)
 		}
@@ -460,32 +460,32 @@ func (sd *ServiceDiscovery) Params(loader plugins.SecretLoader) (*params.PluginS
 	}
 
 	if sd.FileServiceDiscovery != nil {
-		if sd.FileServiceDiscovery.Path != nil {
-			ps.InsertPairs("path", fmt.Sprint(*sd.FileServiceDiscovery.Path))
+		if sd.Path != nil {
+			ps.InsertPairs("path", fmt.Sprint(*sd.Path))
 		}
-		if sd.FileServiceDiscovery.ConfEncoding != nil {
-			ps.InsertPairs("conf_encoding", fmt.Sprint(*sd.FileServiceDiscovery.ConfEncoding))
+		if sd.ConfEncoding != nil {
+			ps.InsertPairs("conf_encoding", fmt.Sprint(*sd.ConfEncoding))
 		}
 	}
 
 	if sd.SrvServiceDiscovery != nil {
-		if sd.SrvServiceDiscovery.Service != nil {
-			ps.InsertPairs("service", fmt.Sprint(*sd.SrvServiceDiscovery.Service))
+		if sd.Service != nil {
+			ps.InsertPairs("service", fmt.Sprint(*sd.Service))
 		}
-		if sd.SrvServiceDiscovery.Proto != nil {
-			ps.InsertPairs("proto", fmt.Sprint(*sd.SrvServiceDiscovery.Proto))
+		if sd.Proto != nil {
+			ps.InsertPairs("proto", fmt.Sprint(*sd.Proto))
 		}
-		if sd.SrvServiceDiscovery.Hostname != nil {
-			ps.InsertPairs("hostname", fmt.Sprint(*sd.SrvServiceDiscovery.Hostname))
+		if sd.Hostname != nil {
+			ps.InsertPairs("hostname", fmt.Sprint(*sd.Hostname))
 		}
-		if sd.SrvServiceDiscovery.DnsServerHost != nil {
-			ps.InsertPairs("dns_server_host", fmt.Sprint(*sd.SrvServiceDiscovery.DnsServerHost))
+		if sd.DnsServerHost != nil {
+			ps.InsertPairs("dns_server_host", fmt.Sprint(*sd.DnsServerHost))
 		}
-		if sd.SrvServiceDiscovery.Interval != nil {
-			ps.InsertPairs("interval", fmt.Sprint(*sd.SrvServiceDiscovery.Interval))
+		if sd.Interval != nil {
+			ps.InsertPairs("interval", fmt.Sprint(*sd.Interval))
 		}
-		if sd.SrvServiceDiscovery.DnsLookup != nil {
-			ps.InsertPairs("dns_lookup", fmt.Sprint(*sd.SrvServiceDiscovery.DnsLookup))
+		if sd.DnsLookup != nil {
+			ps.InsertPairs("dns_lookup", fmt.Sprint(*sd.DnsLookup))
 		}
 	}
 	ps.InsertChilds(childs...)

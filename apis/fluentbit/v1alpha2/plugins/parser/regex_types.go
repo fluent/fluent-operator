@@ -24,7 +24,7 @@ type Regex struct {
 	Types      string `json:"types,omitempty"`
 }
 
-func (_ *Regex) Name() string {
+func (*Regex) Name() string {
 	return "regex"
 }
 

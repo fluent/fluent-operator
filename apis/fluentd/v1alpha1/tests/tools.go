@@ -27,12 +27,12 @@ metadata:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-  - forward: 
-      bind: 0.0.0.0                
+  - forward:
+      bind: 0.0.0.0
       port: 24224
   replicas: 1
   image: ghcr.io/fluent/fluent-operator/fluentd:v1.17.1
-  fluentdCfgSelector: 
+  fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
 `
@@ -97,7 +97,7 @@ metadata:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-  - tail: 
+  - tail:
       tag: "foo.bar"
       path: /var/log/test.log
       emitUnmatchedLines: true
@@ -133,7 +133,7 @@ spec:
       - /var/log/bar
   replicas: 1
   image: ghcr.io/fluent/fluent-operator/fluentd:v1.17.1
-  fluentdCfgSelector: 
+  fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
 `
@@ -147,7 +147,7 @@ metadata:
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
-  watchedNamespaces: 
+  watchedNamespaces:
   - kube-system
   - default
   clusterFilterSelector:
@@ -167,7 +167,7 @@ metadata:
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
-  watchedNamespaces: 
+  watchedNamespaces:
   - kube-system
   - default
   clusterOutputSelector:
@@ -240,8 +240,8 @@ metadata:
   name: fluentd-filter
   labels:
     filter.fluentd.fluent.io/enabled: "true"
-spec: 
-  filters: 
+spec:
+  filters:
   - recordTransformer:
       enableRuby: true
       records:
@@ -258,8 +258,8 @@ metadata:
   namespace: fluent
 labels:
   filter.fluentd.fluent.io/enabled: "true"
-spec: 
-  filters: 
+spec:
+  filters:
   - recordTransformer:
       records:
       - key: loki-tenant
@@ -297,8 +297,8 @@ metadata:
   name: fluentd-output
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - stdout: {}
     buffer:
       type: file
@@ -321,8 +321,8 @@ metadata:
   name: fluentd-output
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - stdout: {}
     buffer:
       type: memory
@@ -344,8 +344,8 @@ metadata:
   name: fluentd-output-stdout
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - stdout: {}
     tag: foo.*
 `
@@ -358,8 +358,8 @@ metadata:
   name: fluentd-output-es
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - elasticsearch:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200
@@ -375,8 +375,8 @@ metadata:
   name: fluentd-output-es
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - elasticsearchDataStream:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200
@@ -443,7 +443,7 @@ metadata:
   namespace: fluent
 labels:
   output.fluentd.fluent.io/enabled: "es"
-spec: 
+spec:
   outputs:
   - copy:
       copyMode: no_copy
@@ -479,7 +479,7 @@ metadata:
   namespace: fluent
 labels:
   output.fluentd.fluent.io/enabled: "es"
-spec: 
+spec:
   outputs:
   - copy:
       copyMode: no_copy
@@ -508,7 +508,7 @@ metadata:
   namespace: fluent
 labels:
   output.fluentd.fluent.io/enabled: "es"
-spec: 
+spec:
   outputs:
   - elasticsearch:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
@@ -534,7 +534,7 @@ metadata:
   namespace: fluent
 labels:
   output.fluentd.fluent.io/enabled: "es"
-spec: 
+spec:
   outputs:
   - elasticsearch:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
@@ -552,8 +552,8 @@ metadata:
   name: fluentd-output-opensearch
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - opensearch:
       host: opensearch-logging-data.kubesphere-logging-system.svc
       port: 9200
@@ -569,8 +569,8 @@ metadata:
   name: fluentd-output-kafka
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - kafka:
       brokers: my-cluster-kafka-bootstrap.default.svc:9091,my-cluster-kafka-bootstrap.default.svc:9092,my-cluster-kafka-bootstrap.default.svc:9093
       useEventTime: true
@@ -584,8 +584,8 @@ metadata:
   name: fluentd-output-loki
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - loki:
       url: http://loki-logging-data.kubesphere-logging-system.svc:3100
       extractKubernetesLabels: true
@@ -655,8 +655,8 @@ metadata:
   name: fluentd-output-loki
 labels:
   output.fluentd.fluent.io/enabled: "loki"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - loki:
       url: http://loki-logging-data.kubesphere-logging-system.svc:3100
       extractKubernetesLabels: true
@@ -684,8 +684,8 @@ metadata:
   labels:
     output.fluentd.fluent.io/enabled: "true"
     output.fluentd.fluent.io/role: "log-operator"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - elasticsearch:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200
@@ -702,8 +702,8 @@ metadata:
   labels:
     output.fluentd.fluent.io/enabled: "true"
     output.fluentd.fluent.io/scope: "cluster"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - elasticsearch:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200
@@ -719,8 +719,8 @@ metadata:
   labels:
     output.fluentd.fluent.io/scope: "cluster"
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - customPlugin:
       config: |
         <match **>
@@ -759,7 +759,7 @@ metadata:
   namespace: fluent
   labels:
     output.fluentd.fluent.io/enabled: "es"
-spec: 
+spec:
   outputs:
   - copy:
       copyMode: no_copy
@@ -784,7 +784,7 @@ metadata:
   namespace: fluent
   labels:
     output.fluentd.fluent.io/enabled: "es"
-spec: 
+spec:
   outputs:
   - copy:
       copyMode: no_copy
@@ -853,8 +853,8 @@ metadata:
   name: fluentd-output-datadog
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - datadog:
       host: http-intake.logs.datadoghq.com
       port: 443
@@ -870,8 +870,8 @@ metadata:
   namespace: fluent
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - nullPlugin:
       neverFlush: false
 `
@@ -884,7 +884,7 @@ metadata:
   labels:
     output.fluentd.fluent.io/enabled: "true"
 spec:
-  outputs: 
+  outputs:
   - copy:
       copyMode: no_copy
   - stdout: {}
@@ -1034,48 +1034,55 @@ var (
 func init() {
 	once.Do(
 		func() {
-			ParseIntoObject(FluentdRaw, &Fluentd)
-			ParseIntoObject(FluentdInputTailRaw, &FluentdInputTail)
-			ParseIntoObject(FluentdInputSampleRaw, &FluentdInputSample)
-			ParseIntoObject(FluentdInputMonitorAgentRaw, &FluentdInputMonitorAgent)
-			ParseIntoObject(FluentdClusterOutputTagRaw, &FluentdClusterOutputTag)
-			ParseIntoObject(FluentdClusterFluentdConfig1Raw, &FluentdClusterFluentdConfig1)
-			ParseIntoObject(FluentdClusterFluentdConfig2Raw, &FluentdClusterFluentdConfig2)
-			ParseIntoObject(FluentdConfigUser1Raw, &FluentdConfigUser1)
-			ParseIntoObject(FluentdConfig1Raw, &FluentdConfig1)
-			ParseIntoObject(FluentdConfig2Raw, &FluentdConfig2)
-			ParseIntoObject(FluentdClusterFilter1Raw, &FluentdClusterFilter1)
-			ParseIntoObject(FluentdFilterRaw, &FluentdFilter)
-			ParseIntoObject(FluentdClusterRecordTransformerRaw, &FluentdClusterRecordTransformerFilter)
-			ParseIntoObject(FluentdClusterOutputClusterRaw, &FluentdClusterOutputCluster)
-			ParseIntoObject(FluentdClusterOutputLogOperatorRaw, &FluentdClusterOutputLogOperator)
-			ParseIntoObject(FluentdClusterOutputBufferRaw, &FluentdClusterOutputBuffer)
-			ParseIntoObject(FluentdClusterOutputMemoryBufferRaw, &FluentdClusterOutputMemoryBuffer)
-			ParseIntoObject(FluentdclusterOutput2ESRaw, &FluentdclusterOutput2ES)
-			ParseIntoObject(FluentdclusterOutput2ESDataStreamRaw, &FluentdclusterOutput2ESDataStream)
-			ParseIntoObject(FluentdclusterOutput2CopyESDataStreamRaw, &FluentdclusterOutput2CopyESDataStream)
-			ParseIntoObject(FluentdOutput2ES1Raw, &FluentdOutput2ES1)
-			ParseIntoObject(FluentdOutput2ES2Raw, &FluentdOutput2ES2)
-			ParseIntoObject(FluentdOutput2ES3Raw, &FluentdOutput2ES3)
-			ParseIntoObject(FluentdOutput2ES4Raw, &FluentdOutput2ES4)
-			ParseIntoObject(FluentdclusterOutput2OpenSearchRaw, &FluentdclusterOutput2OpenSearch)
-			ParseIntoObject(FluentdClusterOutput2kafkaRaw, &FluentdClusterOutput2kafka)
-			ParseIntoObject(FluentdClusterOutput2LokiRaw, &FluentdClusterOutput2Loki)
-			ParseIntoObject(FluentdClusterOutput2Loki1Raw, &FluentdClusterOutput2Loki1)
-			ParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
-			ParseIntoObject(FluentdClusterOutputCustomRaw, &FluentdClusterOutputCustom)
-			ParseIntoObject(FluentdClusterOutput2CloudWatchRaw, &FluentdClusterOutput2CloudWatch)
-			ParseIntoObject(FluentdClusterOutput2DatadogRaw, &FluentdClusterOutput2Datadog)
-			ParseIntoObject(FluentdClusterOutput2NullRaw, &FluentdClusterOutput2Null)
-			ParseIntoObject(FluentdClusterOutputCopy2StdoutAndLokiRaw, &FluentdClusterOutputCopy2StdoutAndLoki)
-			ParseIntoObject(FluentdOutputMixedCopy1Raw, &FluentdOutputMixedCopy1)
-			ParseIntoObject(FluentdOutputMixedCopy2Raw, &FluentdOutputMixedCopy2)
-			ParseIntoObject(FluentdOutputMixedCopy3Raw, &FluentdOutputMixedCopy3)
-			ParseIntoObject(esCredentialsRaw, &esCredentials)
-			ParseIntoObject(lokiHttpCredentialsRaw, &lokiHttpCredentials)
-			ParseIntoObject(lokiTenantNameRaw, &lokiTenantName)
+			MustParseIntoObject(FluentdRaw, &Fluentd)
+			MustParseIntoObject(FluentdInputTailRaw, &FluentdInputTail)
+			MustParseIntoObject(FluentdInputSampleRaw, &FluentdInputSample)
+			MustParseIntoObject(FluentdInputMonitorAgentRaw, &FluentdInputMonitorAgent)
+			MustParseIntoObject(FluentdClusterOutputTagRaw, &FluentdClusterOutputTag)
+			MustParseIntoObject(FluentdClusterFluentdConfig1Raw, &FluentdClusterFluentdConfig1)
+			MustParseIntoObject(FluentdClusterFluentdConfig2Raw, &FluentdClusterFluentdConfig2)
+			MustParseIntoObject(FluentdConfigUser1Raw, &FluentdConfigUser1)
+			MustParseIntoObject(FluentdConfig1Raw, &FluentdConfig1)
+			MustParseIntoObject(FluentdConfig2Raw, &FluentdConfig2)
+			MustParseIntoObject(FluentdClusterFilter1Raw, &FluentdClusterFilter1)
+			MustParseIntoObject(FluentdFilterRaw, &FluentdFilter)
+			MustParseIntoObject(FluentdClusterRecordTransformerRaw, &FluentdClusterRecordTransformerFilter)
+			MustParseIntoObject(FluentdClusterOutputClusterRaw, &FluentdClusterOutputCluster)
+			MustParseIntoObject(FluentdClusterOutputLogOperatorRaw, &FluentdClusterOutputLogOperator)
+			MustParseIntoObject(FluentdClusterOutputBufferRaw, &FluentdClusterOutputBuffer)
+			MustParseIntoObject(FluentdClusterOutputMemoryBufferRaw, &FluentdClusterOutputMemoryBuffer)
+			MustParseIntoObject(FluentdclusterOutput2ESRaw, &FluentdclusterOutput2ES)
+			MustParseIntoObject(FluentdclusterOutput2ESDataStreamRaw, &FluentdclusterOutput2ESDataStream)
+			MustParseIntoObject(FluentdclusterOutput2CopyESDataStreamRaw, &FluentdclusterOutput2CopyESDataStream)
+			MustParseIntoObject(FluentdOutput2ES1Raw, &FluentdOutput2ES1)
+			MustParseIntoObject(FluentdOutput2ES2Raw, &FluentdOutput2ES2)
+			MustParseIntoObject(FluentdOutput2ES3Raw, &FluentdOutput2ES3)
+			MustParseIntoObject(FluentdOutput2ES4Raw, &FluentdOutput2ES4)
+			MustParseIntoObject(FluentdclusterOutput2OpenSearchRaw, &FluentdclusterOutput2OpenSearch)
+			MustParseIntoObject(FluentdClusterOutput2kafkaRaw, &FluentdClusterOutput2kafka)
+			MustParseIntoObject(FluentdClusterOutput2LokiRaw, &FluentdClusterOutput2Loki)
+			MustParseIntoObject(FluentdClusterOutput2Loki1Raw, &FluentdClusterOutput2Loki1)
+			MustParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
+			MustParseIntoObject(FluentdClusterOutputCustomRaw, &FluentdClusterOutputCustom)
+			MustParseIntoObject(FluentdClusterOutput2CloudWatchRaw, &FluentdClusterOutput2CloudWatch)
+			MustParseIntoObject(FluentdClusterOutput2DatadogRaw, &FluentdClusterOutput2Datadog)
+			MustParseIntoObject(FluentdClusterOutput2NullRaw, &FluentdClusterOutput2Null)
+			MustParseIntoObject(FluentdClusterOutputCopy2StdoutAndLokiRaw, &FluentdClusterOutputCopy2StdoutAndLoki)
+			MustParseIntoObject(FluentdOutputMixedCopy1Raw, &FluentdOutputMixedCopy1)
+			MustParseIntoObject(FluentdOutputMixedCopy2Raw, &FluentdOutputMixedCopy2)
+			MustParseIntoObject(FluentdOutputMixedCopy3Raw, &FluentdOutputMixedCopy3)
+			MustParseIntoObject(esCredentialsRaw, &esCredentials)
+			MustParseIntoObject(lokiHttpCredentialsRaw, &lokiHttpCredentials)
+			MustParseIntoObject(lokiTenantNameRaw, &lokiTenantName)
 		},
 	)
+}
+
+func MustParseIntoObject(data string, obj interface{}) {
+	err := ParseIntoObject(data, obj)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func ParseIntoObject(data string, obj interface{}) error {

@@ -165,16 +165,16 @@ func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 		ps.InsertPairs("@log_level", fmt.Sprint(*b.LogLevel))
 	}
 
-	if b.FileBuffer != nil && b.FileBuffer.PathSuffix != nil {
-		ps.InsertPairs("path_suffix", *b.FileBuffer.PathSuffix)
+	if b.FileBuffer != nil && b.PathSuffix != nil {
+		ps.InsertPairs("path_suffix", *b.PathSuffix)
 	}
 
 	if b.FileSingleBuffer != nil {
-		if b.FileSingleBuffer.CalcNumRecords != nil {
-			ps.InsertPairs("calc_num_records", *b.FileSingleBuffer.CalcNumRecords)
+		if b.CalcNumRecords != nil {
+			ps.InsertPairs("calc_num_records", *b.CalcNumRecords)
 		}
-		if b.FileSingleBuffer.ChunkFormat != nil {
-			ps.InsertPairs("chunk_format", *b.FileSingleBuffer.ChunkFormat)
+		if b.ChunkFormat != nil {
+			ps.InsertPairs("chunk_format", *b.ChunkFormat)
 		}
 	}
 

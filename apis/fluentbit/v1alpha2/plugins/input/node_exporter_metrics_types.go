@@ -12,7 +12,7 @@ import (
 // This plugin is currently only supported on Linux based operating systems. <br />
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/node-exporter-metrics**
 type NodeExporterMetrics struct {
-	// Tag name associated to all records comming from this plugin.
+	// Tag name associated to all records coming from this plugin.
 	Tag string `json:"tag,omitempty"`
 	// The rate at which metrics are collected from the host operating system, default is 5 seconds.
 	ScrapeInterval string `json:"scrapeInterval,omitempty"`
@@ -26,7 +26,7 @@ type Path struct {
 	Sysfs string `json:"sysfs,omitempty"`
 }
 
-func (_ *NodeExporterMetrics) Name() string {
+func (*NodeExporterMetrics) Name() string {
 	return "node_exporter_metrics"
 }
 

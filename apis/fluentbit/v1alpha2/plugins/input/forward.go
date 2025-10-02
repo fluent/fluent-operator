@@ -9,7 +9,7 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// Forward defines the in_forward Input plugin that listens to TCP socket to recieve the event stream.
+// Forward defines the in_forward Input plugin that listens to TCP socket to receive the event stream.
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/forward**
 type Forward struct {
 	// Port for forward plugin instance.
@@ -22,11 +22,11 @@ type Forward struct {
 	Tag string `json:"tag,omitempty"`
 	// Adds the prefix to incoming event's tag
 	TagPrefix string `json:"tagPrefix,omitempty"`
-	// Specify the path to unix socket to recieve a forward message. If set, Listen and port are ignnored.
+	// Specify the path to unix socket to receive a forward message. If set, Listen and port are ignnored.
 	UnixPath string `json:"unixPath,omitempty"`
 	// Set the permission of unix socket file.
 	UnixPerm string `json:"unixPerm,omitempty"`
-	// Specify maximum buffer memory size used to recieve a forward message.
+	// Specify maximum buffer memory size used to receive a forward message.
 	// The value must be according to the Unit Size specification.
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferMaxSize string `json:"bufferMaxSize,omitempty"`
@@ -39,7 +39,7 @@ type Forward struct {
 	Threaded string `json:"threaded,omitempty"`
 }
 
-func (_ *Forward) Name() string {
+func (*Forward) Name() string {
 	return "forward"
 }
 

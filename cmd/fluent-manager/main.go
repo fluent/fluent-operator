@@ -103,10 +103,9 @@ func main() {
 	if watchNamespaces != "" {
 		config := cache.Config{}
 		namespacedController = true
-		namespaces := strings.Split(watchNamespaces, ",")
 
 		ctrlOpts.Cache.DefaultNamespaces = make(map[string]cache.Config)
-		for _, namespace := range namespaces {
+		for namespace := range strings.SplitSeq(watchNamespaces, ",") {
 			ctrlOpts.Cache.DefaultNamespaces[namespace] = config
 		}
 	}
@@ -119,11 +118,12 @@ func main() {
 
 	fluentBitEnabled, fluentdEnabled := true, true
 	if disabledControllers != "" {
-		if disabledControllers == fluentBitName {
+		switch disabledControllers {
+		case fluentBitName:
 			fluentBitEnabled = false
-		} else if disabledControllers == fluentdName {
+		case fluentdName:
 			fluentdEnabled = false
-		} else {
+		default:
 			setupLog.Error(errors.New("incorrect value for `-disable-component-controllers` and it will not be proceeded (possible values are: fluent-bit, fluentd)"), "")
 		}
 	}

@@ -52,7 +52,7 @@ type Systemd struct {
 	PauseOnChunksOverlimit string `json:"pauseOnChunksOverlimit,omitempty"`
 }
 
-func (_ *Systemd) Name() string {
+func (*Systemd) Name() string {
 	return "systemd"
 }
 
@@ -77,7 +77,7 @@ func (s *Systemd) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	if s.MaxEntries > 0 {
 		kvs.Insert("Max_Entries", string(rune(s.MaxEntries)))
 	}
-	if s.SystemdFilter != nil && len(s.SystemdFilter) > 0 {
+	if len(s.SystemdFilter) > 0 {
 		for _, v := range s.SystemdFilter {
 			kvs.Insert("Systemd_Filter", v)
 		}

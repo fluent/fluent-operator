@@ -30,7 +30,7 @@ type Parser struct {
 	UnescapeKey *bool `json:"unescapeKey,omitempty"`
 }
 
-func (_ *Parser) Name() string {
+func (*Parser) Name() string {
 	return "parser"
 }
 
@@ -44,8 +44,7 @@ func (p *Parser) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("Key_Name", p.KeyName)
 	}
 	if p.Parser != "" {
-		parsers := strings.Split(p.Parser, ",")
-		for _, parser := range parsers {
+		for parser := range strings.SplitSeq(p.Parser, ",") {
 			kvs.Insert("Parser", strings.Trim(parser, " "))
 		}
 	}

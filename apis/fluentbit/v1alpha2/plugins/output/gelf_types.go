@@ -40,7 +40,7 @@ type Gelf struct {
 	*plugins.Networking `json:"networking,omitempty"`
 }
 
-func (_ *Gelf) Name() string {
+func (*Gelf) Name() string {
 	return "gelf"
 }
 

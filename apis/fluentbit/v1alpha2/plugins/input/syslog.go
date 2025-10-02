@@ -45,7 +45,7 @@ type Syslog struct {
 	*plugins.TLS `json:"tls,omitempty"`
 }
 
-func (_ *Syslog) Name() string {
+func (*Syslog) Name() string {
 	return "syslog"
 }
 
