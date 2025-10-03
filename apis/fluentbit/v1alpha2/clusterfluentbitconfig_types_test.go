@@ -629,6 +629,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		i++
 	}
 }
+
 func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 	g := NewGomegaWithT(t)
 

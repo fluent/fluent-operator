@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -41,27 +39,7 @@ func (*HTTP) Name() string {
 // Params implement Section() method
 func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if h.Listen != "" {
-		kvs.Insert("listen", h.Listen)
-	}
-	if h.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*h.Port))
-	}
-	if h.Tagkey != "" {
-		kvs.Insert("tag_key", h.Tagkey)
-	}
-	if h.BufferMaxSize != "" {
-		kvs.Insert("buffer_max_size", h.BufferMaxSize)
-	}
-	if h.BufferChunkSize != "" {
-		kvs.Insert("buffer_chunk_size", h.BufferChunkSize)
-	}
-	if h.SuccessfulResponseCode != nil {
-		kvs.Insert("successful_response_code", fmt.Sprint(*h.SuccessfulResponseCode))
-	}
-	if h.SuccessfulHeader != "" {
-		kvs.Insert("success_header", h.SuccessfulHeader)
-	}
+
 	if h.TLS != nil {
 		tls, err := h.TLS.Params(sl)
 		if err != nil {
@@ -69,5 +47,15 @@ func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(tls)
 	}
+
+	plugins.InsertKVString(kvs, "listen", h.Listen)
+	plugins.InsertKVString(kvs, "tag_key", h.Tagkey)
+	plugins.InsertKVString(kvs, "buffer_max_size", h.BufferMaxSize)
+	plugins.InsertKVString(kvs, "buffer_chunk_size", h.BufferChunkSize)
+	plugins.InsertKVString(kvs, "success_header", h.SuccessfulHeader)
+
+	plugins.InsertKVField(kvs, "port", h.Port)
+	plugins.InsertKVField(kvs, "successful_response_code", h.SuccessfulResponseCode)
+
 	return kvs, nil
 }

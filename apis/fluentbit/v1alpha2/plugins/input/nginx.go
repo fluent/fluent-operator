@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -31,17 +29,12 @@ func (*Nginx) Name() string {
 // implement Section() method
 func (n *Nginx) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if n.Host != "" {
-		kvs.Insert("Host", n.Host)
-	}
-	if n.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*n.Port))
-	}
-	if n.StatusURL != "" {
-		kvs.Insert("Status_URL", n.StatusURL)
-	}
-	if n.NginxPlus != nil {
-		kvs.Insert("Nginx_Plus", fmt.Sprint(*n.NginxPlus))
-	}
+
+	plugins.InsertKVString(kvs, "Host", n.Host)
+	plugins.InsertKVString(kvs, "Status_URL", n.StatusURL)
+
+	plugins.InsertKVField(kvs, "Port", n.Port)
+	plugins.InsertKVField(kvs, "Nginx_Plus", n.NginxPlus)
+
 	return kvs, nil
 }

@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -58,56 +56,25 @@ func (*CloudWatch) Name() string {
 // Params implement Section() method
 func (o *CloudWatch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if o.Region != "" {
-		kvs.Insert("region", o.Region)
-	}
-	if o.LogGroupName != "" {
-		kvs.Insert("log_group_name", o.LogGroupName)
-	}
-	if o.LogGroupTemplate != "" {
-		kvs.Insert("log_group_template", o.LogGroupTemplate)
-	}
-	if o.LogStreamName != "" {
-		kvs.Insert("log_stream_name", o.LogStreamName)
-	}
-	if o.LogStreamPrefix != "" {
-		kvs.Insert("log_stream_prefix", o.LogStreamPrefix)
-	}
-	if o.LogStreamTemplate != "" {
-		kvs.Insert("log_stream_template", o.LogStreamTemplate)
-	}
-	if o.LogKey != "" {
-		kvs.Insert("log_key", o.LogKey)
-	}
-	if o.LogFormat != "" {
-		kvs.Insert("log_format", o.LogFormat)
-	}
-	if o.AutoCreateGroup != nil {
-		kvs.Insert("auto_create_group", fmt.Sprint(*o.AutoCreateGroup))
-	}
-	if o.LogRetentionDays != nil {
-		kvs.Insert("log_retention_days", fmt.Sprint(*o.LogRetentionDays))
-	}
-	if o.RoleArn != "" {
-		kvs.Insert("role_arn", o.RoleArn)
-	}
-	if o.Endpoint != "" {
-		kvs.Insert("endpoint", o.Endpoint)
-	}
-	if o.MetricNamespace != "" {
-		kvs.Insert("metric_namespace", o.MetricNamespace)
-	}
-	if o.MetricDimensions != "" {
-		kvs.Insert("metric_dimensions", o.MetricDimensions)
-	}
-	if o.StsEndpoint != "" {
-		kvs.Insert("sts_endpoint", o.StsEndpoint)
-	}
-	if o.AutoRetryRequests != nil {
-		kvs.Insert("auto_retry_requests", fmt.Sprint(*o.AutoRetryRequests))
-	}
-	if o.ExternalID != "" {
-		kvs.Insert("external_id", o.ExternalID)
-	}
+
+	plugins.InsertKVString(kvs, "region", o.Region)
+	plugins.InsertKVString(kvs, "log_group_name", o.LogGroupName)
+	plugins.InsertKVString(kvs, "log_group_template", o.LogGroupTemplate)
+	plugins.InsertKVString(kvs, "log_stream_name", o.LogStreamName)
+	plugins.InsertKVString(kvs, "log_stream_prefix", o.LogStreamPrefix)
+	plugins.InsertKVString(kvs, "log_stream_template", o.LogStreamTemplate)
+	plugins.InsertKVString(kvs, "log_key", o.LogKey)
+	plugins.InsertKVString(kvs, "log_format", o.LogFormat)
+	plugins.InsertKVString(kvs, "role_arn", o.RoleArn)
+	plugins.InsertKVString(kvs, "endpoint", o.Endpoint)
+	plugins.InsertKVString(kvs, "metric_namespace", o.MetricNamespace)
+	plugins.InsertKVString(kvs, "metric_dimensions", o.MetricDimensions)
+	plugins.InsertKVString(kvs, "sts_endpoint", o.StsEndpoint)
+	plugins.InsertKVString(kvs, "external_id", o.ExternalID)
+
+	plugins.InsertKVField(kvs, "log_retention_days", o.LogRetentionDays)
+	plugins.InsertKVField(kvs, "auto_retry_requests", o.AutoRetryRequests)
+	plugins.InsertKVField(kvs, "auto_create_group", o.AutoCreateGroup)
+
 	return kvs, nil
 }

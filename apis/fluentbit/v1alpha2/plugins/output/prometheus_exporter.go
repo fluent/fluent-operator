@@ -32,12 +32,10 @@ func (*PrometheusExporter) Name() string {
 // implement Section() method
 func (p *PrometheusExporter) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if p.Host != "" {
-		kvs.Insert("host", p.Host)
-	}
-	if p.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*p.Port))
-	}
+
+	plugins.InsertKVString(kvs, "Host", p.Host)
+	plugins.InsertKVField(kvs, "Port", p.Port)
+
 	kvs.InsertStringMap(p.AddLabels, func(k, v string) (string, string) {
 		return addLabel, fmt.Sprintf(" %s    %s", k, v)
 	})

@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -46,32 +44,16 @@ func (*Forward) Name() string {
 // Params implement Section() method
 func (f *Forward) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if f.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*f.Port))
-	}
-	if f.Listen != "" {
-		kvs.Insert("Listen", f.Listen)
-	}
-	if f.Tag != "" {
-		kvs.Insert("Tag", f.Tag)
-	}
-	if f.TagPrefix != "" {
-		kvs.Insert("Tag_Prefix", f.TagPrefix)
-	}
-	if f.UnixPath != "" {
-		kvs.Insert("Unix_Path", f.UnixPath)
-	}
-	if f.UnixPerm != "" {
-		kvs.Insert("Unix_Perm", f.UnixPerm)
-	}
-	if f.BufferChunkSize != "" {
-		kvs.Insert("Buffer_Chunk_Size", f.BufferChunkSize)
-	}
-	if f.BufferMaxSize != "" {
-		kvs.Insert("Buffer_Max_Size", f.BufferMaxSize)
-	}
-	if f.Threaded != "" {
-		kvs.Insert("threaded", f.Threaded)
-	}
+
+	plugins.InsertKVField(kvs, "Port", f.Port)
+	plugins.InsertKVString(kvs, "Listen", f.Listen)
+	plugins.InsertKVString(kvs, "Tag", f.Tag)
+	plugins.InsertKVString(kvs, "Tag_Prefix", f.TagPrefix)
+	plugins.InsertKVString(kvs, "Unix_Path", f.UnixPath)
+	plugins.InsertKVString(kvs, "Unix_Perm", f.UnixPerm)
+	plugins.InsertKVString(kvs, "Buffer_Chunk_Size", f.BufferChunkSize)
+	plugins.InsertKVString(kvs, "Buffer_Max_Size", f.BufferMaxSize)
+	plugins.InsertKVString(kvs, "threaded", f.Threaded)
+
 	return kvs, nil
 }

@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -52,49 +50,22 @@ func (*DataDog) Name() string {
 func (s *DataDog) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 
-	if s.Host != "" {
-		kvs.Insert("Host", s.Host)
+	plugins.InsertKVString(kvs, "Host", s.Host)
+	plugins.InsertKVField(kvs, "TLS", s.TLS)
+	plugins.InsertKVString(kvs, "compress", s.Compress)
+	plugins.InsertKVString(kvs, "json_date_key", s.JSONDateKey)
+	plugins.InsertKVField(kvs, "include_tag_key", s.IncludeTagKey)
+	plugins.InsertKVString(kvs, "tag_key", s.TagKey)
+	plugins.InsertKVString(kvs, "dd_service", s.Service)
+	plugins.InsertKVString(kvs, "dd_source", s.Source)
+	plugins.InsertKVString(kvs, "dd_tags", s.Tags)
+	plugins.InsertKVString(kvs, "dd_message_key", s.MessageKey)
+
+	if err := plugins.InsertKVSecret(kvs, "apikey", s.APIKey, sl); err != nil {
+		return nil, err
 	}
-	if s.TLS != nil {
-		kvs.Insert("TLS", fmt.Sprint(*s.TLS))
-	}
-	if s.Compress != "" {
-		kvs.Insert("compress", s.Compress)
-	}
-	if s.APIKey != nil {
-		apiKey, err := sl.LoadSecret(*s.APIKey)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("apikey", apiKey)
-	}
-	if s.Proxy != "" {
-		kvs.Insert("proxy", s.Proxy)
-	}
-	if s.Provider != "" {
-		kvs.Insert("provider", s.Provider)
-	}
-	if s.JSONDateKey != "" {
-		kvs.Insert("json_date_key", s.JSONDateKey)
-	}
-	if s.IncludeTagKey != nil {
-		kvs.Insert("include_tag_key", fmt.Sprint(*s.IncludeTagKey))
-	}
-	if s.TagKey != "" {
-		kvs.Insert("tag_key", s.TagKey)
-	}
-	if s.Service != "" {
-		kvs.Insert("dd_service", s.Service)
-	}
-	if s.Source != "" {
-		kvs.Insert("dd_source", s.Source)
-	}
-	if s.Tags != "" {
-		kvs.Insert("dd_tags", s.Tags)
-	}
-	if s.MessageKey != "" {
-		kvs.Insert("dd_message_key", s.MessageKey)
-	}
+	plugins.InsertKVString(kvs, "proxy", s.Proxy)
+	plugins.InsertKVString(kvs, "provider", s.Provider)
 
 	return kvs, nil
 }

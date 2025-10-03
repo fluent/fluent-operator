@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -40,21 +38,7 @@ func (*TCP) Name() string {
 
 func (t *TCP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if t.Host != "" {
-		kvs.Insert("Host", t.Host)
-	}
-	if t.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*t.Port))
-	}
-	if t.Format != "" {
-		kvs.Insert("Format", t.Format)
-	}
-	if t.JsonDateKey != "" {
-		kvs.Insert("json_date_key", t.JsonDateKey)
-	}
-	if t.JsonDateFormat != "" {
-		kvs.Insert("json_date_format", t.JsonDateFormat)
-	}
+
 	if t.TLS != nil {
 		tls, err := t.TLS.Params(sl)
 		if err != nil {
@@ -76,5 +60,13 @@ func (t *TCP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
+	plugins.InsertKVString(kvs, "Host", t.Host)
+	plugins.InsertKVString(kvs, "Format", t.Format)
+	plugins.InsertKVString(kvs, "json_date_key", t.JsonDateKey)
+	plugins.InsertKVString(kvs, "json_date_format", t.JsonDateFormat)
+
+	plugins.InsertKVField(kvs, "Port", t.Port)
+
 	return kvs, nil
 }
