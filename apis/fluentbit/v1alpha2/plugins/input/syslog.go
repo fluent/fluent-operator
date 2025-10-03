@@ -29,7 +29,7 @@ type Syslog struct {
 	// If your syslog messages have fractional seconds set this Parser value to syslog-rfc5424 instead.
 	Parser string `json:"parser,omitempty"`
 	// By default the buffer to store the incoming Syslog messages, do not allocate the maximum memory allowed, instead it allocate memory when is required.
-	//The rounds of allocations are set by Buffer_Chunk_Size. If not set, Buffer_Chunk_Size is equal to 32000 bytes (32KB).
+	// The rounds of allocations are set by Buffer_Chunk_Size. If not set, Buffer_Chunk_Size is equal to 32000 bytes (32KB).
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferChunkSize string `json:"bufferChunkSize,omitempty"`
 	// Specify the maximum buffer size to receive a Syslog message. If not set, the default size will be the value of Buffer_Chunk_Size.

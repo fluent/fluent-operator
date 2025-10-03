@@ -247,22 +247,23 @@ func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 	[]fluentbitv1alpha2.MultilineParserList, []fluentbitv1alpha2.ClusterMultilineParserList, []string, error,
 ) {
 	var nsCfgs fluentbitv1alpha2.FluentBitConfigList
-	var filters []fluentbitv1alpha2.FilterList
-	var outputs []fluentbitv1alpha2.OutputList
-	var parsers []fluentbitv1alpha2.ParserList
-	var clusterParsers []fluentbitv1alpha2.ClusterParserList
-	var multilineParsers []fluentbitv1alpha2.MultilineParserList
-	var clusterMultilineParsers []fluentbitv1alpha2.ClusterMultilineParserList
-	var rewriteTagConfigs []string
 	// set of rewrite_tag plugin configs to mutate tags for log records coming out of a namespace
 	selector, err := metav1.LabelSelectorAsSelector(&fb.Spec.NamespacedFluentBitCfgSelector)
 	if err != nil {
-		return filters, outputs, parsers, clusterParsers, multilineParsers, clusterMultilineParsers, nil, err
+		return nil, nil, nil, nil, nil, nil, nil, err
 	}
 
 	if err := r.List(ctx, &nsCfgs, client.MatchingLabelsSelector{Selector: selector}); err != nil {
-		return filters, outputs, parsers, clusterParsers, multilineParsers, clusterMultilineParsers, nil, err
+		return nil, nil, nil, nil, nil, nil, nil, err
 	}
+
+	filters := make([]fluentbitv1alpha2.FilterList, 0, len(nsCfgs.Items))
+	outputs := make([]fluentbitv1alpha2.OutputList, 0, len(nsCfgs.Items))
+	parsers := make([]fluentbitv1alpha2.ParserList, 0, len(nsCfgs.Items))
+	clusterParsers := make([]fluentbitv1alpha2.ClusterParserList, 0, len(nsCfgs.Items))
+	multilineParsers := make([]fluentbitv1alpha2.MultilineParserList, 0, len(nsCfgs.Items))
+	clusterMultilineParsers := make([]fluentbitv1alpha2.ClusterMultilineParserList, 0, len(nsCfgs.Items))
+	rewriteTagConfigs := make([]string, 0, len(nsCfgs.Items))
 
 	// Form a slice of list of resources per namespace
 	for _, cfg := range nsCfgs.Items {
