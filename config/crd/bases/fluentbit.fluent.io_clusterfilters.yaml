@@ -83,13 +83,9 @@ spec:
                           description: The EC2 instance private ip.Default is false.
                           type: boolean
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         vpcID:
@@ -129,13 +125,9 @@ spec:
                             Value Format: FIELD REGEX
                           type: string
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                       type: object
@@ -289,13 +281,9 @@ spec:
                             The parser must be registered in a parsers file (refer to parser filter-kube-test as an example).
                           type: string
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         tlsDebug:
@@ -394,13 +382,9 @@ spec:
                             type: string
                           type: array
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         tag:
@@ -432,13 +416,9 @@ spec:
                             It prevents to crash when invalid Lua script is executed. Default is true.
                           type: boolean
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         script:
@@ -454,9 +434,7 @@ spec:
                                 This field is effectively required, but due to backwards compatibility is
                                 allowed to be empty. Instances of this type with an empty value here are
                                 almost certainly wrong.
-                                TODO: Add other useful fields. apiVersion, kind, uid?
                                 More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                               type: string
                             optional:
                               description: Specify whether the ConfigMap or its key
@@ -557,13 +535,9 @@ spec:
                             type: object
                           type: array
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         rules:
@@ -680,13 +654,9 @@ spec:
                             You can specify multiple multiline parsers to detect different formats by separating them with a comma.
                           type: string
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                       required:
@@ -720,13 +690,9 @@ spec:
                             this string
                           type: string
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         wildcard:
@@ -760,13 +726,9 @@ spec:
                             If false, all other original fields will be removed.
                           type: boolean
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         unescapeKey:
@@ -797,13 +759,9 @@ spec:
                             type: string
                           type: array
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         uuidKeys:
@@ -835,13 +793,9 @@ spec:
                         emitterStorageType:
                           type: string
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         rules:
@@ -873,13 +827,9 @@ spec:
                           format: int64
                           type: integer
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         window:
@@ -910,13 +860,9 @@ spec:
                             inside the Wasm program specified above.
                           type: string
                         retryLimit:
-                          description: 'RetryLimit describes how many times fluent-bit
-                            should retry to send data to a specific output. If set
-                            to false fluent-bit will try indefinetly. If set to any
-                            integer N>0 it will try at most N+1 times. Leading zeros
-                            are not allowed (values such as 007, 0150, 01 do not work).
-                            If this property is not defined fluent-bit will use the
-                            default value: 1.'
+                          description: |-
+                            RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+                            nolint:misspell
                           pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
                           type: string
                         wasmHeapSize:
