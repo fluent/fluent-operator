@@ -401,141 +401,141 @@ func (o *Output) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 	return parent
 }
 
-func (o *Output) elasticsearchPluginCommon(common *ElasticsearchCommon, parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
-	if common.Host != nil {
-		parent.InsertPairs("host", fmt.Sprint(*common.Host))
+func (o *Output) elasticsearchPluginCommon(cmn *ElasticsearchCommon, parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+	if cmn.Host != nil {
+		parent.InsertPairs("host", fmt.Sprint(*cmn.Host))
 	}
 
-	if common.Port != nil {
-		parent.InsertPairs("port", fmt.Sprint(*common.Port))
+	if cmn.Port != nil {
+		parent.InsertPairs("port", fmt.Sprint(*cmn.Port))
 	}
 
-	if common.Hosts != nil {
-		parent.InsertPairs("hosts", fmt.Sprint(*common.Hosts))
+	if cmn.Hosts != nil {
+		parent.InsertPairs("hosts", fmt.Sprint(*cmn.Hosts))
 	}
 
-	if common.User != nil {
-		user, err := loader.LoadSecret(*common.User)
+	if cmn.User != nil {
+		user, err := loader.LoadSecret(*cmn.User)
 		if err != nil {
 			return nil, err
 		}
 		parent.InsertPairs("user", user)
 	}
 
-	if common.Password != nil {
-		pwd, err := loader.LoadSecret(*common.Password)
+	if cmn.Password != nil {
+		pwd, err := loader.LoadSecret(*cmn.Password)
 		if err != nil {
 			return nil, err
 		}
 		parent.InsertPairs("password", pwd)
 	}
 
-	if common.SslVerify != nil {
-		parent.InsertPairs("ssl_verify", fmt.Sprint(*common.SslVerify))
+	if cmn.SslVerify != nil {
+		parent.InsertPairs("ssl_verify", fmt.Sprint(*cmn.SslVerify))
 	}
 
-	if common.CAFile != nil {
-		parent.InsertPairs("ca_file", fmt.Sprint(*common.CAFile))
+	if cmn.CAFile != nil {
+		parent.InsertPairs("ca_file", fmt.Sprint(*cmn.CAFile))
 	}
 
-	if common.CloudAuth != nil {
-		cloudauth, err := loader.LoadSecret(*common.CloudAuth)
+	if cmn.CloudAuth != nil {
+		cloudauth, err := loader.LoadSecret(*cmn.CloudAuth)
 		if err != nil {
 			return nil, err
 		}
 		parent.InsertPairs("cloud_auth", cloudauth)
 	}
 
-	if common.CloudId != nil {
-		cloudid, err := loader.LoadSecret(*common.CloudId)
+	if cmn.CloudId != nil {
+		cloudid, err := loader.LoadSecret(*cmn.CloudId)
 		if err != nil {
 			return nil, err
 		}
 		parent.InsertPairs("cloud_id", cloudid)
 	}
 
-	if common.ClientCert != nil {
-		parent.InsertPairs("client_cert", fmt.Sprint(*common.ClientCert))
+	if cmn.ClientCert != nil {
+		parent.InsertPairs("client_cert", fmt.Sprint(*cmn.ClientCert))
 	}
 
-	if common.ClientKey != nil {
-		parent.InsertPairs("client_key", fmt.Sprint(*common.ClientKey))
+	if cmn.ClientKey != nil {
+		parent.InsertPairs("client_key", fmt.Sprint(*cmn.ClientKey))
 	}
 
-	if common.ClientKeyPassword != nil {
-		pwd, err := loader.LoadSecret(*common.ClientKeyPassword)
+	if cmn.ClientKeyPassword != nil {
+		pwd, err := loader.LoadSecret(*cmn.ClientKeyPassword)
 		if err != nil {
 			return nil, err
 		}
 		parent.InsertPairs("client_key_pass", pwd)
 	}
 
-	if common.Scheme != nil {
-		parent.InsertPairs("scheme", fmt.Sprint(*common.Scheme))
+	if cmn.Scheme != nil {
+		parent.InsertPairs("scheme", fmt.Sprint(*cmn.Scheme))
 	}
 
-	if common.Path != nil {
-		parent.InsertPairs("path", fmt.Sprint(*common.Path))
+	if cmn.Path != nil {
+		parent.InsertPairs("path", fmt.Sprint(*cmn.Path))
 	}
 
-	if common.TemplateOverwrite != nil {
-		parent.InsertPairs("template_overwrite", fmt.Sprint(*common.TemplateOverwrite))
+	if cmn.TemplateOverwrite != nil {
+		parent.InsertPairs("template_overwrite", fmt.Sprint(*cmn.TemplateOverwrite))
 	}
 
-	if common.MaxRetryPuttingTemplate != nil {
-		parent.InsertPairs("max_retry_putting_template", fmt.Sprint(*common.MaxRetryPuttingTemplate))
+	if cmn.MaxRetryPuttingTemplate != nil {
+		parent.InsertPairs("max_retry_putting_template", fmt.Sprint(*cmn.MaxRetryPuttingTemplate))
 	}
 
-	if common.FailOnPuttingTemplateRetryExceeded != nil {
-		parent.InsertPairs("fail_on_putting_template_retry_exceed", fmt.Sprint(*common.FailOnPuttingTemplateRetryExceeded))
+	if cmn.FailOnPuttingTemplateRetryExceeded != nil {
+		parent.InsertPairs("fail_on_putting_template_retry_exceed", fmt.Sprint(*cmn.FailOnPuttingTemplateRetryExceeded))
 	}
 
-	if common.ReconnectOnError != nil {
-		parent.InsertPairs("reconnect_on_error", fmt.Sprint(*common.ReconnectOnError))
+	if cmn.ReconnectOnError != nil {
+		parent.InsertPairs("reconnect_on_error", fmt.Sprint(*cmn.ReconnectOnError))
 	}
 
-	if common.ReloadAfter != nil {
-		parent.InsertPairs("reload_after", fmt.Sprint(*common.ReloadAfter))
+	if cmn.ReloadAfter != nil {
+		parent.InsertPairs("reload_after", fmt.Sprint(*cmn.ReloadAfter))
 	}
 
-	if common.ReloadConnections != nil {
-		parent.InsertPairs("reload_connections", fmt.Sprint(*common.ReloadConnections))
+	if cmn.ReloadConnections != nil {
+		parent.InsertPairs("reload_connections", fmt.Sprint(*cmn.ReloadConnections))
 	}
 
-	if common.ReloadOnFailure != nil {
-		parent.InsertPairs("reload_on_failure", fmt.Sprint(*common.ReloadOnFailure))
+	if cmn.ReloadOnFailure != nil {
+		parent.InsertPairs("reload_on_failure", fmt.Sprint(*cmn.ReloadOnFailure))
 	}
 
-	if common.RequestTimeout != nil {
-		parent.InsertPairs("request_timeout", fmt.Sprint(*common.RequestTimeout))
+	if cmn.RequestTimeout != nil {
+		parent.InsertPairs("request_timeout", fmt.Sprint(*cmn.RequestTimeout))
 	}
 
-	if common.SnifferClassName != nil {
-		parent.InsertPairs("sniffer_class_name", fmt.Sprint(*common.SnifferClassName))
+	if cmn.SnifferClassName != nil {
+		parent.InsertPairs("sniffer_class_name", fmt.Sprint(*cmn.SnifferClassName))
 	}
 
-	if common.SuppressTypeName != nil {
-		parent.InsertPairs("suppress_type_name", fmt.Sprint(*common.SuppressTypeName))
+	if cmn.SuppressTypeName != nil {
+		parent.InsertPairs("suppress_type_name", fmt.Sprint(*cmn.SuppressTypeName))
 	}
 
-	if common.EnableIlm != nil {
-		parent.InsertPairs("enable_ilm", fmt.Sprint(*common.EnableIlm))
+	if cmn.EnableIlm != nil {
+		parent.InsertPairs("enable_ilm", fmt.Sprint(*cmn.EnableIlm))
 	}
 
-	if common.IlmPolicyId != nil {
-		parent.InsertPairs("ilm_policy_id", fmt.Sprint(*common.IlmPolicyId))
+	if cmn.IlmPolicyId != nil {
+		parent.InsertPairs("ilm_policy_id", fmt.Sprint(*cmn.IlmPolicyId))
 	}
 
-	if common.IlmPolicy != nil {
-		parent.InsertPairs("ilm_policy", fmt.Sprint(*common.IlmPolicy))
+	if cmn.IlmPolicy != nil {
+		parent.InsertPairs("ilm_policy", fmt.Sprint(*cmn.IlmPolicy))
 	}
 
-	if common.IlmPolicyOverwrite != nil {
-		parent.InsertPairs("ilm_policy_overwrite", fmt.Sprint(*common.IlmPolicyOverwrite))
+	if cmn.IlmPolicyOverwrite != nil {
+		parent.InsertPairs("ilm_policy_overwrite", fmt.Sprint(*cmn.IlmPolicyOverwrite))
 	}
 
-	if common.LogEs400Reason != nil {
-		parent.InsertPairs("log_es_400_reason", fmt.Sprint(*common.LogEs400Reason))
+	if cmn.LogEs400Reason != nil {
+		parent.InsertPairs("log_es_400_reason", fmt.Sprint(*cmn.LogEs400Reason))
 	}
 
 	return parent, nil

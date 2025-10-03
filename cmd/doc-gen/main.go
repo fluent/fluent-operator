@@ -229,8 +229,6 @@ type Pair struct {
 type KubeTypes []Pair
 
 func ParseDocumentationFrom(src string, dl_name string, shouldSort bool) []KubeTypes {
-	var docForTypes []KubeTypes
-
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, src, nil, parser.ParseComments)
 	if err != nil {
@@ -258,6 +256,7 @@ func ParseDocumentationFrom(src string, dl_name string, shouldSort bool) []KubeT
 		})
 	}
 
+	docForTypes := make([]KubeTypes, 0, len(types))
 	for _, kubType := range types {
 		structType, _ := kubType.Decl.Specs[0].(*ast.TypeSpec).Type.(*ast.StructType)
 
