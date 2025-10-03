@@ -21,7 +21,7 @@ type Splunk struct {
 	Port *int32 `json:"port,omitempty"`
 	// Specify the Authentication Token for the HTTP Event Collector interface.
 	SplunkToken *plugins.Secret `json:"splunkToken,omitempty"`
-	//Buffer size used to receive Splunk HTTP responses: Default `2M`
+	// Buffer size used to receive Splunk HTTP responses: Default `2M`
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	HTTPBufferSize string `json:"httpBufferSize,omitempty"`
 	// Set payload compression mechanism. The only available option is gzip.

@@ -6051,7 +6051,7 @@ spec:
                       192.168.1.4:9092.'
                     type: string
                   dynamicTopic:
-                    description: adds unknown topics (found in Topic_Key) to Topics.
+                    description: Adds unknown topics (found in Topic_Key) to Topics.
                       So in Topics only a default topic needs to be configured
                     type: boolean
                   format:
@@ -34551,7 +34551,7 @@ spec:
                       192.168.1.4:9092.'
                     type: string
                   dynamicTopic:
-                    description: adds unknown topics (found in Topic_Key) to Topics.
+                    description: Adds unknown topics (found in Topic_Key) to Topics.
                       So in Topics only a default topic needs to be configured
                     type: boolean
                   format:
