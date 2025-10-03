@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -42,32 +40,19 @@ func (*ExecWasi) Name() string {
 func (w *ExecWasi) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 
-	if w.WASIPath != "" {
-		kvs.Insert("WASI_Path", w.WASIPath)
-	}
-	if w.Parser != "" {
-		kvs.Insert("Parser", w.Parser)
-	}
+	plugins.InsertKVString(kvs, "WASI_Path", w.WASIPath)
+	plugins.InsertKVString(kvs, "Parser", w.Parser)
+	plugins.InsertKVString(kvs, "Wasm_Heap_Size", w.WasmHeapSize)
+	plugins.InsertKVString(kvs, "Wasm_Stack_Size", w.WasmStackSize)
+	plugins.InsertKVString(kvs, "Buf_Size", w.BufSize)
+
+	plugins.InsertKVField(kvs, "Interval_Sec", w.IntervalSec)
+	plugins.InsertKVField(kvs, "Interval_NSec", w.IntervalNSec)
+	plugins.InsertKVField(kvs, "Threaded", w.Threaded)
+
 	for _, p := range w.AccessiblePaths {
 		kvs.Insert("Accessible_Paths", p)
 	}
-	if w.IntervalSec != nil {
-		kvs.Insert("Interval_Sec", fmt.Sprint(*w.IntervalSec))
-	}
-	if w.IntervalNSec != nil {
-		kvs.Insert("Interval_NSec", fmt.Sprint(*w.IntervalNSec))
-	}
-	if w.WasmHeapSize != "" {
-		kvs.Insert("Wasm_Heap_Size", w.WasmHeapSize)
-	}
-	if w.WasmStackSize != "" {
-		kvs.Insert("Wasm_Stack_Size", w.WasmStackSize)
-	}
-	if w.BufSize != "" {
-		kvs.Insert("Buf_Size", w.BufSize)
-	}
-	if w.Threaded != nil {
-		kvs.Insert("Threaded", fmt.Sprint(*w.Threaded))
-	}
+
 	return kvs, nil
 }

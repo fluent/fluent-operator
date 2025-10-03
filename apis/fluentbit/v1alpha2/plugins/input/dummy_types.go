@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -30,17 +28,12 @@ func (*Dummy) Name() string {
 // implement Section() method
 func (d *Dummy) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if d.Tag != "" {
-		kvs.Insert("Tag", d.Tag)
-	}
-	if d.Dummy != "" {
-		kvs.Insert("Dummy", d.Dummy)
-	}
-	if d.Rate != nil {
-		kvs.Insert("Rate", fmt.Sprint(*d.Rate))
-	}
-	if d.Samples != nil {
-		kvs.Insert("Samples", fmt.Sprint(*d.Samples))
-	}
+
+	plugins.InsertKVString(kvs, "Tag", d.Tag)
+	plugins.InsertKVString(kvs, "Dummy", d.Dummy)
+
+	plugins.InsertKVField(kvs, "Rate", d.Rate)
+	plugins.InsertKVField(kvs, "Samples", d.Samples)
+
 	return kvs, nil
 }

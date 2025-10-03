@@ -166,7 +166,7 @@ func TestClusterOutputList_Load(t *testing.T) {
 	headers["Authorization"] = "foo:bar"
 	headers["X-Log-Header-App-Name"] = "app_name"
 	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers["X-Log-Header-App-ID"] = APP_ID
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
@@ -306,7 +306,7 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 	headers["Authorization"] = "foo:bar"
 	headers["X-Log-Header-App-Name"] = "app_name"
 	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers["X-Log-Header-App-ID"] = APP_ID
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{

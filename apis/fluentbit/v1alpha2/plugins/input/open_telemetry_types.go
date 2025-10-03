@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -44,32 +42,17 @@ func (*OpenTelemetry) Name() string {
 // implement Section() method
 func (ot *OpenTelemetry) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if ot.Listen != "" {
-		kvs.Insert("listen", ot.Listen)
-	}
-	if ot.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*ot.Port))
-	}
-	if ot.Tagkey != "" {
-		kvs.Insert("tag_key", ot.Tagkey)
-	}
-	if ot.RawTraces != nil {
-		kvs.Insert("raw_traces", fmt.Sprint(*ot.RawTraces))
-	}
-	if ot.BufferMaxSize != "" {
-		kvs.Insert("buffer_max_size", ot.BufferMaxSize)
-	}
-	if ot.BufferChunkSize != "" {
-		kvs.Insert("buffer_chunk_size", ot.BufferChunkSize)
-	}
-	if ot.SuccessfulResponseCode != nil {
-		kvs.Insert("successful_response_code", fmt.Sprint(*ot.SuccessfulResponseCode))
-	}
-	if ot.Tag != "" {
-		kvs.Insert("tag", ot.Tag)
-	}
-	if ot.TagFromURI != nil {
-		kvs.Insert("tag_from_uri", fmt.Sprint(*ot.TagFromURI))
-	}
+
+	plugins.InsertKVString(kvs, "listen", ot.Listen)
+	plugins.InsertKVString(kvs, "tag_key", ot.Tagkey)
+	plugins.InsertKVString(kvs, "buffer_max_size", ot.BufferMaxSize)
+	plugins.InsertKVString(kvs, "buffer_chunk_size", ot.BufferChunkSize)
+	plugins.InsertKVString(kvs, "tag", ot.Tag)
+
+	plugins.InsertKVField(kvs, "port", ot.Port)
+	plugins.InsertKVField(kvs, "raw_traces", ot.RawTraces)
+	plugins.InsertKVField(kvs, "successful_response_code", ot.SuccessfulResponseCode)
+	plugins.InsertKVField(kvs, "tag_from_uri", ot.TagFromURI)
+
 	return kvs, nil
 }

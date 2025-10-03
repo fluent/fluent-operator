@@ -43,34 +43,11 @@ func (*AzureBlob) Name() string {
 // Params implement Section() method
 func (o *AzureBlob) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if o.AccountName != "" {
-		kvs.Insert("account_name", o.AccountName)
+
+	if err := plugins.InsertKVSecret(kvs, "shared_key", o.SharedKey, sl); err != nil {
+		return nil, err
 	}
-	if o.SharedKey != nil {
-		u, err := sl.LoadSecret(*o.SharedKey)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("shared_key", u)
-	}
-	if o.ContainerName != "" {
-		kvs.Insert("container_name", o.ContainerName)
-	}
-	if o.BlobType != "" {
-		kvs.Insert("blob_type", o.BlobType)
-	}
-	if o.AutoCreateContainer != "" {
-		kvs.Insert("auto_create_container", o.AutoCreateContainer)
-	}
-	if o.Path != "" {
-		kvs.Insert("path", o.Path)
-	}
-	if o.EmulatorMode != "" {
-		kvs.Insert("emulator_mode", o.EmulatorMode)
-	}
-	if o.Endpoint != "" {
-		kvs.Insert("endpoint", o.Endpoint)
-	}
+
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
 		if err != nil {
@@ -85,5 +62,14 @@ func (o *AzureBlob) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
+	plugins.InsertKVString(kvs, "account_name", o.AccountName)
+	plugins.InsertKVString(kvs, "container_name", o.ContainerName)
+	plugins.InsertKVString(kvs, "blob_type", o.BlobType)
+	plugins.InsertKVString(kvs, "auto_create_container", o.AutoCreateContainer)
+	plugins.InsertKVString(kvs, "path", o.Path)
+	plugins.InsertKVString(kvs, "emulator_mode", o.EmulatorMode)
+	plugins.InsertKVString(kvs, "endpoint", o.Endpoint)
+
 	return kvs, nil
 }

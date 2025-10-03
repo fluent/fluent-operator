@@ -1,7 +1,6 @@
 package input
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
@@ -36,23 +35,20 @@ func (*PrometheusScrapeMetrics) Name() string {
 // Params implement Section() method
 func (p *PrometheusScrapeMetrics) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if p.Tag != "" {
-		kvs.Insert("tag", p.Tag)
-	}
+
+	plugins.InsertKVString(kvs, "tag", p.Tag)
+
+	// Special case: host handling
 	host := strings.ToLower(p.Host)
 	if host == "" || host == "host" {
 		kvs.Insert("host", "${HOST_IP}")
 	} else {
 		kvs.Insert("host", p.Host)
 	}
-	if p.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*p.Port))
-	}
-	if p.ScrapeInterval != "" {
-		kvs.Insert("scrape_interval", p.ScrapeInterval)
-	}
-	if p.MetricsPath != "" {
-		kvs.Insert("metrics_path", p.MetricsPath)
-	}
+
+	plugins.InsertKVField(kvs, "port", p.Port)
+	plugins.InsertKVString(kvs, "scrape_interval", p.ScrapeInterval)
+	plugins.InsertKVString(kvs, "metrics_path", p.MetricsPath)
+
 	return kvs, nil
 }

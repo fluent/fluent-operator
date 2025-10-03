@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -118,130 +116,59 @@ func (*Elasticsearch) Name() string {
 // Params implement Section() method
 func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if es.Host != "" {
-		kvs.Insert("Host", es.Host)
-	}
-	if es.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*es.Port))
-	}
-	if es.Path != "" {
-		kvs.Insert("Path", es.Path)
-	}
-	if es.Compress != "" {
-		kvs.Insert("Compress", es.Compress)
-	}
-	if es.BufferSize != "" {
-		kvs.Insert("Buffer_Size", es.BufferSize)
-	}
-	if es.Pipeline != "" {
-		kvs.Insert("Pipeline", es.Pipeline)
-	}
-	if es.AWSAuth != "" {
-		kvs.Insert("AWS_Auth", es.AWSAuth)
-	}
+
 	if es.AWSAuthSecret != nil {
-		u, err := sl.LoadSecret(*es.AWSAuthSecret)
-		if err != nil {
+		if err := plugins.InsertKVSecret(kvs, "AWS_Auth", es.AWSAuthSecret, sl); err != nil {
 			return nil, err
 		}
-		kvs.Insert("AWS_Auth", u)
-	}
-	if es.AWSRegion != "" {
-		kvs.Insert("AWS_Region", es.AWSRegion)
-	}
-	if es.AWSSTSEndpoint != "" {
-		kvs.Insert("AWS_STS_Endpoint", es.AWSSTSEndpoint)
-	}
-	if es.AWSRoleARN != "" {
-		kvs.Insert("AWS_Role_ARN", es.AWSRoleARN)
-	}
-	if es.CloudID != "" {
-		kvs.Insert("Cloud_ID", es.CloudID)
-	}
-	if es.CloudAuth != "" {
-		kvs.Insert("Cloud_Auth", es.CloudAuth)
 	}
 	if es.CloudAuthSecret != nil {
-		u, err := sl.LoadSecret(*es.CloudAuthSecret)
-		if err != nil {
+		if err := plugins.InsertKVSecret(kvs, "Cloud_Auth", es.CloudAuthSecret, sl); err != nil {
 			return nil, err
 		}
-		kvs.Insert("Cloud_Auth", u)
 	}
-	if es.AWSExternalID != "" {
-		kvs.Insert("AWS_External_ID", es.AWSExternalID)
+	if err := plugins.InsertKVSecret(kvs, "HTTP_User", es.HTTPUser, sl); err != nil {
+		return nil, err
 	}
-	if es.HTTPUser != nil {
-		u, err := sl.LoadSecret(*es.HTTPUser)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("HTTP_User", u)
+	if err := plugins.InsertKVSecret(kvs, "HTTP_Passwd", es.HTTPPasswd, sl); err != nil {
+		return nil, err
 	}
-	if es.HTTPPasswd != nil {
-		pwd, err := sl.LoadSecret(*es.HTTPPasswd)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("HTTP_Passwd", pwd)
-	}
-	if es.Index != "" {
-		kvs.Insert("Index", es.Index)
-	}
-	if es.Type != "" {
-		kvs.Insert("Type", es.Type)
-	}
-	if es.LogstashFormat != nil {
-		kvs.Insert("Logstash_Format", fmt.Sprint(*es.LogstashFormat))
-	}
-	if es.LogstashPrefix != "" {
-		kvs.Insert("Logstash_Prefix", es.LogstashPrefix)
-	}
-	if es.LogstashDateFormat != "" {
-		kvs.Insert("Logstash_DateFormat", es.LogstashDateFormat)
-	}
-	if es.TimeKey != "" {
-		kvs.Insert("Time_Key", es.TimeKey)
-	}
-	if es.TimeKeyFormat != "" {
-		kvs.Insert("Time_Key_Format", es.TimeKeyFormat)
-	}
-	if es.TimeKeyNanos != nil {
-		kvs.Insert("Time_Key_Nanos", fmt.Sprint(*es.TimeKeyNanos))
-	}
-	if es.IncludeTagKey != nil {
-		kvs.Insert("Include_Tag_Key", fmt.Sprint(*es.IncludeTagKey))
-	}
-	if es.TagKey != "" {
-		kvs.Insert("Tag_Key", es.TagKey)
-	}
-	if es.GenerateID != nil {
-		kvs.Insert("Generate_ID", fmt.Sprint(*es.GenerateID))
-	}
-	if es.IdKey != "" {
-		kvs.Insert("ID_KEY", es.IdKey)
-	}
-	if es.WriteOperation != "" {
-		kvs.Insert("Write_Operation", es.WriteOperation)
-	}
-	if es.ReplaceDots != nil {
-		kvs.Insert("Replace_Dots", fmt.Sprint(*es.ReplaceDots))
-	}
-	if es.TraceOutput != nil {
-		kvs.Insert("Trace_Output", fmt.Sprint(*es.TraceOutput))
-	}
-	if es.TraceError != nil {
-		kvs.Insert("Trace_Error", fmt.Sprint(*es.TraceError))
-	}
-	if es.CurrentTimeIndex != nil {
-		kvs.Insert("Current_Time_Index", fmt.Sprint(*es.CurrentTimeIndex))
-	}
-	if es.LogstashPrefixKey != "" {
-		kvs.Insert("Logstash_Prefix_Key", es.LogstashPrefixKey)
-	}
-	if es.SuppressTypeName != "" {
-		kvs.Insert("Suppress_Type_Name", es.SuppressTypeName)
-	}
+
+	plugins.InsertKVString(kvs, "Host", es.Host)
+	plugins.InsertKVField(kvs, "Port", es.Port)
+	plugins.InsertKVString(kvs, "Index", es.Index)
+	plugins.InsertKVString(kvs, "Type", es.Type)
+	plugins.InsertKVString(kvs, "Path", es.Path)
+	plugins.InsertKVString(kvs, "Compress", es.Compress)
+	plugins.InsertKVString(kvs, "Buffer_Size", es.BufferSize)
+	plugins.InsertKVString(kvs, "Pipeline", es.Pipeline)
+	plugins.InsertKVString(kvs, "AWS_Auth", es.AWSAuth)
+	plugins.InsertKVString(kvs, "AWS_Region", es.AWSRegion)
+	plugins.InsertKVString(kvs, "AWS_STS_Endpoint", es.AWSSTSEndpoint)
+	plugins.InsertKVString(kvs, "AWS_Role_ARN", es.AWSRoleARN)
+	plugins.InsertKVString(kvs, "Cloud_ID", es.CloudID)
+	plugins.InsertKVString(kvs, "Cloud_Auth", es.CloudAuth)
+	plugins.InsertKVString(kvs, "AWS_External_ID", es.AWSExternalID)
+	plugins.InsertKVString(kvs, "Logstash_Prefix", es.LogstashPrefix)
+	plugins.InsertKVString(kvs, "Logstash_DateFormat", es.LogstashDateFormat)
+	plugins.InsertKVString(kvs, "Time_Key", es.TimeKey)
+	plugins.InsertKVString(kvs, "Time_Key_Format", es.TimeKeyFormat)
+	plugins.InsertKVString(kvs, "Tag_Key", es.TagKey)
+	plugins.InsertKVString(kvs, "ID_KEY", es.IdKey)
+	plugins.InsertKVString(kvs, "Write_Operation", es.WriteOperation)
+	plugins.InsertKVString(kvs, "Logstash_Prefix_Key", es.LogstashPrefixKey)
+	plugins.InsertKVString(kvs, "Suppress_Type_Name", es.SuppressTypeName)
+	plugins.InsertKVString(kvs, "storage.total_limit_size", es.TotalLimitSize)
+
+	plugins.InsertKVField(kvs, "Logstash_Format", es.LogstashFormat)
+	plugins.InsertKVField(kvs, "Time_Key_Nanos", es.TimeKeyNanos)
+	plugins.InsertKVField(kvs, "Include_Tag_Key", es.IncludeTagKey)
+	plugins.InsertKVField(kvs, "Generate_ID", es.GenerateID)
+	plugins.InsertKVField(kvs, "Replace_Dots", es.ReplaceDots)
+	plugins.InsertKVField(kvs, "Trace_Output", es.TraceOutput)
+	plugins.InsertKVField(kvs, "Trace_Error", es.TraceError)
+	plugins.InsertKVField(kvs, "Current_Time_Index", es.CurrentTimeIndex)
+
 	if es.TLS != nil {
 		tls, err := es.TLS.Params(sl)
 		if err != nil {
@@ -256,8 +183,6 @@ func (es *Elasticsearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
-	if es.TotalLimitSize != "" {
-		kvs.Insert("storage.total_limit_size", es.TotalLimitSize)
-	}
+
 	return kvs, nil
 }

@@ -17,7 +17,8 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var expected = `[Service]
+const (
+	expected = `[Service]
     Daemon    false
     Flush    1
     Grace    30
@@ -111,7 +112,8 @@ var expected = `[Service]
     tls    On
     tls.verify    true
 `
-var expectedYaml = `service:
+
+	expectedYaml = `service:
   daemon: false
   flush: 1
   grace: 30
@@ -206,7 +208,8 @@ pipeline:
       brokers: 127.0.1.1:9092
       topics: fluentbit-namespace
 `
-var expectedK8s = `[Service]
+
+	expectedK8s = `[Service]
     Daemon    false
     Flush    1
     Grace    30
@@ -243,7 +246,7 @@ var expectedK8s = `[Service]
     Write_Operation    update
 `
 
-var expectedK8sYaml = `service:
+	expectedK8sYaml = `service:
   daemon: false
   flush: 1
   grace: 30
@@ -280,7 +283,7 @@ pipeline:
       write_operation: update
 `
 
-var expectedK8sYamlWithClusterFilterOutput = `service:
+	expectedK8sYamlWithClusterFilterOutput = `service:
   daemon: false
   flush: 1
   grace: 30
@@ -327,7 +330,7 @@ pipeline:
       write_operation: update
 `
 
-var expectedParsers = `[PARSER]
+	expectedParsers = `[PARSER]
     Name    clusterparser0
     Format    json
     Time_Key    time
@@ -346,7 +349,7 @@ var expectedParsers = `[PARSER]
     Types    status:integer size:integer
 `
 
-var expectedMultilineParsers = `[MULTILINE_PARSER]
+	expectedMultilineParsers = `[MULTILINE_PARSER]
     Name    clustermultilineparser0
     Type    regex
     Parser    go
@@ -364,6 +367,12 @@ var expectedMultilineParsers = `[MULTILINE_PARSER]
     Rule    "start_state" "/^(\d+ \d+\:\d+\:\d+)(.*)/" "cont"
     Rule    "cont" "/^\s+at.*/" "cont"
 `
+
+	FOOBAR   = "foo:bar"
+	APP_NAME = "app_name"
+	APP_ID   = "9780495d9db3"
+	TESTING  = "testing"
+)
 
 var labels = map[string]string{
 	"label0": "lv0",
@@ -510,10 +519,10 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 
 	headers := map[string]string{}
 
-	headers["Authorization"] = "foo:bar"
-	headers["X-Log-Header-App-Name"] = "app_name"
-	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers["Authorization"] = FOOBAR
+	headers["X-Log-Header-App-Name"] = APP_NAME
+	headers["X-Log-Header-0"] = TESTING
+	headers["X-Log-Header-App-ID"] = APP_ID
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
@@ -618,6 +627,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		i++
 	}
 }
+
 func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 	g := NewGomegaWithT(t)
 
@@ -742,10 +752,10 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 
 	headers := map[string]string{}
 
-	headers["Authorization"] = "foo:bar"
-	headers["X-Log-Header-App-Name"] = "app_name"
-	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers["Authorization"] = FOOBAR
+	headers["X-Log-Header-App-Name"] = APP_NAME
+	headers["X-Log-Header-0"] = TESTING
+	headers["X-Log-Header-App-ID"] = APP_ID
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{

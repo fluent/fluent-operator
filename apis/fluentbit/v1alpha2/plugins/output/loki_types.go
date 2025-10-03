@@ -81,43 +81,45 @@ func (*Loki) Name() string {
 // implement Section() method
 func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if l.Host != "" {
-		kvs.Insert("host", l.Host)
+
+	if err := plugins.InsertKVSecret(kvs, "http_user", l.HTTPUser, sl); err != nil {
+		return nil, err
 	}
-	if l.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*l.Port))
+	if err := plugins.InsertKVSecret(kvs, "http_passwd", l.HTTPPasswd, sl); err != nil {
+		return nil, err
 	}
-	if l.Uri != "" {
-		kvs.Insert("uri", l.Uri)
+	if err := plugins.InsertKVSecret(kvs, "bearer_token", l.BearerToken, sl); err != nil {
+		return nil, err
 	}
-	if l.HTTPUser != nil {
-		u, err := sl.LoadSecret(*l.HTTPUser)
+	if err := plugins.InsertKVSecret(kvs, "tenant_id", l.TenantID, sl); err != nil {
+		return nil, err
+	}
+	if l.TLS != nil {
+		tls, err := l.TLS.Params(sl)
 		if err != nil {
 			return nil, err
 		}
-		kvs.Insert("http_user", u)
+		kvs.Merge(tls)
 	}
-	if l.HTTPPasswd != nil {
-		pwd, err := sl.LoadSecret(*l.HTTPPasswd)
+	if l.Networking != nil {
+		net, err := l.Networking.Params(sl)
 		if err != nil {
 			return nil, err
 		}
-		kvs.Insert("http_passwd", pwd)
+		kvs.Merge(net)
 	}
-	if l.BearerToken != nil {
-		bearerToken, err := sl.LoadSecret(*l.BearerToken)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("bearer_token", bearerToken)
-	}
-	if l.TenantID != nil {
-		id, err := sl.LoadSecret(*l.TenantID)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("tenant_id", id)
-	}
+
+	plugins.InsertKVString(kvs, "host", l.Host)
+	plugins.InsertKVString(kvs, "uri", l.Uri)
+	plugins.InsertKVString(kvs, "label_map_path", l.LabelMapPath)
+	plugins.InsertKVString(kvs, "drop_single_key", l.DropSingleKey)
+	plugins.InsertKVString(kvs, "line_format", l.LineFormat)
+	plugins.InsertKVString(kvs, "auto_kubernetes_labels", l.AutoKubernetesLabels)
+	plugins.InsertKVString(kvs, "tenant_id_key", l.TenantIDKey)
+	plugins.InsertKVString(kvs, "storage.total_limit_size", l.TotalLimitSize)
+
+	plugins.InsertKVField(kvs, "port", l.Port)
+	plugins.InsertKVField(kvs, "workers", l.Workers)
 	if len(l.Labels) > 0 {
 		// Sort labels to ensure deterministic output
 		sortedLabels := make([]string, len(l.Labels))
@@ -142,28 +144,14 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 
 		kvs.Insert("labels", strings.Join(sortedLabels, ","))
 	}
+
 	if len(l.LabelKeys) > 0 {
 		kvs.Insert("label_keys", strings.Join(l.LabelKeys, ","))
-	}
-	if l.LabelMapPath != "" {
-		kvs.Insert("label_map_path", l.LabelMapPath)
 	}
 	if len(l.RemoveKeys) > 0 {
 		kvs.Insert("remove_keys", strings.Join(l.RemoveKeys, ","))
 	}
-	if l.DropSingleKey != "" {
-		kvs.Insert("drop_single_key", l.DropSingleKey)
-	}
-	if l.LineFormat != "" {
-		kvs.Insert("line_format", l.LineFormat)
-	}
-	if l.AutoKubernetesLabels != "" {
-		kvs.Insert("auto_kubernetes_labels", l.AutoKubernetesLabels)
-	}
-	if l.TenantIDKey != "" {
-		kvs.Insert("tenant_id_key", l.TenantIDKey)
-	}
-	// Handle structured metadata
+
 	if len(l.StructuredMetadata) > 0 {
 		var metadataPairs []string
 		for k, v := range l.StructuredMetadata {
@@ -174,29 +162,10 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 			kvs.Insert("structured_metadata", strings.Join(metadataPairs, ","))
 		}
 	}
-	// Handle structured metadata keys
+
 	if len(l.StructuredMetadataKeys) > 0 {
 		kvs.Insert("structured_metadata_keys", strings.Join(l.StructuredMetadataKeys, ","))
 	}
-	if l.TLS != nil {
-		tls, err := l.TLS.Params(sl)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Merge(tls)
-	}
-	if l.Networking != nil {
-		net, err := l.Networking.Params(sl)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Merge(net)
-	}
-	if l.TotalLimitSize != "" {
-		kvs.Insert("storage.total_limit_size", l.TotalLimitSize)
-	}
-	if l.Workers != nil {
-		kvs.Insert("workers", fmt.Sprint(*l.Workers))
-	}
+
 	return kvs, nil
 }
