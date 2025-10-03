@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -27,11 +25,10 @@ func (*StatsD) Name() string {
 // implement Section() method
 func (s *StatsD) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if s.Listen != "" {
-		kvs.Insert("Listen", s.Listen)
-	}
-	if s.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*s.Port))
-	}
+
+	plugins.InsertKVString(kvs, "Listen", s.Listen)
+
+	plugins.InsertKVField(kvs, "Port", s.Port)
+
 	return kvs, nil
 }

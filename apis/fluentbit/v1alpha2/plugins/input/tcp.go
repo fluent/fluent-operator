@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -39,23 +37,14 @@ func (*TCP) Name() string {
 // Params implement Section() method
 func (t *TCP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if t.Listen != "" {
-		kvs.Insert("listen", t.Listen)
-	}
-	if t.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*t.Port))
-	}
-	if t.BufferSize != "" {
-		kvs.Insert("Buffer_Size", t.BufferSize)
-	}
-	if t.ChunkSize != "" {
-		kvs.Insert("Chunk_Size", t.ChunkSize)
-	}
-	if t.Format != "" {
-		kvs.Insert("Format", t.Format)
-	}
-	if t.Separator != "" {
-		kvs.Insert("Separator", t.Separator)
-	}
+
+	plugins.InsertKVString(kvs, "listen", t.Listen)
+	plugins.InsertKVString(kvs, "Separator", t.Separator)
+	plugins.InsertKVString(kvs, "Buffer_Size", t.BufferSize)
+	plugins.InsertKVString(kvs, "Chunk_Size", t.ChunkSize)
+	plugins.InsertKVString(kvs, "Format", t.Format)
+
+	plugins.InsertKVField(kvs, "port", t.Port)
+
 	return kvs, nil
 }

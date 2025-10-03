@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -56,45 +54,22 @@ func (*Syslog) Name() string {
 // implement Section() method
 func (s *Syslog) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if s.Host != "" {
-		kvs.Insert("Host", s.Host)
-	}
-	if s.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*s.Port))
-	}
-	if s.Mode != "" {
-		kvs.Insert("mode", s.Mode)
-	}
-	if s.SyslogFormat != "" {
-		kvs.Insert("syslog_format", s.SyslogFormat)
-	}
-	if s.SyslogMaxSize != nil {
-		kvs.Insert("syslog_maxsize", fmt.Sprint(s.SyslogMaxSize))
-	}
-	if s.SyslogSeverityKey != "" {
-		kvs.Insert("syslog_severity_key", s.SyslogSeverityKey)
-	}
-	if s.SyslogFacilityKey != "" {
-		kvs.Insert("syslog_facility_key", s.SyslogFacilityKey)
-	}
-	if s.SyslogHostnameKey != "" {
-		kvs.Insert("syslog_hostname_key", s.SyslogHostnameKey)
-	}
-	if s.SyslogAppnameKey != "" {
-		kvs.Insert("syslog_appname_key", s.SyslogAppnameKey)
-	}
-	if s.SyslogProcessIDKey != "" {
-		kvs.Insert("syslog_procid_key", s.SyslogProcessIDKey)
-	}
-	if s.SyslogMessageIDKey != "" {
-		kvs.Insert("syslog_msgid_key", s.SyslogMessageIDKey)
-	}
-	if s.SyslogSDKey != "" {
-		kvs.Insert("syslog_sd_key", s.SyslogSDKey)
-	}
-	if s.SyslogMessageKey != "" {
-		kvs.Insert("syslog_message_key", s.SyslogMessageKey)
-	}
+
+	plugins.InsertKVString(kvs, "Host", s.Host)
+	plugins.InsertKVField(kvs, "port", s.Port)
+	plugins.InsertKVString(kvs, "mode", s.Mode)
+	plugins.InsertKVString(kvs, "syslog_hostname_key", s.SyslogHostnameKey)
+	plugins.InsertKVString(kvs, "syslog_appname_key", s.SyslogAppnameKey)
+	plugins.InsertKVString(kvs, "syslog_message_key", s.SyslogMessageKey)
+	plugins.InsertKVString(kvs, "syslog_format", s.SyslogFormat)
+	plugins.InsertKVString(kvs, "syslog_severity_key", s.SyslogSeverityKey)
+	plugins.InsertKVString(kvs, "syslog_facility_key", s.SyslogFacilityKey)
+	plugins.InsertKVString(kvs, "syslog_procid_key", s.SyslogProcessIDKey)
+	plugins.InsertKVString(kvs, "syslog_msgid_key", s.SyslogMessageIDKey)
+	plugins.InsertKVString(kvs, "syslog_sd_key", s.SyslogSDKey)
+	plugins.InsertKVString(kvs, "storage.total_limit_size", s.TotalLimitSize)
+	plugins.InsertKVField(kvs, "syslog_maxsize", s.SyslogMaxSize)
+
 	if s.TLS != nil {
 		tls, err := s.TLS.Params(sl)
 		if err != nil {
@@ -109,8 +84,6 @@ func (s *Syslog) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
-	if s.TotalLimitSize != "" {
-		kvs.Insert("storage.total_limit_size", s.TotalLimitSize)
-	}
+
 	return kvs, nil
 }

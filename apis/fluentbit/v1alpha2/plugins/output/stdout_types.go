@@ -27,14 +27,10 @@ func (*Stdout) Name() string {
 // implement Section() method
 func (s *Stdout) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if s.Format != "" {
-		kvs.Insert("Format", s.Format)
-	}
-	if s.JsonDateKey != "" {
-		kvs.Insert("json_date_key", s.JsonDateKey)
-	}
-	if s.JsonDateFormat != "" {
-		kvs.Insert("json_date_format", s.JsonDateFormat)
-	}
+
+	plugins.InsertKVString(kvs, "Format", s.Format)
+	plugins.InsertKVString(kvs, "json_date_key", s.JsonDateKey)
+	plugins.InsertKVString(kvs, "json_date_format", s.JsonDateFormat)
+
 	return kvs, nil
 }

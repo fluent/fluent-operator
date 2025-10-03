@@ -1,6 +1,6 @@
 domain: fluent.io
 layout:
-- go.kubebuilder.io/v3
+- go.kubebuilder.io/v4
 multigroup: true
 projectName: fluent-operator
 repo: github.com/fluent/fluent-operator

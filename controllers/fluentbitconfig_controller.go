@@ -292,6 +292,24 @@ func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 	return filters, outputs, parsers, clusterParsers, multilineParsers, clusterMultilineParsers, rewriteTagConfigs, nil
 }
 
+func matchingLabelsSelector(selector *metav1.LabelSelector) (client.MatchingLabelsSelector, error) {
+	sel, err := metav1.LabelSelectorAsSelector(selector)
+	if err != nil {
+		return client.MatchingLabelsSelector{}, err
+	}
+	return client.MatchingLabelsSelector{Selector: sel}, nil
+}
+
+func listForNamespace[T client.ObjectList](
+	ctx context.Context, cli client.Client, list T, namespace string, opts ...client.ListOption,
+) error {
+	opts = append(opts, client.InNamespace(namespace))
+	if err := cli.List(ctx, list, opts...); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *FluentBitConfigReconciler) ListNamespacedResources(
 	ctx context.Context, cfg fluentbitv1alpha2.FluentBitConfig,
 ) (
@@ -306,62 +324,51 @@ func (r *FluentBitConfigReconciler) ListNamespacedResources(
 	var multipleParsers fluentbitv1alpha2.MultilineParserList
 	var clusterMultipleParsers fluentbitv1alpha2.ClusterMultilineParserList
 
-	selector, err := metav1.LabelSelectorAsSelector(&cfg.Spec.FilterSelector)
+	selector, err := matchingLabelsSelector(&cfg.Spec.FilterSelector)
 	if err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
-	if err := r.List(
-		ctx, &filters, client.InNamespace(cfg.Namespace), client.MatchingLabelsSelector{Selector: selector},
-	); err != nil {
+	if err := listForNamespace(ctx, r.Client, &filters, cfg.Namespace, selector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.OutputSelector)
+	selector, err = matchingLabelsSelector(&cfg.Spec.OutputSelector)
 	if err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
-	if err := r.List(
-		ctx, &outputs, client.InNamespace(cfg.Namespace), client.MatchingLabelsSelector{Selector: selector},
-	); err != nil {
+	if err := listForNamespace(ctx, r.Client, &outputs, cfg.Namespace, selector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.ParserSelector)
+	selector, err = matchingLabelsSelector(&cfg.Spec.ParserSelector)
 	if err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
-	if err := r.List(
-		ctx, &parsers, client.InNamespace(cfg.Namespace), client.MatchingLabelsSelector{Selector: selector},
-	); err != nil {
+	if err := listForNamespace(ctx, r.Client, &parsers, cfg.Namespace, selector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.ClusterParserSelector)
+	selector, err = matchingLabelsSelector(&cfg.Spec.ClusterParserSelector)
 	if err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
-	if err := r.List(ctx, &clusterParsers, client.MatchingLabelsSelector{Selector: selector}); err != nil {
+	if err := listForNamespace(ctx, r.Client, &clusterParsers, cfg.Namespace, selector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.MultilineParserSelector)
+	selector, err = matchingLabelsSelector(&cfg.Spec.MultilineParserSelector)
 	if err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
-	if err := r.List(
-		ctx, &multipleParsers, client.InNamespace(cfg.Namespace), client.MatchingLabelsSelector{Selector: selector},
-	); err != nil {
+	if err := listForNamespace(ctx, r.Client, &multipleParsers, cfg.Namespace, selector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	selector, err = metav1.LabelSelectorAsSelector(&cfg.Spec.ClusterMultilineParserSelector)
+	selector, err = matchingLabelsSelector(&cfg.Spec.ClusterMultilineParserSelector)
 	if err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
-	if err := r.List(
-		ctx, &clusterMultipleParsers, client.InNamespace(cfg.Namespace),
-		client.MatchingLabelsSelector{Selector: selector},
-	); err != nil {
+	if err := listForNamespace(ctx, r.Client, &clusterMultipleParsers, cfg.Namespace, selector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
