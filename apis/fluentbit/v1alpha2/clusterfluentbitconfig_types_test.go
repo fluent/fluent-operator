@@ -17,10 +17,12 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-const authorization = "foo:bar"
-const xLogHeader0 = "testing"
-const xLogHeaderAppID = "9780495d9db3"
-const xLogHeaderAppName = "app_name"
+const (
+     authorization = "foo:bar"
+     xLogHeader0 = "testing"
+     xLogHeaderAppID = "9780495d9db3"
+     xLogHeaderAppName = "app_name"
+)
 
 var expected = fmt.Sprintf(`[Service]
     Daemon    false

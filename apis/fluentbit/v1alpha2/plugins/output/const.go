@@ -1,4 +1,6 @@
 package output
 
-const header = "header"
-const addLabel = "add_label"
+const (
+	header = "header"
+	addLabel = "add_label"
+)
