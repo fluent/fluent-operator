@@ -17,7 +17,12 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var expected = `[Service]
+const authorization = "foo:bar"
+const xLogHeader0 = "testing"
+const xLogHeaderAppID = "9780495d9db3"
+const xLogHeaderAppName = "app_name"
+
+var expected = fmt.Sprintf(`[Service]
     Daemon    false
     Flush    1
     Grace    30
@@ -72,10 +77,10 @@ var expected = `[Service]
     port    433
     uri    /logs
     format    json_lines
-    header     Authorization    foo:bar
-    header     X-Log-Header-0    testing
-    header     X-Log-Header-App-ID    9780495d9db3
-    header     X-Log-Header-App-Name    app_name
+    header     Authorization    %s
+    header     X-Log-Header-0    %s
+    header     X-Log-Header-App-ID    %s
+    header     X-Log-Header-App-Name    %s
     json_date_key    timestamp
     json_date_format    iso8601
     tls    On
@@ -110,8 +115,9 @@ var expected = `[Service]
     syslog_message_key    log
     tls    On
     tls.verify    true
-`
-var expectedYaml = `service:
+`, authorization, xLogHeader0, xLogHeaderAppID, xLogHeaderAppName)
+
+var expectedYaml = fmt.Sprintf(`service:
   daemon: false
   flush: 1
   grace: 30
@@ -171,10 +177,10 @@ pipeline:
       uri: /logs
       format: json_lines
       header:
-        -  Authorization    foo:bar
-        -  X-Log-Header-0    testing
-        -  X-Log-Header-App-ID    9780495d9db3
-        -  X-Log-Header-App-Name    app_name
+        -  Authorization    %s
+        -  X-Log-Header-0    %s
+        -  X-Log-Header-App-ID    %s
+        -  X-Log-Header-App-Name    %s
       json_date_key: timestamp
       json_date_format: iso8601
       tls: On
@@ -205,7 +211,8 @@ pipeline:
       match: 098f6bcd4621d373cade4e832627b4f6.kube.namespace.*
       brokers: 127.0.1.1:9092
       topics: fluentbit-namespace
-`
+`, authorization, xLogHeader0, xLogHeaderAppID, xLogHeaderAppName)
+
 var expectedK8s = `[Service]
     Daemon    false
     Flush    1
@@ -510,10 +517,10 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 
 	headers := map[string]string{}
 
-	headers["Authorization"] = "foo:bar"
-	headers["X-Log-Header-App-Name"] = "app_name"
-	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers["Authorization"] = authorization
+	headers["X-Log-Header-App-Name"] = xLogHeaderAppName
+	headers["X-Log-Header-0"] = xLogHeader0
+	headers["X-Log-Header-App-ID"] = xLogHeaderAppID
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
@@ -742,10 +749,10 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 
 	headers := map[string]string{}
 
-	headers["Authorization"] = "foo:bar"
-	headers["X-Log-Header-App-Name"] = "app_name"
-	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers["Authorization"] = authorization
+	headers["X-Log-Header-App-Name"] = xLogHeaderAppName
+	headers["X-Log-Header-0"] = xLogHeader0
+	headers["X-Log-Header-App-ID"] = xLogHeaderAppID
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{

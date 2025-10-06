@@ -78,14 +78,14 @@ func (p *PrometheusRemoteWrite) Params(sl plugins.SecretLoader) (*params.KVs, er
 		kvs.Insert("uri", p.URI)
 	}
 	kvs.InsertStringMap(p.Headers, func(k, v string) (string, string) {
-		return "header", fmt.Sprintf(" %s    %s", k, v)
+		return header, fmt.Sprintf(" %s    %s", k, v)
 	})
 
 	if p.LogResponsePayload != nil {
 		kvs.Insert("log_response_payload", fmt.Sprint(*p.LogResponsePayload))
 	}
 	kvs.InsertStringMap(p.AddLabels, func(k, v string) (string, string) {
-		return "add_label", fmt.Sprintf(" %s    %s", k, v)
+		return addLabel, fmt.Sprintf(" %s    %s", k, v)
 	})
 	if p.Workers != nil {
 		kvs.Insert("workers", fmt.Sprint(*p.Workers))

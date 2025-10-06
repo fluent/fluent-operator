@@ -112,7 +112,7 @@ func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("header_tag", h.HeaderTag)
 	}
 	kvs.InsertStringMap(h.Headers, func(k, v string) (string, string) {
-		return "header", fmt.Sprintf(" %s    %s", k, v)
+		return header, fmt.Sprintf(" %s    %s", k, v)
 	})
 	if h.JsonDateKey != "" {
 		kvs.Insert("json_date_key", h.JsonDateKey)

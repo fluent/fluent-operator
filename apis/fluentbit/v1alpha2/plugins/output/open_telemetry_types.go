@@ -87,13 +87,13 @@ func (o *OpenTelemetry) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("traces_uri", o.TracesUri)
 	}
 	kvs.InsertStringMap(o.Header, func(k, v string) (string, string) {
-		return "header", fmt.Sprintf(" %s    %s", k, v)
+		return header, fmt.Sprintf(" %s    %s", k, v)
 	})
 	if o.LogResponsePayload != nil {
 		kvs.Insert("log_response_payload", fmt.Sprint(*o.LogResponsePayload))
 	}
 	kvs.InsertStringMap(o.AddLabel, func(k, v string) (string, string) {
-		return "add_label", fmt.Sprintf(" %s    %s", k, v)
+		return addLabel, fmt.Sprintf(" %s    %s", k, v)
 	})
 	if o.LogsBodyKeyAttributes != nil {
 		kvs.Insert("logs_body_key_attributes", fmt.Sprint(*o.LogsBodyKeyAttributes))
