@@ -39,7 +39,7 @@ func (p *PrometheusExporter) Params(sl plugins.SecretLoader) (*params.KVs, error
 		kvs.Insert("port", fmt.Sprint(*p.Port))
 	}
 	kvs.InsertStringMap(p.AddLabels, func(k, v string) (string, string) {
-		return "add_label", fmt.Sprintf(" %s    %s", k, v)
+		return addLabel, fmt.Sprintf(" %s    %s", k, v)
 	})
 	return kvs, nil
 }
