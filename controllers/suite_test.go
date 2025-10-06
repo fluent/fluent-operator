@@ -19,6 +19,7 @@ package controllers
 import (
 	"path/filepath"
 	"testing"
+	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -44,7 +45,7 @@ func TestAPIs(t *testing.T) {
 	RunSpecs(t, "Controller Suite")
 }
 
-var _ = BeforeSuite(func() {
+var _ = BeforeSuite(func(ctx SpecContext) {
 	logf.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
 
 	By("bootstrapping test environment")
@@ -69,7 +70,7 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	Expect(k8sClient).NotTo(BeNil())
 
-}, 60)
+}, NodeTimeout(60*time.Second))
 
 var _ = AfterSuite(func() {
 	By("tearing down the test environment")
