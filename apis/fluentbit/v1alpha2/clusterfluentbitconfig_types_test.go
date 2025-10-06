@@ -18,13 +18,14 @@ import (
 )
 
 const (
-     authorization = "foo:bar"
-     xLogHeader0 = "testing"
-     xLogHeaderAppID = "9780495d9db3"
-     xLogHeaderAppName = "app_name"
+	authorization     = "foo:bar"
+	xLogHeader0       = "testing"
+	xLogHeaderAppID   = "9780495d9db3"
+	xLogHeaderAppName = "app_name"
 )
 
-var expected = fmt.Sprintf(`[Service]
+var (
+	expected = fmt.Sprintf(`[Service]
     Daemon    false
     Flush    1
     Grace    30
@@ -119,7 +120,7 @@ var expected = fmt.Sprintf(`[Service]
     tls.verify    true
 `, authorization, xLogHeader0, xLogHeaderAppID, xLogHeaderAppName)
 
-var expectedYaml = fmt.Sprintf(`service:
+	expectedYaml = fmt.Sprintf(`service:
   daemon: false
   flush: 1
   grace: 30
@@ -215,7 +216,7 @@ pipeline:
       topics: fluentbit-namespace
 `, authorization, xLogHeader0, xLogHeaderAppID, xLogHeaderAppName)
 
-var expectedK8s = `[Service]
+	expectedK8s = `[Service]
     Daemon    false
     Flush    1
     Grace    30
@@ -252,7 +253,7 @@ var expectedK8s = `[Service]
     Write_Operation    update
 `
 
-var expectedK8sYaml = `service:
+	expectedK8sYaml = `service:
   daemon: false
   flush: 1
   grace: 30
@@ -289,7 +290,7 @@ pipeline:
       write_operation: update
 `
 
-var expectedK8sYamlWithClusterFilterOutput = `service:
+	expectedK8sYamlWithClusterFilterOutput = `service:
   daemon: false
   flush: 1
   grace: 30
@@ -336,7 +337,7 @@ pipeline:
       write_operation: update
 `
 
-var expectedParsers = `[PARSER]
+	expectedParsers = `[PARSER]
     Name    clusterparser0
     Format    json
     Time_Key    time
@@ -355,7 +356,7 @@ var expectedParsers = `[PARSER]
     Types    status:integer size:integer
 `
 
-var expectedMultilineParsers = `[MULTILINE_PARSER]
+	expectedMultilineParsers = `[MULTILINE_PARSER]
     Name    clustermultilineparser0
     Type    regex
     Parser    go
@@ -374,26 +375,27 @@ var expectedMultilineParsers = `[MULTILINE_PARSER]
     Rule    "cont" "/^\s+at.*/" "cont"
 `
 
-var labels = map[string]string{
-	"label0": "lv0",
-	"label1": "lv1",
-	"label3": "lval3",
-	"lbl2":   "lval2",
-	"lbl1":   "lvl1",
-}
+	labels = map[string]string{
+		"label0": "lv0",
+		"label1": "lv1",
+		"label3": "lval3",
+		"lbl2":   "lval2",
+		"lbl1":   "lvl1",
+	}
 
-var cfg = ClusterFluentBitConfig{
-	Spec: FluentBitConfigSpec{
-		Service: &Service{
-			Daemon:       ptrBool(false),
-			FlushSeconds: ptrFloat64(1),
-			GraceSeconds: ptrInt64(30),
-			HttpServer:   ptrBool(true),
-			LogLevel:     "info",
-			ParsersFile:  "parsers.conf",
+	cfg = ClusterFluentBitConfig{
+		Spec: FluentBitConfigSpec{
+			Service: &Service{
+				Daemon:       ptrBool(false),
+				FlushSeconds: ptrFloat64(1),
+				GraceSeconds: ptrInt64(30),
+				HttpServer:   ptrBool(true),
+				LogLevel:     "info",
+				ParsersFile:  "parsers.conf",
+			},
 		},
-	},
-}
+	}
+)
 
 func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	g := NewGomegaWithT(t)

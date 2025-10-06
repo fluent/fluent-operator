@@ -9,7 +9,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var outputExpectedYaml = `outputs:
+var (
+	outputExpectedYaml = `outputs:
   - name: http
     match: "logs.foo.bar"
     alias: output_http_alias
@@ -66,7 +67,7 @@ var outputExpectedYaml = `outputs:
     tls: On
     tls.verify: true
 `
-var outputExpected = `[Output]
+	outputExpected = `[Output]
     Name    http
     Match    logs.foo.bar
     Alias    output_http_alias
@@ -121,6 +122,7 @@ var outputExpected = `[Output]
     tls    On
     tls.verify    true
 `
+)
 
 func TestClusterOutputList_Load(t *testing.T) {
 	g := NewGomegaWithT(t)
