@@ -25,7 +25,7 @@ func TestOpenTelemetry_Params(t *testing.T) {
 	sl := plugins.NewSecretLoader(fc, "test_namespace")
 	ot := OpenTelemetry{
 		Host:                  "otlp-collector.example.com",
-		Port:                  ptrAny(int32(443)),
+		Port:                  ptr[int32](443),
 		HTTPUser:              &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_user"}}},
 		HTTPPasswd:            &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_passwd"}}},
 		Proxy:                 "expected_proxy",
@@ -33,12 +33,12 @@ func TestOpenTelemetry_Params(t *testing.T) {
 		LogsUri:               "expected_logs_uri",
 		TracesUri:             "expected_traces_uri",
 		Header:                map[string]string{"custom_header_key": "custom_header_val"},
-		LogResponsePayload:    ptrBool(true),
+		LogResponsePayload:    ptr(true),
 		AddLabel:              map[string]string{"add_label_key": "add_label_val"},
-		LogsBodyKeyAttributes: ptrBool(true),
+		LogsBodyKeyAttributes: ptr(true),
 		LogsBodyKey:           "expected_logs_body_key",
-		TLS:                   &plugins.TLS{Verify: ptrBool(false)},
-		Networking:            &plugins.Networking{SourceAddress: ptrAny("expected_source_address")},
+		TLS:                   &plugins.TLS{Verify: ptr(false)},
+		Networking:            &plugins.Networking{SourceAddress: ptr("expected_source_address")},
 	}
 
 	expected := params.NewKVs()

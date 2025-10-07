@@ -15,14 +15,14 @@ func TestOutput_DataDog_Params(t *testing.T) {
 
 	dd := DataDog{
 		Host:          "http-intake.logs.datadoghq.com",
-		TLS:           ptrBool(true),
+		TLS:           ptr(true),
 		Compress:      "gzip",
 		Service:       "service_name",
 		Source:        "app_name",
 		Tags:          "foo:bar",
 		MessageKey:    "message",
 		JSONDateKey:   "timestamp",
-		IncludeTagKey: ptrBool(true),
+		IncludeTagKey: ptr(true),
 		TagKey:        "tagkey",
 	}
 
@@ -41,9 +41,4 @@ func TestOutput_DataDog_Params(t *testing.T) {
 	kvs, err := dd.Params(sl)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(kvs).To(Equal(expected))
-
-}
-
-func ptrBool(v bool) *bool {
-	return &v
 }

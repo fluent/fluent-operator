@@ -151,10 +151,10 @@ func TestClusterOutputList_Load(t *testing.T) {
 			Match: "logs.foo.bar",
 			Syslog: &output.Syslog{
 				Host: "example.com",
-				Port: ptrInt32(int32(3300)),
+				Port: ptr[int32](3300),
 				Mode: "tls",
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 				SyslogMessageKey:  "log",
 				SyslogHostnameKey: "do_app_name",
@@ -163,12 +163,12 @@ func TestClusterOutputList_Load(t *testing.T) {
 		},
 	}
 
-	headers := map[string]string{}
-
-	headers["Authorization"] = "foo:bar"
-	headers["X-Log-Header-App-Name"] = "app_name"
-	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers := map[string]string{
+		"Authorization":         "foo:bar",
+		"X-Log-Header-App-Name": "app_name",
+		"X-Log-Header-0":        "testing",
+		"X-Log-Header-App-ID":   "9780495d9db3",
+	}
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
@@ -184,14 +184,14 @@ func TestClusterOutputList_Load(t *testing.T) {
 			Match: "logs.foo.bar",
 			HTTP: &output.HTTP{
 				Host:           "https://example2.com",
-				Port:           ptrInt32(int32(433)),
+				Port:           ptr[int32](433),
 				Uri:            "/logs",
 				Headers:        headers,
 				Format:         "json_lines",
 				JsonDateKey:    "timestamp",
 				JsonDateFormat: "iso8601",
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 			},
 		},
@@ -211,7 +211,7 @@ func TestClusterOutputList_Load(t *testing.T) {
 			Match: "*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "https://example2.com",
-				Port:  ptrInt32(int32(9200)),
+				Port:  ptr[int32](9200),
 				Index: "my_index",
 				Type:  "my_type",
 			},
@@ -236,15 +236,15 @@ func TestClusterOutputList_Load(t *testing.T) {
 			Match: "logs.foo.bar",
 			PrometheusRemoteWrite: &output.PrometheusRemoteWrite{
 				Host:               "https://example3.com",
-				Port:               ptrInt32(int32(433)),
+				Port:               ptr[int32](433),
 				URI:                "/prometheus/v1/write?prometheus_server=YOUR_DATA_SOURCE_NAME",
 				Proxy:              "https://proxy:533",
 				Headers:            headers,
-				LogResponsePayload: ptrBool(true),
+				LogResponsePayload: ptr(true),
 				AddLabels:          addLabels,
-				Workers:            ptrInt32(int32(3)),
+				Workers:            ptr[int32](3),
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 			},
 		},
@@ -291,10 +291,10 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			Syslog: &output.Syslog{
 				Host: "example.com",
-				Port: ptrInt32(int32(3300)),
+				Port: ptr[int32](3300),
 				Mode: "tls",
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 				SyslogMessageKey:  "log",
 				SyslogHostnameKey: "do_app_name",
@@ -303,12 +303,12 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 		},
 	}
 
-	headers := map[string]string{}
-
-	headers["Authorization"] = "foo:bar"
-	headers["X-Log-Header-App-Name"] = "app_name"
-	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers := map[string]string{
+		"Authorization":         "foo:bar",
+		"X-Log-Header-App-Name": "app_name",
+		"X-Log-Header-0":        "testing",
+		"X-Log-Header-App-ID":   "9780495d9db3",
+	}
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
@@ -324,14 +324,14 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			HTTP: &output.HTTP{
 				Host:           "https://example2.com",
-				Port:           ptrInt32(int32(433)),
+				Port:           ptr[int32](433),
 				Uri:            "/logs",
 				Headers:        headers,
 				Format:         "json_lines",
 				JsonDateKey:    "timestamp",
 				JsonDateFormat: "iso8601",
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 			},
 		},
@@ -351,7 +351,7 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 			Match: "*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "https://example2.com",
-				Port:  ptrInt32(int32(9200)),
+				Port:  ptr[int32](9200),
 				Index: "my_index",
 				Type:  "my_type",
 			},
@@ -376,15 +376,15 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			PrometheusRemoteWrite: &output.PrometheusRemoteWrite{
 				Host:               "https://example3.com",
-				Port:               ptrInt32(int32(433)),
+				Port:               ptr[int32](433),
 				URI:                "/prometheus/v1/write?prometheus_server=YOUR_DATA_SOURCE_NAME",
 				Proxy:              "https://proxy:533",
 				Headers:            headers,
-				LogResponsePayload: ptrBool(true),
+				LogResponsePayload: ptr(true),
 				AddLabels:          addLabels,
-				Workers:            ptrInt32(int32(3)),
+				Workers:            ptr[int32](3),
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 			},
 		},
@@ -433,7 +433,7 @@ func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
 			Match: "kube.*",
 			Loki: &output.Loki{
 				Host: "loki-gateway",
-				Port: ptrInt32(int32(3100)),
+				Port: ptr[int32](3100),
 				Labels: []string{
 					"job=fluentbit",
 					"environment=production",
@@ -486,7 +486,7 @@ func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
 			Match: "kube.*",
 			Loki: &output.Loki{
 				Host: "loki-gateway",
-				Port: ptrInt32(int32(3100)),
+				Port: ptr[int32](3100),
 				Labels: []string{
 					"job=fluentbit",
 					"environment=production",

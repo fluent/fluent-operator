@@ -15,15 +15,15 @@ func TestOutput_Gelf_Params(t *testing.T) {
 
 	dd := Gelf{
 		Host:            "127.0.0.1",
-		Port:            ptrInt32(1234),
+		Port:            ptr[int32](1234),
 		Mode:            "udp",
 		ShortMessageKey: "short_message",
 		TimestampKey:    "timestamp",
 		HostKey:         "host",
 		FullMessageKey:  "full_message",
 		LevelKey:        "level",
-		PacketSize:      ptrInt32(1000),
-		Compress:        ptrBool(true),
+		PacketSize:      ptr[int32](1000),
+		Compress:        ptr(true),
 	}
 
 	expected := params.NewKVs()
@@ -41,8 +41,4 @@ func TestOutput_Gelf_Params(t *testing.T) {
 	kvs, err := dd.Params(sl)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(kvs).To(Equal(expected))
-}
-
-func ptrInt32(v int32) *int32 {
-	return &v
 }

@@ -1,6 +1,6 @@
 package output
 
 const (
-	header = "header"
+	header   = "header"
 	addLabel = "add_label"
 )
