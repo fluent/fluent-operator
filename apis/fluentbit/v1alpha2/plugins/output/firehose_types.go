@@ -46,8 +46,9 @@ func (*Firehose) Name() string {
 // implement Section() method
 func (l *Firehose) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	kvs.Insert("region", l.Region)
-	kvs.Insert("delivery_stream", l.DeliveryStream)
+
+	plugins.InsertKVString(kvs, "region", l.Region)
+	plugins.InsertKVString(kvs, "delivery_stream", l.DeliveryStream)
 
 	if l.DataKeys != nil && *l.DataKeys != "" {
 		kvs.Insert("data_keys", *l.DataKeys)
@@ -70,6 +71,7 @@ func (l *Firehose) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	if l.TimeKeyFormat != nil && *l.TimeKeyFormat != "" {
 		kvs.Insert("time_key_format", *l.TimeKeyFormat)
 	}
+
 	if l.AutoRetryRequests != nil {
 		kvs.Insert("auto_retry_requests", strconv.FormatBool(*l.AutoRetryRequests))
 	}

@@ -164,10 +164,10 @@ func TestClusterOutputList_Load(t *testing.T) {
 	}
 
 	headers := map[string]string{
-		"Authorization":         "foo:bar",
-		"X-Log-Header-App-Name": "app_name",
-		"X-Log-Header-0":        "testing",
-		"X-Log-Header-App-ID":   "9780495d9db3",
+		"Authorization":         authorization,
+		"X-Log-Header-App-Name": xLogHeaderAppName,
+		"X-Log-Header-0":        xLogHeader0,
+		"X-Log-Header-App-ID":   xLogHeaderAppID,
 	}
 
 	httpOutput := ClusterOutput{
@@ -304,10 +304,10 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 	}
 
 	headers := map[string]string{
-		"Authorization":         "foo:bar",
-		"X-Log-Header-App-Name": "app_name",
-		"X-Log-Header-0":        "testing",
-		"X-Log-Header-App-ID":   "9780495d9db3",
+		"Authorization":         authorization,
+		"X-Log-Header-App-Name": xLogHeaderAppName,
+		"X-Log-Header-0":        xLogHeader0,
+		"X-Log-Header-App-ID":   xLogHeaderAppID,
 	}
 
 	httpOutput := ClusterOutput{

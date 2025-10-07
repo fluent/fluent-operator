@@ -33,19 +33,14 @@ func (*NodeExporterMetrics) Name() string {
 // Params implement Section() method
 func (d *NodeExporterMetrics) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if d.Tag != "" {
-		kvs.Insert("Tag", d.Tag)
-	}
-	if d.ScrapeInterval != "" {
-		kvs.Insert("scrape_interval", d.ScrapeInterval)
-	}
+
+	plugins.InsertKVString(kvs, "Tag", d.Tag)
+	plugins.InsertKVString(kvs, "scrape_interval", d.ScrapeInterval)
+
 	if d.Path != nil {
-		if d.Path.Procfs != "" {
-			kvs.Insert("path.procfs", d.Path.Procfs)
-		}
-		if d.Path.Sysfs != "" {
-			kvs.Insert("path.sysfs", d.Path.Sysfs)
-		}
+		plugins.InsertKVString(kvs, "path.procfs", d.Path.Procfs)
+		plugins.InsertKVString(kvs, "path.sysfs", d.Path.Sysfs)
 	}
+
 	return kvs, nil
 }

@@ -72,69 +72,38 @@ func (*HTTP) Name() string {
 
 // implement Params method
 func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
+	const header = "header"
+
 	kvs := params.NewKVs()
-	if h.Host != "" {
-		kvs.Insert("host", h.Host)
+
+	if err := plugins.InsertKVSecret(kvs, "http_User", h.HTTPUser, sl); err != nil {
+		return nil, err
 	}
-	if h.HTTPUser != nil {
-		u, err := sl.LoadSecret(*h.HTTPUser)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_User", u)
+	if err := plugins.InsertKVSecret(kvs, "http_Passwd", h.HTTPPasswd, sl); err != nil {
+		return nil, err
 	}
-	if h.HTTPPasswd != nil {
-		pwd, err := sl.LoadSecret(*h.HTTPPasswd)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_Passwd", pwd)
-	}
-	if h.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*h.Port))
-	}
-	if h.Proxy != "" {
-		kvs.Insert("Proxy", h.Proxy)
-	}
-	if h.Uri != "" {
-		kvs.Insert("uri", h.Uri)
-	}
-	if h.Compress != "" {
-		kvs.Insert("compress", h.Compress)
-	}
-	if h.Format != "" {
-		kvs.Insert("format", h.Format)
-	}
-	if h.AllowDuplicatedHeaders != nil {
-		kvs.Insert("allow_duplicated_headers", fmt.Sprint(*h.AllowDuplicatedHeaders))
-	}
-	if h.HeaderTag != "" {
-		kvs.Insert("header_tag", h.HeaderTag)
-	}
+
+	plugins.InsertKVString(kvs, "host", h.Host)
+	plugins.InsertKVField(kvs, "port", h.Port)
+	plugins.InsertKVString(kvs, "uri", h.Uri)
+	plugins.InsertKVString(kvs, "format", h.Format)
+
 	kvs.InsertStringMap(h.Headers, func(k, v string) (string, string) {
 		return header, fmt.Sprintf(" %s    %s", k, v)
 	})
-	if h.JsonDateKey != "" {
-		kvs.Insert("json_date_key", h.JsonDateKey)
-	}
-	if h.JsonDateFormat != "" {
-		kvs.Insert("json_date_format", h.JsonDateFormat)
-	}
-	if h.GelfTimestampKey != "" {
-		kvs.Insert("gelf_timestamp_key", h.GelfTimestampKey)
-	}
-	if h.GelfHostKey != "" {
-		kvs.Insert("gelf_host_key", h.GelfHostKey)
-	}
-	if h.GelfShortMessageKey != "" {
-		kvs.Insert("gelf_short_message_key", h.GelfShortMessageKey)
-	}
-	if h.GelfFullMessageKey != "" {
-		kvs.Insert("gelf_full_message_key", h.GelfFullMessageKey)
-	}
-	if h.GelfLevelKey != "" {
-		kvs.Insert("gelf_level_key", h.GelfLevelKey)
-	}
+
+	plugins.InsertKVString(kvs, "json_date_key", h.JsonDateKey)
+	plugins.InsertKVString(kvs, "json_date_format", h.JsonDateFormat)
+	plugins.InsertKVString(kvs, "Proxy", h.Proxy)
+	plugins.InsertKVString(kvs, "compress", h.Compress)
+	plugins.InsertKVString(kvs, "header_tag", h.HeaderTag)
+	plugins.InsertKVString(kvs, "gelf_timestamp_key", h.GelfTimestampKey)
+	plugins.InsertKVString(kvs, "gelf_host_key", h.GelfHostKey)
+	plugins.InsertKVString(kvs, "gelf_short_message_key", h.GelfShortMessageKey)
+	plugins.InsertKVString(kvs, "gelf_full_message_key", h.GelfFullMessageKey)
+	plugins.InsertKVString(kvs, "gelf_level_key", h.GelfLevelKey)
+	plugins.InsertKVField(kvs, "allow_duplicated_headers", h.AllowDuplicatedHeaders)
+
 	if h.TLS != nil {
 		tls, err := h.TLS.Params(sl)
 		if err != nil {
@@ -149,5 +118,6 @@ func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
 	return kvs, nil
 }

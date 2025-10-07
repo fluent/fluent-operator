@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -54,53 +52,24 @@ func (*KubernetesEvents) Name() string {
 // implement Section() method
 func (k *KubernetesEvents) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if k.Tag != "" {
-		kvs.Insert("Tag", k.Tag)
-	}
-	if k.DB != "" {
-		kvs.Insert("DB", k.DB)
-	}
-	if k.DBSync != "" {
-		kvs.Insert("DB.Sync", k.DBSync)
-	}
-	if k.IntervalSec != nil {
-		kvs.Insert("Interval_Sec", fmt.Sprint(*k.IntervalSec))
-	}
-	if k.IntervalNsec != nil {
-		kvs.Insert("Interval_Nsec", fmt.Sprint(*k.IntervalNsec))
-	}
-	if k.KubeURL != "" {
-		kvs.Insert("Kube_URL", k.KubeURL)
-	}
-	if k.KubeCAFile != "" {
-		kvs.Insert("Kube_CA_File", k.KubeCAFile)
-	}
-	if k.KubeCAPath != "" {
-		kvs.Insert("Kube_CA_Path", k.KubeCAPath)
-	}
-	if k.KubeTokenFile != "" {
-		kvs.Insert("Kube_Token_File", k.KubeTokenFile)
-	}
-	if k.KubeTokenTTL != "" {
-		kvs.Insert("Kube_Token_TTL", k.KubeTokenTTL)
-	}
-	if k.KubeRequestLimit != nil {
-		kvs.Insert("Kube_Request_Limit", fmt.Sprint(*k.KubeRequestLimit))
-	}
-	if k.KubeRetentionTime != "" {
-		kvs.Insert("Kube_Retention_Time", k.KubeRetentionTime)
-	}
-	if k.KubeNamespace != "" {
-		kvs.Insert("Kube_Namespace", k.KubeNamespace)
-	}
-	if k.TLSDebug != nil {
-		kvs.Insert("tls.Debug", fmt.Sprint(*k.TLSDebug))
-	}
-	if k.TLSVerify != nil {
-		kvs.Insert("tls.Verify", fmt.Sprint(*k.TLSVerify))
-	}
-	if k.TLSVhost != "" {
-		kvs.Insert("tls.Vhost", k.TLSVhost)
-	}
+
+	plugins.InsertKVString(kvs, "Tag", k.Tag)
+	plugins.InsertKVString(kvs, "DB", k.DB)
+	plugins.InsertKVString(kvs, "DB.Sync", k.DBSync)
+	plugins.InsertKVString(kvs, "Kube_URL", k.KubeURL)
+	plugins.InsertKVString(kvs, "Kube_CA_File", k.KubeCAFile)
+	plugins.InsertKVString(kvs, "Kube_CA_Path", k.KubeCAPath)
+	plugins.InsertKVString(kvs, "Kube_Token_File", k.KubeTokenFile)
+	plugins.InsertKVString(kvs, "Kube_Token_TTL", k.KubeTokenTTL)
+	plugins.InsertKVString(kvs, "Kube_Retention_Time", k.KubeRetentionTime)
+	plugins.InsertKVString(kvs, "Kube_Namespace", k.KubeNamespace)
+	plugins.InsertKVString(kvs, "tls.Vhost", k.TLSVhost)
+
+	plugins.InsertKVField(kvs, "Interval_Sec", k.IntervalSec)
+	plugins.InsertKVField(kvs, "Interval_Nsec", k.IntervalNsec)
+	plugins.InsertKVField(kvs, "Kube_Request_Limit", k.KubeRequestLimit)
+	plugins.InsertKVField(kvs, "tls.Debug", k.TLSDebug)
+	plugins.InsertKVField(kvs, "tls.Verify", k.TLSVerify)
+
 	return kvs, nil
 }

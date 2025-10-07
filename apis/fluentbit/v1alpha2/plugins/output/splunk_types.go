@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -73,76 +71,15 @@ func (*Splunk) Name() string {
 // Params implement Section() method
 func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if o.Host != "" {
-		kvs.Insert("host", o.Host)
+
+	if err := plugins.InsertKVSecret(kvs, "splunk_token", o.SplunkToken, sl); err != nil {
+		return nil, err
 	}
-	if o.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*o.Port))
+	if err := plugins.InsertKVSecret(kvs, "http_user", o.HTTPUser, sl); err != nil {
+		return nil, err
 	}
-	if o.SplunkToken != nil {
-		u, err := sl.LoadSecret(*o.SplunkToken)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("splunk_token", u)
-	}
-	if o.HTTPBufferSize != "" {
-		kvs.Insert("http_buffer_size", o.HTTPBufferSize)
-	}
-	if o.HTTPUser != nil {
-		u, err := sl.LoadSecret(*o.HTTPUser)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_user", u)
-	}
-	if o.HTTPPasswd != nil {
-		pwd, err := sl.LoadSecret(*o.HTTPPasswd)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_passwd", pwd)
-	}
-	if o.Compress != "" {
-		kvs.Insert("compress", o.Compress)
-	}
-	if o.Channel != "" {
-		kvs.Insert("channel", o.Channel)
-	}
-	if o.HTTPDebugBadRequest != nil {
-		kvs.Insert("http_debug_bad_request", fmt.Sprint(*o.HTTPDebugBadRequest))
-	}
-	if o.SplunkSendRaw != nil {
-		kvs.Insert("splunk_send_raw", fmt.Sprint(*o.SplunkSendRaw))
-	}
-	if o.EventKey != "" {
-		kvs.Insert("event_key", o.EventKey)
-	}
-	if o.EventHost != "" {
-		kvs.Insert("event_host", o.EventHost)
-	}
-	if o.EventSource != "" {
-		kvs.Insert("event_source", o.EventSource)
-	}
-	if o.EventSourcetype != "" {
-		kvs.Insert("event_sourcetype", o.EventSourcetype)
-	}
-	if o.EventSourcetypeKey != "" {
-		kvs.Insert("event_sourcetype_key", o.EventSourcetypeKey)
-	}
-	if o.EventIndex != "" {
-		kvs.Insert("event_index", o.EventIndex)
-	}
-	if o.EventIndexKey != "" {
-		kvs.Insert("event_index_key", o.EventIndexKey)
-	}
-	if len(o.EventFields) > 0 {
-		for _, v := range o.EventFields {
-			kvs.Insert("event_field", v)
-		}
-	}
-	if o.Workers != nil {
-		kvs.Insert("workers", fmt.Sprint(*o.Workers))
+	if err := plugins.InsertKVSecret(kvs, "http_passwd", o.HTTPPasswd, sl); err != nil {
+		return nil, err
 	}
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
@@ -158,5 +95,29 @@ func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
+	plugins.InsertKVString(kvs, "host", o.Host)
+	plugins.InsertKVString(kvs, "http_buffer_size", o.HTTPBufferSize)
+	plugins.InsertKVString(kvs, "compress", o.Compress)
+	plugins.InsertKVString(kvs, "channel", o.Channel)
+	plugins.InsertKVString(kvs, "event_key", o.EventKey)
+	plugins.InsertKVString(kvs, "event_host", o.EventHost)
+	plugins.InsertKVString(kvs, "event_source", o.EventSource)
+	plugins.InsertKVString(kvs, "event_sourcetype", o.EventSourcetype)
+	plugins.InsertKVString(kvs, "event_sourcetype_key", o.EventSourcetypeKey)
+	plugins.InsertKVString(kvs, "event_index", o.EventIndex)
+	plugins.InsertKVString(kvs, "event_index_key", o.EventIndexKey)
+
+	plugins.InsertKVField(kvs, "port", o.Port)
+	plugins.InsertKVField(kvs, "http_debug_bad_request", o.HTTPDebugBadRequest)
+	plugins.InsertKVField(kvs, "splunk_send_raw", o.SplunkSendRaw)
+	plugins.InsertKVField(kvs, "workers", o.Workers)
+
+	if len(o.EventFields) > 0 {
+		for _, v := range o.EventFields {
+			kvs.Insert("event_field", v)
+		}
+	}
+
 	return kvs, nil
 }

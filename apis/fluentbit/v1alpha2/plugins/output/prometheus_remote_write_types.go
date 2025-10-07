@@ -51,45 +51,31 @@ func (*PrometheusRemoteWrite) Name() string {
 // implement Section() method
 func (p *PrometheusRemoteWrite) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if p.Host != "" {
-		kvs.Insert("host", p.Host)
+
+	if err := plugins.InsertKVSecret(kvs, "http_user", p.HTTPUser, sl); err != nil {
+		return nil, err
 	}
-	if p.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*p.Port))
+	if err := plugins.InsertKVSecret(kvs, "http_passwd", p.HTTPPasswd, sl); err != nil {
+		return nil, err
 	}
-	if p.HTTPUser != nil {
-		u, err := sl.LoadSecret(*p.HTTPUser)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_user", u)
-	}
-	if p.HTTPPasswd != nil {
-		pwd, err := sl.LoadSecret(*p.HTTPPasswd)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_passwd", pwd)
-	}
-	if p.Proxy != "" {
-		kvs.Insert("proxy", p.Proxy)
-	}
-	if p.URI != "" {
-		kvs.Insert("uri", p.URI)
-	}
+
+	plugins.InsertKVString(kvs, "host", p.Host)
+	plugins.InsertKVField(kvs, "port", p.Port)
+	plugins.InsertKVString(kvs, "proxy", p.Proxy)
+	plugins.InsertKVString(kvs, "uri", p.URI)
+
 	kvs.InsertStringMap(p.Headers, func(k, v string) (string, string) {
 		return header, fmt.Sprintf(" %s    %s", k, v)
 	})
 
-	if p.LogResponsePayload != nil {
-		kvs.Insert("log_response_payload", fmt.Sprint(*p.LogResponsePayload))
-	}
+	plugins.InsertKVField(kvs, "log_response_payload", p.LogResponsePayload)
+
 	kvs.InsertStringMap(p.AddLabels, func(k, v string) (string, string) {
 		return addLabel, fmt.Sprintf(" %s    %s", k, v)
 	})
-	if p.Workers != nil {
-		kvs.Insert("workers", fmt.Sprint(*p.Workers))
-	}
+
+	plugins.InsertKVField(kvs, "workers", p.Workers)
+
 	if p.TLS != nil {
 		tls, err := p.TLS.Params(sl)
 		if err != nil {
@@ -104,5 +90,6 @@ func (p *PrometheusRemoteWrite) Params(sl plugins.SecretLoader) (*params.KVs, er
 		}
 		kvs.Merge(net)
 	}
+
 	return kvs, nil
 }
