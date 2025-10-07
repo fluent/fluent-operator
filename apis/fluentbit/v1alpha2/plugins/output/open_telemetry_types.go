@@ -53,8 +53,6 @@ func (*OpenTelemetry) Name() string {
 
 // Params implement Section() method
 func (o *OpenTelemetry) Params(sl plugins.SecretLoader) (*params.KVs, error) {
-	const ADD_LABEL = "add_label"
-
 	kvs := params.NewKVs()
 
 	plugins.InsertKVString(kvs, "host", o.Host)
