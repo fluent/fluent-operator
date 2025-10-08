@@ -164,41 +164,11 @@ func MakeFluentdDaemonSet(fd fluentdv1alpha1.Fluentd) *appsv1.DaemonSet {
 			MountPath: "/fluentd/tail",
 		})
 	}
+
 	// Mount host or emptydir VolumeSource
-	if fd.Spec.BufferVolume != nil && !fd.Spec.BufferVolume.DisableBufferVolume {
-		bufferVolName := fmt.Sprintf("%s-buffer", fd.Name)
-		bufferpv := fd.Spec.BufferVolume
-
-		if bufferpv.HostPath != nil {
-			specTemplateSpec.Volumes = append(specTemplateSpec.Volumes, corev1.Volume{
-				Name: bufferVolName,
-				VolumeSource: corev1.VolumeSource{
-					HostPath: bufferpv.HostPath,
-				},
-			})
-
-			specTemplateSpec.Containers[0].VolumeMounts = append(specTemplateSpec.Containers[0].VolumeMounts, corev1.VolumeMount{
-				Name:      bufferVolName,
-				MountPath: BufferMountPath,
-			})
-			return &ds
-		}
-
-		if bufferpv.EmptyDir != nil {
-			specTemplateSpec.Volumes = append(specTemplateSpec.Volumes, corev1.Volume{
-				Name: bufferVolName,
-				VolumeSource: corev1.VolumeSource{
-					EmptyDir: bufferpv.EmptyDir,
-				},
-			})
-
-			specTemplateSpec.Containers[0].VolumeMounts = append(specTemplateSpec.Containers[0].VolumeMounts, corev1.VolumeMount{
-				Name:      bufferVolName,
-				MountPath: BufferMountPath,
-			})
-
-			return &ds
-		}
+	if configureBufferVolume(fd, specTemplateSpec) {
+		return &ds
 	}
+
 	return &ds
 }
