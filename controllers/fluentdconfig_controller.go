@@ -131,20 +131,33 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		// gpr acts as a global resource to store the related plugin resources
 		gpr := fluentdv1alpha1.NewGlobalPluginResources("main")
 
-		// Each cluster/namespace scope fluentd configs will generate their own filters/outputs plugins with their own cfgId/cfgLabel,
+		// Each cluster/namespace scope fluentd configs will generate their own filters/outputs plugins
+		// with their own cfgId/cfgLabel,
 		// and they will finally be combined into one fluentd config file
 		gpr.CombineGlobalInputsPlugins(sl, fd.Spec.GlobalInputs)
 
 		// Default Output and filter
 		// list all namespaced CRs
-		inputs, filters, outputs, err := r.ListNamespacedLevelResources(ctx, fd.Namespace, fd.Spec.DefaultInputSelector, fd.Spec.DefaultFilterSelector, fd.Spec.DefaultOutputSelector)
+		inputs, filters, outputs, err := r.ListNamespacedLevelResources(
+			ctx,
+			fd.Namespace,
+			fd.Spec.DefaultInputSelector,
+			fd.Spec.DefaultFilterSelector,
+			fd.Spec.DefaultOutputSelector,
+		)
 		if err != nil {
 			r.Log.Info("List namespace level resources failed", "config", "default", "err", err.Error())
 			return ctrl.Result{}, err
 		}
 		if len(inputs) > 0 || len(filters) > 0 || len(outputs) > 0 {
 			// Combine the namespaced filter/output pluginstores in this fluentd config
-			cfgResouces, errs := gpr.PatchAndFilterNamespacedLevelResources(sl, fmt.Sprintf("%s-%s-%s", fd.Kind, fd.Namespace, fd.Name), inputs, filters, outputs)
+			cfgResouces, errs := gpr.PatchAndFilterNamespacedLevelResources(
+				sl,
+				fmt.Sprintf("%s-%s-%s", fd.Kind, fd.Namespace, fd.Name),
+				inputs,
+				filters,
+				outputs,
+			)
 			if len(errs) > 0 {
 				r.Log.Info("Patch and filter namespace level resources failed", "config", "default", "err", strings.Join(errs, ","))
 				return ctrl.Result{}, errors.New(strings.Join(errs, ","))
@@ -152,7 +165,13 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 			err = gpr.IdentifyCopyAndPatchOutput(cfgResouces)
 			if err != nil {
-				r.Log.Info("IdentifyCopy and PatchOutput namespace level resources failed", "config", "default", "err", strings.Join(errs, ","))
+				r.Log.Info(
+					"IdentifyCopy and PatchOutput namespace level resources failed",
+					"config",
+					"default",
+					"err",
+					strings.Join(errs, ","),
+				)
 				return ctrl.Result{}, errors.New(strings.Join(errs, ","))
 			}
 
@@ -246,7 +265,15 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return ctrl.Result{}, err
 		}
 
-		r.Log.Info("Fluentd main configuration has updated", "logging-control-plane", fd.Namespace, "fd", fd.Name, "secret", secName)
+		r.Log.Info(
+			"Fluentd main configuration has updated",
+			"logging-control-plane",
+			fd.Namespace,
+			"fd",
+			fd.Name,
+			"secret",
+			secName,
+		)
 	}
 
 	return ctrl.Result{}, nil
@@ -287,7 +314,12 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 		}
 
 		// list all cluster CRs
-		clusterInputs, clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(ctx, cfg.Spec.ClusterInputSelector, cfg.Spec.ClusterFilterSelector, cfg.Spec.ClusterOutputSelector)
+		clusterInputs, clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(
+			ctx,
+			cfg.Spec.ClusterInputSelector,
+			cfg.Spec.ClusterFilterSelector,
+			cfg.Spec.ClusterOutputSelector,
+		)
 		if err != nil {
 			r.Log.Info("List cluster level resources failed", "config", cfg.Name, "err", err.Error())
 			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
@@ -298,7 +330,13 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 		}
 
 		// Combine the filter/output pluginstores in this fluentd config
-		cfgResouces, errs := gpr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterInputs, clusterfilters, clusteroutputs)
+		cfgResouces, errs := gpr.PatchAndFilterClusterLevelResources(
+			sl,
+			cfg.GetCfgId(),
+			clusterInputs,
+			clusterfilters,
+			clusteroutputs,
+		)
 		if len(errs) > 0 {
 			r.Log.Info("Patch and filter cluster level resources failed", "config", cfg.Name, "err", strings.Join(errs, ","))
 			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, strings.Join(errs, ", ")); err != nil {
@@ -336,8 +374,13 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 }
 
 // CfgsForFluentd combines all namespaced cfgs selected by this fd
-func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, cfgs fluentdv1alpha1.FluentdConfigList, sl plugins.SecretLoader,
-	gpr *fluentdv1alpha1.PluginResources, globalCfgLabels map[string]bool) error {
+func (r *FluentdConfigReconciler) CfgsForFluentd(
+	ctx context.Context,
+	cfgs fluentdv1alpha1.FluentdConfigList,
+	sl plugins.SecretLoader,
+	gpr *fluentdv1alpha1.PluginResources,
+	globalCfgLabels map[string]bool,
+) error {
 
 	for _, cfg := range cfgs.Items {
 		// Build the inner router for this cfg and append it to the MainRouter
@@ -363,7 +406,12 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, cfgs fluen
 		}
 
 		// list all cluster CRs
-		clusterInputs, clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(ctx, cfg.Spec.ClusterInputSelector, cfg.Spec.ClusterFilterSelector, cfg.Spec.ClusterOutputSelector)
+		clusterInputs, clusterfilters, clusteroutputs, err := r.ListClusterLevelResources(
+			ctx,
+			cfg.Spec.ClusterInputSelector,
+			cfg.Spec.ClusterFilterSelector,
+			cfg.Spec.ClusterOutputSelector,
+		)
 		if err != nil {
 			r.Log.Info("List cluster level resources failed", "config", cfg.Name, "err", err.Error())
 			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
@@ -374,7 +422,13 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, cfgs fluen
 		}
 
 		// list all namespaced CRs
-		inputs, filters, outputs, err := r.ListNamespacedLevelResources(ctx, cfg.Namespace, cfg.Spec.InputSelector, cfg.Spec.FilterSelector, cfg.Spec.OutputSelector)
+		inputs, filters, outputs, err := r.ListNamespacedLevelResources(
+			ctx,
+			cfg.Namespace,
+			cfg.Spec.InputSelector,
+			cfg.Spec.FilterSelector,
+			cfg.Spec.OutputSelector,
+		)
 		if err != nil {
 			r.Log.Info("List namespace level resources failed", "config", cfg.Name, "err", err.Error())
 			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, err.Error()); err != nil {
@@ -385,7 +439,13 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(ctx context.Context, cfgs fluen
 		}
 
 		// Combine the cluster input/filter/output pluginstores in this fluentd config
-		clustercfgResouces, errs := gpr.PatchAndFilterClusterLevelResources(sl, cfg.GetCfgId(), clusterInputs, clusterfilters, clusteroutputs)
+		clustercfgResouces, errs := gpr.PatchAndFilterClusterLevelResources(
+			sl,
+			cfg.GetCfgId(),
+			clusterInputs,
+			clusterfilters,
+			clusteroutputs,
+		)
 		if len(errs) > 0 {
 			r.Log.Info("Patch and filter cluster level resources failed", "config", cfg.Name, "err", strings.Join(errs, ","))
 			if err = r.PatchObjects(ctx, &cfg, fluentdv1alpha1.InvalidState, strings.Join(errs, ", ")); err != nil {
@@ -533,7 +593,8 @@ func (r *FluentdConfigReconciler) ListNamespacedLevelResources(
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		if err = r.List(ctx, &inputs, client.InNamespace(namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+		matchingLabelSelector := client.MatchingLabelsSelector{Selector: selector}
+		if err = r.List(ctx, &inputs, client.InNamespace(namespace), matchingLabelSelector); err != nil {
 			return nil, nil, nil, err
 		}
 	}
@@ -545,7 +606,8 @@ func (r *FluentdConfigReconciler) ListNamespacedLevelResources(
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		if err = r.List(ctx, &filters, client.InNamespace(namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+		matchingLabelSelector := client.MatchingLabelsSelector{Selector: selector}
+		if err = r.List(ctx, &inputs, client.InNamespace(namespace), matchingLabelSelector); err != nil {
 			return nil, nil, nil, err
 		}
 	}
@@ -557,7 +619,8 @@ func (r *FluentdConfigReconciler) ListNamespacedLevelResources(
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		if err = r.List(ctx, &outputs, client.InNamespace(namespace), client.MatchingLabelsSelector{Selector: selector}); err != nil {
+		matchingLabelSelector := client.MatchingLabelsSelector{Selector: selector}
+		if err = r.List(ctx, &inputs, client.InNamespace(namespace), matchingLabelSelector); err != nil {
 			return nil, nil, nil, err
 		}
 	}
@@ -566,7 +629,12 @@ func (r *FluentdConfigReconciler) ListNamespacedLevelResources(
 }
 
 // PatchObjects patches the errors to the obj
-func (r *FluentdConfigReconciler) PatchObjects(ctx context.Context, obj client.Object, state fluentdv1alpha1.StatusState, msg string) error {
+func (r *FluentdConfigReconciler) PatchObjects(
+	ctx context.Context,
+	obj client.Object,
+	state fluentdv1alpha1.StatusState,
+	msg string,
+) error {
 	switch o := obj.(type) {
 	case *fluentdv1alpha1.ClusterFluentdConfig:
 		o.Status.State = state
