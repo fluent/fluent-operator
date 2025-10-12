@@ -292,7 +292,8 @@ func listNamespacedResources[T client.ObjectList](
 	if err != nil {
 		return err
 	}
-	if err := cli.List(ctx, list, client.InNamespace(namespace), client.MatchingLabelsSelector{Selector: sel}); err != nil {
+	matchingLabelSelector := client.MatchingLabelsSelector{Selector: sel}
+	if err := cli.List(ctx, list, client.InNamespace(namespace), matchingLabelSelector); err != nil {
 		return err
 	}
 	return nil
@@ -323,15 +324,33 @@ func (r *FluentBitConfigReconciler) ListNamespacedResources(
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	if err := listNamespacedResources(ctx, r.Client, &clusterParsers, cfg.Namespace, &cfg.Spec.ClusterParserSelector); err != nil {
+	if err := listNamespacedResources(
+		ctx,
+		r.Client,
+		&clusterParsers,
+		cfg.Namespace,
+		&cfg.Spec.ClusterParserSelector,
+	); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	if err := listNamespacedResources(ctx, r.Client, &multipleParsers, cfg.Namespace, &cfg.Spec.MultilineParserSelector); err != nil {
+	if err := listNamespacedResources(
+		ctx,
+		r.Client,
+		&multipleParsers,
+		cfg.Namespace,
+		&cfg.Spec.MultilineParserSelector,
+	); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	if err := listNamespacedResources(ctx, r.Client, &clusterMultipleParsers, cfg.Namespace, &cfg.Spec.ClusterMultilineParserSelector); err != nil {
+	if err := listNamespacedResources(
+		ctx,
+		r.Client,
+		&clusterMultipleParsers,
+		cfg.Namespace,
+		&cfg.Spec.ClusterMultilineParserSelector,
+	); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 

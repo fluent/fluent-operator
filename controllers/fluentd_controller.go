@@ -96,7 +96,13 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	}
 
 	// Install RBAC resources for the filter plugin kubernetes
-	cr, sa, crb := operator.MakeRBACObjects(fd.Name, fd.Namespace, fluentdLowercase, fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
+	cr, sa, crb := operator.MakeRBACObjects(
+		fd.Name,
+		fd.Namespace,
+		fluentdLowercase,
+		fd.Spec.RBACRules,
+		fd.Spec.ServiceAccountAnnotations,
+	)
 	// Deploy Fluentd ClusterRole
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, cr, r.mutate(cr, &fd)); err != nil {
 		return ctrl.Result{}, err

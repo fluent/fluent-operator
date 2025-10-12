@@ -3,7 +3,8 @@
 // Copyright Hugo Authors
 
 // Package filenotify is adapted from https://github.com/moby/moby/tree/master/pkg/filenotify, Apache-2.0 License.
-// Hopefully this can be replaced with an external package sometime in the future, see https://github.com/fsnotify/fsnotify/issues/9
+// Hopefully this can be replaced with an external package sometime in the future.
+// See https://github.com/fsnotify/fsnotify/issues/9
 package filenotify
 
 import (
