@@ -68,11 +68,13 @@ func main() {
 
 	if exitOnFailure {
 		_ = level.Warn(l).
-			Log("--exit-on-failure is deprecated. The process will exit no matter what if fluent-bit exits so this can safely be removed.")
+			Log("--exit-on-failure is deprecated. The process will exit no matter what if " +
+				"fluent-bit exits so this can safely be removed.")
 	}
 	if flbTerminationTimeout > 0 {
 		_ = level.Warn(l).
-			Log("--flb-timeout is deprecated. Consider setting the terminationGracePeriod field on the `(Cluster)FluentBit` instance.")
+			Log("--flb-timeout is deprecated. Consider setting the terminationGracePeriod " +
+				"field on the `(Cluster)FluentBit` instance.")
 	}
 
 	flag.Parse()

@@ -81,7 +81,8 @@ func main() {
 	flag.StringVar(&watchNamespaces, "watch-namespaces", "",
 		"Optional comma separated list of namespaces to watch for resources in. Defaults to cluster scope.")
 	flag.StringVar(&metricsAddr, "metrics-bind-address", "0",
-		"The address the metrics endpoint binds to. Use :8443 for HTTPS or :8080 for HTTP, or leave as 0 to disable the metrics service.")
+		"The address the metrics endpoint binds to. Use :8443 for HTTPS or :8080 for HTTP, or leave "+
+			"as 0 to disable the metrics service.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
