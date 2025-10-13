@@ -3,7 +3,6 @@ package output
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/plugins"
@@ -210,104 +209,33 @@ func (o *Output) forwardPlugin(parent *params.PluginStore, loader plugins.Secret
 
 	parent.InsertChilds(childs...)
 
-	if o.Forward.RequireAckResponse != nil {
-		parent.InsertPairs("require_ack_response", fmt.Sprint(*o.Forward.RequireAckResponse))
-	}
-
-	if o.Forward.SendTimeout != nil {
-		parent.InsertPairs("send_timeout", fmt.Sprint(*o.Forward.SendTimeout))
-	}
-
-	if o.Forward.ConnectTimeout != nil {
-		parent.InsertPairs("connect_timeout", fmt.Sprint(*o.Forward.ConnectTimeout))
-	}
-
-	if o.Forward.RecoverWait != nil {
-		parent.InsertPairs("recover_wait", fmt.Sprint(*o.Forward.RecoverWait))
-	}
-
-	if o.Forward.AckResponseTimeout != nil {
-		parent.InsertPairs("heartbeat_type", fmt.Sprint(*o.Forward.HeartbeatType))
-	}
-
-	if o.Forward.HeartbeatInterval != nil {
-		parent.InsertPairs("heartbeat_interval", fmt.Sprint(*o.Forward.HeartbeatInterval))
-	}
-
-	if o.Forward.PhiFailureDetector != nil {
-		parent.InsertPairs("phi_failure_detector", fmt.Sprint(*o.Forward.PhiFailureDetector))
-	}
-
-	if o.Forward.PhiThreshold != nil {
-		parent.InsertPairs("phi_threshold", fmt.Sprint(*o.Forward.PhiThreshold))
-	}
-
-	if o.Forward.HardTimeout != nil {
-		parent.InsertPairs("hard_timeout", fmt.Sprint(*o.Forward.HardTimeout))
-	}
-
-	if o.Forward.ExpireDnsCache != nil {
-		parent.InsertPairs("expire_dns_cache", fmt.Sprint(*o.Forward.ExpireDnsCache))
-	}
-
-	if o.Forward.DnsRoundRobin != nil {
-		parent.InsertPairs("dns_round_robin", fmt.Sprint(*o.Forward.DnsRoundRobin))
-	}
-
-	if o.Forward.IgnoreNetworkErrorsAtStartup != nil {
-		parent.InsertPairs("ignore_network_errors_at_startup", fmt.Sprint(*o.Forward.IgnoreNetworkErrorsAtStartup))
-	}
-
-	if o.Forward.TlsVersion != nil {
-		parent.InsertPairs("tls_version", fmt.Sprint(*o.Forward.TlsVersion))
-	}
-
-	if o.Forward.TlsCiphers != nil {
-		parent.InsertPairs("tls_ciphers", fmt.Sprint(*o.Forward.TlsCiphers))
-	}
-
-	if o.Forward.TlsInsecureMode != nil {
-		parent.InsertPairs("tls_insecure_mode", fmt.Sprint(*o.Forward.TlsInsecureMode))
-	}
-
-	if o.Forward.TlsAllowSelfSignedCert != nil {
-		parent.InsertPairs("tls_allow_self_signed_cert", fmt.Sprint(*o.Forward.TlsAllowSelfSignedCert))
-	}
-
-	if o.Forward.TlsVerifyHostname != nil {
-		parent.InsertPairs("tls_verify_hostname", fmt.Sprint(*o.Forward.TlsVerifyHostname))
-	}
-
-	if o.Forward.TlsCertPath != nil {
-		parent.InsertPairs("tls_cert_path", fmt.Sprint(*o.Forward.TlsCertPath))
-	}
-	if o.Forward.TlsClientCertPath != nil {
-		parent.InsertPairs("tls_client_cert_path", fmt.Sprint(*o.Forward.TlsClientCertPath))
-	}
-	if o.Forward.TlsClientPrivateKeyPath != nil {
-		parent.InsertPairs("tls_client_private_key_path", fmt.Sprint(*o.Forward.TlsClientPrivateKeyPath))
-	}
-	if o.Forward.TlsClientPrivateKeyPassphrase != nil {
-		parent.InsertPairs("tls_client_private_key_passphrase", fmt.Sprint(*o.Forward.TlsClientPrivateKeyPassphrase))
-	}
-	if o.Forward.TlsCertThumbprint != nil {
-		parent.InsertPairs("tls_cert_thumbprint", fmt.Sprint(*o.Forward.TlsCertThumbprint))
-	}
-	if o.Forward.TlsCertLogicalStoreName != nil {
-		parent.InsertPairs("tls_cert_logical_storeName", fmt.Sprint(*o.Forward.TlsCertLogicalStoreName))
-	}
-	if o.Forward.TlsCertUseEnterpriseStore != nil {
-		parent.InsertPairs("tls_cert_use_enterprise_store", fmt.Sprint(*o.Forward.TlsCertUseEnterpriseStore))
-	}
-	if o.Forward.Keepalive != nil {
-		parent.InsertPairs("keepalive", fmt.Sprint(*o.Forward.Keepalive))
-	}
-	if o.Forward.KeepaliveTimeout != nil {
-		parent.InsertPairs("keepalive_timeout", fmt.Sprint(*o.Forward.KeepaliveTimeout))
-	}
-	if o.Forward.VerifyConnectionAtStartup != nil {
-		parent.InsertPairs("verify_connection_at_startup", fmt.Sprint(*o.Forward.VerifyConnectionAtStartup))
-	}
+	params.InsertPairs(parent, "require_ack_response", o.Forward.RequireAckResponse)
+	params.InsertPairs(parent, "send_timeout", o.Forward.SendTimeout)
+	params.InsertPairs(parent, "connect_timeout", o.Forward.ConnectTimeout)
+	params.InsertPairs(parent, "recover_wait", o.Forward.RecoverWait)
+	params.InsertPairs(parent, "heartbeat_type", o.Forward.HeartbeatType)
+	params.InsertPairs(parent, "heartbeat_interval", o.Forward.HeartbeatInterval)
+	params.InsertPairs(parent, "phi_failure_detector", o.Forward.PhiFailureDetector)
+	params.InsertPairs(parent, "phi_threshold", o.Forward.PhiThreshold)
+	params.InsertPairs(parent, "hard_timeout", o.Forward.HardTimeout)
+	params.InsertPairs(parent, "expire_dns_cache", o.Forward.ExpireDnsCache)
+	params.InsertPairs(parent, "dns_round_robin", o.Forward.DnsRoundRobin)
+	params.InsertPairs(parent, "ignore_network_errors_at_startup", o.Forward.IgnoreNetworkErrorsAtStartup)
+	params.InsertPairs(parent, "tls_version", o.Forward.TlsVersion)
+	params.InsertPairs(parent, "tls_ciphers", o.Forward.TlsCiphers)
+	params.InsertPairs(parent, "tls_insecure_mode", o.Forward.TlsInsecureMode)
+	params.InsertPairs(parent, "tls_allow_self_signed_cert", o.Forward.TlsAllowSelfSignedCert)
+	params.InsertPairs(parent, "tls_verify_hostname", o.Forward.TlsVerifyHostname)
+	params.InsertPairs(parent, "tls_cert_path", o.Forward.TlsCertPath)
+	params.InsertPairs(parent, "tls_client_cert_path", o.Forward.TlsClientCertPath)
+	params.InsertPairs(parent, "tls_client_private_key_path", o.Forward.TlsClientPrivateKeyPath)
+	params.InsertPairs(parent, "tls_client_private_key_passphrase", o.Forward.TlsClientPrivateKeyPassphrase)
+	params.InsertPairs(parent, "tls_cert_thumbprint", o.Forward.TlsCertThumbprint)
+	params.InsertPairs(parent, "tls_cert_logical_storeName", o.Forward.TlsCertLogicalStoreName)
+	params.InsertPairs(parent, "tls_cert_use_enterprise_store", o.Forward.TlsCertUseEnterpriseStore)
+	params.InsertPairs(parent, "keepalive", o.Forward.Keepalive)
+	params.InsertPairs(parent, "keepalive_timeout", o.Forward.KeepaliveTimeout)
+	params.InsertPairs(parent, "verify_connection_at_startup", o.Forward.VerifyConnectionAtStartup)
 
 	return parent
 }
@@ -402,17 +330,9 @@ func (o *Output) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 }
 
 func (o *Output) elasticsearchPluginCommon(cmn *ElasticsearchCommon, parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
-	if cmn.Host != nil {
-		parent.InsertPairs("host", fmt.Sprint(*cmn.Host))
-	}
-
-	if cmn.Port != nil {
-		parent.InsertPairs("port", fmt.Sprint(*cmn.Port))
-	}
-
-	if cmn.Hosts != nil {
-		parent.InsertPairs("hosts", fmt.Sprint(*cmn.Hosts))
-	}
+	params.InsertPairs(parent, "host", cmn.Host)
+	params.InsertPairs(parent, "port", cmn.Port)
+	params.InsertPairs(parent, "hosts", cmn.Hosts)
 
 	if cmn.User != nil {
 		user, err := loader.LoadSecret(*cmn.User)
@@ -430,13 +350,8 @@ func (o *Output) elasticsearchPluginCommon(cmn *ElasticsearchCommon, parent *par
 		parent.InsertPairs("password", pwd)
 	}
 
-	if cmn.SslVerify != nil {
-		parent.InsertPairs("ssl_verify", fmt.Sprint(*cmn.SslVerify))
-	}
-
-	if cmn.CAFile != nil {
-		parent.InsertPairs("ca_file", fmt.Sprint(*cmn.CAFile))
-	}
+	params.InsertPairs(parent, "ssl_verify", cmn.SslVerify)
+	params.InsertPairs(parent, "ca_file", cmn.CAFile)
 
 	if cmn.CloudAuth != nil {
 		cloudauth, err := loader.LoadSecret(*cmn.CloudAuth)
@@ -454,13 +369,8 @@ func (o *Output) elasticsearchPluginCommon(cmn *ElasticsearchCommon, parent *par
 		parent.InsertPairs("cloud_id", cloudid)
 	}
 
-	if cmn.ClientCert != nil {
-		parent.InsertPairs("client_cert", fmt.Sprint(*cmn.ClientCert))
-	}
-
-	if cmn.ClientKey != nil {
-		parent.InsertPairs("client_key", fmt.Sprint(*cmn.ClientKey))
-	}
+	params.InsertPairs(parent, "client_cert", cmn.ClientCert)
+	params.InsertPairs(parent, "client_key", cmn.ClientKey)
 
 	if cmn.ClientKeyPassword != nil {
 		pwd, err := loader.LoadSecret(*cmn.ClientKeyPassword)
@@ -470,73 +380,23 @@ func (o *Output) elasticsearchPluginCommon(cmn *ElasticsearchCommon, parent *par
 		parent.InsertPairs("client_key_pass", pwd)
 	}
 
-	if cmn.Scheme != nil {
-		parent.InsertPairs("scheme", fmt.Sprint(*cmn.Scheme))
-	}
-
-	if cmn.Path != nil {
-		parent.InsertPairs("path", fmt.Sprint(*cmn.Path))
-	}
-
-	if cmn.TemplateOverwrite != nil {
-		parent.InsertPairs("template_overwrite", fmt.Sprint(*cmn.TemplateOverwrite))
-	}
-
-	if cmn.MaxRetryPuttingTemplate != nil {
-		parent.InsertPairs("max_retry_putting_template", fmt.Sprint(*cmn.MaxRetryPuttingTemplate))
-	}
-
-	if cmn.FailOnPuttingTemplateRetryExceeded != nil {
-		parent.InsertPairs("fail_on_putting_template_retry_exceed", fmt.Sprint(*cmn.FailOnPuttingTemplateRetryExceeded))
-	}
-
-	if cmn.ReconnectOnError != nil {
-		parent.InsertPairs("reconnect_on_error", fmt.Sprint(*cmn.ReconnectOnError))
-	}
-
-	if cmn.ReloadAfter != nil {
-		parent.InsertPairs("reload_after", fmt.Sprint(*cmn.ReloadAfter))
-	}
-
-	if cmn.ReloadConnections != nil {
-		parent.InsertPairs("reload_connections", fmt.Sprint(*cmn.ReloadConnections))
-	}
-
-	if cmn.ReloadOnFailure != nil {
-		parent.InsertPairs("reload_on_failure", fmt.Sprint(*cmn.ReloadOnFailure))
-	}
-
-	if cmn.RequestTimeout != nil {
-		parent.InsertPairs("request_timeout", fmt.Sprint(*cmn.RequestTimeout))
-	}
-
-	if cmn.SnifferClassName != nil {
-		parent.InsertPairs("sniffer_class_name", fmt.Sprint(*cmn.SnifferClassName))
-	}
-
-	if cmn.SuppressTypeName != nil {
-		parent.InsertPairs("suppress_type_name", fmt.Sprint(*cmn.SuppressTypeName))
-	}
-
-	if cmn.EnableIlm != nil {
-		parent.InsertPairs("enable_ilm", fmt.Sprint(*cmn.EnableIlm))
-	}
-
-	if cmn.IlmPolicyId != nil {
-		parent.InsertPairs("ilm_policy_id", fmt.Sprint(*cmn.IlmPolicyId))
-	}
-
-	if cmn.IlmPolicy != nil {
-		parent.InsertPairs("ilm_policy", fmt.Sprint(*cmn.IlmPolicy))
-	}
-
-	if cmn.IlmPolicyOverwrite != nil {
-		parent.InsertPairs("ilm_policy_overwrite", fmt.Sprint(*cmn.IlmPolicyOverwrite))
-	}
-
-	if cmn.LogEs400Reason != nil {
-		parent.InsertPairs("log_es_400_reason", fmt.Sprint(*cmn.LogEs400Reason))
-	}
+	params.InsertPairs(parent, "scheme", cmn.Scheme)
+	params.InsertPairs(parent, "path", cmn.Path)
+	params.InsertPairs(parent, "template_overwrite", cmn.TemplateOverwrite)
+	params.InsertPairs(parent, "max_retry_putting_template", cmn.MaxRetryPuttingTemplate)
+	params.InsertPairs(parent, "fail_on_putting_template_retry_exceed", cmn.FailOnPuttingTemplateRetryExceeded)
+	params.InsertPairs(parent, "reconnect_on_error", cmn.ReconnectOnError)
+	params.InsertPairs(parent, "reload_after", cmn.ReloadAfter)
+	params.InsertPairs(parent, "reload_connections", cmn.ReloadConnections)
+	params.InsertPairs(parent, "reload_on_failure", cmn.ReloadOnFailure)
+	params.InsertPairs(parent, "request_timeout", cmn.RequestTimeout)
+	params.InsertPairs(parent, "sniffer_class_name", cmn.SnifferClassName)
+	params.InsertPairs(parent, "suppress_type_name", cmn.SuppressTypeName)
+	params.InsertPairs(parent, "enable_ilm", cmn.EnableIlm)
+	params.InsertPairs(parent, "ilm_policy_id", cmn.IlmPolicyId)
+	params.InsertPairs(parent, "ilm_policy", cmn.IlmPolicy)
+	params.InsertPairs(parent, "ilm_policy_overwrite", cmn.IlmPolicyOverwrite)
+	params.InsertPairs(parent, "log_es_400_reason", cmn.LogEs400Reason)
 
 	return parent, nil
 }
@@ -829,9 +689,7 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 func (o *Output) cloudWatchPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
 	childs := make([]*params.PluginStore, 0)
 
-	if o.CloudWatch.AutoCreateStream != nil {
-		parent.InsertPairs("auto_create_stream", strconv.FormatBool(*o.CloudWatch.AutoCreateStream))
-	}
+	params.InsertPairs(parent, "auto_create_stream", o.CloudWatch.AutoCreateStream)
 	if o.CloudWatch.AwsKeyId != nil {
 		value, err := sl.LoadSecret(*o.CloudWatch.AwsKeyId)
 		if err != nil {
@@ -846,135 +704,51 @@ func (o *Output) cloudWatchPlugin(parent *params.PluginStore, sl plugins.SecretL
 		}
 		parent.InsertPairs("aws_sec_key", value)
 	}
-	if o.CloudWatch.AwsUseSts != nil {
-		parent.InsertPairs("aws_use_sts", strconv.FormatBool(*o.CloudWatch.AwsUseSts))
-	}
-	if o.CloudWatch.AwsStsRoleARN != nil && *o.CloudWatch.AwsStsRoleARN != "" {
-		parent.InsertPairs("aws_sts_role_arn", *o.CloudWatch.AwsStsRoleARN)
-	}
-	if o.CloudWatch.AwsStsSessionName != nil && *o.CloudWatch.AwsStsSessionName != "" {
-		parent.InsertPairs("aws_sts_session_name", *o.CloudWatch.AwsStsSessionName)
-	}
-	if o.CloudWatch.AwsStsExternalId != nil && *o.CloudWatch.AwsStsExternalId != "" {
-		parent.InsertPairs("aws_sts_external_id", *o.CloudWatch.AwsStsExternalId)
-	}
-	if o.CloudWatch.AwsStsPolicy != nil && *o.CloudWatch.AwsStsPolicy != "" {
-		parent.InsertPairs("aws_sts_policy", *o.CloudWatch.AwsStsPolicy)
-	}
-	if o.CloudWatch.AwsStsDurationSeconds != nil && *o.CloudWatch.AwsStsDurationSeconds != "" {
-		parent.InsertPairs("aws_sts_duration_seconds", *o.CloudWatch.AwsStsDurationSeconds)
-	}
-	if o.CloudWatch.AwsStsEndpointUrl != nil && *o.CloudWatch.AwsStsEndpointUrl != "" {
-		parent.InsertPairs("aws_sts_endpoint_url", *o.CloudWatch.AwsStsEndpointUrl)
-	}
-	if o.CloudWatch.AwsEcsAuthentication != nil {
-		parent.InsertPairs("aws_ecs_authentication", strconv.FormatBool(*o.CloudWatch.AwsEcsAuthentication))
-	}
-	if o.CloudWatch.Concurrency != nil {
-		parent.InsertPairs("concurrency", strconv.FormatInt(int64(*o.CloudWatch.Concurrency), 10))
-	}
-	if o.CloudWatch.Endpoint != nil && *o.CloudWatch.Endpoint != "" {
-		parent.InsertPairs("endpoint", *o.CloudWatch.Endpoint)
-	}
-	if o.CloudWatch.SslVerifyPeer != nil {
-		parent.InsertPairs("ssl_verify_peer", strconv.FormatBool(*o.CloudWatch.SslVerifyPeer))
-	}
-	if o.CloudWatch.HttpProxy != nil && *o.CloudWatch.HttpProxy != "" {
-		parent.InsertPairs("http_proxy", *o.CloudWatch.HttpProxy)
-	}
-	if o.CloudWatch.IncludeTimeKey != nil {
-		parent.InsertPairs("include_time_key", strconv.FormatBool(*o.CloudWatch.IncludeTimeKey))
-	}
-	if o.CloudWatch.JsonHandler != nil && *o.CloudWatch.JsonHandler != "" {
-		parent.InsertPairs("json_handler", *o.CloudWatch.JsonHandler)
-	}
-	if o.CloudWatch.Localtime != nil {
-		parent.InsertPairs("localtime", strconv.FormatBool(*o.CloudWatch.Localtime))
-	}
-	if o.CloudWatch.LogGroupAwsTags != nil && *o.CloudWatch.LogGroupAwsTags != "" {
-		parent.InsertPairs("log_group_aws_tags", *o.CloudWatch.LogGroupAwsTags)
-	}
-	if o.CloudWatch.LogGroupAwsTagsKey != nil && *o.CloudWatch.LogGroupAwsTagsKey != "" {
-		parent.InsertPairs("log_group_aws_tags_key", *o.CloudWatch.LogGroupAwsTagsKey)
-	}
-	if o.CloudWatch.LogGroupName != nil && *o.CloudWatch.LogGroupName != "" {
-		parent.InsertPairs("log_group_name", *o.CloudWatch.LogGroupName)
-	}
-	if o.CloudWatch.LogGroupNameKey != nil && *o.CloudWatch.LogGroupNameKey != "" {
-		parent.InsertPairs("log_group_name_key", *o.CloudWatch.LogGroupNameKey)
-	}
-	if o.CloudWatch.LogRejectedRequest != nil && *o.CloudWatch.LogRejectedRequest != "" {
-		parent.InsertPairs("log_rejected_request", *o.CloudWatch.LogRejectedRequest)
-	}
-	if o.CloudWatch.LogStreamName != nil && *o.CloudWatch.LogStreamName != "" {
-		parent.InsertPairs("log_stream_name", *o.CloudWatch.LogStreamName)
-	}
-	if o.CloudWatch.LogStreamNameKey != nil && *o.CloudWatch.LogStreamNameKey != "" {
-		parent.InsertPairs("log_stream_name_key", *o.CloudWatch.LogStreamNameKey)
-	}
-	if o.CloudWatch.MaxEventsPerBatch != nil && *o.CloudWatch.MaxEventsPerBatch != "" {
-		parent.InsertPairs("max_events_per_batch", *o.CloudWatch.MaxEventsPerBatch)
-	}
-	if o.CloudWatch.MaxMessageLength != nil && *o.CloudWatch.MaxMessageLength != "" {
-		parent.InsertPairs("max_message_length", *o.CloudWatch.MaxMessageLength)
-	}
-	if o.CloudWatch.MessageKeys != nil && *o.CloudWatch.MessageKeys != "" {
-		parent.InsertPairs("message_keys", *o.CloudWatch.MessageKeys)
-	}
-	if o.CloudWatch.PutLogEventsDisableRetryLimit != nil {
-		parent.InsertPairs("put_log_events_disable_retry_limit", strconv.FormatBool(*o.CloudWatch.PutLogEventsDisableRetryLimit))
-	}
-	if o.CloudWatch.PutLogEventsRetryLimit != nil && *o.CloudWatch.PutLogEventsRetryLimit != "" {
-		parent.InsertPairs("put_log_events_retry_limit", *o.CloudWatch.PutLogEventsRetryLimit)
-	}
-	if o.CloudWatch.PutLogEventsRetryWait != nil && *o.CloudWatch.PutLogEventsRetryWait != "" {
-		parent.InsertPairs("put_log_events_retry_wait", *o.CloudWatch.PutLogEventsRetryWait)
-	}
-	if o.CloudWatch.Region != nil && *o.CloudWatch.Region != "" {
-		parent.InsertPairs("region", *o.CloudWatch.Region)
-	}
-	if o.CloudWatch.RemoveLogGroupAwsTagsKey != nil {
-		parent.InsertPairs("remove_log_group_aws_tags_key", strconv.FormatBool(*o.CloudWatch.RemoveLogGroupAwsTagsKey))
-	}
-	if o.CloudWatch.RemoveLogGroupNameKey != nil {
-		parent.InsertPairs("remove_log_group_name_key", strconv.FormatBool(*o.CloudWatch.RemoveLogGroupNameKey))
-	}
-	if o.CloudWatch.RemoveLogStreamNameKey != nil {
-		parent.InsertPairs("remove_log_stream_name_key", strconv.FormatBool(*o.CloudWatch.RemoveLogStreamNameKey))
-	}
-	if o.CloudWatch.RemoveRetentionInDaysKey != nil {
-		parent.InsertPairs("remove_retention_in_days_key", strconv.FormatBool(*o.CloudWatch.RemoveRetentionInDaysKey))
-	}
-	if o.CloudWatch.RetentionInDays != nil && *o.CloudWatch.RetentionInDays != "" {
-		parent.InsertPairs("retention_in_days", *o.CloudWatch.RetentionInDays)
-	}
-	if o.CloudWatch.RetentionInDaysKey != nil && *o.CloudWatch.RetentionInDaysKey != "" {
-		parent.InsertPairs("retention_in_days_key", *o.CloudWatch.RetentionInDaysKey)
-	}
-	if o.CloudWatch.UseTagAsGroup != nil && *o.CloudWatch.UseTagAsGroup != "" {
-		parent.InsertPairs("use_tag_as_group", *o.CloudWatch.UseTagAsGroup)
-	}
-	if o.CloudWatch.UseTagAsStream != nil && *o.CloudWatch.UseTagAsStream != "" {
-		parent.InsertPairs("use_tag_as_stream", *o.CloudWatch.UseTagAsStream)
-	}
-	if o.CloudWatch.Policy != nil && *o.CloudWatch.Policy != "" {
-		parent.InsertPairs("policy", *o.CloudWatch.Policy)
-	}
-	if o.CloudWatch.DurationSeconds != nil && *o.CloudWatch.DurationSeconds != "" {
-		parent.InsertPairs("duration_seconds", *o.CloudWatch.DurationSeconds)
-	}
+	params.InsertPairs(parent, "aws_use_sts", o.CloudWatch.AwsUseSts)
+	params.InsertPairs(parent, "aws_sts_role_arn", o.CloudWatch.AwsStsRoleARN)
+	params.InsertPairs(parent, "aws_sts_session_name", o.CloudWatch.AwsStsSessionName)
+	params.InsertPairs(parent, "aws_sts_external_id", o.CloudWatch.AwsStsExternalId)
+	params.InsertPairs(parent, "aws_sts_policy", o.CloudWatch.AwsStsPolicy)
+	params.InsertPairs(parent, "aws_sts_duration_seconds", o.CloudWatch.AwsStsDurationSeconds)
+	params.InsertPairs(parent, "aws_sts_endpoint_url", o.CloudWatch.AwsStsEndpointUrl)
+	params.InsertPairs(parent, "aws_ecs_authentication", o.CloudWatch.AwsEcsAuthentication)
+	params.InsertPairs(parent, "concurrency", o.CloudWatch.Concurrency)
+	params.InsertPairs(parent, "endpoint", o.CloudWatch.Endpoint)
+	params.InsertPairs(parent, "ssl_verify_peer", o.CloudWatch.SslVerifyPeer)
+	params.InsertPairs(parent, "http_proxy", o.CloudWatch.HttpProxy)
+	params.InsertPairs(parent, "include_time_key", o.CloudWatch.IncludeTimeKey)
+	params.InsertPairs(parent, "json_handler", o.CloudWatch.JsonHandler)
+	params.InsertPairs(parent, "localtime", o.CloudWatch.Localtime)
+	params.InsertPairs(parent, "log_group_aws_tags", o.CloudWatch.LogGroupAwsTags)
+	params.InsertPairs(parent, "log_group_aws_tags_key", o.CloudWatch.LogGroupAwsTagsKey)
+	params.InsertPairs(parent, "log_group_name", o.CloudWatch.LogGroupName)
+	params.InsertPairs(parent, "log_group_name_key", o.CloudWatch.LogGroupNameKey)
+	params.InsertPairs(parent, "log_rejected_request", o.CloudWatch.LogRejectedRequest)
+	params.InsertPairs(parent, "log_stream_name", o.CloudWatch.LogStreamName)
+	params.InsertPairs(parent, "log_stream_name_key", o.CloudWatch.LogStreamNameKey)
+	params.InsertPairs(parent, "max_events_per_batch", o.CloudWatch.MaxEventsPerBatch)
+	params.InsertPairs(parent, "max_message_length", o.CloudWatch.MaxMessageLength)
+	params.InsertPairs(parent, "message_keys", o.CloudWatch.MessageKeys)
+	params.InsertPairs(parent, "put_log_events_disable_retry_limit", o.CloudWatch.PutLogEventsDisableRetryLimit)
+	params.InsertPairs(parent, "put_log_events_retry_limit", o.CloudWatch.PutLogEventsRetryLimit)
+	params.InsertPairs(parent, "put_log_events_retry_wait", o.CloudWatch.PutLogEventsRetryWait)
+	params.InsertPairs(parent, "region", o.CloudWatch.Region)
+	params.InsertPairs(parent, "remove_log_group_aws_tags_key", o.CloudWatch.RemoveLogGroupAwsTagsKey)
+	params.InsertPairs(parent, "remove_log_group_name_key", o.CloudWatch.RemoveLogGroupNameKey)
+	params.InsertPairs(parent, "remove_log_stream_name_key", o.CloudWatch.RemoveLogStreamNameKey)
+	params.InsertPairs(parent, "remove_retention_in_days_key", o.CloudWatch.RemoveRetentionInDaysKey)
+	params.InsertPairs(parent, "retention_in_days", o.CloudWatch.RetentionInDays)
+	params.InsertPairs(parent, "retention_in_days_key", o.CloudWatch.RetentionInDaysKey)
+	params.InsertPairs(parent, "use_tag_as_group", o.CloudWatch.UseTagAsGroup)
+	params.InsertPairs(parent, "use_tag_as_stream", o.CloudWatch.UseTagAsStream)
+	params.InsertPairs(parent, "policy", o.CloudWatch.Policy)
+	params.InsertPairs(parent, "duration_seconds", o.CloudWatch.DurationSeconds)
 
 	// web_identity_credentials is a subsection of its own containing AWS credential settings
 	child := params.NewPluginStore("web_identity_credentials")
-	if o.CloudWatch.RoleARN != nil && *o.CloudWatch.RoleARN != "" {
-		child.InsertPairs("role_arn", *o.CloudWatch.RoleARN)
-	}
-	if o.CloudWatch.WebIdentityTokenFile != nil && *o.CloudWatch.WebIdentityTokenFile != "" {
-		child.InsertPairs("web_identity_token_file", *o.CloudWatch.WebIdentityTokenFile)
-	}
-	if o.CloudWatch.RoleSessionName != nil && *o.CloudWatch.RoleSessionName != "" {
-		child.InsertPairs("role_session_name", *o.CloudWatch.RoleSessionName)
-	}
+	params.InsertPairs(child, "role_arn", o.CloudWatch.RoleARN)
+	params.InsertPairs(child, "web_identity_token_file", o.CloudWatch.WebIdentityTokenFile)
+	params.InsertPairs(child, "role_session_name", o.CloudWatch.RoleSessionName)
 	childs = append(childs, child)
 
 	// format is a subsection of its own.  Not implemented yet.
