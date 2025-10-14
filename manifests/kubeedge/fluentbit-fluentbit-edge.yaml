@@ -29,6 +29,7 @@ spec:
               - key: node-role.kubernetes.io/edge
                 operator: Exists
   hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   volumes:
     - name: host-proc
       hostPath:
