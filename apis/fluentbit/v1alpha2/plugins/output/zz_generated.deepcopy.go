@@ -32,6 +32,11 @@ func (in *AzureBlob) DeepCopyInto(out *AzureBlob) {
 		*out = new(plugins.Secret)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.BufferingEnabled != nil {
+		in, out := &in.BufferingEnabled, &out.BufferingEnabled
+		*out = new(bool)
+		**out = **in
+	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
 		*out = new(plugins.TLS)

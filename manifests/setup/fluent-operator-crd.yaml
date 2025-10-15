@@ -4187,6 +4187,18 @@ spec:
                     - appendblob
                     - blockblob
                     type: string
+                  bufferingEnabled:
+                    description: Enable buffering into disk before ingesting into
+                      Azure Blob.
+                    type: boolean
+                  compressBlob:
+                    description: 'Optional: Enables GZIP compression in the final
+                      blockblob file. This option isn''t compatible when blob_type
+                      = appendblob.'
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   containerName:
                     description: Name of the container that will contain the blobs
                     type: string
@@ -4362,6 +4374,18 @@ spec:
                         description: Hostname to be used for TLS SNI extension
                         type: string
                     type: object
+                  uploadFileSize:
+                    default: 200M
+                    description: Specifies the size of files to be uploaded in MB.
+                      Defaults to 200M.
+                    type: string
+                  uploadTimeout:
+                    default: 30m
+                    description: Optional. Specify a timeout for uploads. Fluent Bit
+                      will start ingesting buffer files which have been created more
+                      than x minutes ago and haven't reached upload_file_size limit
+                      yet. Defaults to 30m.
+                    type: string
                 required:
                 - accountName
                 - containerName
@@ -33213,6 +33237,18 @@ spec:
                     - appendblob
                     - blockblob
                     type: string
+                  bufferingEnabled:
+                    description: Enable buffering into disk before ingesting into
+                      Azure Blob.
+                    type: boolean
+                  compressBlob:
+                    description: 'Optional: Enables GZIP compression in the final
+                      blockblob file. This option isn''t compatible when blob_type
+                      = appendblob.'
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
                   containerName:
                     description: Name of the container that will contain the blobs
                     type: string
@@ -33388,6 +33424,18 @@ spec:
                         description: Hostname to be used for TLS SNI extension
                         type: string
                     type: object
+                  uploadFileSize:
+                    default: 200M
+                    description: Specifies the size of files to be uploaded in MB.
+                      Defaults to 200M.
+                    type: string
+                  uploadTimeout:
+                    default: 30m
+                    description: Optional. Specify a timeout for uploads. Fluent Bit
+                      will start ingesting buffer files which have been created more
+                      than x minutes ago and haven't reached upload_file_size limit
+                      yet. Defaults to 30m.
+                    type: string
                 required:
                 - accountName
                 - containerName
