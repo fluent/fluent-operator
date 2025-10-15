@@ -7,15 +7,15 @@ metadata:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-    - http: 
+    - http:
         bind: 0.0.0.0
         port: 9880
   replicas: 1
-  image: ghcr.io/fluent/fluent-operator/fluentd:v1.17.1
-  fluentdCfgSelector: 
+  image: ghcr.io/fluent/fluent-operator/fluentd:v1.19.0
+  fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
-   
+
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
@@ -40,8 +40,8 @@ metadata:
   namespace: fluent
   labels:
     filter.fluentd.fluent.io/enabled: "true"
-spec: 
-  filters: 
+spec:
+  filters:
     - stdout: {}
 
 ---
@@ -52,6 +52,6 @@ metadata:
   namespace: fluent
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
     - stdout: {}

@@ -7,12 +7,12 @@ metadata:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-  - forward: 
+  - forward:
       bind: 0.0.0.0
       port: 24224
   replicas: 3
-  image: ghcr.io/fluent/fluent-operator/fluentd:v1.17.1
-  fluentdCfgSelector: 
+  image: ghcr.io/fluent/fluent-operator/fluentd:v1.19.0
+  fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
 
@@ -24,7 +24,7 @@ metadata:
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
-  watchedNamespaces: 
+  watchedNamespaces:
   - kube-system
   - default
   clusterFilterSelector:
@@ -41,8 +41,8 @@ metadata:
   name: fluentd-filter
   labels:
     filter.fluentd.fluent.io/enabled: "true"
-spec: 
-  filters: 
+spec:
+  filters:
   - recordTransformer:
       enableRuby: true
       records:
@@ -56,8 +56,8 @@ metadata:
   name: fluentd-output
   labels:
     output.fluentd.fluent.io/enabled: "true"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - stdout: {}
     buffer:
       type: file
