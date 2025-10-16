@@ -91,10 +91,9 @@ func (f *Filter) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 
 }
 
-func (f *Filter) grepPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
-	childs := make([]*params.PluginStore, 0)
-	if len(f.Grep.Regexps) > 0 {
-		for _, r := range f.Grep.Regexps {
+func appendChild(childs []*params.PluginStore, loader plugins.SecretLoader, grep *Grep) []*params.PluginStore {
+	if len(grep.Regexps) > 0 {
+		for _, r := range grep.Regexps {
 			if r != nil && r.Key != nil && r.Pattern != nil {
 				child, _ := r.Params(loader)
 				childs = append(childs, child)
@@ -102,15 +101,20 @@ func (f *Filter) grepPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 		}
 	}
 
-	if len(f.Grep.Excludes) > 0 {
-		for _, e := range f.Grep.Excludes {
+	if len(grep.Excludes) > 0 {
+		for _, e := range grep.Excludes {
 			if e != nil && e.Key != nil && e.Pattern != nil {
 				child, _ := e.Params(loader)
 				childs = append(childs, child)
 			}
 		}
 	}
+	return childs
+}
 
+func (f *Filter) grepPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+	childs := make([]*params.PluginStore, 0)
+	childs = appendChild(childs, loader, f.Grep)
 	if len(f.Grep.Ands) > 0 {
 		for _, e := range f.Grep.Ands {
 			if e != nil && (e.Regexp != nil || e.Exclude != nil) {
