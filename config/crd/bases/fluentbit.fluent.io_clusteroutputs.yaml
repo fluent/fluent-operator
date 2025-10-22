@@ -4004,7 +4004,7 @@ spec:
                       if Resource is generic_task
                     type: string
                   textPayloadKey:
-                    description: the key to used to select the text payload from the
+                    description: The key used to select the text payload from the
                       record
                     type: string
                   workers:

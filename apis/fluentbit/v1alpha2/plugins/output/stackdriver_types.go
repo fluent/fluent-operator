@@ -56,7 +56,7 @@ type Stackdriver struct {
 	CustomK8sRegex string `json:"customK8sRegex,omitempty"`
 	// Optional list of comma separated strings. Setting these fields overrides the Stackdriver monitored resource API values
 	ResourceLabels []string `json:"resourceLabels,omitempty"`
-	// the key to used to select the text payload from the record
+	// The key used to select the text payload from the record
 	TextPayloadKey string `json:"textPayloadKey,omitempty"`
 }
 
