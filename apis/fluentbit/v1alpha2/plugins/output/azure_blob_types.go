@@ -29,6 +29,17 @@ type AzureBlob struct {
 	EmulatorMode string `json:"emulatorMode,omitempty"`
 	// HTTP Service of the endpoint (if using EmulatorMode)
 	Endpoint string `json:"endpoint,omitempty"`
+	// Optional: Enables GZIP compression in the final blockblob file. This option isn't compatible when blob_type = appendblob.
+	// +kubebuilder:validation:Enum:=on;off
+	CompressBlob string `json:"compressBlob,omitempty"`
+	// Enable buffering into disk before ingesting into Azure Blob.
+	BufferingEnabled *bool `json:"bufferingEnabled,omitempty"`
+	// Specifies the size of files to be uploaded in MB. Defaults to 200M.
+	// +kubebuilder:default:="200M"
+	UploadFileSize string `json:"uploadFileSize,omitempty"`
+	// Optional. Specify a timeout for uploads. Fluent Bit will start ingesting buffer files which have been created more than x minutes ago and haven't reached upload_file_size limit yet. Defaults to 30m.
+	// +kubebuilder:default:="30m"
+	UploadTimeout string `json:"uploadTimeout,omitempty"`
 	// Enable/Disable TLS Encryption. Azure services require TLS to be enabled.
 	*plugins.TLS `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
@@ -67,6 +78,10 @@ func (o *AzureBlob) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVString(kvs, "container_name", o.ContainerName)
 	plugins.InsertKVString(kvs, "blob_type", o.BlobType)
 	plugins.InsertKVString(kvs, "auto_create_container", o.AutoCreateContainer)
+	plugins.InsertKVString(kvs, "compress_blob", o.CompressBlob)
+	plugins.InsertKVField(kvs, "buffering_enabled", o.BufferingEnabled)
+	plugins.InsertKVString(kvs, "upload_file_size", o.UploadFileSize)
+	plugins.InsertKVString(kvs, "upload_timeout", o.UploadTimeout)
 	plugins.InsertKVString(kvs, "path", o.Path)
 	plugins.InsertKVString(kvs, "emulator_mode", o.EmulatorMode)
 	plugins.InsertKVString(kvs, "endpoint", o.Endpoint)
