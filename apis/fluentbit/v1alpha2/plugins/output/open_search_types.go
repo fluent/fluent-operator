@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -104,117 +102,55 @@ type OpenSearch struct {
 }
 
 // Name implement Section() method
-func (_ *OpenSearch) Name() string {
+func (*OpenSearch) Name() string {
 	return "opensearch"
 }
 
 // Params implement Section() method
 func (o *OpenSearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if o.Host != "" {
-		kvs.Insert("Host", o.Host)
+
+	if err := plugins.InsertKVSecret(kvs, "HTTP_User", o.HTTPUser, sl); err != nil {
+		return nil, err
 	}
-	if o.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*o.Port))
+	if err := plugins.InsertKVSecret(kvs, "HTTP_Passwd", o.HTTPPasswd, sl); err != nil {
+		return nil, err
 	}
-	if o.Path != "" {
-		kvs.Insert("Path", o.Path)
-	}
-	if o.BufferSize != "" {
-		kvs.Insert("Buffer_Size", o.BufferSize)
-	}
-	if o.Pipeline != "" {
-		kvs.Insert("Pipeline", o.Pipeline)
-	}
-	if o.AWSAuth != "" {
-		kvs.Insert("AWS_Auth", o.AWSAuth)
-	}
-	if o.AWSRegion != "" {
-		kvs.Insert("AWS_Region", o.AWSRegion)
-	}
-	if o.AWSSTSEndpoint != "" {
-		kvs.Insert("AWS_STS_Endpoint", o.AWSSTSEndpoint)
-	}
-	if o.AWSRoleARN != "" {
-		kvs.Insert("AWS_Role_ARN", o.AWSRoleARN)
-	}
-	if o.AWSExternalID != "" {
-		kvs.Insert("AWS_External_ID", o.AWSExternalID)
-	}
-	if o.HTTPUser != nil {
-		u, err := sl.LoadSecret(*o.HTTPUser)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("HTTP_User", u)
-	}
-	if o.HTTPPasswd != nil {
-		pwd, err := sl.LoadSecret(*o.HTTPPasswd)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("HTTP_Passwd", pwd)
-	}
-	if o.Index != "" {
-		kvs.Insert("Index", o.Index)
-	}
-	if o.Type != "" {
-		kvs.Insert("Type", o.Type)
-	}
-	if o.LogstashFormat != nil {
-		kvs.Insert("Logstash_Format", fmt.Sprint(*o.LogstashFormat))
-	}
-	if o.LogstashPrefix != "" {
-		kvs.Insert("Logstash_Prefix", o.LogstashPrefix)
-	}
-	if o.LogstashDateFormat != "" {
-		kvs.Insert("Logstash_DateFormat", o.LogstashDateFormat)
-	}
-	if o.TimeKey != "" {
-		kvs.Insert("Time_Key", o.TimeKey)
-	}
-	if o.TimeKeyFormat != "" {
-		kvs.Insert("Time_Key_Format", o.TimeKeyFormat)
-	}
-	if o.TimeKeyNanos != nil {
-		kvs.Insert("Time_Key_Nanos", fmt.Sprint(*o.TimeKeyNanos))
-	}
-	if o.IncludeTagKey != nil {
-		kvs.Insert("Include_Tag_Key", fmt.Sprint(*o.IncludeTagKey))
-	}
-	if o.TagKey != "" {
-		kvs.Insert("Tag_Key", o.TagKey)
-	}
-	if o.GenerateID != nil {
-		kvs.Insert("Generate_ID", fmt.Sprint(*o.GenerateID))
-	}
-	if o.IdKey != "" {
-		kvs.Insert("ID_KEY", o.IdKey)
-	}
-	if o.WriteOperation != "" {
-		kvs.Insert("Write_Operation", o.WriteOperation)
-	}
-	if o.ReplaceDots != nil {
-		kvs.Insert("Replace_Dots", fmt.Sprint(*o.ReplaceDots))
-	}
-	if o.TraceOutput != nil {
-		kvs.Insert("Trace_Output", fmt.Sprint(*o.TraceOutput))
-	}
-	if o.TraceError != nil {
-		kvs.Insert("Trace_Error", fmt.Sprint(*o.TraceError))
-	}
-	if o.CurrentTimeIndex != nil {
-		kvs.Insert("Current_Time_Index", fmt.Sprint(*o.CurrentTimeIndex))
-	}
-	if o.LogstashPrefixKey != "" {
-		kvs.Insert("Logstash_Prefix_Key", o.LogstashPrefixKey)
-	}
-	if o.SuppressTypeName != nil {
-		kvs.Insert("Suppress_Type_Name", fmt.Sprint(*o.SuppressTypeName))
-	}
-	if o.Workers != nil {
-		kvs.Insert("Workers", fmt.Sprint(*o.Workers))
-	}
+
+	plugins.InsertKVString(kvs, "Host", o.Host)
+	plugins.InsertKVField(kvs, "Port", o.Port)
+	plugins.InsertKVString(kvs, "Index", o.Index)
+	plugins.InsertKVString(kvs, "Type", o.Type)
+	plugins.InsertKVString(kvs, "Path", o.Path)
+	plugins.InsertKVString(kvs, "Buffer_Size", o.BufferSize)
+	plugins.InsertKVString(kvs, "Pipeline", o.Pipeline)
+	plugins.InsertKVString(kvs, "AWS_Auth", o.AWSAuth)
+	plugins.InsertKVString(kvs, "AWS_Region", o.AWSRegion)
+	plugins.InsertKVString(kvs, "AWS_STS_Endpoint", o.AWSSTSEndpoint)
+	plugins.InsertKVString(kvs, "AWS_Role_ARN", o.AWSRoleARN)
+	plugins.InsertKVString(kvs, "AWS_External_ID", o.AWSExternalID)
+	plugins.InsertKVString(kvs, "Logstash_Prefix", o.LogstashPrefix)
+	plugins.InsertKVString(kvs, "Logstash_DateFormat", o.LogstashDateFormat)
+	plugins.InsertKVString(kvs, "Time_Key", o.TimeKey)
+	plugins.InsertKVString(kvs, "Time_Key_Format", o.TimeKeyFormat)
+	plugins.InsertKVString(kvs, "Tag_Key", o.TagKey)
+	plugins.InsertKVString(kvs, "ID_KEY", o.IdKey)
+	plugins.InsertKVString(kvs, "Write_Operation", o.WriteOperation)
+	plugins.InsertKVString(kvs, "Logstash_Prefix_Key", o.LogstashPrefixKey)
+	plugins.InsertKVString(kvs, "storage.total_limit_size", o.TotalLimitSize)
+	plugins.InsertKVString(kvs, "Compress", o.Compress)
+
+	plugins.InsertKVField(kvs, "Logstash_Format", o.LogstashFormat)
+	plugins.InsertKVField(kvs, "Time_Key_Nanos", o.TimeKeyNanos)
+	plugins.InsertKVField(kvs, "Include_Tag_Key", o.IncludeTagKey)
+	plugins.InsertKVField(kvs, "Generate_ID", o.GenerateID)
+	plugins.InsertKVField(kvs, "Replace_Dots", o.ReplaceDots)
+	plugins.InsertKVField(kvs, "Trace_Output", o.TraceOutput)
+	plugins.InsertKVField(kvs, "Trace_Error", o.TraceError)
+	plugins.InsertKVField(kvs, "Current_Time_Index", o.CurrentTimeIndex)
+	plugins.InsertKVField(kvs, "Suppress_Type_Name", o.SuppressTypeName)
+	plugins.InsertKVField(kvs, "Workers", o.Workers)
+
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
 		if err != nil {
@@ -229,8 +165,6 @@ func (o *OpenSearch) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
-	if o.TotalLimitSize != "" {
-		kvs.Insert("storage.total_limit_size", o.TotalLimitSize)
-	}
+
 	return kvs, nil
 }

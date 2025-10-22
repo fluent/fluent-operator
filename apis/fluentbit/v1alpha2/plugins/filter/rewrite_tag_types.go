@@ -27,7 +27,7 @@ type RewriteTag struct {
 	EmitterStorageType string `json:"emitterStorageType,omitempty"`
 }
 
-func (_ *RewriteTag) Name() string {
+func (*RewriteTag) Name() string {
 	return "rewrite_tag"
 }
 

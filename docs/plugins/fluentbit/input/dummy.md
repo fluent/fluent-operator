@@ -5,7 +5,7 @@ The dummy input plugin, generates dummy events. <br /> It is useful for testing,
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| tag | Tag name associated to all records comming from this plugin. | string |
+| tag | Tag name associated to all records coming from this plugin. | string |
 | dummy | Dummy JSON record. | string |
 | rate | Events number generated per second. | *int32 |
 | samples | Sample events to generate. | *int32 |

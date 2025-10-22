@@ -85,7 +85,8 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 
 	// Check if Secret exists and requeue when not found
 	var sec corev1.Secret
-	if err := r.Get(ctx, client.ObjectKey{Namespace: co.Namespace, Name: co.Spec.FluentBitConfigName}, &sec); err != nil {
+	objKey := client.ObjectKey{Namespace: co.Namespace, Name: co.Spec.FluentBitConfigName}
+	if err := r.Get(ctx, objKey, &sec); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{Requeue: true}, nil
 		}
@@ -93,7 +94,13 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	// Install RBAC resources for the filter plugin kubernetes
-	cr, sa, crb := operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
+	cr, sa, crb := operator.MakeRBACObjects(
+		co.Name,
+		co.Namespace,
+		"collector",
+		co.Spec.RBACRules,
+		co.Spec.ServiceAccountAnnotations,
+	)
 	// Deploy Fluent Bit Collector ClusterRole
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, cr, r.mutate(cr, &co)); err != nil {
 		return ctrl.Result{}, err
@@ -127,14 +134,24 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 func (r *CollectorReconciler) mutate(obj client.Object, co *fluentbitv1alpha2.Collector) controllerutil.MutateFn {
 	switch o := obj.(type) {
 	case *rbacv1.ClusterRole:
-		expected, _, _ := operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
+		expected, _, _ := operator.MakeRBACObjects(co.Name,
+			co.Namespace, "collector",
+			co.Spec.RBACRules,
+			co.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.Rules = expected.Rules
 			return nil
 		}
 	case *corev1.ServiceAccount:
-		_, expected, _ := operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
+		_, expected, _ := operator.MakeRBACObjects(
+			co.Name,
+			co.Namespace,
+			"collector",
+			co.Spec.RBACRules,
+			co.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.Annotations = expected.Annotations
@@ -144,7 +161,12 @@ func (r *CollectorReconciler) mutate(obj client.Object, co *fluentbitv1alpha2.Co
 			return nil
 		}
 	case *rbacv1.ClusterRoleBinding:
-		_, _, expected := operator.MakeRBACObjects(co.Name, co.Namespace, "collector", co.Spec.RBACRules, co.Spec.ServiceAccountAnnotations)
+		_, _, expected := operator.MakeRBACObjects(co.Name,
+			co.Namespace,
+			"collector",
+			co.Spec.RBACRules,
+			co.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.RoleRef = expected.RoleRef
@@ -220,35 +242,40 @@ func (r *CollectorReconciler) delete(ctx context.Context, co *fluentbitv1alpha2.
 }
 
 func (r *CollectorReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.ServiceAccount{}, collectorOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		sa := rawObj.(*corev1.ServiceAccount)
-		owner := metav1.GetControllerOf(sa)
-		if owner == nil {
-			return nil
-		}
-		// Make sure it's a FluentBit. If so, return it.
-		if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "Collector" {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+	ctx := context.Background()
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &corev1.ServiceAccount{}, collectorOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			sa := rawObj.(*corev1.ServiceAccount)
+			owner := metav1.GetControllerOf(sa)
+			if owner == nil {
+				return nil
+			}
+			// Make sure it's a FluentBit. If so, return it.
+			if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "Collector" {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.StatefulSet{}, collectorOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		sts := rawObj.(*appsv1.StatefulSet)
-		owner := metav1.GetControllerOf(sts)
-		if owner == nil {
-			return nil
-		}
-		// Make sure it's a FluentBit. If so, return it.
-		if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "Collector" {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &appsv1.StatefulSet{}, collectorOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			sts := rawObj.(*appsv1.StatefulSet)
+			owner := metav1.GetControllerOf(sts)
+			if owner == nil {
+				return nil
+			}
+			// Make sure it's a FluentBit. If so, return it.
+			if owner.APIVersion != fluentbitApiGVStr || owner.Kind != "Collector" {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 

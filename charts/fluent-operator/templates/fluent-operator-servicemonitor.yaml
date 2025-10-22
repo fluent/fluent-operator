@@ -1,0 +1,38 @@
+{{- if .Values.operator.enable }}
+{{- if .Values.operator.serviceMonitor.enable }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fluent-operator
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
+spec:
+  endpoints:
+    - port: {{ .Values.operator.service.portName }}
+      path: {{ .Values.operator.serviceMonitor.path }}
+      interval: {{ .Values.operator.serviceMonitor.interval }}
+      {{- if .Values.operator.serviceMonitor.secure }}
+      scheme: https
+      tlsConfig:
+        {{- toYaml .Values.operator.serviceMonitor.tlsConfig | nindent 8 }}
+      {{- end }}
+      scrapeTimeout: {{ .Values.operator.serviceMonitor.scrapeTimeout }}
+      {{- with .Values.operator.serviceMonitor.relabelings }}
+      relabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.operator.serviceMonitor.metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: operator
+      app.kubernetes.io/name: fluent-operator
+  namespaceSelector:
+    matchNames:
+    - {{ template "fluent-operator.namespace" . }}
+{{- end }}
+{{- end }}

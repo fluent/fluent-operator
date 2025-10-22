@@ -25,29 +25,19 @@ type File struct {
 	Template string `json:"template,omitempty"`
 }
 
-func (_ *File) Name() string {
+func (*File) Name() string {
 	return "file"
 }
 
 func (f *File) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if f.Path != "" {
-		kvs.Insert("Path", f.Path)
-	}
-	if f.File != "" {
-		kvs.Insert("File", f.File)
-	}
-	if f.Format != "" {
-		kvs.Insert("Format", f.Format)
-	}
-	if f.Delimiter != "" {
-		kvs.Insert("Delimiter", f.Delimiter)
-	}
-	if f.LabelDelimiter != "" {
-		kvs.Insert("Label_Delimiter", f.LabelDelimiter)
-	}
-	if f.Template != "" {
-		kvs.Insert("Template", f.Template)
-	}
+
+	plugins.InsertKVString(kvs, "Path", f.Path)
+	plugins.InsertKVString(kvs, "File", f.File)
+	plugins.InsertKVString(kvs, "Format", f.Format)
+	plugins.InsertKVString(kvs, "Delimiter", f.Delimiter)
+	plugins.InsertKVString(kvs, "Label_Delimiter", f.LabelDelimiter)
+	plugins.InsertKVString(kvs, "Template", f.Template)
+
 	return kvs, nil
 }

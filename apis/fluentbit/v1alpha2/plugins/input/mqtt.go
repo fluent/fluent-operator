@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -21,18 +19,17 @@ type MQTT struct {
 	Port *int32 `json:"port,omitempty"`
 }
 
-func (_ *MQTT) Name() string {
+func (*MQTT) Name() string {
 	return "mqtt"
 }
 
 // implement Section() method
 func (m *MQTT) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if m.Listen != "" {
-		kvs.Insert("Listen", m.Listen)
-	}
-	if m.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*m.Port))
-	}
+
+	plugins.InsertKVString(kvs, "Listen", m.Listen)
+
+	plugins.InsertKVField(kvs, "Port", m.Port)
+
 	return kvs, nil
 }

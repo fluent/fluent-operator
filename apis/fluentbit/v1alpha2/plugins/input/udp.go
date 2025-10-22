@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -40,35 +38,21 @@ type UDP struct {
 	Threaded *string `json:"threaded,omitempty"`
 }
 
-func (_ *UDP) Name() string {
+func (*UDP) Name() string {
 	return "udp"
 }
 
 func (u *UDP) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if u.Listen != nil {
-		kvs.Insert("Listen", *u.Listen)
-	}
-	if u.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*u.Port))
-	}
-	if u.BufferSize != nil {
-		kvs.Insert("Buffer_Size", *u.BufferSize)
-	}
-	if u.ChunkSize != nil {
-		kvs.Insert("Chunk_Size", *u.ChunkSize)
-	}
-	if u.Format != nil {
-		kvs.Insert("Format", *u.Format)
-	}
-	if u.Separator != nil {
-		kvs.Insert("Separator", *u.Separator)
-	}
-	if u.SourceAddressKey != nil {
-		kvs.Insert("Source_Address_Key", *u.SourceAddressKey)
-	}
-	if u.Threaded != nil {
-		kvs.Insert("Threaded", *u.Threaded)
-	}
+
+	plugins.InsertKVField(kvs, "Port", u.Port)
+	plugins.InsertKVField(kvs, "Listen", u.Listen)
+	plugins.InsertKVField(kvs, "Buffer_Size", u.BufferSize)
+	plugins.InsertKVField(kvs, "Chunk_Size", u.ChunkSize)
+	plugins.InsertKVField(kvs, "Format", u.Format)
+	plugins.InsertKVField(kvs, "Separator", u.Separator)
+	plugins.InsertKVField(kvs, "Source_Address_Key", u.SourceAddressKey)
+	plugins.InsertKVField(kvs, "Threaded", u.Threaded)
+
 	return kvs, nil
 }

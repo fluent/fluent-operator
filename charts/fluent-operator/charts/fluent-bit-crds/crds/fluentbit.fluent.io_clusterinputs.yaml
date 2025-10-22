@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.18.0
   name: clusterinputs.fluentbit.fluent.io
 spec:
   group: fluentbit.fluent.io
@@ -91,7 +91,7 @@ spec:
                     format: int32
                     type: integer
                   tag:
-                    description: Tag name associated to all records comming from this
+                    description: Tag name associated to all records coming from this
                       plugin.
                     type: string
                 type: object
@@ -156,7 +156,7 @@ spec:
                 properties:
                   bufferMaxSize:
                     description: |-
-                      Specify maximum buffer memory size used to recieve a forward message.
+                      Specify maximum buffer memory size used to receive a forward message.
                       The value must be according to the Unit Size specification.
                     pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
                     type: string
@@ -188,7 +188,7 @@ spec:
                       a separate thread which helps to desaturate the main pipeline.
                     type: string
                   unixPath:
-                    description: Specify the path to unix socket to recieve a forward
+                    description: Specify the path to unix socket to receive a forward
                       message. If set, Listen and port are ignnored.
                     type: string
                   unixPerm:
@@ -282,9 +282,7 @@ spec:
                                       This field is effectively required, but due to backwards compatibility is
                                       allowed to be empty. Instances of this type with an empty value here are
                                       almost certainly wrong.
-                                      TODO: Add other useful fields. apiVersion, kind, uid?
                                       More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                      TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                                     type: string
                                   optional:
                                     description: Specify whether the Secret or its
@@ -355,7 +353,7 @@ spec:
                     description: API Server end-point
                     type: string
                   tag:
-                    description: Tag name associated to all records comming from this
+                    description: Tag name associated to all records coming from this
                       plugin.
                     type: string
                   tlsDebug:
@@ -434,7 +432,7 @@ spec:
                       host operating system, default is 5 seconds.
                     type: string
                   tag:
-                    description: Tag name associated to all records comming from this
+                    description: Tag name associated to all records coming from this
                       plugin.
                     type: string
                 type: object
@@ -509,7 +507,7 @@ spec:
                     description: 'The interval to scrape metrics, default: 10s'
                     type: string
                   tag:
-                    description: Tag name associated to all records comming from this
+                    description: Tag name associated to all records coming from this
                       plugin
                     type: string
                 type: object
@@ -629,9 +627,7 @@ spec:
                                       This field is effectively required, but due to backwards compatibility is
                                       allowed to be empty. Instances of this type with an empty value here are
                                       almost certainly wrong.
-                                      TODO: Add other useful fields. apiVersion, kind, uid?
                                       More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                      TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                                     type: string
                                   optional:
                                     description: Specify whether the Secret or its

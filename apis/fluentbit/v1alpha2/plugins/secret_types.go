@@ -38,13 +38,14 @@ func NewSecretLoader(c client.Client, ns string) SecretLoader {
 
 func (sl SecretLoader) LoadSecret(s Secret) (string, error) {
 	var secret corev1.Secret
-	if err := sl.Client.Get(context.Background(), client.ObjectKey{Name: s.ValueFrom.SecretKeyRef.Name, Namespace: sl.namespace}, &secret); err != nil {
+	ctx := context.Background()
+	if err := sl.Client.Get(ctx, client.ObjectKey{Name: s.ValueFrom.SecretKeyRef.Name, Namespace: sl.namespace}, &secret); err != nil {
 		return "", err
 	}
 
 	if v, ok := secret.Data[s.ValueFrom.SecretKeyRef.Key]; !ok {
 		return "", errors.NotFound(fmt.Sprintf("The key %s is not found.", s.ValueFrom.SecretKeyRef.Key))
 	} else {
-		return strings.TrimSuffix(fmt.Sprintf("%s", v), "\n"), nil
+		return strings.TrimSuffix(string(v), "\n"), nil
 	}
 }

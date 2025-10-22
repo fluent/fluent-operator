@@ -22,7 +22,7 @@ func MakefbStatefulset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 		replicas = *co.Spec.Replicas
 	}
 
-	statefulset := appsv1.StatefulSet{
+	sts := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      co.Name,
 			Namespace: co.Namespace,
@@ -104,32 +104,34 @@ func MakefbStatefulset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 		},
 	}
 
+	specTemplateSpec := &sts.Spec.Template.Spec
 	if co.Spec.RuntimeClassName != "" {
-		statefulset.Spec.Template.Spec.RuntimeClassName = &co.Spec.RuntimeClassName
+		specTemplateSpec.RuntimeClassName = &co.Spec.RuntimeClassName
 	}
 
 	if co.Spec.PriorityClassName != "" {
-		statefulset.Spec.Template.Spec.PriorityClassName = co.Spec.PriorityClassName
+		specTemplateSpec.PriorityClassName = co.Spec.PriorityClassName
 	}
 
 	if co.Spec.SchedulerName != "" {
-		statefulset.Spec.Template.Spec.SchedulerName = co.Spec.SchedulerName
+		specTemplateSpec.SchedulerName = co.Spec.SchedulerName
 	}
 
 	if co.Spec.Volumes != nil {
-		statefulset.Spec.Template.Spec.Volumes = append(statefulset.Spec.Template.Spec.Volumes, co.Spec.Volumes...)
+		specTemplateSpec.Volumes = append(specTemplateSpec.Volumes, co.Spec.Volumes...)
 	}
+	ctr := &specTemplateSpec.Containers[0]
 	if co.Spec.VolumesMounts != nil {
-		statefulset.Spec.Template.Spec.Containers[0].VolumeMounts = append(statefulset.Spec.Template.Spec.Containers[0].VolumeMounts, co.Spec.VolumesMounts...)
+		ctr.VolumeMounts = append(ctr.VolumeMounts, co.Spec.VolumesMounts...)
 	}
 
 	if co.Spec.Ports != nil {
-		statefulset.Spec.Template.Spec.Containers[0].Ports = append(statefulset.Spec.Template.Spec.Containers[0].Ports, co.Spec.Ports...)
+		ctr.Ports = append(ctr.Ports, co.Spec.Ports...)
 	}
 
 	// Mount Secrets
 	for _, secret := range co.Spec.Secrets {
-		statefulset.Spec.Template.Spec.Volumes = append(statefulset.Spec.Template.Spec.Volumes, corev1.Volume{
+		specTemplateSpec.Volumes = append(specTemplateSpec.Volumes, corev1.Volume{
 			Name: secret,
 			VolumeSource: corev1.VolumeSource{
 				Secret: &corev1.SecretVolumeSource{
@@ -137,7 +139,7 @@ func MakefbStatefulset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 				},
 			},
 		})
-		statefulset.Spec.Template.Spec.Containers[0].VolumeMounts = append(statefulset.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+		specTemplateSpec.Containers[0].VolumeMounts = append(specTemplateSpec.Containers[0].VolumeMounts, corev1.VolumeMount{
 			Name:      secret,
 			ReadOnly:  true,
 			MountPath: fmt.Sprintf("/fluent-bit/secrets/%s", secret),
@@ -145,13 +147,13 @@ func MakefbStatefulset(co fluentbitv1alpha2.Collector) *appsv1.StatefulSet {
 	}
 
 	// Bind pvc
-	statefulset.Spec.VolumeClaimTemplates = append(statefulset.Spec.VolumeClaimTemplates, MakeFluentbitPVC(co))
-	statefulset.Spec.Template.Spec.Containers[0].VolumeMounts = append(statefulset.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+	sts.Spec.VolumeClaimTemplates = append(sts.Spec.VolumeClaimTemplates, MakeFluentbitPVC(co))
+	specTemplateSpec.Containers[0].VolumeMounts = append(specTemplateSpec.Containers[0].VolumeMounts, corev1.VolumeMount{
 		Name:      fmt.Sprintf("%s-buffer-pvc", co.Name),
 		MountPath: FluentbitBufferMountPath(co),
 	})
 
-	return &statefulset
+	return &sts
 }
 
 func MakeFluentbitPVC(co fluentbitv1alpha2.Collector) corev1.PersistentVolumeClaim {
@@ -179,7 +181,9 @@ func MakeFluentbitPVC(co fluentbitv1alpha2.Collector) corev1.PersistentVolumeCla
 func makeDefaultFluentbitPVC(co fluentbitv1alpha2.Collector) corev1.PersistentVolumeClaim {
 
 	r := corev1.VolumeResourceRequirements{
-		Requests: corev1.ResourceList(map[corev1.ResourceName]resource.Quantity{corev1.ResourceStorage: resource.MustParse("1Gi")}),
+		Requests: corev1.ResourceList(map[corev1.ResourceName]resource.Quantity{
+			corev1.ResourceStorage: resource.MustParse("1Gi"),
+		}),
 	}
 
 	fsmode := corev1.PersistentVolumeFilesystem

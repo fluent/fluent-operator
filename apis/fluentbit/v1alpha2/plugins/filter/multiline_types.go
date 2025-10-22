@@ -19,10 +19,10 @@ type Multiline struct {
 
 type Multi struct {
 	// Specify one or multiple Multiline Parsing definitions to apply to the content.
-	//You can specify multiple multiline parsers to detect different formats by separating them with a comma.
+	// You can specify multiple multiline parsers to detect different formats by separating them with a comma.
 	Parser string `json:"parser"`
-	//Key name that holds the content to process.
-	//Note that a Multiline Parser definition can already specify the key_content to use, but this option allows to overwrite that value for the purpose of the filter.
+	// Key name that holds the content to process.
+	// Note that a Multiline Parser definition can already specify the key_content to use, but this option allows to overwrite that value for the purpose of the filter.
 	KeyContent string `json:"keyContent,omitempty"`
 	// +kubebuilder:validation:Enum:=parser;partial_message
 	Mode string `json:"mode,omitempty"`
@@ -41,7 +41,7 @@ type Multi struct {
 	EmitterMemBufLimit int `json:"emitterMemBufLimit,omitempty"`
 }
 
-func (_ *Multiline) Name() string {
+func (*Multiline) Name() string {
 	return "multiline"
 }
 
@@ -52,29 +52,29 @@ func (m *Multiline) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		return kvs, err
 	}
 	if m.Multi != nil {
-		if m.Multi.Parser != "" {
-			kvs.Insert("multiline.parser", m.Multi.Parser)
+		if m.Parser != "" {
+			kvs.Insert("multiline.parser", m.Parser)
 		}
-		if m.Multi.KeyContent != "" {
-			kvs.Insert("multiline.key_content", m.Multi.KeyContent)
+		if m.KeyContent != "" {
+			kvs.Insert("multiline.key_content", m.KeyContent)
 		}
-		if m.Multi.Mode != "" {
-			kvs.Insert("mode", m.Multi.Mode)
+		if m.Mode != "" {
+			kvs.Insert("mode", m.Mode)
 		}
-		if m.Multi.Buffer != false {
-			kvs.Insert("buffer", fmt.Sprint(m.Multi.Buffer))
+		if m.Buffer {
+			kvs.Insert("buffer", fmt.Sprint(m.Buffer))
 		}
-		if m.Multi.FlushMS != 0 {
-			kvs.Insert("flush_ms", fmt.Sprint(m.Multi.FlushMS))
+		if m.FlushMS != 0 {
+			kvs.Insert("flush_ms", fmt.Sprint(m.FlushMS))
 		}
-		if m.Multi.EmitterName != "" {
-			kvs.Insert("emitter_name", m.Multi.EmitterName)
+		if m.EmitterName != "" {
+			kvs.Insert("emitter_name", m.EmitterName)
 		}
-		if m.Multi.EmitterType != "" {
-			kvs.Insert("emitter_storage.type", m.Multi.EmitterType)
+		if m.EmitterType != "" {
+			kvs.Insert("emitter_storage.type", m.EmitterType)
 		}
-		if m.Multi.EmitterMemBufLimit != 0 {
-			kvs.Insert("emitter_mem_buf_limit", fmt.Sprintf("%dMB", m.Multi.EmitterMemBufLimit))
+		if m.EmitterMemBufLimit != 0 {
+			kvs.Insert("emitter_mem_buf_limit", fmt.Sprintf("%dMB", m.EmitterMemBufLimit))
 		}
 	}
 	return kvs, nil

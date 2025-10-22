@@ -4,20 +4,27 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/multilineparser"
-	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/parser"
-
+	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/custom"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/filter"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/input"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/multilineparser"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/output"
-	. "github.com/onsi/gomega"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/parser"
 )
 
-var expected = `[Service]
+const (
+	authorization     = "foo:bar"
+	xLogHeader0       = "testing"
+	xLogHeaderAppID   = "9780495d9db3"
+	xLogHeaderAppName = "app_name"
+)
+
+var (
+	expected = fmt.Sprintf(`[Service]
     Daemon    false
     Flush    1
     Grace    30
@@ -72,10 +79,10 @@ var expected = `[Service]
     port    433
     uri    /logs
     format    json_lines
-    header     Authorization    foo:bar
-    header     X-Log-Header-0    testing
-    header     X-Log-Header-App-ID    9780495d9db3
-    header     X-Log-Header-App-Name    app_name
+    header     Authorization    %s
+    header     X-Log-Header-0    %s
+    header     X-Log-Header-App-ID    %s
+    header     X-Log-Header-App-Name    %s
     json_date_key    timestamp
     json_date_format    iso8601
     tls    On
@@ -110,8 +117,9 @@ var expected = `[Service]
     syslog_message_key    log
     tls    On
     tls.verify    true
-`
-var expectedYaml = `service:
+`, authorization, xLogHeader0, xLogHeaderAppID, xLogHeaderAppName)
+
+	expectedYaml = fmt.Sprintf(`service:
   daemon: false
   flush: 1
   grace: 30
@@ -171,10 +179,10 @@ pipeline:
       uri: /logs
       format: json_lines
       header:
-        -  Authorization    foo:bar
-        -  X-Log-Header-0    testing
-        -  X-Log-Header-App-ID    9780495d9db3
-        -  X-Log-Header-App-Name    app_name
+        -  Authorization    %s
+        -  X-Log-Header-0    %s
+        -  X-Log-Header-App-ID    %s
+        -  X-Log-Header-App-Name    %s
       json_date_key: timestamp
       json_date_format: iso8601
       tls: On
@@ -205,8 +213,9 @@ pipeline:
       match: 098f6bcd4621d373cade4e832627b4f6.kube.namespace.*
       brokers: 127.0.1.1:9092
       topics: fluentbit-namespace
-`
-var expectedK8s = `[Service]
+`, authorization, xLogHeader0, xLogHeaderAppID, xLogHeaderAppName)
+
+	expectedK8s = `[Service]
     Daemon    false
     Flush    1
     Grace    30
@@ -243,7 +252,7 @@ var expectedK8s = `[Service]
     Write_Operation    update
 `
 
-var expectedK8sYaml = `service:
+	expectedK8sYaml = `service:
   daemon: false
   flush: 1
   grace: 30
@@ -280,7 +289,7 @@ pipeline:
       write_operation: update
 `
 
-var expectedK8sYamlWithClusterFilterOutput = `service:
+	expectedK8sYamlWithClusterFilterOutput = `service:
   daemon: false
   flush: 1
   grace: 30
@@ -327,7 +336,7 @@ pipeline:
       write_operation: update
 `
 
-var expectedParsers = `[PARSER]
+	expectedParsers = `[PARSER]
     Name    clusterparser0
     Format    json
     Time_Key    time
@@ -346,7 +355,7 @@ var expectedParsers = `[PARSER]
     Types    status:integer size:integer
 `
 
-var expectedMultilineParsers = `[MULTILINE_PARSER]
+	expectedMultilineParsers = `[MULTILINE_PARSER]
     Name    clustermultilineparser0
     Type    regex
     Parser    go
@@ -365,33 +374,34 @@ var expectedMultilineParsers = `[MULTILINE_PARSER]
     Rule    "cont" "/^\s+at.*/" "cont"
 `
 
-var labels = map[string]string{
-	"label0": "lv0",
-	"label1": "lv1",
-	"label3": "lval3",
-	"lbl2":   "lval2",
-	"lbl1":   "lvl1",
-}
+	labels = map[string]string{
+		"label0": "lv0",
+		"label1": "lv1",
+		"label3": "lval3",
+		"lbl2":   "lval2",
+		"lbl1":   "lvl1",
+	}
 
-var cfg = ClusterFluentBitConfig{
-	Spec: FluentBitConfigSpec{
-		Service: &Service{
-			Daemon:       ptrBool(false),
-			FlushSeconds: ptrFloat64(1),
-			GraceSeconds: ptrInt64(30),
-			HttpServer:   ptrBool(true),
-			LogLevel:     "info",
-			ParsersFile:  "parsers.conf",
+	cfg = ClusterFluentBitConfig{
+		Spec: FluentBitConfigSpec{
+			Service: &Service{
+				Daemon:       ptr(false),
+				FlushSeconds: ptr[float64](1),
+				GraceSeconds: ptr[int64](30),
+				HttpServer:   ptr(true),
+				LogLevel:     "info",
+				ParsersFile:  "parsers.conf",
+			},
 		},
-	},
-}
+	}
+)
 
 func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
-	disableInotifyWatcher := ptrBool(true)
+	disableInotifyWatcher := ptr(true)
 
 	inputObj := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
@@ -409,10 +419,10 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          ptrBool(true),
+				SkipLongLines:          ptr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptrInt64(10),
+				RefreshIntervalSeconds: ptr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 			},
 		},
@@ -496,10 +506,10 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 			Match: "logs.foo.bar",
 			Syslog: &output.Syslog{
 				Host: "example.com",
-				Port: ptrInt32(int32(3300)),
+				Port: ptr[int32](3300),
 				Mode: "tls",
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 				SyslogMessageKey:  "log",
 				SyslogHostnameKey: "do_app_name",
@@ -508,12 +518,12 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		},
 	}
 
-	headers := map[string]string{}
-
-	headers["Authorization"] = "foo:bar"
-	headers["X-Log-Header-App-Name"] = "app_name"
-	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers := map[string]string{
+		"Authorization":         authorization,
+		"X-Log-Header-App-Name": xLogHeaderAppName,
+		"X-Log-Header-0":        xLogHeader0,
+		"X-Log-Header-App-ID":   xLogHeaderAppID,
+	}
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
@@ -529,14 +539,14 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 			Match: "logs.foo.bar",
 			HTTP: &output.HTTP{
 				Host:           "https://example2.com",
-				Port:           ptrInt32(int32(433)),
+				Port:           ptr[int32](433),
 				Uri:            "/logs",
 				Headers:        headers,
 				Format:         "json_lines",
 				JsonDateKey:    "timestamp",
 				JsonDateFormat: "iso8601",
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 			},
 		},
@@ -556,7 +566,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 			Match: "*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "https://example2.com",
-				Port:  ptrInt32(int32(9200)),
+				Port:  ptr[int32](9200),
 				Index: "my_index",
 				Type:  "my_type",
 			},
@@ -577,7 +587,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 			Match: "*",
 			Elasticsearch: &output.Elasticsearch{
 				Host:           "https://example2.com",
-				Port:           ptrInt32(int32(9200)),
+				Port:           ptr[int32](9200),
 				Index:          "my_index",
 				Type:           "my_type",
 				WriteOperation: "upsert",
@@ -618,12 +628,13 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 		i++
 	}
 }
+
 func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
-	disableInotifyWatcher := ptrBool(true)
+	disableInotifyWatcher := ptr(true)
 
 	inputObj := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
@@ -641,10 +652,10 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          ptrBool(true),
+				SkipLongLines:          ptr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptrInt64(10),
+				RefreshIntervalSeconds: ptr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 			},
 		},
@@ -728,10 +739,10 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			Syslog: &output.Syslog{
 				Host: "example.com",
-				Port: ptrInt32(int32(3300)),
+				Port: ptr[int32](3300),
 				Mode: "tls",
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 				SyslogMessageKey:  "log",
 				SyslogHostnameKey: "do_app_name",
@@ -740,12 +751,12 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 		},
 	}
 
-	headers := map[string]string{}
-
-	headers["Authorization"] = "foo:bar"
-	headers["X-Log-Header-App-Name"] = "app_name"
-	headers["X-Log-Header-0"] = "testing"
-	headers["X-Log-Header-App-ID"] = "9780495d9db3"
+	headers := map[string]string{
+		"Authorization":         authorization,
+		"X-Log-Header-App-Name": xLogHeaderAppName,
+		"X-Log-Header-0":        xLogHeader0,
+		"X-Log-Header-App-ID":   xLogHeaderAppID,
+	}
 
 	httpOutput := ClusterOutput{
 		TypeMeta: metav1.TypeMeta{
@@ -761,14 +772,14 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			HTTP: &output.HTTP{
 				Host:           "https://example2.com",
-				Port:           ptrInt32(int32(433)),
+				Port:           ptr[int32](433),
 				Uri:            "/logs",
 				Headers:        headers,
 				Format:         "json_lines",
 				JsonDateKey:    "timestamp",
 				JsonDateFormat: "iso8601",
 				TLS: &plugins.TLS{
-					Verify: ptrBool(true),
+					Verify: ptr(true),
 				},
 			},
 		},
@@ -788,7 +799,7 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 			Match: "*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "https://example2.com",
-				Port:  ptrInt32(int32(9200)),
+				Port:  ptr[int32](9200),
 				Index: "my_index",
 				Type:  "my_type",
 			},
@@ -809,7 +820,7 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 			Match: "*",
 			Elasticsearch: &output.Elasticsearch{
 				Host:           "https://example2.com",
-				Port:           ptrInt32(int32(9200)),
+				Port:           ptr[int32](9200),
 				Index:          "my_index",
 				Type:           "my_type",
 				WriteOperation: "upsert",
@@ -897,10 +908,10 @@ func TestRenderMainConfigK8s(t *testing.T) {
 			Tail: &input.Tail{
 				Tag:                    "kube.*",
 				Path:                   "/var/log/containers/*.log",
-				SkipLongLines:          ptrBool(true),
+				SkipLongLines:          ptr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptrInt64(10),
+				RefreshIntervalSeconds: ptr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 			},
 		},
@@ -931,7 +942,7 @@ func TestRenderMainConfigK8s(t *testing.T) {
 					Parser: &filter.Parser{
 						KeyName:     "log",
 						Parser:      "bar",
-						ReserveData: ptrBool(true),
+						ReserveData: ptr(true),
 					},
 				},
 			},
@@ -956,7 +967,7 @@ func TestRenderMainConfigK8s(t *testing.T) {
 			Match: "kube.*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "foo.bar",
-				Port:  ptrInt32(9200),
+				Port:  ptr[int32](9200),
 				Index: "foo-index",
 			},
 		},
@@ -976,7 +987,7 @@ func TestRenderMainConfigK8s(t *testing.T) {
 			Match: "kube.*",
 			Elasticsearch: &output.Elasticsearch{
 				Host:           "foo.bar",
-				Port:           ptrInt32(9200),
+				Port:           ptr[int32](9200),
 				Index:          "foo-index",
 				WriteOperation: "update",
 			},
@@ -1020,10 +1031,10 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 			Tail: &input.Tail{
 				Tag:                    "kube.*",
 				Path:                   "/var/log/containers/*.log",
-				SkipLongLines:          ptrBool(true),
+				SkipLongLines:          ptr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptrInt64(10),
+				RefreshIntervalSeconds: ptr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 			},
 		},
@@ -1048,7 +1059,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 						{Parser: &filter.Parser{
 							KeyName:     "log",
 							Parser:      "test",
-							ReserveData: ptrBool(true),
+							ReserveData: ptr(true),
 						}},
 					},
 				},
@@ -1070,7 +1081,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 					Match: "kube.*",
 					Elasticsearch: &output.Elasticsearch{
 						Host:  "foo.bar",
-						Port:  ptrInt32(9200),
+						Port:  ptr[int32](9200),
 						Index: "foo-index",
 					},
 				},
@@ -1094,7 +1105,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 					Parser: &filter.Parser{
 						KeyName:     "log",
 						Parser:      "bar",
-						ReserveData: ptrBool(true),
+						ReserveData: ptr(true),
 					},
 				},
 			},
@@ -1119,7 +1130,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 			Match: "kube.*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "foo.bar",
-				Port:  ptrInt32(9200),
+				Port:  ptr[int32](9200),
 				Index: "foo-index",
 			},
 		},
@@ -1139,7 +1150,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 			Match: "kube.*",
 			Elasticsearch: &output.Elasticsearch{
 				Host:           "foo.bar",
-				Port:           ptrInt32(9200),
+				Port:           ptr[int32](9200),
 				Index:          "foo-index",
 				WriteOperation: "update",
 			},
@@ -1167,10 +1178,10 @@ func TestClusterFluentBitConfig_RenderMainConfig_WithParsersFiles(t *testing.T) 
 	cfbc := ClusterFluentBitConfig{
 		Spec: FluentBitConfigSpec{
 			Service: &Service{
-				Daemon:       ptrBool(false),
-				FlushSeconds: ptrFloat64(1),
-				GraceSeconds: ptrInt64(30),
-				HttpServer:   ptrBool(true),
+				Daemon:       ptr(false),
+				FlushSeconds: ptr[float64](1),
+				GraceSeconds: ptr[int64](30),
+				HttpServer:   ptr(true),
 				LogLevel:     "info",
 				ParsersFiles: []string{"parsers.conf", "parsers_multiline.conf"},
 			},
@@ -1359,20 +1370,4 @@ func TestClusterFluentBitConfig_RenderMultilineParserConfig(t *testing.T) {
 	)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(config).To(Equal(expectedMultilineParsers))
-}
-
-func ptrBool(v bool) *bool {
-	return &v
-}
-
-func ptrInt64(v int64) *int64 {
-	return &v
-}
-
-func ptrInt32(v int32) *int32 {
-	return &v
-}
-
-func ptrFloat64(v float64) *float64 {
-	return &v
 }

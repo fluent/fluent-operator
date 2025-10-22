@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"sort"
+	"strconv"
 
 	"github.com/fluent/fluent-operator/v3/pkg/utils"
 )
@@ -32,6 +33,31 @@ func NewPluginStore(name string) *PluginStore {
 
 func (ps *PluginStore) InsertPairs(key, value string) {
 	ps.Store[key] = value
+}
+
+type ValueType interface {
+	*string | *bool | *int | *int16 | *uint16 | *uint32
+}
+
+func InsertPairs[T ValueType](ps *PluginStore, key string, value T) {
+	if value != nil {
+		switch v := any(value).(type) {
+		case *string:
+			if *v != "" {
+				ps.InsertPairs(key, *v)
+			}
+		case *bool:
+			ps.InsertPairs(key, strconv.FormatBool(*v))
+		case *int:
+			ps.InsertPairs(key, strconv.FormatInt(int64(*v), 10))
+		case *int16:
+			ps.InsertPairs(key, strconv.FormatInt(int64(*v), 10))
+		case *uint16:
+			ps.InsertPairs(key, strconv.FormatUint(uint64(*v), 10))
+		case *uint32:
+			ps.InsertPairs(key, strconv.FormatUint(uint64(*v), 10))
+		}
+	}
 }
 
 // The @type parameter specifies the type of the plugin
@@ -194,7 +220,7 @@ func (ps *PluginStore) processBody(buf *bytes.Buffer) {
 
 // write the tail directive to the buffer, i.e.: </match>
 func (ps *PluginStore) processTail(buf *bytes.Buffer) {
-	buf.WriteString(fmt.Sprintf("%s</%s>\n", ps.PrefixWhitespaces, ps.Name))
+	fmt.Fprintf(buf, "%s</%s>\n", ps.PrefixWhitespaces, ps.Name)
 }
 
 // decide to return the head directive with our without a filter - <match> or <match xx>

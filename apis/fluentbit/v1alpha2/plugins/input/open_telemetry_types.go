@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -29,7 +27,7 @@ type OpenTelemetry struct {
 	// This sets the chunk size for incoming incoming JSON messages. These chunks are then stored/managed in the space available by buffer_max_size(default 512K).
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferChunkSize string `json:"bufferChunkSize,omitempty"`
-	//It allows to set successful response code. 200, 201 and 204 are supported(default 201).
+	// It allows to set successful response code. 200, 201 and 204 are supported(default 201).
 	SuccessfulResponseCode *int32 `json:"successfulResponseCode,omitempty"`
 	// opentelemetry uses the tag value for incoming metrics.
 	Tag string `json:"tag,omitempty"`
@@ -37,39 +35,24 @@ type OpenTelemetry struct {
 	TagFromURI *bool `json:"tagFromURI,omitempty"`
 }
 
-func (_ *OpenTelemetry) Name() string {
+func (*OpenTelemetry) Name() string {
 	return "opentelemetry"
 }
 
 // implement Section() method
 func (ot *OpenTelemetry) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if ot.Listen != "" {
-		kvs.Insert("listen", ot.Listen)
-	}
-	if ot.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*ot.Port))
-	}
-	if ot.Tagkey != "" {
-		kvs.Insert("tag_key", ot.Tagkey)
-	}
-	if ot.RawTraces != nil {
-		kvs.Insert("raw_traces", fmt.Sprint(*ot.RawTraces))
-	}
-	if ot.BufferMaxSize != "" {
-		kvs.Insert("buffer_max_size", ot.BufferMaxSize)
-	}
-	if ot.BufferChunkSize != "" {
-		kvs.Insert("buffer_chunk_size", ot.BufferChunkSize)
-	}
-	if ot.SuccessfulResponseCode != nil {
-		kvs.Insert("successful_response_code", fmt.Sprint(*ot.SuccessfulResponseCode))
-	}
-	if ot.Tag != "" {
-		kvs.Insert("tag", ot.Tag)
-	}
-	if ot.TagFromURI != nil {
-		kvs.Insert("tag_from_uri", fmt.Sprint(*ot.TagFromURI))
-	}
+
+	plugins.InsertKVString(kvs, "listen", ot.Listen)
+	plugins.InsertKVString(kvs, "tag_key", ot.Tagkey)
+	plugins.InsertKVString(kvs, "buffer_max_size", ot.BufferMaxSize)
+	plugins.InsertKVString(kvs, "buffer_chunk_size", ot.BufferChunkSize)
+	plugins.InsertKVString(kvs, "tag", ot.Tag)
+
+	plugins.InsertKVField(kvs, "port", ot.Port)
+	plugins.InsertKVField(kvs, "raw_traces", ot.RawTraces)
+	plugins.InsertKVField(kvs, "successful_response_code", ot.SuccessfulResponseCode)
+	plugins.InsertKVField(kvs, "tag_from_uri", ot.TagFromURI)
+
 	return kvs, nil
 }

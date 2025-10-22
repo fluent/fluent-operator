@@ -49,27 +49,32 @@ func main() {
 	flag.BoolVar(&exitOnFailure, "exit-on-failure", false, "Deprecated: This has no effect anymore.")
 	flag.DurationVar(&flbTerminationTimeout, "flb-timeout", 0, "Deprecated: This has no effect anymore.")
 
-	signalCtx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	ctx := context.Background()
+	signalCtx, cancel := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
-	logger := log.NewLogfmtLogger(os.Stdout)
-	logger = log.With(logger, "time", log.TimestampFormat(time.Now, time.RFC3339))
+	l := log.NewLogfmtLogger(os.Stdout)
+	l = log.With(l, "time", log.TimestampFormat(time.Now, time.RFC3339))
 
 	// check  the config file format
 	_, err := os.Stat(defaultSecretYamlPath)
 	if os.IsNotExist(err) {
-		level.Info(logger).Log("msg", "No fluent-bit secret yaml found, using classic one.")
+		_ = level.Info(l).Log("msg", "No fluent-bit secret yaml found, using classic one.")
 		flag.StringVar(&configPath, "c", defaultCfgPath, "The classic config file path.")
 	} else {
-		level.Info(logger).Log("msg", "fluent-bit secret yaml found, using yaml one.")
+		_ = level.Info(l).Log("msg", "fluent-bit secret yaml found, using yaml one.")
 		flag.StringVar(&configPath, "c", defaultYamlCfgPath, "The yaml config file path.")
 	}
 
 	if exitOnFailure {
-		level.Warn(logger).Log("--exit-on-failure is deprecated. The process will exit no matter what if fluent-bit exits so this can safely be removed.")
+		_ = level.Warn(l).
+			Log("--exit-on-failure is deprecated. The process will exit no matter what if " +
+				"fluent-bit exits so this can safely be removed.")
 	}
 	if flbTerminationTimeout > 0 {
-		level.Warn(logger).Log("--flb-timeout is deprecated. Consider setting the terminationGracePeriod field on the `(Cluster)FluentBit` instance.")
+		_ = level.Warn(l).
+			Log("--flb-timeout is deprecated. Consider setting the terminationGracePeriod " +
+				"field on the `(Cluster)FluentBit` instance.")
 	}
 
 	flag.Parse()
@@ -83,12 +88,12 @@ func main() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Start(); err != nil {
-		_ = level.Error(logger).Log("msg", "failed to start fluent-bit", "error", err)
+		_ = level.Error(l).Log("msg", "failed to start fluent-bit", "error", err)
 		os.Exit(1)
 	}
-	_ = level.Info(logger).Log("msg", "fluent-bit watcher started")
+	_ = level.Info(l).Log("msg", "fluent-bit watcher started")
 
-	grp, grpCtx := errgroup.WithContext(context.Background())
+	grp, grpCtx := errgroup.WithContext(ctx)
 	grp.Go(func() error {
 		// Watch the process. If it exits, we want to crash immediately.
 		defer cancel()
@@ -124,7 +129,7 @@ func main() {
 				if !isValidEvent(event) {
 					continue
 				}
-				_ = level.Info(logger).Log("msg", "Config file changed, reloading...")
+				_ = level.Info(l).Log("msg", "Config file changed, reloading...")
 				if err := cmd.Process.Signal(syscall.SIGHUP); err != nil {
 					return fmt.Errorf("failed to reload config: %w", err)
 				}
@@ -142,12 +147,12 @@ func main() {
 	// Always try to gracefully shut down fluent-bit. This will allow `cmd.Wait` above to finish
 	// and thus allow `grp.Wait` below to return.
 	if err := cmd.Process.Signal(syscall.SIGTERM); err != nil && !errors.Is(err, os.ErrProcessDone) {
-		_ = level.Error(logger).Log("msg", "Failed to send SIGTERM to fluent-bit", "error", err)
+		_ = level.Error(l).Log("msg", "Failed to send SIGTERM to fluent-bit", "error", err)
 		// Do not exit on error here. The process might've died and that's okay.
 	}
 
 	if err := grp.Wait(); err != nil {
-		_ = level.Error(logger).Log("msg", "Failure during the run time of fluent-bit", "error", err)
+		_ = level.Error(l).Log("msg", "Failure during the run time of fluent-bit", "error", err)
 		os.Exit(1)
 	}
 }

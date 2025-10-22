@@ -32,7 +32,7 @@ type Rule struct {
 	Next  string `json:"next"`
 }
 
-func (_ *MultilineParser) Name() string {
+func (*MultilineParser) Name() string {
 	return "multilineparser"
 }
 

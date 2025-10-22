@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -72,98 +70,42 @@ type S3 struct {
 }
 
 // Name implement Section() method
-func (_ *S3) Name() string {
+func (*S3) Name() string {
 	return "s3"
 }
 
 func (o *S3) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	// S3 Validation
 
-	if o.Region != "" {
-		kvs.Insert("region", o.Region)
-	}
-	if o.Bucket != "" {
-		kvs.Insert("bucket", o.Bucket)
-	}
-	if o.JsonDateKey != "" {
-		kvs.Insert("json_date_key", o.JsonDateKey)
-	}
-	if o.JsonDateFormat != "" {
-		kvs.Insert("json_date_format", o.JsonDateFormat)
-	}
-	if o.TotalFileSize != "" {
-		kvs.Insert("total_file_size", o.TotalFileSize)
-	}
-	if o.UploadChunkSize != "" {
-		kvs.Insert("upload_chunk_size", o.UploadChunkSize)
-	}
-	if o.UploadTimeout != "" {
-		kvs.Insert("upload_timeout", o.UploadTimeout)
-	}
-	if o.StoreDir != "" {
-		kvs.Insert("store_dir", o.StoreDir)
-	}
-	if o.StoreDirLimitSize != "" {
-		kvs.Insert("store_dir_limit_size", o.StoreDirLimitSize)
-	}
-	if o.S3KeyFormat != "" {
-		kvs.Insert("s3_key_format", o.S3KeyFormat)
-	}
-	if o.S3KeyFormatTagDelimiters != "" {
-		kvs.Insert("s3_key_format_tag_delimiters", o.S3KeyFormatTagDelimiters)
-	}
-	if o.StaticFilePath != nil {
-		kvs.Insert("static_file_path", fmt.Sprint(*o.StaticFilePath))
-	}
-	if o.UsePutObject != nil {
-		kvs.Insert("use_put_object", fmt.Sprint(*o.UsePutObject))
-	}
-	if o.RoleArn != "" {
-		kvs.Insert("role_arn", o.RoleArn)
-	}
-	if o.Endpoint != "" {
-		kvs.Insert("endpoint", o.Endpoint)
-	}
-	if o.StsEndpoint != "" {
-		kvs.Insert("sts_endpoint", o.StsEndpoint)
-	}
-	if o.CannedAcl != "" {
-		kvs.Insert("canned_acl", o.CannedAcl)
-	}
-	if o.Compression != "" {
-		kvs.Insert("compression", o.Compression)
-	}
-	if o.ContentType != "" {
-		kvs.Insert("content_type", o.ContentType)
-	}
-	if o.SendContentMd5 != nil {
-		kvs.Insert("send_content_md5", fmt.Sprint(*o.SendContentMd5))
-	}
-	if o.AutoRetryRequests != nil {
-		kvs.Insert("auto_retry_requests", fmt.Sprint(*o.AutoRetryRequests))
-	}
-	if o.LogKey != "" {
-		kvs.Insert("log_key", o.LogKey)
-	}
-	if o.PreserveDataOrdering != nil {
-		kvs.Insert("preserve_data_ordering", fmt.Sprint(*o.PreserveDataOrdering))
-	}
-	if o.StorageClass != "" {
-		kvs.Insert("storage_class", o.StorageClass)
-	}
-	if o.RetryLimit != nil {
-		kvs.Insert("retry_limit", fmt.Sprint(*o.RetryLimit))
-	}
-	if o.ExternalId != "" {
-		kvs.Insert("external_id", o.ExternalId)
-	}
-	if o.Profile != "" {
-		kvs.Insert("profile", o.Profile)
-	}
-	if o.Workers != nil {
-		kvs.Insert("workers", fmt.Sprint(*o.Workers))
-	}
+	plugins.InsertKVString(kvs, "region", o.Region)
+	plugins.InsertKVString(kvs, "bucket", o.Bucket)
+	plugins.InsertKVString(kvs, "json_date_key", o.JsonDateKey)
+	plugins.InsertKVString(kvs, "json_date_format", o.JsonDateFormat)
+	plugins.InsertKVString(kvs, "total_file_size", o.TotalFileSize)
+	plugins.InsertKVString(kvs, "upload_chunk_size", o.UploadChunkSize)
+	plugins.InsertKVString(kvs, "upload_timeout", o.UploadTimeout)
+	plugins.InsertKVString(kvs, "store_dir", o.StoreDir)
+	plugins.InsertKVString(kvs, "store_dir_limit_size", o.StoreDirLimitSize)
+	plugins.InsertKVString(kvs, "s3_key_format", o.S3KeyFormat)
+	plugins.InsertKVString(kvs, "s3_key_format_tag_delimiters", o.S3KeyFormatTagDelimiters)
+	plugins.InsertKVField(kvs, "static_file_path", o.StaticFilePath)
+	plugins.InsertKVField(kvs, "use_put_object", o.UsePutObject)
+	plugins.InsertKVString(kvs, "role_arn", o.RoleArn)
+	plugins.InsertKVString(kvs, "endpoint", o.Endpoint)
+	plugins.InsertKVString(kvs, "sts_endpoint", o.StsEndpoint)
+	plugins.InsertKVString(kvs, "canned_acl", o.CannedAcl)
+	plugins.InsertKVString(kvs, "compression", o.Compression)
+	plugins.InsertKVString(kvs, "content_type", o.ContentType)
+	plugins.InsertKVField(kvs, "send_content_md5", o.SendContentMd5)
+	plugins.InsertKVField(kvs, "auto_retry_requests", o.AutoRetryRequests)
+	plugins.InsertKVString(kvs, "log_key", o.LogKey)
+	plugins.InsertKVField(kvs, "preserve_data_ordering", o.PreserveDataOrdering)
+	plugins.InsertKVString(kvs, "storage_class", o.StorageClass)
+	plugins.InsertKVField(kvs, "retry_limit", o.RetryLimit)
+	plugins.InsertKVString(kvs, "external_id", o.ExternalId)
+	plugins.InsertKVString(kvs, "profile", o.Profile)
+	plugins.InsertKVField(kvs, "workers", o.Workers)
+
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
 		if err != nil {
@@ -171,5 +113,6 @@ func (o *S3) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(tls)
 	}
+
 	return kvs, nil
 }

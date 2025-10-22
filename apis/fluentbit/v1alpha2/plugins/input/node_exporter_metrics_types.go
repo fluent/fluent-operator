@@ -12,7 +12,7 @@ import (
 // This plugin is currently only supported on Linux based operating systems. <br />
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/node-exporter-metrics**
 type NodeExporterMetrics struct {
-	// Tag name associated to all records comming from this plugin.
+	// Tag name associated to all records coming from this plugin.
 	Tag string `json:"tag,omitempty"`
 	// The rate at which metrics are collected from the host operating system, default is 5 seconds.
 	ScrapeInterval string `json:"scrapeInterval,omitempty"`
@@ -26,26 +26,21 @@ type Path struct {
 	Sysfs string `json:"sysfs,omitempty"`
 }
 
-func (_ *NodeExporterMetrics) Name() string {
+func (*NodeExporterMetrics) Name() string {
 	return "node_exporter_metrics"
 }
 
 // Params implement Section() method
 func (d *NodeExporterMetrics) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if d.Tag != "" {
-		kvs.Insert("Tag", d.Tag)
-	}
-	if d.ScrapeInterval != "" {
-		kvs.Insert("scrape_interval", d.ScrapeInterval)
-	}
+
+	plugins.InsertKVString(kvs, "Tag", d.Tag)
+	plugins.InsertKVString(kvs, "scrape_interval", d.ScrapeInterval)
+
 	if d.Path != nil {
-		if d.Path.Procfs != "" {
-			kvs.Insert("path.procfs", d.Path.Procfs)
-		}
-		if d.Path.Sysfs != "" {
-			kvs.Insert("path.sysfs", d.Path.Sysfs)
-		}
+		plugins.InsertKVString(kvs, "path.procfs", d.Path.Procfs)
+		plugins.InsertKVString(kvs, "path.sysfs", d.Path.Sysfs)
 	}
+
 	return kvs, nil
 }

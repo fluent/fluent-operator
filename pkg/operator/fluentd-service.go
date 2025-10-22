@@ -86,7 +86,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 	}
 
 	if len(fd.Spec.Service.Annotations) != 0 {
-		svc.ObjectMeta.Annotations = fd.Spec.Service.Annotations
+		svc.Annotations = fd.Spec.Service.Annotations
 	}
 
 	return &svc

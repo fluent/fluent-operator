@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -29,7 +27,7 @@ type Syslog struct {
 	// If your syslog messages have fractional seconds set this Parser value to syslog-rfc5424 instead.
 	Parser string `json:"parser,omitempty"`
 	// By default the buffer to store the incoming Syslog messages, do not allocate the maximum memory allowed, instead it allocate memory when is required.
-	//The rounds of allocations are set by Buffer_Chunk_Size. If not set, Buffer_Chunk_Size is equal to 32000 bytes (32KB).
+	// The rounds of allocations are set by Buffer_Chunk_Size. If not set, Buffer_Chunk_Size is equal to 32000 bytes (32KB).
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferChunkSize string `json:"bufferChunkSize,omitempty"`
 	// Specify the maximum buffer size to receive a Syslog message. If not set, the default size will be the value of Buffer_Chunk_Size.
@@ -45,43 +43,25 @@ type Syslog struct {
 	*plugins.TLS `json:"tls,omitempty"`
 }
 
-func (_ *Syslog) Name() string {
+func (*Syslog) Name() string {
 	return "syslog"
 }
 
 func (s *Syslog) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 
-	if s.Mode != "" {
-		kvs.Insert("Mode", s.Mode)
-	}
-	if s.Listen != "" {
-		kvs.Insert("Listen", s.Listen)
-	}
-	if s.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*s.Port))
-	}
-	if s.Path != "" {
-		kvs.Insert("Path", s.Path)
-	}
-	if s.UnixPerm != nil {
-		kvs.Insert("Unix_Perm", fmt.Sprint(*s.UnixPerm))
-	}
-	if s.Parser != "" {
-		kvs.Insert("Parser", s.Parser)
-	}
-	if s.BufferChunkSize != "" {
-		kvs.Insert("Buffer_Chunk_Size", s.BufferChunkSize)
-	}
-	if s.BufferMaxSize != "" {
-		kvs.Insert("Buffer_Max_Size", s.BufferMaxSize)
-	}
-	if s.ReceiveBufferSize != "" {
-		kvs.Insert("Receive_Buffer_Size", s.ReceiveBufferSize)
-	}
-	if s.SourceAddressKey != "" {
-		kvs.Insert("Source_Address_Key", s.SourceAddressKey)
-	}
+	plugins.InsertKVString(kvs, "Mode", s.Mode)
+	plugins.InsertKVString(kvs, "Listen", s.Listen)
+	plugins.InsertKVString(kvs, "Path", s.Path)
+	plugins.InsertKVString(kvs, "Parser", s.Parser)
+	plugins.InsertKVString(kvs, "Buffer_Chunk_Size", s.BufferChunkSize)
+	plugins.InsertKVString(kvs, "Buffer_Max_Size", s.BufferMaxSize)
+	plugins.InsertKVString(kvs, "Receive_Buffer_Size", s.ReceiveBufferSize)
+	plugins.InsertKVString(kvs, "Source_Address_Key", s.SourceAddressKey)
+
+	plugins.InsertKVField(kvs, "Port", s.Port)
+	plugins.InsertKVField(kvs, "Unix_Perm", s.UnixPerm)
+
 	if s.TLS != nil {
 		tls, err := s.TLS.Params(sl)
 		if err != nil {

@@ -55,12 +55,13 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 
 	if l.Code != "" {
-		var singleLineLua string = ""
+		var singleLineLua = ""
 		lineTrim := ""
-		for _, line := range strings.Split(strings.TrimSuffix(l.Code, "\n"), "\n") {
+		re := regexp.MustCompile(`^function |^if |^for |^else|^elseif |^end|--[[]+`)
+		for line := range strings.SplitSeq(strings.TrimSuffix(l.Code, "\n"), "\n") {
 			lineTrim = strings.TrimSpace(line)
 			if lineTrim != "" {
-				operator, _ := regexp.MatchString("^function |^if |^for |^else|^elseif |^end|--[[]+", lineTrim)
+				operator := re.MatchString(lineTrim)
 				if operator {
 					singleLineLua = singleLineLua + lineTrim + " "
 				} else {
@@ -77,11 +78,11 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 
 	kvs.Insert("call", l.Call)
 
-	if l.TypeIntKey != nil && len(l.TypeIntKey) > 0 {
+	if len(l.TypeIntKey) > 0 {
 		kvs.Insert("type_int_key", strings.Join(l.TypeIntKey, " "))
 	}
 
-	if l.TypeArrayKey != nil && len(l.TypeArrayKey) > 0 {
+	if len(l.TypeArrayKey) > 0 {
 		kvs.Insert("type_array_key", strings.Join(l.TypeArrayKey, " "))
 	}
 

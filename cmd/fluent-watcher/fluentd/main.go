@@ -14,8 +14,8 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/pkg/filenotify"
 	"github.com/fsnotify/fsnotify"
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/oklog/run"
 )
 
@@ -70,13 +70,13 @@ func main() {
 	flag.Parse()
 
 	logger = log.NewLogfmtLogger(os.Stdout)
-
-	timerCtx, timerCancel = context.WithCancel(context.Background())
+	ctx := context.Background()
+	timerCtx, timerCancel = context.WithCancel(ctx)
 
 	var g run.Group
 	{
 		// Termination handler.
-		g.Add(run.SignalHandler(context.Background(), os.Interrupt, syscall.SIGTERM))
+		g.Add(run.SignalHandler(ctx, os.Interrupt, syscall.SIGTERM))
 	}
 	{
 		// Watch the Fluentd, if the Fluentd not exists or stopped, restart it.
@@ -100,7 +100,7 @@ func main() {
 						return err
 					}
 
-					timerCtx, timerCancel = context.WithCancel(context.Background())
+					timerCtx, timerCancel = context.WithCancel(ctx)
 
 					// After the fluentd exit, fluentd watcher restarts it with an exponential
 					// back-off delay (1s, 2s, 4s, ...), that is capped at five minutes.

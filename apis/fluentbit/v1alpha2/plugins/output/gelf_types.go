@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -40,42 +38,24 @@ type Gelf struct {
 	*plugins.Networking `json:"networking,omitempty"`
 }
 
-func (_ *Gelf) Name() string {
+func (*Gelf) Name() string {
 	return "gelf"
 }
 
 func (g *Gelf) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if g.Host != "" {
-		kvs.Insert("Host", g.Host)
-	}
-	if g.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*g.Port))
-	}
-	if g.Mode != "" {
-		kvs.Insert("Mode", g.Mode)
-	}
-	if g.ShortMessageKey != "" {
-		kvs.Insert("Gelf_Short_Message_Key", g.ShortMessageKey)
-	}
-	if g.TimestampKey != "" {
-		kvs.Insert("Gelf_Timestamp_Key", g.TimestampKey)
-	}
-	if g.HostKey != "" {
-		kvs.Insert("Gelf_Host_Key", g.HostKey)
-	}
-	if g.FullMessageKey != "" {
-		kvs.Insert("Gelf_Full_Message_Key", g.FullMessageKey)
-	}
-	if g.LevelKey != "" {
-		kvs.Insert("Gelf_Level_Key", g.LevelKey)
-	}
-	if g.PacketSize != nil {
-		kvs.Insert("Packet_Size", fmt.Sprint(*g.PacketSize))
-	}
-	if g.Compress != nil {
-		kvs.Insert("Compress", fmt.Sprint(*g.Compress))
-	}
+
+	plugins.InsertKVString(kvs, "Host", g.Host)
+	plugins.InsertKVField(kvs, "Port", g.Port)
+	plugins.InsertKVString(kvs, "Mode", g.Mode)
+	plugins.InsertKVString(kvs, "Gelf_Short_Message_Key", g.ShortMessageKey)
+	plugins.InsertKVString(kvs, "Gelf_Timestamp_Key", g.TimestampKey)
+	plugins.InsertKVString(kvs, "Gelf_Host_Key", g.HostKey)
+	plugins.InsertKVString(kvs, "Gelf_Full_Message_Key", g.FullMessageKey)
+	plugins.InsertKVString(kvs, "Gelf_Level_Key", g.LevelKey)
+	plugins.InsertKVField(kvs, "Packet_Size", g.PacketSize)
+	plugins.InsertKVField(kvs, "Compress", g.Compress)
+
 	if g.TLS != nil {
 		tls, err := g.TLS.Params(sl)
 		if err != nil {
@@ -90,5 +70,6 @@ func (g *Gelf) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
 	return kvs, nil
 }

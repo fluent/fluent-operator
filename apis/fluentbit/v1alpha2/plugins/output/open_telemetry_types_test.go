@@ -1,13 +1,14 @@
 package output
 
 import (
+	"testing"
+
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
-	"testing"
 )
 
 func TestOpenTelemetry_Params(t *testing.T) {
@@ -24,7 +25,7 @@ func TestOpenTelemetry_Params(t *testing.T) {
 	sl := plugins.NewSecretLoader(fc, "test_namespace")
 	ot := OpenTelemetry{
 		Host:                  "otlp-collector.example.com",
-		Port:                  ptrAny(int32(443)),
+		Port:                  ptr[int32](443),
 		HTTPUser:              &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_user"}}},
 		HTTPPasswd:            &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_passwd"}}},
 		Proxy:                 "expected_proxy",
@@ -32,12 +33,12 @@ func TestOpenTelemetry_Params(t *testing.T) {
 		LogsUri:               "expected_logs_uri",
 		TracesUri:             "expected_traces_uri",
 		Header:                map[string]string{"custom_header_key": "custom_header_val"},
-		LogResponsePayload:    ptrBool(true),
+		LogResponsePayload:    ptr(true),
 		AddLabel:              map[string]string{"add_label_key": "add_label_val"},
-		LogsBodyKeyAttributes: ptrBool(true),
+		LogsBodyKeyAttributes: ptr(true),
 		LogsBodyKey:           "expected_logs_body_key",
-		TLS:                   &plugins.TLS{Verify: ptrBool(false)},
-		Networking:            &plugins.Networking{SourceAddress: ptrAny("expected_source_address")},
+		TLS:                   &plugins.TLS{Verify: ptr(false)},
+		Networking:            &plugins.Networking{SourceAddress: ptr("expected_source_address")},
 	}
 
 	expected := params.NewKVs()
@@ -49,9 +50,9 @@ func TestOpenTelemetry_Params(t *testing.T) {
 	expected.Insert("metrics_uri", "expected_metrics_uri")
 	expected.Insert("logs_uri", "expected_logs_uri")
 	expected.Insert("traces_uri", "expected_traces_uri")
-	expected.Insert("header", " custom_header_key    custom_header_val")
+	expected.Insert(header, " custom_header_key    custom_header_val")
 	expected.Insert("log_response_payload", "true")
-	expected.Insert("add_label", " add_label_key    add_label_val")
+	expected.Insert(addLabel, " add_label_key    add_label_val")
 	expected.Insert("logs_body_key_attributes", "true")
 	expected.Insert("logs_body_key", "expected_logs_body_key")
 	expected.Insert("tls", "On")

@@ -172,7 +172,7 @@ type Fluentd struct {
 
 // IsBeingDeleted returns true if a deletion timestamp is set
 func (fd *Fluentd) IsBeingDeleted() bool {
-	return !fd.ObjectMeta.DeletionTimestamp.IsZero()
+	return !fd.DeletionTimestamp.IsZero()
 }
 
 // FluentBitFinalizerName is the name of the fluentbit finalizer
@@ -180,17 +180,17 @@ const FluentdFinalizerName = "fluentd.fluent.io"
 
 // HasFinalizer returns true if the item has the specified finalizer
 func (fd *Fluentd) HasFinalizer(finalizerName string) bool {
-	return slices.Contains(fd.ObjectMeta.Finalizers, finalizerName)
+	return slices.Contains(fd.Finalizers, finalizerName)
 }
 
 // AddFinalizer adds the specified finalizer
 func (fd *Fluentd) AddFinalizer(finalizerName string) {
-	fd.ObjectMeta.Finalizers = append(fd.ObjectMeta.Finalizers, finalizerName)
+	fd.Finalizers = append(fd.Finalizers, finalizerName)
 }
 
 // RemoveFinalizer removes the specified finalizer
 func (fd *Fluentd) RemoveFinalizer(finalizerName string) {
-	fd.ObjectMeta.Finalizers = slices.DeleteFunc(fd.ObjectMeta.Finalizers, func(s string) bool { return s == finalizerName })
+	fd.Finalizers = slices.DeleteFunc(fd.Finalizers, func(s string) bool { return s == finalizerName })
 }
 
 // +kubebuilder:object:root=true

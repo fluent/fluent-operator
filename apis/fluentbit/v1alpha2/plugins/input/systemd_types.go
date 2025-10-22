@@ -1,6 +1,8 @@
 package input
 
 import (
+	"strconv"
+
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -52,50 +54,33 @@ type Systemd struct {
 	PauseOnChunksOverlimit string `json:"pauseOnChunksOverlimit,omitempty"`
 }
 
-func (_ *Systemd) Name() string {
+func (*Systemd) Name() string {
 	return "systemd"
 }
 
 func (s *Systemd) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 
-	if s.Path != "" {
-		kvs.Insert("Path", s.Path)
-	}
-	if s.DB != "" {
-		kvs.Insert("DB", s.DB)
-	}
-	if s.DBSync != "" {
-		kvs.Insert("DB.Sync", s.DBSync)
-	}
-	if s.Tag != "" {
-		kvs.Insert("Tag", s.Tag)
-	}
+	plugins.InsertKVString(kvs, "Path", s.Path)
+	plugins.InsertKVString(kvs, "DB", s.DB)
+	plugins.InsertKVString(kvs, "DB.Sync", s.DBSync)
+	plugins.InsertKVString(kvs, "Tag", s.Tag)
+	plugins.InsertKVString(kvs, "Systemd_Filter_Type", s.SystemdFilterType)
+	plugins.InsertKVString(kvs, "Read_From_Tail", s.ReadFromTail)
+	plugins.InsertKVString(kvs, "Strip_Underscores", s.StripUnderscores)
+	plugins.InsertKVString(kvs, "storage.type", s.StorageType)
+	plugins.InsertKVString(kvs, "storage.pause_on_chunks_overlimit", s.PauseOnChunksOverlimit)
+
 	if s.MaxFields > 0 {
-		kvs.Insert("Max_Fields", string(rune(s.MaxFields)))
+		kvs.Insert("Max_Fields", strconv.Itoa(s.MaxFields))
 	}
 	if s.MaxEntries > 0 {
-		kvs.Insert("Max_Entries", string(rune(s.MaxEntries)))
+		kvs.Insert("Max_Entries", strconv.Itoa(s.MaxEntries))
 	}
-	if s.SystemdFilter != nil && len(s.SystemdFilter) > 0 {
+	if len(s.SystemdFilter) > 0 {
 		for _, v := range s.SystemdFilter {
 			kvs.Insert("Systemd_Filter", v)
 		}
-	}
-	if s.SystemdFilterType != "" {
-		kvs.Insert("Systemd_Filter_Type", s.SystemdFilterType)
-	}
-	if s.ReadFromTail != "" {
-		kvs.Insert("Read_From_Tail", s.ReadFromTail)
-	}
-	if s.StripUnderscores != "" {
-		kvs.Insert("Strip_Underscores", s.StripUnderscores)
-	}
-	if s.StorageType != "" {
-		kvs.Insert("storage.type", s.StorageType)
-	}
-	if s.PauseOnChunksOverlimit != "" {
-		kvs.Insert("storage.pause_on_chunks_overlimit", s.PauseOnChunksOverlimit)
 	}
 
 	return kvs, nil

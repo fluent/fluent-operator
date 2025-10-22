@@ -109,7 +109,7 @@ type Kubernetes struct {
 	UseTagForMeta *bool `json:"useTagForMeta,omitempty"`
 }
 
-func (_ *Kubernetes) Name() string {
+func (*Kubernetes) Name() string {
 	return "kubernetes"
 }
 
@@ -119,114 +119,45 @@ func (k *Kubernetes) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	if err != nil {
 		return kvs, err
 	}
-	if k.BufferSize != "" {
-		kvs.Insert("Buffer_Size", k.BufferSize)
-	}
-	if k.KubeURL != "" {
-		kvs.Insert("Kube_URL", k.KubeURL)
-	}
-	if k.KubeCAFile != "" {
-		kvs.Insert("Kube_CA_File", k.KubeCAFile)
-	}
-	if k.KubeCAPath != "" {
-		kvs.Insert("Kube_CA_Path", k.KubeCAPath)
-	}
-	if k.KubeTokenFile != "" {
-		kvs.Insert("Kube_Token_File", k.KubeTokenFile)
-	}
-	if k.KubeTagPrefix != "" {
-		kvs.Insert("Kube_Tag_Prefix", k.KubeTagPrefix)
-	}
-	if k.MergeLog != nil {
-		kvs.Insert("Merge_Log", fmt.Sprint(*k.MergeLog))
-	}
-	if k.MergeLogKey != "" {
-		kvs.Insert("Merge_Log_Key", k.MergeLogKey)
-	}
-	if k.MergeLogTrim != nil {
-		kvs.Insert("Merge_Log_Trim", fmt.Sprint(*k.MergeLogTrim))
-	}
-	if k.MergeParser != "" {
-		kvs.Insert("Merge_Parser", k.MergeParser)
-	}
-	if k.KeepLog != nil {
-		kvs.Insert("Keep_Log", fmt.Sprint(*k.KeepLog))
-	}
-	if k.TLSDebug != nil {
-		kvs.Insert("tls.debug", fmt.Sprint(*k.TLSDebug))
-	}
-	if k.TLSVerify != nil {
-		kvs.Insert("tls.verify", fmt.Sprint(*k.TLSVerify))
-	}
-	if k.UseJournal != nil {
-		kvs.Insert("Use_Journal", fmt.Sprint(*k.UseJournal))
-	}
-	if k.CacheUseDockerId != nil {
-		kvs.Insert("Cache_Use_Docker_Id", fmt.Sprint(*k.CacheUseDockerId))
-	}
-	if k.RegexParser != "" {
-		kvs.Insert("Regex_Parser", k.RegexParser)
-	}
-	if k.K8SLoggingParser != nil {
-		kvs.Insert("K8S-Logging.Parser", fmt.Sprint(*k.K8SLoggingParser))
-	}
-	if k.K8SLoggingExclude != nil {
-		kvs.Insert("K8S-Logging.Exclude", fmt.Sprint(*k.K8SLoggingExclude))
-	}
-	if k.Labels != nil {
-		kvs.Insert("Labels", fmt.Sprint(*k.Labels))
-	}
-	if k.Annotations != nil {
-		kvs.Insert("Annotations", fmt.Sprint(*k.Annotations))
-	}
-	if k.KubeMetaPreloadCacheDir != "" {
-		kvs.Insert("Kube_meta_preload_cache_dir", k.KubeMetaPreloadCacheDir)
-	}
-	if k.DummyMeta != nil {
-		kvs.Insert("Dummy_Meta", fmt.Sprint(*k.DummyMeta))
-	}
-	if k.DNSRetries != nil {
-		kvs.Insert("DNS_Retries", fmt.Sprint(*k.DNSRetries))
-	}
-	if k.DNSWaitTime != nil {
-		kvs.Insert("DNS_Wait_Time", fmt.Sprint(*k.DNSWaitTime))
-	}
-	if k.UseKubelet != nil {
-		kvs.Insert("Use_Kubelet", fmt.Sprint(*k.UseKubelet))
-	}
-	if k.KubeletPort != nil {
-		kvs.Insert("Kubelet_Port", fmt.Sprint(*k.KubeletPort))
-	}
-	if k.KubeletHost != "" {
-		kvs.Insert("Kubelet_Host", k.KubeletHost)
-	}
-	if k.KubeMetaCacheTTL != "" {
-		kvs.Insert("Kube_Meta_Cache_TTL", k.KubeMetaCacheTTL)
-	}
-	if k.KubeTokenTTL != "" {
-		kvs.Insert("Kube_Token_TTL", k.KubeTokenTTL)
-	}
-	if k.KubeTokenCommand != "" {
-		kvs.Insert("Kube_Token_Command", fmt.Sprint(k.KubeTokenCommand))
-	}
-	if k.KubeMetaNamespaceCacheTTL != nil {
-		kvs.Insert("Kube_Meta_Namespace_Cache_TTL", fmt.Sprint(*k.KubeMetaNamespaceCacheTTL))
-	}
-	if k.NamespaceLabels != nil {
-		kvs.Insert("Namespace_Labels", fmt.Sprint(*k.NamespaceLabels))
-	}
-	if k.NamespaceAnnotations != nil {
-		kvs.Insert("Namespace_Annotations", fmt.Sprint(*k.NamespaceAnnotations))
-	}
-	if k.NamespaceMetadataOnly != nil {
-		kvs.Insert("Namespace_Metadata_Only", fmt.Sprint(*k.NamespaceMetadataOnly))
-	}
-	if k.OwnerReferences != nil {
-		kvs.Insert("Owner_References", fmt.Sprint(*k.OwnerReferences))
-	}
-	if k.UseTagForMeta != nil {
-		kvs.Insert("Use_Tag_For_Meta", fmt.Sprint(*k.UseTagForMeta))
-	}
+
+	plugins.InsertKVString(kvs, "Buffer_Size", k.BufferSize)
+	plugins.InsertKVString(kvs, "Kube_URL", k.KubeURL)
+	plugins.InsertKVString(kvs, "Kube_CA_File", k.KubeCAFile)
+	plugins.InsertKVString(kvs, "Kube_CA_Path", k.KubeCAPath)
+	plugins.InsertKVString(kvs, "Kube_Token_File", k.KubeTokenFile)
+	plugins.InsertKVString(kvs, "Kube_Tag_Prefix", k.KubeTagPrefix)
+	plugins.InsertKVString(kvs, "Merge_Log_Key", k.MergeLogKey)
+	plugins.InsertKVString(kvs, "Merge_Parser", k.MergeParser)
+	plugins.InsertKVString(kvs, "Regex_Parser", k.RegexParser)
+	plugins.InsertKVString(kvs, "Kube_meta_preload_cache_dir", k.KubeMetaPreloadCacheDir)
+	plugins.InsertKVString(kvs, "Kubelet_Host", k.KubeletHost)
+	plugins.InsertKVString(kvs, "Kube_Token_TTL", k.KubeTokenTTL)
+	plugins.InsertKVString(kvs, "Kube_Token_Command", k.KubeTokenCommand)
+
+	plugins.InsertKVField(kvs, "Merge_Log", k.MergeLog)
+	plugins.InsertKVField(kvs, "Merge_Log_Trim", k.MergeLogTrim)
+	plugins.InsertKVField(kvs, "Keep_Log", k.KeepLog)
+	plugins.InsertKVField(kvs, "tls.debug", k.TLSDebug)
+	plugins.InsertKVField(kvs, "tls.verify", k.TLSVerify)
+	plugins.InsertKVField(kvs, "Use_Journal", k.UseJournal)
+	plugins.InsertKVField(kvs, "Cache_Use_Docker_Id", k.CacheUseDockerId)
+	plugins.InsertKVField(kvs, "K8S-Logging.Parser", k.K8SLoggingParser)
+	plugins.InsertKVField(kvs, "K8S-Logging.Exclude", k.K8SLoggingExclude)
+	plugins.InsertKVField(kvs, "Labels", k.Labels)
+	plugins.InsertKVField(kvs, "Annotations", k.Annotations)
+	plugins.InsertKVField(kvs, "Dummy_Meta", k.DummyMeta)
+	plugins.InsertKVField(kvs, "DNS_Retries", k.DNSRetries)
+	plugins.InsertKVField(kvs, "DNS_Wait_Time", k.DNSWaitTime)
+	plugins.InsertKVField(kvs, "Use_Kubelet", k.UseKubelet)
+	plugins.InsertKVField(kvs, "Kubelet_Port", k.KubeletPort)
+	plugins.InsertKVString(kvs, "Kube_Meta_Cache_TTL", k.KubeMetaCacheTTL)
+	plugins.InsertKVField(kvs, "Kube_Meta_Namespace_Cache_TTL", k.KubeMetaNamespaceCacheTTL)
+	plugins.InsertKVField(kvs, "Namespace_Labels", k.NamespaceLabels)
+	plugins.InsertKVField(kvs, "Namespace_Annotations", k.NamespaceAnnotations)
+	plugins.InsertKVField(kvs, "Namespace_Metadata_Only", k.NamespaceMetadataOnly)
+	plugins.InsertKVField(kvs, "Owner_References", k.OwnerReferences)
+	plugins.InsertKVField(kvs, "Use_Tag_For_Meta", k.UseTagForMeta)
+
 	return kvs, nil
 }
 

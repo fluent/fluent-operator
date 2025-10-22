@@ -210,14 +210,14 @@ func (r *CfgResources) filterForInputs(
 	sl plugins.SecretLoader,
 	inputs []input.Input,
 ) error {
-	for n, input := range inputs {
+	for n, in := range inputs {
 		inputId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
-		input.InputCommon.Id = &inputId
-		// if input.InputCommon.Tag == nil {
-		// 	input.InputCommon.Tag = &params.DefaultTag
+		in.Id = &inputId
+		// if in.InputCommon.Tag == nil {
+		// 	in.InputCommon.Tag = &params.DefaultTag
 		// }
 
-		ps, err := input.Params(sl)
+		ps, err := in.Params(sl)
 		if err != nil {
 			return err
 		}
@@ -239,14 +239,14 @@ func (r *CfgResources) filterForFilters(
 	sl plugins.SecretLoader,
 	filters []filter.Filter,
 ) error {
-	for n, filter := range filters {
+	for n, f := range filters {
 		filterId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
-		filter.FilterCommon.Id = &filterId
-		if filter.FilterCommon.Tag == nil {
-			filter.FilterCommon.Tag = &params.DefaultTag
+		f.Id = &filterId
+		if f.Tag == nil {
+			f.Tag = &params.DefaultTag
 		}
 
-		ps, err := filter.Params(sl)
+		ps, err := f.Params(sl)
 		if err != nil {
 			return err
 		}
@@ -268,14 +268,14 @@ func (r *CfgResources) filterForOutputs(
 	sl plugins.SecretLoader,
 	outputs []output.Output,
 ) error {
-	for n, output := range outputs {
+	for n, o := range outputs {
 		outputId := fmt.Sprintf("%s::%s::%s::%s-%d", cfgId, namespace, crdtype, name, n)
-		output.OutputCommon.Id = &outputId
-		if output.OutputCommon.Tag == nil {
-			output.OutputCommon.Tag = &params.DefaultTag
+		o.Id = &outputId
+		if o.Tag == nil {
+			o.Tag = &params.DefaultTag
 		}
 
-		ps, err := output.Params(sl)
+		ps, err := o.Params(sl)
 		if err != nil {
 			return err
 		}
@@ -312,11 +312,11 @@ func (pgr *PluginResources) IdentifyCopyAndPatchOutput(cfgResources *CfgResource
 	}
 
 	// Patch the outputs
-	for k, output := range outputs {
+	for k, o := range outputs {
 		// Does it exist a copy output for this tag ?
 		if c, ok := copyOutputs[k]; ok {
 			// Yes, so we patch
-			for _, id := range output {
+			for _, id := range o {
 				o := cfgResources.OutputPlugins[id]
 				o.Name = "store"
 				cfgResources.OutputPlugins[c].InsertChilds(&o)
@@ -324,7 +324,7 @@ func (pgr *PluginResources) IdentifyCopyAndPatchOutput(cfgResources *CfgResource
 			patchedOutputPlugins = append(patchedOutputPlugins, cfgResources.OutputPlugins[c])
 		} else {
 			// No, we don't patch
-			for _, id := range output {
+			for _, id := range o {
 				o := cfgResources.OutputPlugins[id]
 				patchedOutputPlugins = append(patchedOutputPlugins, o)
 			}
@@ -347,14 +347,14 @@ func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResourc
 	cfgLabelPlugin.InsertPairs("tag", cfgRouteLabel)
 
 	// insert filter plugins of this fluentd config
-	for _, filter := range r.FilterPlugins {
-		childFilter := filter
+	for _, f := range r.FilterPlugins {
+		childFilter := f
 		cfgLabelPlugin.InsertChilds(&childFilter)
 	}
 
 	// insert output plugins of this fluentd config
-	for _, output := range r.OutputPlugins {
-		childOutput := output
+	for _, o := range r.OutputPlugins {
+		childOutput := o
 		cfgLabelPlugin.InsertChilds(&childOutput)
 	}
 

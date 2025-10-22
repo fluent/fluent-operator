@@ -1,7 +1,6 @@
 package output
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
@@ -47,67 +46,38 @@ type InfluxDB struct {
 }
 
 // Name implement Section() method
-func (_ *InfluxDB) Name() string {
+func (*InfluxDB) Name() string {
 	return "influxdb"
 }
 
 func (o *InfluxDB) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	// InfluxDB Validation
-	if o.HTTPToken != nil {
 
-	}
-	if o.Host != "" {
-		kvs.Insert("Host", o.Host)
-	}
-	if o.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*o.Port))
-	}
-	if o.Database != "" {
-		kvs.Insert("Database", o.Database)
-	}
-	if o.Bucket != "" {
-		kvs.Insert("Bucket", o.Bucket)
-	}
-	if o.Org != "" {
-		kvs.Insert("Org", o.Org)
-	}
-	if o.SequenceTag != "" {
-		kvs.Insert("Sequence_Tag", o.SequenceTag)
-	}
-	if o.HTTPUser != nil {
-		u, err := sl.LoadSecret(*o.HTTPUser)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("HTTP_User", u)
-	}
-	if o.HTTPPasswd != nil {
-		pwd, err := sl.LoadSecret(*o.HTTPPasswd)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("HTTP_Passwd", pwd)
-	}
-	if o.HTTPToken != nil {
-		pwd, err := sl.LoadSecret(*o.HTTPToken)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("HTTP_Token", pwd)
-	}
-	if o.TagKeys != nil {
+	plugins.InsertKVString(kvs, "Host", o.Host)
+	plugins.InsertKVField(kvs, "Port", o.Port)
+	plugins.InsertKVString(kvs, "Database", o.Database)
+	plugins.InsertKVString(kvs, "Bucket", o.Bucket)
+	plugins.InsertKVString(kvs, "Org", o.Org)
+	plugins.InsertKVString(kvs, "Sequence_Tag", o.SequenceTag)
+
+	if len(o.TagKeys) > 0 {
 		kvs.Insert("Tag_Keys", strings.Join(o.TagKeys, " "))
 	}
-	if o.AutoTags != nil {
-		kvs.Insert("Auto_Tags", fmt.Sprint(*o.AutoTags))
+
+	plugins.InsertKVField(kvs, "Auto_Tags", o.AutoTags)
+	plugins.InsertKVField(kvs, "Tags_List_Enabled", o.TagsListEnabled)
+	plugins.InsertKVString(kvs, "Tags_List_Key", o.TagsListKey)
+
+	if err := plugins.InsertKVSecret(kvs, "HTTP_User", o.HTTPUser, sl); err != nil {
+		return nil, err
 	}
-	if o.TagsListEnabled != nil {
-		kvs.Insert("Tags_List_Enabled", fmt.Sprint(*o.TagsListEnabled))
+	if err := plugins.InsertKVSecret(kvs, "HTTP_Passwd", o.HTTPPasswd, sl); err != nil {
+		return nil, err
 	}
-	if o.TagsListKey != "" {
-		kvs.Insert("Tags_List_Key", o.TagsListKey)
+	if err := plugins.InsertKVSecret(kvs, "HTTP_Token", o.HTTPToken, sl); err != nil {
+		return nil, err
 	}
+
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
 		if err != nil {
@@ -122,5 +92,6 @@ func (o *InfluxDB) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
 	return kvs, nil
 }

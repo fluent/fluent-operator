@@ -26,7 +26,7 @@ type Nest struct {
 	RemovePrefix string `json:"removePrefix,omitempty"`
 }
 
-func (_ *Nest) Name() string {
+func (*Nest) Name() string {
 	return "nest"
 }
 

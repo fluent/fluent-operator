@@ -11,7 +11,7 @@ FB_VERSION?=$(shell grep -v '^#' cmd/fluent-watcher/fluentbit/VERSION | tr -d " 
 # Image URL to use all building/pushing image targets
 FB_IMG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}
 FB_IMG_DEBUG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}-debug
-FD_IMG ?= ghcr.io/fluent/fluent-operator/fluentd:v1.17.1
+FD_IMG ?= ghcr.io/fluent/fluent-operator/fluentd:v1.19.0
 FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
 FD_IMG_BASE ?= ghcr.io/fluent/fluent-operator/fluentd:v1.17.0-arm64-base
 
@@ -19,6 +19,7 @@ ARCH ?= arm64
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= crd:generateEmbeddedObjectMeta=true,allowDangerousTypes=true
+OPERATOR_SDK_VERSION ?= v1.41.1
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -72,23 +73,13 @@ PHONY: vet
 vet: ## Run go vet against code.
 	go vet ./...
 
-ENVTEST_ASSETS_DIR=$(shell pwd)/testbin
-
-install-setup-envtest: ## Install the setup-envtest tool if it is not already installed
-	if ! command -v setup-envtest &> /dev/null; then \
-		go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest; \
-	fi
-
-setup-envtest: install-setup-envtest ## Download and set up the envtest binary
-	source <(setup-envtest use -p env)
-
 test: manifests generate fmt vet setup-envtest ## Run tests.
-	go test ./apis/... -coverprofile cover.out
+	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $$(go list ./... | grep -v /e2e) -coverprofile cover.out
 
 # Utilize Kind or modify the e2e tests to load the image locally, enabling compatibility with other vendors.
 .PHONY: test-e2e  # Run the e2e tests against a Kind k8s instance that is spun up.
 test-e2e:
-	go test ./test/e2e/ -v -ginkgo.v
+	go test ./tests/e2e/ -v -ginkgo.v
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter
@@ -97,6 +88,10 @@ lint: golangci-lint ## Run golangci-lint linter
 .PHONY: lint-fix
 lint-fix: golangci-lint ## Run golangci-lint linter and perform fixes
 	$(GOLANGCI_LINT) run --fix
+
+.PHONY: lint-config
+lint-config: golangci-lint ## Verify golangci-lint linter configuration
+	$(GOLANGCI_LINT) config verify
 
 ##@ Build
 
@@ -195,9 +190,12 @@ KIND = $(LOCALBIN)/kind
 
 ## Tool Versions
 KUSTOMIZE_VERSION ?= v5.6.0
-CONTROLLER_TOOLS_VERSION ?= v0.15.0
-ENVTEST_VERSION ?= release-0.19
-GOLANGCI_LINT_VERSION ?= v1.59.1
+CONTROLLER_TOOLS_VERSION ?= v0.18.0
+#ENVTEST_VERSION is the version of controller-runtime release branch to fetch the envtest setup script (i.e. release-0.20)
+ENVTEST_VERSION ?= $(shell go list -m -f "{{ .Version }}" sigs.k8s.io/controller-runtime | awk -F'[v.]' '{printf "release-%d.%d", $$2, $$3}')
+#ENVTEST_K8S_VERSION is the version of Kubernetes to use for setting up ENVTEST binaries (i.e. 1.31)
+ENVTEST_K8S_VERSION ?= $(shell go list -m -f "{{ .Version }}" k8s.io/api | awk -F'[v.]' '{printf "1.%d", $$3}')
+GOLANGCI_LINT_VERSION ?= v2.1.0
 GINKGO_VERSION ?= v2.23.4
 CODE_GENERATOR_VERSION ?= v0.32.3
 KIND_VERSION ?= v0.17.0
@@ -212,6 +210,14 @@ controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessar
 $(CONTROLLER_GEN): $(LOCALBIN)
 	$(call go-install-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen,$(CONTROLLER_TOOLS_VERSION))
 
+.PHONY: setup-envtest
+setup-envtest: envtest ## Download the binaries required for ENVTEST in the local bin directory.
+	@echo "Setting up envtest binaries for Kubernetes version $(ENVTEST_K8S_VERSION)..."
+	@$(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path || { \
+		echo "Error: Failed to set up envtest binaries for version $(ENVTEST_K8S_VERSION)."; \
+		exit 1; \
+	}
+
 .PHONY: envtest
 envtest: $(ENVTEST) ## Download setup-envtest locally if necessary.
 $(ENVTEST): $(LOCALBIN)
@@ -220,7 +226,7 @@ $(ENVTEST): $(LOCALBIN)
 .PHONY: golangci-lint
 golangci-lint: $(GOLANGCI_LINT) ## Download golangci-lint locally if necessary.
 $(GOLANGCI_LINT): $(LOCALBIN)
-	$(call go-install-tool,$(GOLANGCI_LINT),github.com/golangci/golangci-lint/cmd/golangci-lint,$(GOLANGCI_LINT_VERSION))
+	$(call go-install-tool,$(GOLANGCI_LINT),github.com/golangci/golangci-lint/v2/cmd/golangci-lint,$(GOLANGCI_LINT_VERSION))
 
 .PHONY: ginkgo
 ginkgo: $(GINKGO) ## Download ginkgo locally if necessary.
@@ -231,6 +237,26 @@ $(GINKGO): $(LOCALBIN)
 code-generator: $(CODE_GENERATOR) ## Download code-generator locally if necessary.
 $(CODE_GENERATOR): $(LOCALBIN)
 	$(call go-install-tool,$(CODE_GENERATOR),k8s.io/code-generator,$(CODE_GENERATOR_VERSION))
+
+KIND_CLUSTER ?= fluent-operator-test-e2e
+
+.PHONY: setup-test-e2e
+setup-test-e2e: ## Set up a Kind cluster for e2e tests if it does not exist
+	@command -v $(KIND) >/dev/null 2>&1 || { \
+		echo "Kind is not installed. Please install Kind manually."; \
+		exit 1; \
+	}
+	@case "$$($(KIND) get clusters)" in \
+		*"$(KIND_CLUSTER)"*) \
+		echo "Kind cluster '$(KIND_CLUSTER)' already exists. Skipping creation." ;; \
+		*) \
+		echo "Creating Kind cluster '$(KIND_CLUSTER)'..."; \
+		$(KIND) create cluster --name $(KIND_CLUSTER) ;; \
+	esac
+
+.PHONY: cleanup-test-e2e
+cleanup-test-e2e:
+	$(KIND) delete cluster --name $(KIND_CLUSTER)
 
 .PHONY: kind
 kind: $(KIND) ## Download code-generator locally if necessary.
@@ -293,7 +319,7 @@ ifeq (,$(shell which opm 2>/dev/null))
 	set -e ;\
 	mkdir -p $(dir $(OPM)) ;\
 	OS=$(shell go env GOOS) && ARCH=$(shell go env GOARCH) && \
-	curl -sSLo $(OPM) https://github.com/operator-framework/operator-registry/releases/download/v1.23.0/$${OS}-$${ARCH}-opm ;\
+	curl -sSLo $(OPM) https://github.com/operator-framework/operator-registry/releases/download/v1.55.0/$${OS}-$${ARCH}-opm ;\
 	chmod +x $(OPM) ;\
 	}
 else

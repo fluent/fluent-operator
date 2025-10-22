@@ -28,7 +28,7 @@ func MakeFluentdDaemonSet(fd fluentdv1alpha1.Fluentd) *appsv1.DaemonSet {
 		}
 	}
 
-	daemonSet := appsv1.DaemonSet{
+	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        fd.Name,
 			Namespace:   fd.Namespace,
@@ -120,83 +120,55 @@ func MakeFluentdDaemonSet(fd fluentdv1alpha1.Fluentd) *appsv1.DaemonSet {
 		},
 	}
 
+	specTemplateSpec := &ds.Spec.Template.Spec
 	if fd.Spec.RuntimeClassName != "" {
-		daemonSet.Spec.Template.Spec.RuntimeClassName = &fd.Spec.RuntimeClassName
+		specTemplateSpec.RuntimeClassName = &fd.Spec.RuntimeClassName
 	}
 
 	if fd.Spec.PriorityClassName != "" {
-		daemonSet.Spec.Template.Spec.PriorityClassName = fd.Spec.PriorityClassName
+		specTemplateSpec.PriorityClassName = fd.Spec.PriorityClassName
 	}
 
 	if fd.Spec.Volumes != nil {
-		daemonSet.Spec.Template.Spec.Volumes = append(daemonSet.Spec.Template.Spec.Volumes, fd.Spec.Volumes...)
+		specTemplateSpec.Volumes = append(specTemplateSpec.Volumes, fd.Spec.Volumes...)
 	}
 
+	ctr := &specTemplateSpec.Containers[0]
 	if fd.Spec.VolumeMounts != nil {
-		daemonSet.Spec.Template.Spec.Containers[0].VolumeMounts = append(daemonSet.Spec.Template.Spec.Containers[0].VolumeMounts, fd.Spec.VolumeMounts...)
+		ctr.VolumeMounts = append(ctr.VolumeMounts, fd.Spec.VolumeMounts...)
 	}
 
 	if fd.Spec.EnvVars != nil {
-		daemonSet.Spec.Template.Spec.Containers[0].Env = append(daemonSet.Spec.Template.Spec.Containers[0].Env, fd.Spec.EnvVars...)
+		ctr.Env = append(ctr.Env, fd.Spec.EnvVars...)
 	}
 
 	if fd.Spec.EnvFrom != nil {
-		daemonSet.Spec.Template.Spec.Containers[0].EnvFrom = append(daemonSet.Spec.Template.Spec.Containers[0].EnvFrom, fd.Spec.EnvFrom...)
+		ctr.EnvFrom = append(ctr.EnvFrom, fd.Spec.EnvFrom...)
 	}
 
 	if fd.Spec.SecurityContext != nil {
-		daemonSet.Spec.Template.Spec.SecurityContext = fd.Spec.SecurityContext
+		specTemplateSpec.SecurityContext = fd.Spec.SecurityContext
 	}
 
 	if fd.Spec.SchedulerName != "" {
-		daemonSet.Spec.Template.Spec.SchedulerName = fd.Spec.SchedulerName
+		specTemplateSpec.SchedulerName = fd.Spec.SchedulerName
 	}
 
 	if fd.Spec.PositionDB != (corev1.VolumeSource{}) {
-		daemonSet.Spec.Template.Spec.Volumes = append(daemonSet.Spec.Template.Spec.Volumes, corev1.Volume{
+		specTemplateSpec.Volumes = append(specTemplateSpec.Volumes, corev1.Volume{
 			Name:         "positions",
 			VolumeSource: fd.Spec.PositionDB,
 		})
-		daemonSet.Spec.Template.Spec.Containers[0].VolumeMounts = append(daemonSet.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+		specTemplateSpec.Containers[0].VolumeMounts = append(specTemplateSpec.Containers[0].VolumeMounts, corev1.VolumeMount{
 			Name:      "positions",
 			MountPath: "/fluentd/tail",
 		})
 	}
+
 	// Mount host or emptydir VolumeSource
-	if fd.Spec.BufferVolume != nil && !fd.Spec.BufferVolume.DisableBufferVolume {
-		bufferVolName := fmt.Sprintf("%s-buffer", fd.Name)
-		bufferpv := fd.Spec.BufferVolume
-
-		if bufferpv.HostPath != nil {
-			daemonSet.Spec.Template.Spec.Volumes = append(daemonSet.Spec.Template.Spec.Volumes, corev1.Volume{
-				Name: bufferVolName,
-				VolumeSource: corev1.VolumeSource{
-					HostPath: bufferpv.HostPath,
-				},
-			})
-
-			daemonSet.Spec.Template.Spec.Containers[0].VolumeMounts = append(daemonSet.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
-				Name:      bufferVolName,
-				MountPath: BufferMountPath,
-			})
-			return &daemonSet
-		}
-
-		if bufferpv.EmptyDir != nil {
-			daemonSet.Spec.Template.Spec.Volumes = append(daemonSet.Spec.Template.Spec.Volumes, corev1.Volume{
-				Name: bufferVolName,
-				VolumeSource: corev1.VolumeSource{
-					EmptyDir: bufferpv.EmptyDir,
-				},
-			})
-
-			daemonSet.Spec.Template.Spec.Containers[0].VolumeMounts = append(daemonSet.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
-				Name:      bufferVolName,
-				MountPath: BufferMountPath,
-			})
-
-			return &daemonSet
-		}
+	if configureBufferVolume(fd, specTemplateSpec) {
+		return &ds
 	}
-	return &daemonSet
+
+	return &ds
 }

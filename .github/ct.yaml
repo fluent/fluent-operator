@@ -1,0 +1,10 @@
+# .github/ct.yaml
+
+remote: origin
+target-branch: master   # change to main if your default branch is main
+
+chart-dirs:
+  - charts/fluent-operator
+
+check-version-increment: true
+validate-maintainers: true

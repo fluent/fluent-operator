@@ -3,7 +3,8 @@
 // Copyright Hugo Authors
 
 // Package filenotify is adapted from https://github.com/moby/moby/tree/master/pkg/filenotify, Apache-2.0 License.
-// Hopefully this can be replaced with an external package sometime in the future, see https://github.com/fsnotify/fsnotify/issues/9
+// Hopefully this can be replaced with an external package sometime in the future.
+// See https://github.com/fsnotify/fsnotify/issues/9
 package filenotify
 
 import (
@@ -118,7 +119,10 @@ func (w *filePoller) Close() error {
 	w.closed = true
 	close(w.done)
 	for name := range w.watches {
-		w.remove(name)
+		err := w.remove(name)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -215,7 +219,7 @@ func (r *recording) record(filename string) error {
 			}
 			return err
 		}
-		defer f.Close()
+		defer func() { _ = f.Close() }()
 
 		fis, err := f.Readdir(-1)
 		if err != nil {
@@ -271,7 +275,7 @@ func (item *itemToWatch) checkForChanges() ([]fsnotify.Event, error) {
 	dirOp := checkChange(item.left.FileInfo, item.right.FileInfo)
 
 	if dirOp != 0 {
-		evs := []fsnotify.Event{fsnotify.Event{Op: dirOp, Name: item.filename}}
+		evs := []fsnotify.Event{{Op: dirOp, Name: item.filename}}
 		return evs, nil
 	}
 

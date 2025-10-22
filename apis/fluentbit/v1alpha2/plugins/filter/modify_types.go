@@ -82,36 +82,37 @@ func (mo *Modify) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	if err != nil {
 		return kvs, err
 	}
+	const condition = "Condition"
 	for _, c := range mo.Conditions {
 		if c.KeyExists != "" {
-			kvs.Insert("Condition", fmt.Sprintf("Key_exists    %s", c.KeyExists))
+			kvs.Insert(condition, fmt.Sprintf("Key_exists    %s", c.KeyExists))
 		}
 		kvs.InsertStringMap(c.KeyDoesNotExist, func(k, v string) (string, string) {
-			return "Condition", fmt.Sprintf("Key_does_not_exist    %s    %s", k, v)
+			return condition, fmt.Sprintf("Key_does_not_exist    %s    %s", k, v)
 		})
 		if c.AKeyMatches != "" {
-			kvs.Insert("Condition", fmt.Sprintf("A_key_matches    %s", c.AKeyMatches))
+			kvs.Insert(condition, fmt.Sprintf("A_key_matches    %s", c.AKeyMatches))
 		}
 		if c.NoKeyMatches != "" {
-			kvs.Insert("Condition", fmt.Sprintf("No_key_matches    %s", c.NoKeyMatches))
+			kvs.Insert(condition, fmt.Sprintf("No_key_matches    %s", c.NoKeyMatches))
 		}
 		kvs.InsertStringMap(c.KeyValueEquals, func(k, v string) (string, string) {
-			return "Condition", fmt.Sprintf("Key_value_equals    %s    %s", k, v)
+			return condition, fmt.Sprintf("Key_value_equals    %s    %s", k, v)
 		})
 		kvs.InsertStringMap(c.KeyValueDoesNotEqual, func(k, v string) (string, string) {
-			return "Condition", fmt.Sprintf("Key_value_does_not_equal    %s    %s", k, v)
+			return condition, fmt.Sprintf("Key_value_does_not_equal    %s    %s", k, v)
 		})
 		kvs.InsertStringMap(c.KeyValueMatches, func(k, v string) (string, string) {
-			return "Condition", fmt.Sprintf("Key_value_matches    %s    %s", k, v)
+			return condition, fmt.Sprintf("Key_value_matches    %s    %s", k, v)
 		})
 		kvs.InsertStringMap(c.KeyValueDoesNotMatch, func(k, v string) (string, string) {
-			return "Condition", fmt.Sprintf("Key_value_does_not_match    %s    %s", k, v)
+			return condition, fmt.Sprintf("Key_value_does_not_match    %s    %s", k, v)
 		})
 		kvs.InsertStringMap(c.MatchingKeysHaveMatchingValues, func(k, v string) (string, string) {
-			return "Condition", fmt.Sprintf("Matching_keys_have_matching_values    %s    %s", k, v)
+			return condition, fmt.Sprintf("Matching_keys_have_matching_values    %s    %s", k, v)
 		})
 		kvs.InsertStringMap(c.MatchingKeysDoNotHaveMatchingValues, func(k, v string) (string, string) {
-			return "Condition", fmt.Sprintf("Matching_keys_do_not_have_matching_values    %s    %s", k, v)
+			return condition, fmt.Sprintf("Matching_keys_do_not_have_matching_values    %s    %s", k, v)
 		})
 	}
 	for _, r := range mo.Rules {

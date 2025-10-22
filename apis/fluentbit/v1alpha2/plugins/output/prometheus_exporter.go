@@ -20,26 +20,24 @@ type PrometheusExporter struct {
 	// +kubebuilder:validation:Minimum:=1
 	// +kubebuilder:validation:Maximum:=65535
 	Port *int32 `json:"port,omitempty"`
-	//This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields
+	// This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields
 	AddLabels map[string]string `json:"addLabels,omitempty"`
 }
 
 // implement Section() method
-func (_ *PrometheusExporter) Name() string {
+func (*PrometheusExporter) Name() string {
 	return "prometheus_exporter"
 }
 
 // implement Section() method
 func (p *PrometheusExporter) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if p.Host != "" {
-		kvs.Insert("host", p.Host)
-	}
-	if p.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*p.Port))
-	}
+
+	plugins.InsertKVString(kvs, "Host", p.Host)
+	plugins.InsertKVField(kvs, "Port", p.Port)
+
 	kvs.InsertStringMap(p.AddLabels, func(k, v string) (string, string) {
-		return "add_label", fmt.Sprintf(" %s    %s", k, v)
+		return addLabel, fmt.Sprintf(" %s    %s", k, v)
 	})
 	return kvs, nil
 }

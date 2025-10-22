@@ -11,18 +11,18 @@ export FLUENT_OPERATOR_CONTAINER_RUNTIME="containerd" # or "cri-o", "docker" dep
 
 helm repo add fluent https://fluent.github.io/helm-charts
 helm upgrade --install fluent-operator fluent/fluent-operator \
-  --create-namespace \ 
+  --create-namespace \
   --set containerRuntime=${FLUENT_OPERATOR_CONTAINER_RUNTIME}
 ```
 
-By default, all CRDs required for Fluent Operator will be installed.  To prevent `helm install` from installing CRDs, you can set `fluent-bit.crdsEnable` or `fluentd.crdsEnable` to `false`.  
+By default, all CRDs required for Fluent Operator will be installed.  To prevent `helm install` from installing CRDs, you can set `fluent-bit.crdsEnable` or `fluentd.crdsEnable` to `false`.
 
 ## Upgrading
 
-Helm [does not manage the lifecycle of CRDs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/), so if the Fluent Operator CRDs already exist, subsequent 
+Helm [does not manage the lifecycle of CRDs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/), so if the Fluent Operator CRDs already exist, subsequent
 chart upgrades will not add or remove CRDs even if they have changed.  During upgrades, users should manually update CRDs:
 
-```
+```shell
 wget https://github.com/fluent/fluent-operator/releases/download/<version>/fluent-operator.tgz
 tar -xf fluent-operator.tgz
 kubectl replace -f fluent-operator/crds
@@ -30,6 +30,6 @@ kubectl replace -f fluent-operator/crds
 
 ## Chart Values
 
-```
+```shell
 helm show values fluent/fluent-operator
 ```

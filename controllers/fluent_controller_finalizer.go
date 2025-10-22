@@ -114,14 +114,26 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluentd) controllerutil.MutateFn {
 	switch o := obj.(type) {
 	case *rbacv1.ClusterRole:
-		expected, _, _ := operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
+		expected, _, _ := operator.MakeRBACObjects(
+			fd.Name,
+			fd.Namespace,
+			"fluentd",
+			fd.Spec.RBACRules,
+			fd.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.Rules = expected.Rules
 			return nil
 		}
 	case *corev1.ServiceAccount:
-		_, expected, _ := operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
+		_, expected, _ := operator.MakeRBACObjects(
+			fd.Name,
+			fd.Namespace,
+			"fluentd",
+			fd.Spec.RBACRules,
+			fd.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.Labels = expected.Labels
@@ -132,7 +144,13 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 			return nil
 		}
 	case *rbacv1.ClusterRoleBinding:
-		_, _, expected := operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
+		_, _, expected := operator.MakeRBACObjects(
+			fd.Name,
+			fd.Namespace,
+			"fluentd",
+			fd.Spec.RBACRules,
+			fd.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.RoleRef = expected.RoleRef

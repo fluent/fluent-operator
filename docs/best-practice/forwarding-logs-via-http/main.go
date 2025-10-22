@@ -17,7 +17,7 @@ type Message struct {
 func main() {
 	h := func(w http.ResponseWriter, req *http.Request) {
 		b, err := io.ReadAll(req.Body)
-		defer req.Body.Close()
+		defer func() { _ = req.Body.Close() }()
 		if err != nil {
 			log.Print(err.Error())
 			return

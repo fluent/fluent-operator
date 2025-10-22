@@ -35,6 +35,11 @@ import (
 	"github.com/fluent/fluent-operator/v3/pkg/operator"
 )
 
+const (
+	fluentdLowercase = "fluentd"
+	fluentd          = "Fluentd"
+)
+
 // FluentdReconciler reconciles a Fluentd object
 type FluentdReconciler struct {
 	client.Client
@@ -56,7 +61,7 @@ type FluentdReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
 func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = r.Log.WithValues("fluentd", req.NamespacedName)
+	_ = r.Log.WithValues(fluentdLowercase, req.NamespacedName)
 
 	var fd fluentdv1alpha1.Fluentd
 	if err := r.Get(ctx, req.NamespacedName, &fd); err != nil {
@@ -85,13 +90,19 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	secName := fmt.Sprintf("%s-config", fd.Name)
 	if err := r.Get(ctx, client.ObjectKey{Namespace: fd.Namespace, Name: secName}, &sec); err != nil {
 		if errors.IsNotFound(err) {
-			return ctrl.Result{Requeue: true, RequeueAfter: time.Duration(time.Second)}, nil
+			return ctrl.Result{Requeue: true, RequeueAfter: time.Second}, nil
 		}
 		return ctrl.Result{}, err
 	}
 
 	// Install RBAC resources for the filter plugin kubernetes
-	cr, sa, crb := operator.MakeRBACObjects(fd.Name, fd.Namespace, "fluentd", fd.Spec.RBACRules, fd.Spec.ServiceAccountAnnotations)
+	cr, sa, crb := operator.MakeRBACObjects(
+		fd.Name,
+		fd.Namespace,
+		fluentdLowercase,
+		fd.Spec.RBACRules,
+		fd.Spec.ServiceAccountAnnotations,
+	)
 	// Deploy Fluentd ClusterRole
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, cr, r.mutate(cr, &fd)); err != nil {
 		return ctrl.Result{}, err
@@ -106,7 +117,7 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	}
 
 	var err error
-	if fd.Spec.Mode == "agent" {
+	if fd.Spec.Mode == fluentdAgentMode {
 		// Deploy Fluentd DaemonSet
 		ds := operator.MakeFluentdDaemonSet(fd)
 		_, err = controllerutil.CreateOrPatch(ctx, r.Client, ds, r.mutate(ds, &fd))
@@ -126,6 +137,9 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		// Deploy Fluentd StatefulSet
 		sts := operator.MakeStatefulSet(fd)
 		_, err = controllerutil.CreateOrPatch(ctx, r.Client, sts, r.mutate(sts, &fd))
+		if err != nil {
+			return ctrl.Result{}, err
+		}
 		ds := appsv1.DaemonSet{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      fd.Name,
@@ -150,67 +164,76 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 }
 
 func (r *FluentdReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Secret{}, fluentdOwnerKey, func(rawObj client.Object) []string {
-		// Grab the job object, extract the owner.
-		sec := rawObj.(*corev1.Secret)
-		owner := metav1.GetControllerOf(sec)
-		if owner == nil {
-			return nil
-		}
+	ctx := context.Background()
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &corev1.Secret{}, fluentdOwnerKey,
+		func(rawObj client.Object) []string {
+			// Grab the job object, extract the owner.
+			sec := rawObj.(*corev1.Secret)
+			owner := metav1.GetControllerOf(sec)
+			if owner == nil {
+				return nil
+			}
 
-		if owner.APIVersion != fluentdApiGVStr || owner.Kind != "Fluentd" {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+			if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.DaemonSet{}, fluentdOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		ds := rawObj.(*appsv1.DaemonSet)
-		owner := metav1.GetControllerOf(ds)
-		if owner == nil {
-			return nil
-		}
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &appsv1.DaemonSet{}, fluentdOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			ds := rawObj.(*appsv1.DaemonSet)
+			owner := metav1.GetControllerOf(ds)
+			if owner == nil {
+				return nil
+			}
 
-		if owner.APIVersion != fluentdApiGVStr || owner.Kind != "Fluentd" {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+			if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.StatefulSet{}, fluentdOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		sts := rawObj.(*appsv1.StatefulSet)
-		owner := metav1.GetControllerOf(sts)
-		if owner == nil {
-			return nil
-		}
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &appsv1.StatefulSet{}, fluentdOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			sts := rawObj.(*appsv1.StatefulSet)
+			owner := metav1.GetControllerOf(sts)
+			if owner == nil {
+				return nil
+			}
 
-		if owner.APIVersion != fluentdApiGVStr || owner.Kind != "Fluentd" {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+			if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Service{}, fluentdOwnerKey, func(rawObj client.Object) []string {
-		// grab the job object, extract the owner.
-		svc := rawObj.(*corev1.Service)
-		owner := metav1.GetControllerOf(svc)
-		if owner == nil {
-			return nil
-		}
+	if err := mgr.GetFieldIndexer().IndexField(
+		ctx, &corev1.Service{}, fluentdOwnerKey,
+		func(rawObj client.Object) []string {
+			// grab the job object, extract the owner.
+			svc := rawObj.(*corev1.Service)
+			owner := metav1.GetControllerOf(svc)
+			if owner == nil {
+				return nil
+			}
 
-		if owner.APIVersion != fluentdApiGVStr || owner.Kind != "Fluentd" {
-			return nil
-		}
-		return []string{owner.Name}
-	}); err != nil {
+			if owner.APIVersion != fluentdApiGVStr || owner.Kind != fluentd {
+				return nil
+			}
+			return []string{owner.Name}
+		}); err != nil {
 		return err
 	}
 

@@ -1,7 +1,6 @@
 package input
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
@@ -15,7 +14,7 @@ import (
 // endpoint at a set interval. These metrics can be routed to metric supported endpoints such as Prometheus Exporter, InfluxDB, or Prometheus Remote Write. <br />
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/inputs/prometheus-scrape-metrics**
 type PrometheusScrapeMetrics struct {
-	// Tag name associated to all records comming from this plugin
+	// Tag name associated to all records coming from this plugin
 	Tag string `json:"tag,omitempty"`
 	// The host of the prometheus metric endpoint that you want to scrape
 	Host string `json:"host,omitempty"`
@@ -29,30 +28,27 @@ type PrometheusScrapeMetrics struct {
 	MetricsPath string `json:"metricsPath,omitempty"`
 }
 
-func (_ *PrometheusScrapeMetrics) Name() string {
+func (*PrometheusScrapeMetrics) Name() string {
 	return "prometheus_scrape"
 }
 
 // Params implement Section() method
 func (p *PrometheusScrapeMetrics) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if p.Tag != "" {
-		kvs.Insert("tag", p.Tag)
-	}
+
+	plugins.InsertKVString(kvs, "tag", p.Tag)
+
+	// Special case: host handling
 	host := strings.ToLower(p.Host)
 	if host == "" || host == "host" {
 		kvs.Insert("host", "${HOST_IP}")
 	} else {
 		kvs.Insert("host", p.Host)
 	}
-	if p.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*p.Port))
-	}
-	if p.ScrapeInterval != "" {
-		kvs.Insert("scrape_interval", p.ScrapeInterval)
-	}
-	if p.MetricsPath != "" {
-		kvs.Insert("metrics_path", p.MetricsPath)
-	}
+
+	plugins.InsertKVField(kvs, "port", p.Port)
+	plugins.InsertKVString(kvs, "scrape_interval", p.ScrapeInterval)
+	plugins.InsertKVString(kvs, "metrics_path", p.MetricsPath)
+
 	return kvs, nil
 }

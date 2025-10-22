@@ -86,18 +86,18 @@ func TestClusterInputList_Load(t *testing.T) {
 		Spec: InputSpec{
 			Alias: "input0_alias",
 			Tail: &input.Tail{
-				DisableInotifyWatcher:  ptrBool(true),
+				DisableInotifyWatcher:  ptr(true),
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          ptrBool(true),
+				SkipLongLines:          ptr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptrInt64(10),
+				RefreshIntervalSeconds: ptr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 				Parser:                 "docker",
-				DockerMode:             ptrBool(true),
-				DockerModeFlushSeconds: ptrInt64(4),
+				DockerMode:             ptr(true),
+				DockerModeFlushSeconds: ptr[int64](4),
 				DockerModeParser:       "docker-mode-parser",
 			},
 		},
@@ -115,8 +115,8 @@ func TestClusterInputList_Load(t *testing.T) {
 			Alias: "input2_alias",
 			Dummy: &input.Dummy{
 				Tag:     "logs.foo.bar",
-				Rate:    ptrInt32(3),
-				Samples: ptrInt32(5),
+				Rate:    ptr[int32](3),
+				Samples: ptr[int32](5),
 			},
 		},
 	}
@@ -134,7 +134,7 @@ func TestClusterInputList_Load(t *testing.T) {
 			PrometheusScrapeMetrics: &input.PrometheusScrapeMetrics{
 				Tag:            "logs.foo.bar",
 				Host:           "https://example3.com",
-				Port:           ptrInt32(int32(433)),
+				Port:           ptr[int32](433),
 				ScrapeInterval: "10s",
 				MetricsPath:    "/metrics",
 			},
@@ -199,7 +199,7 @@ func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
 			FluentBitMetrics: &input.FluentbitMetrics{
 				Tag:            "logs.foo.bar",
 				ScrapeInterval: "2",
-				ScrapeOnStart:  ptrBool(true),
+				ScrapeOnStart:  ptr(true),
 			},
 		},
 	}
@@ -215,7 +215,7 @@ func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
 		Spec: InputSpec{
 			Alias: "input1_alias",
 			Forward: &input.Forward{
-				Port:            ptrInt32(int32(433)),
+				Port:            ptr[int32](433),
 				Listen:          "0.0.0.0",
 				BufferChunkSize: "1M",
 				BufferMaxSize:   "6M",
@@ -262,18 +262,18 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 		Spec: InputSpec{
 			Alias: "input0_alias",
 			Tail: &input.Tail{
-				DisableInotifyWatcher:  ptrBool(true),
+				DisableInotifyWatcher:  ptr(true),
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          ptrBool(true),
+				SkipLongLines:          ptr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptrInt64(10),
+				RefreshIntervalSeconds: ptr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 				Parser:                 "docker",
-				DockerMode:             ptrBool(true),
-				DockerModeFlushSeconds: ptrInt64(4),
+				DockerMode:             ptr(true),
+				DockerModeFlushSeconds: ptr[int64](4),
 				DockerModeParser:       "docker-mode-parser",
 			},
 		},
@@ -291,8 +291,8 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 			Alias: "input2_alias",
 			Dummy: &input.Dummy{
 				Tag:     "logs.foo.bar",
-				Rate:    ptrInt32(3),
-				Samples: ptrInt32(5),
+				Rate:    ptr[int32](3),
+				Samples: ptr[int32](5),
 			},
 		},
 	}
@@ -310,7 +310,7 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 			PrometheusScrapeMetrics: &input.PrometheusScrapeMetrics{
 				Tag:            "logs.foo.bar",
 				Host:           "https://example3.com",
-				Port:           ptrInt32(int32(433)),
+				Port:           ptr[int32](433),
 				ScrapeInterval: "10s",
 				MetricsPath:    "/metrics",
 			},

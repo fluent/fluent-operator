@@ -142,7 +142,7 @@ type FluentBit struct {
 
 // IsBeingDeleted returns true if a deletion timestamp is set
 func (fb *FluentBit) IsBeingDeleted() bool {
-	return !fb.ObjectMeta.DeletionTimestamp.IsZero()
+	return !fb.DeletionTimestamp.IsZero()
 }
 
 // FluentBitFinalizerName is the name of the fluentbit finalizer
@@ -150,17 +150,17 @@ const FluentBitFinalizerName = "fluentbit.fluent.io"
 
 // HasFinalizer returns true if the item has the specified finalizer
 func (fb *FluentBit) HasFinalizer(finalizerName string) bool {
-	return slices.Contains(fb.ObjectMeta.Finalizers, finalizerName)
+	return slices.Contains(fb.Finalizers, finalizerName)
 }
 
 // AddFinalizer adds the specified finalizer
 func (fb *FluentBit) AddFinalizer(finalizerName string) {
-	fb.ObjectMeta.Finalizers = append(fb.ObjectMeta.Finalizers, finalizerName)
+	fb.Finalizers = append(fb.Finalizers, finalizerName)
 }
 
 // RemoveFinalizer removes the specified finalizer
 func (fb *FluentBit) RemoveFinalizer(finalizerName string) {
-	fb.ObjectMeta.Finalizers = slices.DeleteFunc(fb.ObjectMeta.Finalizers, func(s string) bool { return s == finalizerName })
+	fb.Finalizers = slices.DeleteFunc(fb.Finalizers, func(s string) bool { return s == finalizerName })
 }
 
 // +kubebuilder:object:root=true

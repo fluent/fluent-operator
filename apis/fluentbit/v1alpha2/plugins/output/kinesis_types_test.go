@@ -22,7 +22,7 @@ func TestOutput_Kinesis_Params(t *testing.T) {
 		RoleARN:           "arn:aws:iam:test",
 		Endpoint:          "test_endpoint",
 		STSEndpoint:       "test_sts_endpoint",
-		AutoRetryRequests: ptrBool(true),
+		AutoRetryRequests: ptr(true),
 		ExternalID:        "test_external_id",
 	}
 

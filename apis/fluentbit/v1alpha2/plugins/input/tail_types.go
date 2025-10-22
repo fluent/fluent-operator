@@ -96,7 +96,7 @@ type Tail struct {
 	// DisableInotifyWatcher will disable inotify and use the file stat watcher instead.
 	DisableInotifyWatcher *bool `json:"disableInotifyWatcher,omitempty"`
 	// This will help to reassembly multiline messages originally split by Docker or CRI
-	//Specify one or Multiline Parser definition to apply to the content.
+	// Specify one or Multiline Parser definition to apply to the content.
 	MultilineParser string `json:"multilineParser,omitempty"`
 	// Specify the buffering mechanism to use. It can be memory or filesystem
 	// +kubebuilder:validation:Enum:=filesystem;memory
@@ -104,113 +104,59 @@ type Tail struct {
 	// Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached.
 	// +kubebuilder:validation:Enum:=on;off
 	PauseOnChunksOverlimit string `json:"pauseOnChunksOverlimit,omitempty"`
-	//Skips empty lines in the log file from any further processing or output.
+	// Skips empty lines in the log file from any further processing or output.
 	SkipEmptyLines *bool `json:"skipEmptyLines,omitempty"`
 	// Threaded mechanism allows input plugin to run in a separate thread which helps to desaturate the main pipeline.
 	Threaded *string `json:"threaded,omitempty"`
 }
 
-func (_ *Tail) Name() string {
+func (*Tail) Name() string {
 	return "tail"
 }
 
 func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if t.BufferChunkSize != "" {
-		kvs.Insert("Buffer_Chunk_Size", t.BufferChunkSize)
-	}
-	if t.BufferMaxSize != "" {
-		kvs.Insert("Buffer_Max_Size", t.BufferMaxSize)
-	}
-	if t.Path != "" {
-		kvs.Insert("Path", t.Path)
-	}
-	if t.PathKey != "" {
-		kvs.Insert("Path_Key", t.PathKey)
-	}
-	if t.ExcludePath != "" {
-		kvs.Insert("Exclude_Path", t.ExcludePath)
-	}
-	if t.OffsetKey != "" {
-		kvs.Insert("Offset_Key", t.OffsetKey)
-	}
-	if t.ReadFromHead != nil {
-		kvs.Insert("Read_from_Head", fmt.Sprint(*t.ReadFromHead))
-	}
-	if t.RefreshIntervalSeconds != nil {
-		kvs.Insert("Refresh_Interval", fmt.Sprint(*t.RefreshIntervalSeconds))
-	}
-	if t.RotateWaitSeconds != nil {
-		kvs.Insert("Rotate_Wait", fmt.Sprint(*t.RotateWaitSeconds))
-	}
-	if t.IgnoreOlder != "" {
-		kvs.Insert("Ignore_Older", t.IgnoreOlder)
-	}
-	if t.SkipLongLines != nil {
-		kvs.Insert("Skip_Long_Lines", fmt.Sprint(*t.SkipLongLines))
-	}
-	if t.DB != "" {
-		kvs.Insert("DB", t.DB)
-	}
-	if t.DBSync != "" {
-		kvs.Insert("DB.Sync", t.DBSync)
-	}
-	if t.DBLocking != nil {
-		kvs.Insert("DB.locking", fmt.Sprint(*t.DBLocking))
-	}
-	if t.MemBufLimit != "" {
-		kvs.Insert("Mem_Buf_Limit", t.MemBufLimit)
-	}
-	if t.Parser != "" {
-		kvs.Insert("Parser", t.Parser)
-	}
-	if t.Key != "" {
-		kvs.Insert("Key", t.Key)
-	}
-	if t.Tag != "" {
-		kvs.Insert("Tag", t.Tag)
-	}
-	if t.TagRegex != "" {
-		kvs.Insert("Tag_Regex", t.TagRegex)
-	}
-	if t.Multiline != nil {
-		kvs.Insert("Multiline", fmt.Sprint(*t.Multiline))
-	}
-	if t.MultilineFlushSeconds != nil {
-		kvs.Insert("Multiline_Flush", fmt.Sprint(*t.MultilineFlushSeconds))
-	}
-	if t.ParserFirstline != "" {
-		kvs.Insert("Parser_Firstline", t.ParserFirstline)
-	}
+
+	plugins.InsertKVString(kvs, "Buffer_Chunk_Size", t.BufferChunkSize)
+	plugins.InsertKVString(kvs, "Buffer_Max_Size", t.BufferMaxSize)
+	plugins.InsertKVString(kvs, "Path", t.Path)
+	plugins.InsertKVString(kvs, "Path_Key", t.PathKey)
+	plugins.InsertKVString(kvs, "Exclude_Path", t.ExcludePath)
+	plugins.InsertKVString(kvs, "Offset_Key", t.OffsetKey)
+	plugins.InsertKVField(kvs, "Refresh_Interval", t.RefreshIntervalSeconds)
+	plugins.InsertKVString(kvs, "Ignore_Older", t.IgnoreOlder)
+	plugins.InsertKVField(kvs, "Skip_Long_Lines", t.SkipLongLines)
+	plugins.InsertKVString(kvs, "DB", t.DB)
+	plugins.InsertKVString(kvs, "DB.Sync", t.DBSync)
+	plugins.InsertKVString(kvs, "Mem_Buf_Limit", t.MemBufLimit)
+	plugins.InsertKVString(kvs, "Parser", t.Parser)
+	plugins.InsertKVString(kvs, "Key", t.Key)
+	plugins.InsertKVString(kvs, "Tag", t.Tag)
+	plugins.InsertKVString(kvs, "Tag_Regex", t.TagRegex)
+	plugins.InsertKVField(kvs, "Docker_Mode", t.DockerMode)
+	plugins.InsertKVField(kvs, "Docker_Mode_Flush", t.DockerModeFlushSeconds)
+	plugins.InsertKVString(kvs, "Docker_Mode_Parser", t.DockerModeParser)
+	plugins.InsertKVString(kvs, "Parser_Firstline", t.ParserFirstline)
+	plugins.InsertKVString(kvs, "multiline.parser", t.MultilineParser)
+	plugins.InsertKVString(kvs, "storage.type", t.StorageType)
+	plugins.InsertKVString(kvs, "storage.pause_on_chunks_overlimit", t.PauseOnChunksOverlimit)
+
+	plugins.InsertKVField(kvs, "Read_from_Head", t.ReadFromHead)
+	plugins.InsertKVField(kvs, "Rotate_Wait", t.RotateWaitSeconds)
+	plugins.InsertKVField(kvs, "DB.locking", t.DBLocking)
+	plugins.InsertKVField(kvs, "Multiline", t.Multiline)
+	plugins.InsertKVField(kvs, "Multiline_Flush", t.MultilineFlushSeconds)
+	plugins.InsertKVField(kvs, "Skip_Empty_Lines", t.SkipEmptyLines)
+
 	for i, parser := range t.ParserN {
 		kvs.Insert(fmt.Sprintf("Parser_%d", i+1), parser)
-	}
-	if t.DockerMode != nil {
-		kvs.Insert("Docker_Mode", fmt.Sprint(*t.DockerMode))
-	}
-	if t.DockerModeFlushSeconds != nil {
-		kvs.Insert("Docker_Mode_Flush", fmt.Sprint(*t.DockerModeFlushSeconds))
-	}
-	if t.DockerModeParser != "" {
-		kvs.Insert("Docker_Mode_Parser", fmt.Sprint(t.DockerModeParser))
 	}
 	if t.DisableInotifyWatcher != nil {
 		kvs.Insert("Inotify_Watcher", fmt.Sprint(!*t.DisableInotifyWatcher))
 	}
-	if t.MultilineParser != "" {
-		kvs.Insert("multiline.parser", t.MultilineParser)
-	}
-	if t.StorageType != "" {
-		kvs.Insert("storage.type", t.StorageType)
-	}
-	if t.PauseOnChunksOverlimit != "" {
-		kvs.Insert("storage.pause_on_chunks_overlimit", t.PauseOnChunksOverlimit)
-	}
-	if t.SkipEmptyLines != nil {
-		kvs.Insert("Skip_Empty_Lines", fmt.Sprint(*t.SkipEmptyLines))
-	}
 	if t.Threaded != nil {
 		kvs.Insert("Threaded", *t.Threaded)
 	}
+
 	return kvs, nil
 }

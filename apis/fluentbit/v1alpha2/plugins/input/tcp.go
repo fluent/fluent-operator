@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -22,7 +20,7 @@ type TCP struct {
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	BufferSize string `json:"bufferSize,omitempty"`
 	// By default the buffer to store the incoming JSON messages, do not allocate the maximum memory allowed, instead it allocate memory when is required.
-	//The rounds of allocations are set by Chunk_Size in KB. If not set, Chunk_Size is equal to 32 (32KB).
+	// The rounds of allocations are set by Chunk_Size in KB. If not set, Chunk_Size is equal to 32 (32KB).
 	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
 	ChunkSize string `json:"chunkSize,omitempty"`
 	// Specify the expected payload format. It support the options json and none.
@@ -32,30 +30,21 @@ type TCP struct {
 	Separator string `json:"separator,omitempty"`
 }
 
-func (_ *TCP) Name() string {
+func (*TCP) Name() string {
 	return "tcp"
 }
 
 // Params implement Section() method
 func (t *TCP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if t.Listen != "" {
-		kvs.Insert("listen", t.Listen)
-	}
-	if t.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*t.Port))
-	}
-	if t.BufferSize != "" {
-		kvs.Insert("Buffer_Size", t.BufferSize)
-	}
-	if t.ChunkSize != "" {
-		kvs.Insert("Chunk_Size", t.ChunkSize)
-	}
-	if t.Format != "" {
-		kvs.Insert("Format", t.Format)
-	}
-	if t.Separator != "" {
-		kvs.Insert("Separator", t.Separator)
-	}
+
+	plugins.InsertKVString(kvs, "listen", t.Listen)
+	plugins.InsertKVString(kvs, "Separator", t.Separator)
+	plugins.InsertKVString(kvs, "Buffer_Size", t.BufferSize)
+	plugins.InsertKVString(kvs, "Chunk_Size", t.ChunkSize)
+	plugins.InsertKVString(kvs, "Format", t.Format)
+
+	plugins.InsertKVField(kvs, "port", t.Port)
+
 	return kvs, nil
 }

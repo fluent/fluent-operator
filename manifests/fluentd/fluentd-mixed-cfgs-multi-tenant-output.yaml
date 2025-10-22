@@ -7,15 +7,15 @@ metadata:
     app.kubernetes.io/name: fluentd
 spec:
   globalInputs:
-  - forward: 
+  - forward:
       bind: 0.0.0.0
       port: 24224
   replicas: 1
-  image: ghcr.io/fluent/fluent-operator/fluentd:v1.17.1
-  fluentdCfgSelector: 
+  image: ghcr.io/fluent/fluent-operator/fluentd:v1.19.0
+  fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
-   
+
 ---
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
@@ -42,7 +42,7 @@ metadata:
   labels:
     config.fluentd.fluent.io/enabled: "true"
 spec:
-  watchedNamespaces: 
+  watchedNamespaces:
   - kube-system
   - default
   clusterOutputSelector:
@@ -59,8 +59,8 @@ metadata:
   labels:
     output.fluentd.fluent.io/enabled: "true"
     output.fluentd.fluent.io/user: "user1"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - elasticsearch:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200
@@ -75,8 +75,8 @@ metadata:
   labels:
     output.fluentd.fluent.io/enabled: "true"
     output.fluentd.fluent.io/role: "log-operator"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - elasticsearch:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200
@@ -91,8 +91,8 @@ metadata:
   labels:
     output.fluentd.fluent.io/enabled: "true"
     output.fluentd.fluent.io/scope: "cluster"
-spec: 
-  outputs: 
+spec:
+  outputs:
   - elasticsearch:
       host: elasticsearch-logging-data.kubesphere-logging-system.svc
       port: 9200

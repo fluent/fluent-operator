@@ -1,7 +1,6 @@
 package output
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
@@ -55,96 +54,55 @@ type Stackdriver struct {
 	Workers *int32 `json:"workers,omitempty"`
 	// A custom regex to extract fields from the local_resource_id of the logs
 	CustomK8sRegex string `json:"customK8sRegex,omitempty"`
-	// Optional list of comma seperated strings. Setting these fields overrides the Stackdriver monitored resource API values
+	// Optional list of comma separated strings. Setting these fields overrides the Stackdriver monitored resource API values
 	ResourceLabels []string `json:"resourceLabels,omitempty"`
 	// the key to used to select the text payload from the record
 	TextPayloadKey string `json:"textPayloadKey,omitempty"`
 }
 
 // Name implement Section() method
-func (_ *Stackdriver) Name() string {
+func (*Stackdriver) Name() string {
 	return "stackdriver"
 }
 
 // Params implement Section() method
 func (o *Stackdriver) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if o.GoogleServiceCredentials != "" {
-		kvs.Insert("google_service_credentials", o.GoogleServiceCredentials)
+
+	if err := plugins.InsertKVSecret(kvs, "service_account_email", o.ServiceAccountEmail, sl); err != nil {
+		return nil, err
 	}
-	if o.ServiceAccountEmail != nil {
-		u, err := sl.LoadSecret(*o.ServiceAccountEmail)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("service_account_email", u)
+	if err := plugins.InsertKVSecret(kvs, "service_account_secret", o.ServiceAccountSecret, sl); err != nil {
+		return nil, err
 	}
-	if o.ServiceAccountSecret != nil {
-		u, err := sl.LoadSecret(*o.ServiceAccountSecret)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("service_account_secret", u)
-	}
-	if o.MetadataServer != "" {
-		kvs.Insert("metadata_server", o.MetadataServer)
-	}
-	if o.Location != "" {
-		kvs.Insert("location", o.Location)
-	}
-	if o.Namespace != "" {
-		kvs.Insert("namespace", o.Namespace)
-	}
-	if o.NodeID != "" {
-		kvs.Insert("node_id", o.NodeID)
-	}
-	if o.Job != "" {
-		kvs.Insert("job", o.Job)
-	}
-	if o.TaskID != "" {
-		kvs.Insert("task_id", o.TaskID)
-	}
-	if o.ExportToProjectID != "" {
-		kvs.Insert("export_to_project_id", o.ExportToProjectID)
-	}
-	if o.Resource != "" {
-		kvs.Insert("resource", o.Resource)
-	}
-	if o.K8sClusterName != "" {
-		kvs.Insert("k8s_cluster_name", o.K8sClusterName)
-	}
-	if o.K8sClusterLocation != "" {
-		kvs.Insert("k8s_cluster_location", o.K8sClusterLocation)
-	}
-	if o.LabelsKey != "" {
-		kvs.Insert("labels_key", o.LabelsKey)
-	}
-	if o.Labels != nil && len(o.Labels) > 0 {
+
+	plugins.InsertKVString(kvs, "google_service_credentials", o.GoogleServiceCredentials)
+	plugins.InsertKVString(kvs, "metadata_server", o.MetadataServer)
+	plugins.InsertKVString(kvs, "location", o.Location)
+	plugins.InsertKVString(kvs, "namespace", o.Namespace)
+	plugins.InsertKVString(kvs, "node_id", o.NodeID)
+	plugins.InsertKVString(kvs, "job", o.Job)
+	plugins.InsertKVString(kvs, "task_id", o.TaskID)
+	plugins.InsertKVString(kvs, "export_to_project_id", o.ExportToProjectID)
+	plugins.InsertKVString(kvs, "resource", o.Resource)
+	plugins.InsertKVString(kvs, "k8s_cluster_name", o.K8sClusterName)
+	plugins.InsertKVString(kvs, "k8s_cluster_location", o.K8sClusterLocation)
+	plugins.InsertKVString(kvs, "labels_key", o.LabelsKey)
+	plugins.InsertKVString(kvs, "log_name_key", o.LogNameKey)
+	plugins.InsertKVString(kvs, "tag_prefix", o.TagPrefix)
+	plugins.InsertKVString(kvs, "severity_key", o.SeverityKey)
+	plugins.InsertKVString(kvs, "custom_k8s_regex", o.CustomK8sRegex)
+
+	plugins.InsertKVField(kvs, "autoformat_stackdriver_trace", o.AutoformatStackdriverTrace)
+	plugins.InsertKVField(kvs, "workers", o.Workers)
+
+	if len(o.Labels) > 0 {
 		kvs.Insert("labels", strings.Join(o.Labels, ","))
 	}
-	if o.LogNameKey != "" {
-		kvs.Insert("log_name_key", o.LogNameKey)
-	}
-	if o.TagPrefix != "" {
-		kvs.Insert("tag_prefix", o.TagPrefix)
-	}
-	if o.SeverityKey != "" {
-		kvs.Insert("severity_key", o.SeverityKey)
-	}
-	if o.AutoformatStackdriverTrace != nil {
-		kvs.Insert("autoformat_stackdriver_trace", fmt.Sprint(*o.AutoformatStackdriverTrace))
-	}
-	if o.Workers != nil {
-		kvs.Insert("Workers", fmt.Sprint(*o.Workers))
-	}
-	if o.CustomK8sRegex != "" {
-		kvs.Insert("custom_k8s_regex", o.CustomK8sRegex)
-	}
-	if o.ResourceLabels != nil && len(o.ResourceLabels) > 0 {
+	if len(o.ResourceLabels) > 0 {
 		kvs.Insert("resource_labels", strings.Join(o.ResourceLabels, ","))
 	}
-	if o.TextPayloadKey != "" {
-		kvs.Insert("text_payload_key", o.TextPayloadKey)
-	}
+	plugins.InsertKVString(kvs, "text_payload_key", o.TextPayloadKey)
+
 	return kvs, nil
 }

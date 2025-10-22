@@ -29,6 +29,17 @@ type AzureBlob struct {
 	EmulatorMode string `json:"emulatorMode,omitempty"`
 	// HTTP Service of the endpoint (if using EmulatorMode)
 	Endpoint string `json:"endpoint,omitempty"`
+	// Optional: Enables GZIP compression in the final blockblob file. This option isn't compatible when blob_type = appendblob.
+	// +kubebuilder:validation:Enum:=on;off
+	CompressBlob string `json:"compressBlob,omitempty"`
+	// Enable buffering into disk before ingesting into Azure Blob.
+	BufferingEnabled *bool `json:"bufferingEnabled,omitempty"`
+	// Specifies the size of files to be uploaded in MB. Defaults to 200M.
+	// +kubebuilder:default:="200M"
+	UploadFileSize string `json:"uploadFileSize,omitempty"`
+	// Optional. Specify a timeout for uploads. Fluent Bit will start ingesting buffer files which have been created more than x minutes ago and haven't reached upload_file_size limit yet. Defaults to 30m.
+	// +kubebuilder:default:="30m"
+	UploadTimeout string `json:"uploadTimeout,omitempty"`
 	// Enable/Disable TLS Encryption. Azure services require TLS to be enabled.
 	*plugins.TLS `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
@@ -36,41 +47,18 @@ type AzureBlob struct {
 }
 
 // Name implement Section() method
-func (_ *AzureBlob) Name() string {
+func (*AzureBlob) Name() string {
 	return "azure_blob"
 }
 
 // Params implement Section() method
 func (o *AzureBlob) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if o.AccountName != "" {
-		kvs.Insert("account_name", o.AccountName)
+
+	if err := plugins.InsertKVSecret(kvs, "shared_key", o.SharedKey, sl); err != nil {
+		return nil, err
 	}
-	if o.SharedKey != nil {
-		u, err := sl.LoadSecret(*o.SharedKey)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("shared_key", u)
-	}
-	if o.ContainerName != "" {
-		kvs.Insert("container_name", o.ContainerName)
-	}
-	if o.BlobType != "" {
-		kvs.Insert("blob_type", o.BlobType)
-	}
-	if o.AutoCreateContainer != "" {
-		kvs.Insert("auto_create_container", o.AutoCreateContainer)
-	}
-	if o.Path != "" {
-		kvs.Insert("path", o.Path)
-	}
-	if o.EmulatorMode != "" {
-		kvs.Insert("emulator_mode", o.EmulatorMode)
-	}
-	if o.Endpoint != "" {
-		kvs.Insert("endpoint", o.Endpoint)
-	}
+
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
 		if err != nil {
@@ -85,5 +73,18 @@ func (o *AzureBlob) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
+	plugins.InsertKVString(kvs, "account_name", o.AccountName)
+	plugins.InsertKVString(kvs, "container_name", o.ContainerName)
+	plugins.InsertKVString(kvs, "blob_type", o.BlobType)
+	plugins.InsertKVString(kvs, "auto_create_container", o.AutoCreateContainer)
+	plugins.InsertKVString(kvs, "compress_blob", o.CompressBlob)
+	plugins.InsertKVField(kvs, "buffering_enabled", o.BufferingEnabled)
+	plugins.InsertKVString(kvs, "upload_file_size", o.UploadFileSize)
+	plugins.InsertKVString(kvs, "upload_timeout", o.UploadTimeout)
+	plugins.InsertKVString(kvs, "path", o.Path)
+	plugins.InsertKVString(kvs, "emulator_mode", o.EmulatorMode)
+	plugins.InsertKVString(kvs, "endpoint", o.Endpoint)
+
 	return kvs, nil
 }

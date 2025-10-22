@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -45,53 +43,19 @@ type Forward struct {
 	*plugins.Networking `json:"networking,omitempty"`
 }
 
-func (_ *Forward) Name() string {
+func (*Forward) Name() string {
 	return "forward"
 }
 
 // implement Section() method
 func (f *Forward) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if f.Host != "" {
-		kvs.Insert("Host", f.Host)
+
+	if err := plugins.InsertKVSecret(kvs, "Username", f.Username, sl); err != nil {
+		return nil, err
 	}
-	if f.Port != nil {
-		kvs.Insert("Port", fmt.Sprint(*f.Port))
-	}
-	if f.Tag != "" {
-		kvs.Insert("Tag", f.Tag)
-	}
-	if f.TimeAsInteger != nil {
-		kvs.Insert("Time_as_Integer", fmt.Sprint(*f.TimeAsInteger))
-	}
-	if f.SendOptions != nil {
-		kvs.Insert("Send_options", fmt.Sprint(*f.SendOptions))
-	}
-	if f.RequireAckResponse != nil {
-		kvs.Insert("Require_ack_response", fmt.Sprint(*f.RequireAckResponse))
-	}
-	if f.SharedKey != "" {
-		kvs.Insert("Shared_Key", f.SharedKey)
-	}
-	if f.EmptySharedKey != nil {
-		kvs.Insert("Empty_Shared_Key", fmt.Sprint(*f.EmptySharedKey))
-	}
-	if f.Username != nil {
-		u, err := sl.LoadSecret(*f.Username)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("Username", u)
-	}
-	if f.Password != nil {
-		pwd, err := sl.LoadSecret(*f.Password)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("Password", pwd)
-	}
-	if f.SelfHostname != "" {
-		kvs.Insert("Self_Hostname", f.SelfHostname)
+	if err := plugins.InsertKVSecret(kvs, "Password", f.Password, sl); err != nil {
+		return nil, err
 	}
 	if f.TLS != nil {
 		tls, err := f.TLS.Params(sl)
@@ -107,5 +71,17 @@ func (f *Forward) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
+	plugins.InsertKVString(kvs, "Host", f.Host)
+	plugins.InsertKVString(kvs, "Tag", f.Tag)
+	plugins.InsertKVString(kvs, "Shared_Key", f.SharedKey)
+	plugins.InsertKVString(kvs, "Self_Hostname", f.SelfHostname)
+
+	plugins.InsertKVField(kvs, "Port", f.Port)
+	plugins.InsertKVField(kvs, "Empty_Shared_Key", f.EmptySharedKey)
+	plugins.InsertKVField(kvs, "Time_as_Integer", f.TimeAsInteger)
+	plugins.InsertKVField(kvs, "Send_options", f.SendOptions)
+	plugins.InsertKVField(kvs, "Require_ack_response", f.RequireAckResponse)
+
 	return kvs, nil
 }

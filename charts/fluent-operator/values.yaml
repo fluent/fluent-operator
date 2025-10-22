@@ -80,6 +80,24 @@ operator:
     []
     # - --watch-namespaces=logging
 
+  service:
+    enable: true
+    type: ClusterIP
+    portName: metrics
+    port: 8080
+    annotations: {}
+    labels: {}
+
+  serviceMonitor:
+    enable: false
+    interval: 30s
+    path: /metrics
+    scrapeTimeout: 10s
+    secure: false
+    tlsConfig: {}
+    relabelings: []
+    metricRelabelings: []
+
 fluentbit:
   # Installs a sub chart carrying the CRDs for the fluent-bit controller. The sub chart is enabled by default.
   crdsEnable: true
@@ -108,7 +126,7 @@ fluentbit:
     registry: ghcr.io
     repository: fluent/fluent-operator/fluent-bit
     # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-bit
-    tag: "4.0.1"
+    tag: "4.1.0"
 
   # fluentbit resources. If you do want to specify resources, adjust them as necessary
   # You can adjust it based on the log volume.
@@ -450,7 +468,7 @@ fluentd:
     registry: ghcr.io
     repository: fluent/fluent-operator/fluentd
     # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluentd
-    tag: v1.17.1
+    tag: v1.19.0
 
   # Numbers of the Fluentd instance
   # Applicable when the mode is "collector", and will be ignored when the mode is "agent"

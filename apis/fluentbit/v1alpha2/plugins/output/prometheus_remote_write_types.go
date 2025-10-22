@@ -27,15 +27,15 @@ type PrometheusRemoteWrite struct {
 	Port *int32 `json:"port,omitempty"`
 	// Specify an HTTP Proxy. The expected format of this value is http://HOST:PORT.
 	Proxy string `json:"proxy,omitempty"`
-	//Specify an optional HTTP URI for the target web server, e.g: /something ,default: /
+	// Specify an optional HTTP URI for the target web server, e.g: /something ,default: /
 	URI string `json:"uri,omitempty"`
-	//Add a HTTP header key/value pair. Multiple headers can be set.
+	// Add a HTTP header key/value pair. Multiple headers can be set.
 	Headers map[string]string `json:"headers,omitempty"`
-	//Log the response payload within the Fluent Bit log,default: false
+	// Log the response payload within the Fluent Bit log,default: false
 	LogResponsePayload *bool `json:"logResponsePayload,omitempty"`
-	//This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields
+	// This allows you to add custom labels to all metrics exposed through the prometheus exporter. You may have multiple of these fields
 	AddLabels map[string]string `json:"addLabels,omitempty"`
-	//Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0,default : 2
+	// Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0,default : 2
 	Workers *int32 `json:"workers,omitempty"`
 
 	*plugins.TLS `json:"tls,omitempty"`
@@ -44,52 +44,38 @@ type PrometheusRemoteWrite struct {
 }
 
 // implement Section() method
-func (_ *PrometheusRemoteWrite) Name() string {
+func (*PrometheusRemoteWrite) Name() string {
 	return "prometheus_remote_write"
 }
 
 // implement Section() method
 func (p *PrometheusRemoteWrite) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if p.Host != "" {
-		kvs.Insert("host", p.Host)
+
+	if err := plugins.InsertKVSecret(kvs, "http_user", p.HTTPUser, sl); err != nil {
+		return nil, err
 	}
-	if p.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*p.Port))
+	if err := plugins.InsertKVSecret(kvs, "http_passwd", p.HTTPPasswd, sl); err != nil {
+		return nil, err
 	}
-	if p.HTTPUser != nil {
-		u, err := sl.LoadSecret(*p.HTTPUser)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_user", u)
-	}
-	if p.HTTPPasswd != nil {
-		pwd, err := sl.LoadSecret(*p.HTTPPasswd)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_passwd", pwd)
-	}
-	if p.Proxy != "" {
-		kvs.Insert("proxy", p.Proxy)
-	}
-	if p.URI != "" {
-		kvs.Insert("uri", p.URI)
-	}
+
+	plugins.InsertKVString(kvs, "host", p.Host)
+	plugins.InsertKVField(kvs, "port", p.Port)
+	plugins.InsertKVString(kvs, "proxy", p.Proxy)
+	plugins.InsertKVString(kvs, "uri", p.URI)
+
 	kvs.InsertStringMap(p.Headers, func(k, v string) (string, string) {
-		return "header", fmt.Sprintf(" %s    %s", k, v)
+		return header, fmt.Sprintf(" %s    %s", k, v)
 	})
 
-	if p.LogResponsePayload != nil {
-		kvs.Insert("log_response_payload", fmt.Sprint(*p.LogResponsePayload))
-	}
+	plugins.InsertKVField(kvs, "log_response_payload", p.LogResponsePayload)
+
 	kvs.InsertStringMap(p.AddLabels, func(k, v string) (string, string) {
-		return "add_label", fmt.Sprintf(" %s    %s", k, v)
+		return addLabel, fmt.Sprintf(" %s    %s", k, v)
 	})
-	if p.Workers != nil {
-		kvs.Insert("workers", fmt.Sprint(*p.Workers))
-	}
+
+	plugins.InsertKVField(kvs, "workers", p.Workers)
+
 	if p.TLS != nil {
 		tls, err := p.TLS.Params(sl)
 		if err != nil {
@@ -104,5 +90,6 @@ func (p *PrometheusRemoteWrite) Params(sl plugins.SecretLoader) (*params.KVs, er
 		}
 		kvs.Merge(net)
 	}
+
 	return kvs, nil
 }

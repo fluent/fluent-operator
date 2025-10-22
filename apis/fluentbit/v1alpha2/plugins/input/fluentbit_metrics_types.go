@@ -1,8 +1,6 @@
 package input
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -24,20 +22,17 @@ type FluentbitMetrics struct {
 	ScrapeOnStart *bool `json:"scrapeOnStart,omitempty"`
 }
 
-func (_ *FluentbitMetrics) Name() string {
+func (*FluentbitMetrics) Name() string {
 	return "fluentbit_metrics"
 }
 
 func (f *FluentbitMetrics) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if f.Tag != "" {
-		kvs.Insert("Tag", f.Tag)
-	}
-	if f.ScrapeInterval != "" {
-		kvs.Insert("scrape_interval", f.ScrapeInterval)
-	}
-	if f.ScrapeOnStart != nil {
-		kvs.Insert("scrape_on_start", fmt.Sprint(*f.ScrapeOnStart))
-	}
+
+	plugins.InsertKVString(kvs, "Tag", f.Tag)
+	plugins.InsertKVString(kvs, "scrape_interval", f.ScrapeInterval)
+
+	plugins.InsertKVField(kvs, "scrape_on_start", f.ScrapeOnStart)
+
 	return kvs, nil
 }

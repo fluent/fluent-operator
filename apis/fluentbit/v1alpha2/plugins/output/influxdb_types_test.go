@@ -8,8 +8,8 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func ptrAny[T any](obj T) *T {
-	return &obj
+func ptr[T any](v T) *T {
+	return &v
 }
 
 func TestOutput_InfluxDB_Params(t *testing.T) {
@@ -19,14 +19,14 @@ func TestOutput_InfluxDB_Params(t *testing.T) {
 
 	dd := InfluxDB{
 		Host:            "127.0.0.1",
-		Port:            ptrAny(int32(8086)),
+		Port:            ptr[int32](8086),
 		Database:        "fluentbit",
 		Bucket:          "buck",
 		Org:             "orgnis",
 		SequenceTag:     "_inc",
 		TagKeys:         []string{"foo", "bar", "foo:bar"},
-		AutoTags:        ptrAny(false),
-		TagsListEnabled: ptrAny(true),
+		AutoTags:        ptr(false),
+		TagsListEnabled: ptr(true),
 		TagsListKey:     "taglist_key",
 	}
 

@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -27,7 +25,7 @@ type AzureLogAnalytics struct {
 }
 
 // Name implement Section() method
-func (_ *AzureLogAnalytics) Name() string {
+func (*AzureLogAnalytics) Name() string {
 	return "azure"
 }
 
@@ -48,17 +46,10 @@ func (o *AzureLogAnalytics) Params(sl plugins.SecretLoader) (*params.KVs, error)
 		}
 		kvs.Insert("Shared_Key", u)
 	}
-	if o.LogType != "" {
-		kvs.Insert("Log_Type", o.LogType)
-	}
-	if o.LogTypeKey != "" {
-		kvs.Insert("Log_Type_Key", o.LogTypeKey)
-	}
-	if o.TimeKey != "" {
-		kvs.Insert("Time_Key", o.TimeKey)
-	}
-	if o.TimeGenerated != nil {
-		kvs.Insert("Time_Generated", fmt.Sprint(*o.TimeGenerated))
-	}
+	plugins.InsertKVString(kvs, "Log_Type", o.LogType)
+	plugins.InsertKVString(kvs, "Log_Type_Key", o.LogTypeKey)
+	plugins.InsertKVString(kvs, "Time_Key", o.TimeKey)
+	plugins.InsertKVField(kvs, "Time_Generated", o.TimeGenerated)
+
 	return kvs, nil
 }

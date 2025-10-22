@@ -47,60 +47,42 @@ type OpenTelemetry struct {
 }
 
 // Name implement Section() method
-func (_ *OpenTelemetry) Name() string {
+func (*OpenTelemetry) Name() string {
 	return "opentelemetry"
 }
 
 // Params implement Section() method
 func (o *OpenTelemetry) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
-	if o.Host != "" {
-		kvs.Insert("host", o.Host)
+
+	plugins.InsertKVString(kvs, "host", o.Host)
+	plugins.InsertKVField(kvs, "port", o.Port)
+
+	if err := plugins.InsertKVSecret(kvs, "http_user", o.HTTPUser, sl); err != nil {
+		return nil, err
 	}
-	if o.Port != nil {
-		kvs.Insert("port", fmt.Sprint(*o.Port))
+	if err := plugins.InsertKVSecret(kvs, "http_passwd", o.HTTPPasswd, sl); err != nil {
+		return nil, err
 	}
-	if o.HTTPUser != nil {
-		u, err := sl.LoadSecret(*o.HTTPUser)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_user", u)
-	}
-	if o.HTTPPasswd != nil {
-		pwd, err := sl.LoadSecret(*o.HTTPPasswd)
-		if err != nil {
-			return nil, err
-		}
-		kvs.Insert("http_passwd", pwd)
-	}
-	if o.Proxy != "" {
-		kvs.Insert("proxy", o.Proxy)
-	}
-	if o.MetricsUri != "" {
-		kvs.Insert("metrics_uri", o.MetricsUri)
-	}
-	if o.LogsUri != "" {
-		kvs.Insert("logs_uri", o.LogsUri)
-	}
-	if o.TracesUri != "" {
-		kvs.Insert("traces_uri", o.TracesUri)
-	}
+
+	plugins.InsertKVString(kvs, "proxy", o.Proxy)
+	plugins.InsertKVString(kvs, "metrics_uri", o.MetricsUri)
+	plugins.InsertKVString(kvs, "logs_uri", o.LogsUri)
+	plugins.InsertKVString(kvs, "traces_uri", o.TracesUri)
+
 	kvs.InsertStringMap(o.Header, func(k, v string) (string, string) {
-		return "header", fmt.Sprintf(" %s    %s", k, v)
+		return header, fmt.Sprintf(" %s    %s", k, v)
 	})
-	if o.LogResponsePayload != nil {
-		kvs.Insert("log_response_payload", fmt.Sprint(*o.LogResponsePayload))
-	}
+
+	plugins.InsertKVField(kvs, "log_response_payload", o.LogResponsePayload)
+
 	kvs.InsertStringMap(o.AddLabel, func(k, v string) (string, string) {
-		return "add_label", fmt.Sprintf(" %s    %s", k, v)
+		return addLabel, fmt.Sprintf(" %s    %s", k, v)
 	})
-	if o.LogsBodyKeyAttributes != nil {
-		kvs.Insert("logs_body_key_attributes", fmt.Sprint(*o.LogsBodyKeyAttributes))
-	}
-	if o.LogsBodyKey != "" {
-		kvs.Insert("logs_body_key", o.LogsBodyKey)
-	}
+
+	plugins.InsertKVField(kvs, "logs_body_key_attributes", o.LogsBodyKeyAttributes)
+	plugins.InsertKVString(kvs, "logs_body_key", o.LogsBodyKey)
+
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)
 		if err != nil {
@@ -115,5 +97,6 @@ func (o *OpenTelemetry) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
 	return kvs, nil
 }
