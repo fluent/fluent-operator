@@ -115,7 +115,7 @@ jobs:
             type=ref,event=tag,enable=${{ github.ref_type == 'tag' }}
             type=semver,pattern={{version}},enable=${{ github.ref_type == 'tag' }}
             type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
-            type=sha,prefix=,enable=${{ github.event_name == 'pull_request' }}
+            type=sha,format=long,prefix=,enable=${{ github.event_name == 'pull_request' }}
 
       - name: Build and push image
         id: build
@@ -161,11 +161,21 @@ jobs:
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Create image manifest
+      - name: Create GHCR image manifest
         uses: int128/docker-manifest-create-action@b60433fd4312d7a64a56d769b76ebe3f45cf36b4 # v2.1.0
         with:
           push: true
-          tags: ${{ needs.build.outputs.tags }} # Includes GHCR and Docker Hub
+          tags: ${{ needs.build.outputs.tags }}
           sources: |
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
             ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}
+
+      - name: Create Docker Hub image manifest
+        if: github.event_name != 'pull_request'
+        uses: int128/docker-manifest-create-action@b60433fd4312d7a64a56d769b76ebe3f45cf36b4 # v2.1.0
+        with:
+          push: true
+          tags: ${{ needs.build.outputs.tags }}
+          sources: |
+            ${{ env.DOCKERHUB_REPO }}@${{ needs.build.outputs.digest_amd64 }}
+            ${{ env.DOCKERHUB_REPO }}@${{ needs.build.outputs.digest_arm64 }}
