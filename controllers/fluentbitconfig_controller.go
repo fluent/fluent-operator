@@ -438,6 +438,7 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
+		Named("FluentBitConfig").
 		For(&fluentbitv1alpha2.FluentBit{}).
 		Owns(&corev1.Secret{}).
 		Watches(&fluentbitv1alpha2.ClusterFluentBitConfig{}, &handler.EnqueueRequestForObject{}).
