@@ -35,7 +35,7 @@ on:
       - "pkg/fluentd/utils/**"
 
 env:
-  GHCR_REPO: 'ghcr.io/joshuabaird/fluent-operator' # 'ghcr.io/${{ github.repository }}/fluent-operator'
+  GHCR_REPO: 'ghcr.io/joshuabaird/fluent-operator/fluent-operator' # 'ghcr.io/${{ github.repository }}/fluent-operator'
   DOCKERHUB_REPO: 'kubesphere/fluent-operator'
 
 permissions:
