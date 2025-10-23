@@ -115,8 +115,7 @@ jobs:
             type=ref,event=tag
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=sha,format=long,prefix=,priority=1000 # DEBUG, REMOVE THIS
-            # type=sha,format=long,prefix=,enable=${{ github.event_name == 'pull_request' }},priority=1000
+            type=sha,format=long,prefix=,enable=${{ github.event_name == 'pull_request' }},priority=1000
 
       - name: Build and push image (pull request)
         if: github.event_name == 'pull_request'
