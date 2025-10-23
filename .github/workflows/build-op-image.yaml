@@ -1,4 +1,4 @@
-name: Building Fluent Operator image
+name: Build/Push Fluent Operator image
 
 on:
   push:
@@ -35,67 +35,39 @@ on:
       - "pkg/fluentd/utils/**"
 
 env:
-  DOCKER_REPO: "kubesphere"
-  DOCKER_IMAGE: "fluent-operator"
-  GITHUB_IMAGE: "${{ github.repository }}/fluent-operator"
+  GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-operator'
+  DOCKERHUB_REPO: 'kubesphere/fluent-operator'
 
 permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  build-image-metadata:
-    runs-on: ubuntu-latest
-    name: Build Image Metadata
+  build:
+    name: Build image (${{ matrix.platform }})
+    runs-on: ${{ matrix.runs-on }}
+    permissions:
+      actions: read
+      packages: write
     outputs:
-      IMG_NAME: ${{ steps.set-outputs.outputs.IMAGE_NAME }}
-      DOCKER_IMG_NAME: ${{ steps.set-outputs.outputs.DOCKER_IMG_NAME }}
-      version: ${{ steps.image-metadata.outputs.version }}
+      digest_amd64: ${{ steps.output-digests.outputs.amd64 }}
+      digest_arm64: ${{ steps.output-digests.outputs.arm64 }}
       tags: ${{ steps.image-metadata.outputs.tags }}
-      labels: ${{ steps.image-metadata.outputs.labels }}
-      release_tags: ${{ steps.image-tags.outputs.tags }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+        include:
+          - runs-on: ubuntu-latest
+          - runs-on: ubuntu-24.04-arm # Builds arm64 on arm64 hosts
+            platform: linux/arm64
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: docker metadata
-        id: image-metadata
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
-        with:
-          images: "ghcr.io/${{ env.GITHUB_IMAGE }}"
-          tags: |
-            raw,latest
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-
-      - name: docker tags for cloning
-        id: image-tags
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
-        with:
-          tags: |
-            raw,latest
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-
-      - name: Set outputs
-        id: set-outputs
-        run: |
-          echo "IMAGE_NAME=${{ env.GITHUB_IMAGE }}" >> $GITHUB_OUTPUT
-          echo "DOCKER_IMG_NAME=${{env.DOCKER_REPO}}/${{ env.DOCKER_IMAGE }}" >> $GITHUB_OUTPUT
-
-  operator-build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    name: Build Image for Fluent Operator
-    needs:
-      - build-image-metadata
     steps:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -109,61 +81,91 @@ jobs:
           go-version-file: go.mod
           cache-dependency-path: go.sum
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+        with:
+          platforms: linux/amd64,linux/arm64
 
-      - name: Login to GitHub Container Registry
+      - name: Login to GHCR
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: docker.io
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Configure image tags
+        id: image-metadata
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
+        with:
+          images: |
+            ${{ env.GHCR_REPO }}
+            ${{ github.event_name != 'pull_request' && env.DOCKERHUB_REPO || '' }}
+          flavor:
+            latest=false
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+            type=ref,event=tag,enable=${{ github.ref_type == 'tag' }}
+            type=semver,pattern={{version}},enable=${{ github.ref_type == 'tag' }}
+            type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
+            type=sha,prefix=,enable=${{ github.event_name == 'pull_request' }}
+
+      - name: Build and push image
+        id: build
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
-          file: ./cmd/fluent-manager/Dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ needs.build-image-metadata.outputs.tags }}
-          labels: ${{ needs.build-image-metadata.outputs.labels }}
+          file: cmd/fluent-manager/Dockerfile
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.image-metadata.outputs.labels }}
+          provenance: mode=max
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
+          outputs: type=image,"name=${{ github.event_name == 'pull_request' && env.GHCR_REPO || format('{0},{1}', env.GHCR_REPO, env.DOCKERHUB_REPO) }}",push-by-digest=true,name-canonical=true,push=true
 
-  scan-operator-image:
-    name: Scan Docker Image
-    needs:
-      - operator-build
-      - build-image-metadata
-    uses: ./.github/workflows/scan-docker-image-action.yaml
-    with:
-      source_image: "${{ needs.build-image-metadata.outputs.IMG_NAME }}:${{ needs.build-image-metadata.outputs.version }}"
-      source_registry: ghcr.io
-      platforms: "['linux/arm64', 'linux/amd64']"
-    secrets:
-      registry_username: ${{ github.actor }}
-      registry_password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Output image digests
+        id: output-digests
+        run: |
+          platform="${{ matrix.platform }}"
+          # Convert "linux/amd64" to just amd64 for the output variable name
+          arch=${platform#linux/}
+          echo "${arch}=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
 
-  release-image-to-docker-hub:
-    if: ${{ github.event_name != 'pull_request' }}
-    name: Release Image to Docker Hub
-    uses: ./.github/workflows/clone-docker-image-action.yaml
-    needs:
-      - operator-build
-      - scan-operator-image
-      - build-image-metadata
-    with:
-      source_image: "${{ needs.build-image-metadata.outputs.IMG_NAME }}:${{ needs.build-image-metadata.outputs.version }}"
-      source_registry: ghcr.io
-      target_image: "${{ needs.build-image-metadata.outputs.DOCKER_IMG_NAME }}"
-      target_registry: docker.io
-      tags: ${{ needs.build-image-metadata.outputs.release_tags }}
-    secrets:
-      source_registry_username:  ${{ github.actor }}
-      source_registry_token: ${{ secrets.GITHUB_TOKEN }}
-      target_registry_username: ${{ secrets.REGISTRY_USER }}
-      target_registry_token: ${{ secrets.REGISTRY_PASSWORD }}
+  manifest:
+    name: Publish image manifest
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: docker.io
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Create image manifest
+        uses: int128/docker-manifest-create-action@b60433fd4312d7a64a56d769b76ebe3f45cf36b4 # v2.1.0
+        with:
+          push: true
+          tags: ${{ needs.build.outputs.tags }} # Includes GHCR and Docker Hub
+          sources: |
+            ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_amd64 }}
+            ${{ env.GHCR_REPO }}@${{ needs.build.outputs.digest_arm64 }}
