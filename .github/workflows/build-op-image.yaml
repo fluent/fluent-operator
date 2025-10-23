@@ -106,8 +106,10 @@ jobs:
         id: image-metadata
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         with:
-          images: ${{ github.event_name == 'pull_request' && env.GHCR_REPO || format('{0}{1}{2}', env.GHCR_REPO, '\n', env.DOCKERHUB_REPO) }}
-          flavor:
+          images: |
+            ${{ env.GHCR_REPO }}
+            ${{ github.event_name != 'pull_request' && env.DOCKERHUB_REPO || '' }}
+          flavor: |
             latest=false
           tags: |
             type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
