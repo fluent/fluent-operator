@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "master"
+      - "chore/ci/build-pr-images"
     tags:
       - "v*"
     paths:
