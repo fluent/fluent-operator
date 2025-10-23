@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - "master"
-      - "chore/ci/build-pr-images"
     tags:
       - "v*"
     paths:
@@ -36,7 +35,7 @@ on:
       - "pkg/fluentd/utils/**"
 
 env:
-  GHCR_REPO: 'ghcr.io/joshuabaird/fluent-operator/fluent-operator' # 'ghcr.io/${{ github.repository }}/fluent-operator'
+  GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-operator'
   DOCKERHUB_REPO: 'kubesphere/fluent-operator'
 
 permissions:
@@ -94,13 +93,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Login to Docker Hub
-      #   if: github.event_name != 'pull_request'
-      #   uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
-      #   with:
-      #     registry: docker.io
-      #     username: ${{ secrets.REGISTRY_USER }}
-      #     password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: docker.io
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Configure image tags
         id: image-metadata
@@ -137,7 +136,7 @@ jobs:
 
       - name: Build and push image (tag)
         if: github.event_name != 'pull_request'
-        id: build-push
+        id: build-tag
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
@@ -149,8 +148,7 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
-          #outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
-          outputs: type=image,"name=${{ env.GHCR_REPO }}",push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests
         id: output-digests
@@ -158,7 +156,7 @@ jobs:
           platform="${{ matrix.platform }}"
           # Convert "linux/amd64" to just amd64 for the output variable name
           arch=${platform#linux/}
-          echo "${arch}=${{ steps.build-pr.outputs.digest || steps.build-push.outputs.digest }}" >> $GITHUB_OUTPUT
+          echo "${arch}=${{ steps.build-pr.outputs.digest || steps.build-tag.outputs.digest }}" >> $GITHUB_OUTPUT
 
   manifest:
     name: Publish image manifest
@@ -172,13 +170,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Login to Docker Hub
-      #   if: github.event_name != 'pull_request'
-      #   uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
-      #   with:
-      #     registry: docker.io
-      #     username: ${{ secrets.REGISTRY_USER }}
-      #     password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: docker.io
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Create image manifest
         uses: int128/docker-manifest-create-action@b60433fd4312d7a64a56d769b76ebe3f45cf36b4 # v2.1.0
