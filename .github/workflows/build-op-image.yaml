@@ -124,7 +124,7 @@ jobs:
           file: cmd/fluent-manager/Dockerfile
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.image-metadata.outputs.labels }}
-          provenance: mode=max
+          provenance: false
           # sbom: true
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
