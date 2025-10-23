@@ -149,7 +149,7 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
-          outputs: type=image,name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests
         id: output-digests
