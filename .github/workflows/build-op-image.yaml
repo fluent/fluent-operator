@@ -125,7 +125,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.image-metadata.outputs.labels }}
           provenance: mode=max
-          sbom: true
+          sbom: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
