@@ -35,7 +35,7 @@ on:
       - "pkg/fluentd/utils/**"
 
 env:
-  GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-operator'
+  GHCR_REPO: 'ghcr.io/joshuabaird/fluent-operator' # 'ghcr.io/${{ github.repository }}/fluent-operator'
   DOCKERHUB_REPO: 'kubesphere/fluent-operator'
 
 permissions:
@@ -125,9 +125,8 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.image-metadata.outputs.labels }}
           provenance: false
-          # sbom: true
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
           outputs: type=image,name=${{ env.GHCR_REPO }},push-by-digest=true,name-canonical=true,push=true
@@ -141,8 +140,7 @@ jobs:
           file: cmd/fluent-manager/Dockerfile
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.image-metadata.outputs.labels }}
-          provenance: mode=max
-          sbom: true
+          provenance: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
