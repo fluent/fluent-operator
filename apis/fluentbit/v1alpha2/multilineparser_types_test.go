@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
-	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/multilineparser"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -39,13 +38,7 @@ func TestMultilineParserList_Load(t *testing.T) {
 			Name:   "multilineparser_test0",
 			Labels: labels,
 		},
-		Spec: MultilineParserSpec{
-			MultilineParser: &multilineparser.MultilineParser{
-				Type:       "regex",
-				Parser:     "go",
-				KeyContent: "log",
-			},
-		},
+		Spec: multilineParserSpec,
 	}
 
 	customMultilineParser := &MultilineParser{
@@ -57,23 +50,7 @@ func TestMultilineParserList_Load(t *testing.T) {
 			Name:   "multilineparser_test1",
 			Labels: labels,
 		},
-		Spec: MultilineParserSpec{
-			MultilineParser: &multilineparser.MultilineParser{
-				Type: "regex",
-				Rules: []multilineparser.Rule{
-					{
-						Start: "start_state",
-						Regex: `/([a-zA-Z]+ \d+ \d+\:\d+\:\d+)(.*)/`,
-						Next:  "cont",
-					},
-					{
-						Start: "cont",
-						Regex: `/^\s+at.*/`,
-						Next:  "cont",
-					},
-				},
-			},
-		},
+		Spec: spec,
 	}
 
 	multilineparsers := MultilineParserList{

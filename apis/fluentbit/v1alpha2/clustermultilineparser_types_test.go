@@ -20,6 +20,31 @@ var clusterMultilineParserExpected = `[MULTILINE_PARSER]
     Rule    "start_state" "/([a-zA-Z]+ \d+ \d+\:\d+\:\d+)(.*)/" "cont"
     Rule    "cont" "/^\s+at.*/" "cont"
 `
+var spec = MultilineParserSpec{
+	MultilineParser: &multilineparser.MultilineParser{
+		Type: "regex",
+		Rules: []multilineparser.Rule{
+			{
+				Start: "start_state",
+				Regex: `/([a-zA-Z]+ \d+ \d+\:\d+\:\d+)(.*)/`,
+				Next:  "cont",
+			},
+			{
+				Start: "cont",
+				Regex: `/^\s+at.*/`,
+				Next:  "cont",
+			},
+		},
+	},
+}
+
+var multilineParserSpec = MultilineParserSpec{
+	MultilineParser: &multilineparser.MultilineParser{
+		Type:       "regex",
+		Parser:     "go",
+		KeyContent: "log",
+	},
+}
 
 func TestClusterMultilineParserList_Load(t *testing.T) {
 	g := NewGomegaWithT(t)
@@ -39,13 +64,7 @@ func TestClusterMultilineParserList_Load(t *testing.T) {
 			Name:   "clustermultilineparser_test0",
 			Labels: labels,
 		},
-		Spec: MultilineParserSpec{
-			MultilineParser: &multilineparser.MultilineParser{
-				Type:       "regex",
-				Parser:     "go",
-				KeyContent: "log",
-			},
-		},
+		Spec: multilineParserSpec,
 	}
 
 	customMultilineParser := &ClusterMultilineParser{
@@ -57,23 +76,7 @@ func TestClusterMultilineParserList_Load(t *testing.T) {
 			Name:   "clustermultilineparser_test1",
 			Labels: labels,
 		},
-		Spec: MultilineParserSpec{
-			MultilineParser: &multilineparser.MultilineParser{
-				Type: "regex",
-				Rules: []multilineparser.Rule{
-					{
-						Start: "start_state",
-						Regex: `/([a-zA-Z]+ \d+ \d+\:\d+\:\d+)(.*)/`,
-						Next:  "cont",
-					},
-					{
-						Start: "cont",
-						Regex: `/^\s+at.*/`,
-						Next:  "cont",
-					},
-				},
-			},
-		},
+		Spec: spec,
 	}
 
 	clustermultilineparsers := ClusterMultilineParserList{

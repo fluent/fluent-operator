@@ -17,9 +17,6 @@ limitations under the License.
 package v1alpha2
 
 import (
-	"bytes"
-	"fmt"
-	"reflect"
 	"sort"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
@@ -44,6 +41,14 @@ type ClusterMultilineParser struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	Spec MultilineParserSpec `json:"spec,omitempty"`
+}
+
+func (a ClusterMultilineParser) name() string {
+	return a.Name
+}
+
+func (a ClusterMultilineParser) spec() MultilineParserSpec {
+	return a.Spec
 }
 
 // +kubebuilder:object:root=true
@@ -73,37 +78,9 @@ func (a ClusterMultilineParserByName) Less(i, j int) bool {
 }
 
 func (list ClusterMultilineParserList) Load(sl plugins.SecretLoader) (string, error) {
-	var buf bytes.Buffer
-
 	sort.Sort(ClusterMultilineParserByName(list.Items))
 
-	for _, item := range list.Items {
-		merge := func(p plugins.Plugin) error {
-			if p == nil || reflect.ValueOf(p).IsNil() {
-				return nil
-			}
-
-			buf.WriteString("[MULTILINE_PARSER]\n")
-			buf.WriteString(fmt.Sprintf("    Name    %s\n", item.Name))
-
-			kvs, err := p.Params(sl)
-			if err != nil {
-				return err
-			}
-			buf.WriteString(kvs.String())
-
-			return nil
-		}
-
-		for i := 0; i < reflect.ValueOf(item.Spec).NumField(); i++ {
-			p, _ := reflect.ValueOf(item.Spec).Field(i).Interface().(plugins.Plugin)
-			if err := merge(p); err != nil {
-				return "", err
-			}
-		}
-	}
-
-	return buf.String(), nil
+	return load(list.Items, sl)
 }
 
 func init() {
