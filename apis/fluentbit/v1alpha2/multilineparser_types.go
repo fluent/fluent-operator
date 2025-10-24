@@ -38,6 +38,14 @@ type MultilineParser struct {
 	Spec MultilineParserSpec `json:"spec,omitempty"`
 }
 
+func (a MultilineParser) name() string {
+	return a.Name
+}
+
+func (a MultilineParser) spec() MultilineParserSpec {
+	return a.Spec
+}
+
 // +kubebuilder:object:root=true
 
 // MultilineParserList contains a list of MultilineParser
@@ -63,19 +71,23 @@ func (a MultilineParserByName) Less(i, j int) bool {
 	return a[i].Name < a[j].Name
 }
 
-func (list MultilineParserList) Load(sl plugins.SecretLoader) (string, error) {
+type multilineParserInterface interface {
+	MultilineParser | ClusterMultilineParser
+	name() string
+	spec() MultilineParserSpec
+}
+
+func load[T multilineParserInterface](items []T, sl plugins.SecretLoader) (string, error) {
 	var buf bytes.Buffer
 
-	sort.Sort(MultilineParserByName(list.Items))
-
-	for _, item := range list.Items {
+	for _, item := range items {
 		merge := func(p plugins.Plugin) error {
 			if p == nil || reflect.ValueOf(p).IsNil() {
 				return nil
 			}
 
 			buf.WriteString("[MULTILINE_PARSER]\n")
-			buf.WriteString(fmt.Sprintf("    Name    %s\n", item.Name))
+			buf.WriteString(fmt.Sprintf("    Name    %s\n", item.name()))
 
 			kvs, err := p.Params(sl)
 			if err != nil {
@@ -86,8 +98,8 @@ func (list MultilineParserList) Load(sl plugins.SecretLoader) (string, error) {
 			return nil
 		}
 
-		for i := 0; i < reflect.ValueOf(item.Spec).NumField(); i++ {
-			p, _ := reflect.ValueOf(item.Spec).Field(i).Interface().(plugins.Plugin)
+		for i := 0; i < reflect.ValueOf(item.spec()).NumField(); i++ {
+			p, _ := reflect.ValueOf(item.spec()).Field(i).Interface().(plugins.Plugin)
 			if err := merge(p); err != nil {
 				return "", err
 			}
@@ -95,6 +107,12 @@ func (list MultilineParserList) Load(sl plugins.SecretLoader) (string, error) {
 	}
 
 	return buf.String(), nil
+}
+
+func (list MultilineParserList) Load(sl plugins.SecretLoader) (string, error) {
+	sort.Sort(MultilineParserByName(list.Items))
+
+	return load(list.Items, sl)
 }
 
 func init() {

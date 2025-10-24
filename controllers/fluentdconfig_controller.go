@@ -682,6 +682,7 @@ func (r *FluentdConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
+		Named("FluentdConfig").
 		For(&fluentdv1alpha1.Fluentd{}).
 		Owns(&corev1.Secret{}).
 		Watches(&fluentdv1alpha1.ClusterFluentdConfig{}, &handler.EnqueueRequestForObject{}).

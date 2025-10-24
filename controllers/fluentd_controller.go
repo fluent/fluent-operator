@@ -238,6 +238,7 @@ func (r *FluentdReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
+		Named("Fluentd").
 		For(&fluentdv1alpha1.Fluentd{}).
 		Owns(&corev1.ServiceAccount{}).
 		Owns(&appsv1.DaemonSet{}).

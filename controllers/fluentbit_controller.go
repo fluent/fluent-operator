@@ -352,6 +352,7 @@ func (r *FluentBitReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
+		Named("FluentBit").
 		For(&fluentbitv1alpha2.FluentBit{}).
 		Owns(&corev1.ServiceAccount{}).
 		Owns(&appsv1.DaemonSet{}).
