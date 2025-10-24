@@ -113,9 +113,9 @@ jobs:
           tags: |
             type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
             type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha,format=long,prefix=,enable=${{ github.event_name == 'pull_request' }},priority=1000
+            type=semver,pattern={{version}},enable=${{ github.ref_type == 'tag' }}
+            type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
+            type=sha,format=long,prefix=,priority=1000
 
       - name: Build and push image (pull request)
         if: github.event_name == 'pull_request'
@@ -133,9 +133,9 @@ jobs:
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
           outputs: type=image,"name=${{ env.GHCR_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
-      - name: Build and push image (tag)
+      - name: Build and push image
         if: github.event_name != 'pull_request'
-        id: build-tag
+        id: build
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
@@ -155,7 +155,7 @@ jobs:
           platform="${{ matrix.platform }}"
           # Convert "linux/amd64" to just amd64 for the output variable name
           arch=${platform#linux/}
-          echo "${arch}=${{ steps.build-pr.outputs.digest || steps.build-tag.outputs.digest }}" >> $GITHUB_OUTPUT
+          echo "${arch}=${{ steps.build-pr.outputs.digest || steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
 
   manifest:
     name: Publish image manifest
