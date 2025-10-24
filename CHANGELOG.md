@@ -2,6 +2,85 @@
 
 ## 3.5.0 / 2025-10-24
 
+* Bumped chart-version by @ncauchois in https://github.com/fluent/fluent-operator/pull/1596
+* Sanitize markdown by resolving linter warnings by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1611
+* Support both IPv4 and IPv6 addresses in http_listen configuration by @damyan in https://github.com/fluent/fluent-operator/pull/1616
+* chore(deps): update ghcr.io/fluent/fluent-operator/fluent-operator docker tag to v3.4.0 by @github-actions[bot] in https://github.com/fluent/fluent-operator/pull/1617
+* helm-chart: patch 3.4 release by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1623
+* fix(fluent-operator): broken link about nodeselector by @leehosu in https://github.com/fluent/fluent-operator/pull/1626
+* Make fluentbit livenessProbe more flexible by @CharlieR-o-o-t in https://github.com/fluent/fluent-operator/pull/1628
+* docs: add link to label-router project by @csatib02 in https://github.com/fluent/fluent-operator/pull/1627
+* Update fluentbit-fluentBit.yaml to address issue 1635 by @g1franc in https://github.com/fluent/fluent-operator/pull/1636
+* Allow setting logfmt parser options by @cosmastech in https://github.com/fluent/fluent-operator/pull/1637
+* ClusterInput/ClusterOutput helm chart changes  by @CharlieR-o-o-t in https://github.com/fluent/fluent-operator/pull/1642
+* Validate region and its value in Kinesis Output plugin by @smallc2009 in https://github.com/fluent/fluent-operator/pull/1644
+* Add `workers` param for s3 output by @hercynium in https://github.com/fluent/fluent-operator/pull/1647
+* fix: Invalid reference by @sousa-miguel in https://github.com/fluent/fluent-operator/pull/1643
+* make tls config in elastic more clearer by @smallc2009 in https://github.com/fluent/fluent-operator/pull/1645
+* Bump fluent-bit-crds and fluentd-crds sub-charts to 3.4.2. by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1654
+* Fix helm chart linting errors by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1656
+* build(deps): bump golang to 1.24.5 by @cw-Guo in https://github.com/fluent/fluent-operator/pull/1665
+* fix: fix ci check error due to shellcheck by @cw-Guo in https://github.com/fluent/fluent-operator/pull/1668
+* Fix error handling by @sugaf1204 in https://github.com/fluent/fluent-operator/pull/1666
+* ci: Fix "ct lint" action  by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1680
+* Bump fluent-bit to 4.0.9 by @github-actions[bot] in https://github.com/fluent/fluent-operator/pull/1683
+* Bump docker builds to Go v1.24.5 by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1684
+* feat: add servicemonitor for fluent-operator to helm chart by @dennis-ge in https://github.com/fluent/fluent-operator/pull/1677
+* build(deps): Bump aquasecurity/trivy-action from 0.30.0 to 0.33.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1676
+* build(deps): Bump renovatebot/github-action from 41.0.22 to 43.0.10 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1675
+* build(deps): Bump docker/setup-buildx-action from 3.10.0 to 3.11.1 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1650
+* build(deps): Bump docker/build-push-action from 6.16.0 to 6.18.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1630
+* build(deps): Bump actions/setup-go from 5.4.0 to 5.5.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1629
+* Bump fluent-bit to 4.0.11 by @github-actions[bot] in https://github.com/fluent/fluent-operator/pull/1691
+* allow s3 output plugin to get keys from secrets by @v-davegillies-upscale in https://github.com/fluent/fluent-operator/pull/1688
+* Bump fluent-bit to 4.1.0 by @github-actions[bot] in https://github.com/fluent/fluent-operator/pull/1699
+* build(deps): Bump azure/setup-helm from 4.3.0 to 4.3.1 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1695
+* build(deps): Bump renovatebot/github-action from 43.0.10 to 43.0.14 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1697
+* build(deps): Bump aquasecurity/trivy-action from 0.33.0 to 0.33.1 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1694
+* build(deps): Bump golang.org/x/sync from 0.14.0 to 0.17.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1686
+* build(deps): Bump github.com/oklog/run from 1.1.0 to 1.2.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1649
+* build(deps): Bump github.com/go-logr/logr from 1.4.2 to 1.4.3 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1632
+* build(deps): Bump actions/checkout from 4.2.2 to 5.0.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1698
+* build(deps): Bump actions/setup-go from 5.5.0 to 6.0.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1696
+* Add golangci lint and resolve linter warnings by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1703
+* Update generated files by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1705
+* Add golang-ci configuration matching with latest operator SDK by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1704
+* Fix Docker warnings by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1706
+* Update operator-sdk to v1.41.1 according to migrations by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1702
+* Fix goconst linter warnings #1707 by @u5surf in https://github.com/fluent/fluent-operator/pull/1711
+* Fix cyclomatic complexity linter warnings by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1708
+* Resolve long line length linter warnings by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1710
+* bump chart by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1715
+* Resolve some duplicate code linter warnings by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1718
+* Fix some `lll` warnings. by @u5surf in https://github.com/fluent/fluent-operator/pull/1720
+* Bump fluent-bit to 4.1.1 by @github-actions[bot] in https://github.com/fluent/fluent-operator/pull/1729
+* Bump fluentd to v1.19.0. by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1730
+* fluentd: Fix gocyclo warnings by @u5surf in https://github.com/fluent/fluent-operator/pull/1723
+* build(deps): Bump github.com/go-openapi/errors from 0.22.1 to 0.22.3 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1712
+* Add fields to AzureBlob output plugin by @BHYub in https://github.com/fluent/fluent-operator/pull/1727
+* add ClusterFirstWithHostNet for kubeedge fluentbit by @Abirdcfly in https://github.com/fluent/fluent-operator/pull/1726
+* build(deps): Bump github.com/onsi/ginkgo/v2 from 2.23.4 to 2.26.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1724
+* Use unique names for Fluentbit/Fluentd controllers. by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1736
+* chore(deps): update ghcr.io/fluent/fluent-operator/fluent-bit docker tag to v4.1.1 by @github-actions[bot] in https://github.com/fluent/fluent-operator/pull/1738
+* Re-factor build workflow for fluent-operator. by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1737
+* Fix dupl warnings by @u5surf in https://github.com/fluent/fluent-operator/pull/1735
+* feat(fluentbit): add text_payload_key to stackdriver by @cw-Guo in https://github.com/fluent/fluent-operator/pull/1669
+
+## New Contributors
+* @ncauchois made their first contribution in https://github.com/fluent/fluent-operator/pull/1596
+* @damyan made their first contribution in https://github.com/fluent/fluent-operator/pull/1616
+* @leehosu made their first contribution in https://github.com/fluent/fluent-operator/pull/1626
+* @csatib02 made their first contribution in https://github.com/fluent/fluent-operator/pull/1627
+* @g1franc made their first contribution in https://github.com/fluent/fluent-operator/pull/1636
+* @cosmastech made their first contribution in https://github.com/fluent/fluent-operator/pull/1637
+* @hercynium made their first contribution in https://github.com/fluent/fluent-operator/pull/1647
+* @sousa-miguel made their first contribution in https://github.com/fluent/fluent-operator/pull/1643
+* @sugaf1204 made their first contribution in https://github.com/fluent/fluent-operator/pull/1666
+* @v-davegillies-upscale made their first contribution in https://github.com/fluent/fluent-operator/pull/1688
+* @u5surf made their first contribution in https://github.com/fluent/fluent-operator/pull/1711
+* @BHYub made their first contribution in https://github.com/fluent/fluent-operator/pull/1727
+* @Abirdcfly made their first contribution in https://github.com/fluent/fluent-operator/pull/1726
+
 ## 3.4.0 / 2025-05-08
 
 ### Features
