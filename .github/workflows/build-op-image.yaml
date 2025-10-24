@@ -1,3 +1,4 @@
+# TEST
 name: Build/Push Fluent Operator image
 
 on:
