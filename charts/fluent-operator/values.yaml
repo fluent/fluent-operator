@@ -165,6 +165,11 @@ fluentbit:
   secrets: []
   # fluent-bit daemonset use host network
   hostNetwork: false
+  # fluent-bit ports configuration
+  ports: []
+  # - containerPort: 514
+  #   name: syslog-tcp
+  #   protocol: TCP
   # Pod security context for Fluent Bit pods. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   podSecurityContext: {}
   # Security context for Fluent Bit container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
