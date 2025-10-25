@@ -54,6 +54,10 @@ spec:
   nodeSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.fluentbit.ports }}
+  ports:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.fluentbit.priorityClassName }}
   priorityClassName: {{ . | quote }}
   {{- end }}
