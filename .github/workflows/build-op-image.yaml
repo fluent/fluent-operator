@@ -87,6 +87,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
 
       - name: Login to GHCR
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
           registry: ghcr.io
@@ -117,7 +118,24 @@ jobs:
             type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
             type=sha,format=long,prefix=,priority=1000
 
+      - name: Build image (pull request)
+        if: github.event_name == 'pull_request'
+        id: build-pr
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          file: cmd/fluent-manager/Dockerfile
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.image-metadata.outputs.labels }}
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            GO_VERSION=${{ steps.setup-go.outputs.go-version }}
+          push: false
+
       - name: Build and push image
+        if: github.event_name != 'pull_request'
         id: build
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
@@ -130,10 +148,10 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
-          push: ${{ github.event_name != 'pull_request' }}
-          outputs: ${{ github.event_name != 'pull_request' && format('type=image,"name={0},{1}",push-by-digest=true,name-canonical=true,push=true', env.GHCR_REPO, env.DOCKERHUB_REPO) || '' }}
+          outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests
+        if: github.event_name != 'pull_request'
         id: output-digests
         run: |
           platform="${{ matrix.platform }}"
@@ -155,7 +173,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
           registry: docker.io
