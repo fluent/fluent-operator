@@ -5,6 +5,7 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,7 +26,7 @@ func TestOpenTelemetry_Params(t *testing.T) {
 	sl := plugins.NewSecretLoader(fc, "test_namespace")
 	ot := OpenTelemetry{
 		Host:                  "otlp-collector.example.com",
-		Port:                  ptr[int32](443),
+		Port:                  utils.ToPtr[int32](443),
 		HTTPUser:              &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_user"}}},
 		HTTPPasswd:            &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_passwd"}}},
 		Proxy:                 "expected_proxy",
@@ -33,12 +34,12 @@ func TestOpenTelemetry_Params(t *testing.T) {
 		LogsUri:               "expected_logs_uri",
 		TracesUri:             "expected_traces_uri",
 		Header:                map[string]string{"custom_header_key": "custom_header_val"},
-		LogResponsePayload:    ptr(true),
+		LogResponsePayload:    utils.ToPtr(true),
 		AddLabel:              map[string]string{"add_label_key": "add_label_val"},
-		LogsBodyKeyAttributes: ptr(true),
+		LogsBodyKeyAttributes: utils.ToPtr(true),
 		LogsBodyKey:           "expected_logs_body_key",
-		TLS:                   &plugins.TLS{Verify: ptr(false)},
-		Networking:            &plugins.Networking{SourceAddress: ptr("expected_source_address")},
+		TLS:                   &plugins.TLS{Verify: utils.ToPtr(false)},
+		Networking:            &plugins.Networking{SourceAddress: utils.ToPtr("expected_source_address")},
 	}
 
 	expected := params.NewKVs()

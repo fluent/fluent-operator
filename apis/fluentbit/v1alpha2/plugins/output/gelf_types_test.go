@@ -5,6 +5,7 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 )
 
@@ -15,15 +16,15 @@ func TestOutput_Gelf_Params(t *testing.T) {
 
 	dd := Gelf{
 		Host:            "127.0.0.1",
-		Port:            ptr[int32](1234),
+		Port:            utils.ToPtr[int32](1234),
 		Mode:            "udp",
 		ShortMessageKey: "short_message",
 		TimestampKey:    "timestamp",
 		HostKey:         "host",
 		FullMessageKey:  "full_message",
 		LevelKey:        "level",
-		PacketSize:      ptr[int32](1000),
-		Compress:        ptr(true),
+		PacketSize:      utils.ToPtr[int32](1000),
+		Compress:        utils.ToPtr(true),
 	}
 
 	expected := params.NewKVs()

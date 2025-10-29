@@ -5,12 +5,9 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 )
-
-func ptr[T any](v T) *T {
-	return &v
-}
 
 func TestOutput_InfluxDB_Params(t *testing.T) {
 	g := NewGomegaWithT(t)
@@ -19,14 +16,14 @@ func TestOutput_InfluxDB_Params(t *testing.T) {
 
 	dd := InfluxDB{
 		Host:            "127.0.0.1",
-		Port:            ptr[int32](8086),
+		Port:            utils.ToPtr[int32](8086),
 		Database:        "fluentbit",
 		Bucket:          "buck",
 		Org:             "orgnis",
 		SequenceTag:     "_inc",
 		TagKeys:         []string{"foo", "bar", "foo:bar"},
-		AutoTags:        ptr(false),
-		TagsListEnabled: ptr(true),
+		AutoTags:        utils.ToPtr(false),
+		TagsListEnabled: utils.ToPtr(true),
 		TagsListKey:     "taglist_key",
 	}
 

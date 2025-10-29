@@ -5,6 +5,7 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/filter"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -135,11 +136,11 @@ func TestClusterFilterList_Load(t *testing.T) {
 						KubeURL:          "http://127.0.0.1:6443",
 						KubeCAFile:       "root.ca",
 						KubeCAPath:       "/root/.kube/crt",
-						Labels:           ptr(true),
-						Annotations:      ptr(true),
-						DNSWaitTime:      ptr[int32](30),
-						UseKubelet:       ptr(true),
-						KubeletPort:      ptr[int32](10000),
+						Labels:           utils.ToPtr(true),
+						Annotations:      utils.ToPtr(true),
+						DNSWaitTime:      utils.ToPtr[int32](30),
+						UseKubelet:       utils.ToPtr(true),
+						KubeletPort:      utils.ToPtr[int32](10000),
 						KubeMetaCacheTTL: "60s",
 					},
 				},
@@ -163,8 +164,8 @@ func TestClusterFilterList_Load(t *testing.T) {
 						CommonParams: plugins.CommonParams{
 							Alias: "throttle.application-xy",
 						},
-						Rate:     ptr[int64](200),
-						Window:   ptr[int64](300),
+						Rate:     utils.ToPtr[int64](200),
+						Window:   utils.ToPtr[int64](300),
 						Interval: "1s",
 					},
 				},
@@ -494,11 +495,11 @@ func TestClusterFilterList_Load_As_Yaml(t *testing.T) {
 						KubeURL:          "http://127.0.0.1:6443",
 						KubeCAFile:       "root.ca",
 						KubeCAPath:       "/root/.kube/crt",
-						Labels:           ptr(true),
-						Annotations:      ptr(true),
-						DNSWaitTime:      ptr[int32](30),
-						UseKubelet:       ptr(true),
-						KubeletPort:      ptr[int32](10000),
+						Labels:           utils.ToPtr(true),
+						Annotations:      utils.ToPtr(true),
+						DNSWaitTime:      utils.ToPtr[int32](30),
+						UseKubelet:       utils.ToPtr(true),
+						KubeletPort:      utils.ToPtr[int32](10000),
 						KubeMetaCacheTTL: "60s",
 					},
 				},
@@ -522,8 +523,8 @@ func TestClusterFilterList_Load_As_Yaml(t *testing.T) {
 						CommonParams: plugins.CommonParams{
 							Alias: "throttle.application-xy",
 						},
-						Rate:     ptr[int64](200),
-						Window:   ptr[int64](300),
+						Rate:     utils.ToPtr[int64](200),
+						Window:   utils.ToPtr[int64](300),
 						Interval: "1s",
 					},
 				},

@@ -5,6 +5,7 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/input"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -86,18 +87,18 @@ func TestClusterInputList_Load(t *testing.T) {
 		Spec: InputSpec{
 			Alias: "input0_alias",
 			Tail: &input.Tail{
-				DisableInotifyWatcher:  ptr(true),
+				DisableInotifyWatcher:  utils.ToPtr(true),
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          ptr(true),
+				SkipLongLines:          utils.ToPtr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptr[int64](10),
+				RefreshIntervalSeconds: utils.ToPtr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 				Parser:                 "docker",
-				DockerMode:             ptr(true),
-				DockerModeFlushSeconds: ptr[int64](4),
+				DockerMode:             utils.ToPtr(true),
+				DockerModeFlushSeconds: utils.ToPtr[int64](4),
 				DockerModeParser:       "docker-mode-parser",
 			},
 		},
@@ -115,8 +116,8 @@ func TestClusterInputList_Load(t *testing.T) {
 			Alias: "input2_alias",
 			Dummy: &input.Dummy{
 				Tag:     "logs.foo.bar",
-				Rate:    ptr[int32](3),
-				Samples: ptr[int32](5),
+				Rate:    utils.ToPtr[int32](3),
+				Samples: utils.ToPtr[int32](5),
 			},
 		},
 	}
@@ -134,7 +135,7 @@ func TestClusterInputList_Load(t *testing.T) {
 			PrometheusScrapeMetrics: &input.PrometheusScrapeMetrics{
 				Tag:            "logs.foo.bar",
 				Host:           "https://example3.com",
-				Port:           ptr[int32](433),
+				Port:           utils.ToPtr[int32](433),
 				ScrapeInterval: "10s",
 				MetricsPath:    "/metrics",
 			},
@@ -199,7 +200,7 @@ func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
 			FluentBitMetrics: &input.FluentbitMetrics{
 				Tag:            "logs.foo.bar",
 				ScrapeInterval: "2",
-				ScrapeOnStart:  ptr(true),
+				ScrapeOnStart:  utils.ToPtr(true),
 			},
 		},
 	}
@@ -215,7 +216,7 @@ func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
 		Spec: InputSpec{
 			Alias: "input1_alias",
 			Forward: &input.Forward{
-				Port:            ptr[int32](433),
+				Port:            utils.ToPtr[int32](433),
 				Listen:          "0.0.0.0",
 				BufferChunkSize: "1M",
 				BufferMaxSize:   "6M",
@@ -262,18 +263,18 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 		Spec: InputSpec{
 			Alias: "input0_alias",
 			Tail: &input.Tail{
-				DisableInotifyWatcher:  ptr(true),
+				DisableInotifyWatcher:  utils.ToPtr(true),
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          ptr(true),
+				SkipLongLines:          utils.ToPtr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptr[int64](10),
+				RefreshIntervalSeconds: utils.ToPtr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 				Parser:                 "docker",
-				DockerMode:             ptr(true),
-				DockerModeFlushSeconds: ptr[int64](4),
+				DockerMode:             utils.ToPtr(true),
+				DockerModeFlushSeconds: utils.ToPtr[int64](4),
 				DockerModeParser:       "docker-mode-parser",
 			},
 		},
@@ -291,8 +292,8 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 			Alias: "input2_alias",
 			Dummy: &input.Dummy{
 				Tag:     "logs.foo.bar",
-				Rate:    ptr[int32](3),
-				Samples: ptr[int32](5),
+				Rate:    utils.ToPtr[int32](3),
+				Samples: utils.ToPtr[int32](5),
 			},
 		},
 	}
@@ -310,7 +311,7 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 			PrometheusScrapeMetrics: &input.PrometheusScrapeMetrics{
 				Tag:            "logs.foo.bar",
 				Host:           "https://example3.com",
-				Port:           ptr[int32](433),
+				Port:           utils.ToPtr[int32](433),
 				ScrapeInterval: "10s",
 				MetricsPath:    "/metrics",
 			},
