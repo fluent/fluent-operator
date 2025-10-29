@@ -14,6 +14,7 @@ import (
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/multilineparser"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/output"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/parser"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 )
 
 const (
@@ -385,10 +386,10 @@ pipeline:
 	cfg = ClusterFluentBitConfig{
 		Spec: FluentBitConfigSpec{
 			Service: &Service{
-				Daemon:       ptr(false),
-				FlushSeconds: ptr[float64](1),
-				GraceSeconds: ptr[int64](30),
-				HttpServer:   ptr(true),
+				Daemon:       utils.ToPtr(false),
+				FlushSeconds: utils.ToPtr[float64](1),
+				GraceSeconds: utils.ToPtr[int64](30),
+				HttpServer:   utils.ToPtr(true),
 				LogLevel:     "info",
 				ParsersFile:  "parsers.conf",
 			},
@@ -401,7 +402,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 
 	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
-	disableInotifyWatcher := ptr(true)
+	disableInotifyWatcher := utils.ToPtr(true)
 
 	inputObj := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
@@ -419,10 +420,10 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          ptr(true),
+				SkipLongLines:          utils.ToPtr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptr[int64](10),
+				RefreshIntervalSeconds: utils.ToPtr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 			},
 		},
@@ -506,10 +507,10 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 			Match: "logs.foo.bar",
 			Syslog: &output.Syslog{
 				Host: "example.com",
-				Port: ptr[int32](3300),
+				Port: utils.ToPtr[int32](3300),
 				Mode: "tls",
 				TLS: &plugins.TLS{
-					Verify: ptr(true),
+					Verify: utils.ToPtr(true),
 				},
 				SyslogMessageKey:  "log",
 				SyslogHostnameKey: "do_app_name",
@@ -539,14 +540,14 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 			Match: "logs.foo.bar",
 			HTTP: &output.HTTP{
 				Host:           "https://example2.com",
-				Port:           ptr[int32](433),
+				Port:           utils.ToPtr[int32](433),
 				Uri:            "/logs",
 				Headers:        headers,
 				Format:         "json_lines",
 				JsonDateKey:    "timestamp",
 				JsonDateFormat: "iso8601",
 				TLS: &plugins.TLS{
-					Verify: ptr(true),
+					Verify: utils.ToPtr(true),
 				},
 			},
 		},
@@ -566,7 +567,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 			Match: "*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "https://example2.com",
-				Port:  ptr[int32](9200),
+				Port:  utils.ToPtr[int32](9200),
 				Index: "my_index",
 				Type:  "my_type",
 			},
@@ -587,7 +588,7 @@ func Test_FluentBitConfig_RenderMainConfig(t *testing.T) {
 			Match: "*",
 			Elasticsearch: &output.Elasticsearch{
 				Host:           "https://example2.com",
-				Port:           ptr[int32](9200),
+				Port:           utils.ToPtr[int32](9200),
 				Index:          "my_index",
 				Type:           "my_type",
 				WriteOperation: "upsert",
@@ -634,7 +635,7 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 
 	sl := plugins.NewSecretLoader(nil, "testnamespace")
 
-	disableInotifyWatcher := ptr(true)
+	disableInotifyWatcher := utils.ToPtr(true)
 
 	inputObj := &ClusterInput{
 		TypeMeta: metav1.TypeMeta{
@@ -652,10 +653,10 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          ptr(true),
+				SkipLongLines:          utils.ToPtr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptr[int64](10),
+				RefreshIntervalSeconds: utils.ToPtr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 			},
 		},
@@ -739,10 +740,10 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			Syslog: &output.Syslog{
 				Host: "example.com",
-				Port: ptr[int32](3300),
+				Port: utils.ToPtr[int32](3300),
 				Mode: "tls",
 				TLS: &plugins.TLS{
-					Verify: ptr(true),
+					Verify: utils.ToPtr(true),
 				},
 				SyslogMessageKey:  "log",
 				SyslogHostnameKey: "do_app_name",
@@ -772,14 +773,14 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			HTTP: &output.HTTP{
 				Host:           "https://example2.com",
-				Port:           ptr[int32](433),
+				Port:           utils.ToPtr[int32](433),
 				Uri:            "/logs",
 				Headers:        headers,
 				Format:         "json_lines",
 				JsonDateKey:    "timestamp",
 				JsonDateFormat: "iso8601",
 				TLS: &plugins.TLS{
-					Verify: ptr(true),
+					Verify: utils.ToPtr(true),
 				},
 			},
 		},
@@ -799,7 +800,7 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 			Match: "*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "https://example2.com",
-				Port:  ptr[int32](9200),
+				Port:  utils.ToPtr[int32](9200),
 				Index: "my_index",
 				Type:  "my_type",
 			},
@@ -820,7 +821,7 @@ func Test_FluentBitConfig_RenderMainConfigYaml(t *testing.T) {
 			Match: "*",
 			Elasticsearch: &output.Elasticsearch{
 				Host:           "https://example2.com",
-				Port:           ptr[int32](9200),
+				Port:           utils.ToPtr[int32](9200),
 				Index:          "my_index",
 				Type:           "my_type",
 				WriteOperation: "upsert",
@@ -908,10 +909,10 @@ func TestRenderMainConfigK8s(t *testing.T) {
 			Tail: &input.Tail{
 				Tag:                    "kube.*",
 				Path:                   "/var/log/containers/*.log",
-				SkipLongLines:          ptr(true),
+				SkipLongLines:          utils.ToPtr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptr[int64](10),
+				RefreshIntervalSeconds: utils.ToPtr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 			},
 		},
@@ -942,7 +943,7 @@ func TestRenderMainConfigK8s(t *testing.T) {
 					Parser: &filter.Parser{
 						KeyName:     "log",
 						Parser:      "bar",
-						ReserveData: ptr(true),
+						ReserveData: utils.ToPtr(true),
 					},
 				},
 			},
@@ -967,7 +968,7 @@ func TestRenderMainConfigK8s(t *testing.T) {
 			Match: "kube.*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "foo.bar",
-				Port:  ptr[int32](9200),
+				Port:  utils.ToPtr[int32](9200),
 				Index: "foo-index",
 			},
 		},
@@ -987,7 +988,7 @@ func TestRenderMainConfigK8s(t *testing.T) {
 			Match: "kube.*",
 			Elasticsearch: &output.Elasticsearch{
 				Host:           "foo.bar",
-				Port:           ptr[int32](9200),
+				Port:           utils.ToPtr[int32](9200),
 				Index:          "foo-index",
 				WriteOperation: "update",
 			},
@@ -1031,10 +1032,10 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 			Tail: &input.Tail{
 				Tag:                    "kube.*",
 				Path:                   "/var/log/containers/*.log",
-				SkipLongLines:          ptr(true),
+				SkipLongLines:          utils.ToPtr(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: ptr[int64](10),
+				RefreshIntervalSeconds: utils.ToPtr[int64](10),
 				DB:                     "/fluent-bit/tail/pos.db",
 			},
 		},
@@ -1059,7 +1060,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 						{Parser: &filter.Parser{
 							KeyName:     "log",
 							Parser:      "test",
-							ReserveData: ptr(true),
+							ReserveData: utils.ToPtr(true),
 						}},
 					},
 				},
@@ -1081,7 +1082,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 					Match: "kube.*",
 					Elasticsearch: &output.Elasticsearch{
 						Host:  "foo.bar",
-						Port:  ptr[int32](9200),
+						Port:  utils.ToPtr[int32](9200),
 						Index: "foo-index",
 					},
 				},
@@ -1105,7 +1106,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 					Parser: &filter.Parser{
 						KeyName:     "log",
 						Parser:      "bar",
-						ReserveData: ptr(true),
+						ReserveData: utils.ToPtr(true),
 					},
 				},
 			},
@@ -1130,7 +1131,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 			Match: "kube.*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "foo.bar",
-				Port:  ptr[int32](9200),
+				Port:  utils.ToPtr[int32](9200),
 				Index: "foo-index",
 			},
 		},
@@ -1150,7 +1151,7 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 			Match: "kube.*",
 			Elasticsearch: &output.Elasticsearch{
 				Host:           "foo.bar",
-				Port:           ptr[int32](9200),
+				Port:           utils.ToPtr[int32](9200),
 				Index:          "foo-index",
 				WriteOperation: "update",
 			},
@@ -1178,10 +1179,10 @@ func TestClusterFluentBitConfig_RenderMainConfig_WithParsersFiles(t *testing.T) 
 	cfbc := ClusterFluentBitConfig{
 		Spec: FluentBitConfigSpec{
 			Service: &Service{
-				Daemon:       ptr(false),
-				FlushSeconds: ptr[float64](1),
-				GraceSeconds: ptr[int64](30),
-				HttpServer:   ptr(true),
+				Daemon:       utils.ToPtr(false),
+				FlushSeconds: utils.ToPtr[float64](1),
+				GraceSeconds: utils.ToPtr[int64](30),
+				HttpServer:   utils.ToPtr(true),
 				LogLevel:     "info",
 				ParsersFiles: []string{"parsers.conf", "parsers_multiline.conf"},
 			},

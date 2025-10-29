@@ -5,6 +5,7 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 )
 
@@ -15,14 +16,14 @@ func TestOutput_DataDog_Params(t *testing.T) {
 
 	dd := DataDog{
 		Host:          "http-intake.logs.datadoghq.com",
-		TLS:           ptr(true),
+		TLS:           utils.ToPtr(true),
 		Compress:      "gzip",
 		Service:       "service_name",
 		Source:        "app_name",
 		Tags:          "foo:bar",
 		MessageKey:    "message",
 		JSONDateKey:   "timestamp",
-		IncludeTagKey: ptr(true),
+		IncludeTagKey: utils.ToPtr(true),
 		TagKey:        "tagkey",
 	}
 

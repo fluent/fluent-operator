@@ -5,6 +5,7 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 )
 
@@ -25,23 +26,23 @@ func TestOutput_S3_Params(t *testing.T) {
 		StoreDirLimitSize:        "0",
 		S3KeyFormat:              "/fluent-bit-logs/$TAG/%Y/%m/%d/%H/%M/%S",
 		S3KeyFormatTagDelimiters: ".",
-		StaticFilePath:           ptr(false),
-		UsePutObject:             ptr(false),
+		StaticFilePath:           utils.ToPtr(false),
+		UsePutObject:             utils.ToPtr(false),
 		RoleArn:                  "role",
 		Endpoint:                 "endpoint",
 		StsEndpoint:              "sts_endpoint",
 		CannedAcl:                "canned_acl",
 		Compression:              "gzip",
 		ContentType:              "text/plain",
-		SendContentMd5:           ptr(false),
-		AutoRetryRequests:        ptr(true),
+		SendContentMd5:           utils.ToPtr(false),
+		AutoRetryRequests:        utils.ToPtr(true),
 		LogKey:                   "log_key",
-		PreserveDataOrdering:     ptr(true),
+		PreserveDataOrdering:     utils.ToPtr(true),
 		StorageClass:             "storage_class",
-		RetryLimit:               ptr[int32](1),
+		RetryLimit:               utils.ToPtr[int32](1),
 		ExternalId:               "external_id",
 		Profile:                  "my-profile",
-		Workers:                  ptr[int32](1),
+		Workers:                  utils.ToPtr[int32](1),
 	}
 
 	expected := params.NewKVs()
