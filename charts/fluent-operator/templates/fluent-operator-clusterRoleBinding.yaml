@@ -5,13 +5,13 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: fluent-operator
-  name: fluent-operator
+  name: {{ .Values.operator.rbac.clusterRoleBinding.name }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: fluent-operator
+  name: {{ .Values.operator.rbac.clusterRole.name }}
 subjects:
 - kind: ServiceAccount
-  name: fluent-operator
+  name: {{ .Values.operator.serviceAccount.name }}
   namespace: {{ .Release.Namespace | quote }}
 {{- end }}

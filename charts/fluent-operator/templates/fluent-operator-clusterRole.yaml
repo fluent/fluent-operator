@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: fluent-operator
-  name: fluent-operator
+  name: {{ .Values.operator.rbac.clusterRole.name }}
 rules:
   - apiGroups:
       - apps

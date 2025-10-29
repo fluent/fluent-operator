@@ -44,6 +44,10 @@ operator:
   rbac:
     # -- Specifies whether to create the ClusterRole and ClusterRoleBinding.
     create: true
+    clusterRole:
+      name: fluent-operator
+    clusterRoleBinding:
+      name: fluent-operator
   # Container security context for Fluent Operator container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   securityContext: {}
   # Fluent Operator resources. Usually user needn't to adjust these.
@@ -97,6 +101,9 @@ operator:
     tlsConfig: {}
     relabelings: []
     metricRelabelings: []
+
+  serviceAccount:
+    name: fluent-operator
 
 fluentbit:
   # Installs a sub chart carrying the CRDs for the fluent-bit controller. The sub chart is enabled by default.
