@@ -40352,7 +40352,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        image: ghcr.io/fluent/fluent-operator/fluent-operator:v3.5.0
+        image: kubesphere/fluent-operator:latest
         name: fluent-operator
         resources:
           limits:
