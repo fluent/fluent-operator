@@ -130,20 +130,32 @@ build-fb-debug: prepare-build
 # Build all amd64 docker images
 build-amd64: build-op-amd64 build-fb-amd64 build-fd-amd64
 
+# Build all arm64 docker images
+build-arm64: build-op-arm64 build-fb-arm64 build-fd-arm64
+
 # Build amd64 Fluent Operator container image
 build-op-amd64:
 	docker build --platform=linux/amd64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
+
+# Build arm64 Fluent Operator container image
+build-op-amd64:
+	docker build --platform=linux/arm64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
 
 # Build amd64 Fluent Bit container image
 build-fb-amd64:
 	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
 
+# Build arm64 Fluent Bit container image
+build-fb-amd64:
+	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
+
 # Build amd64 Fluentd container image
 build-fd-amd64:
 	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentd/Dockerfile.amd64 . -t ${FD_IMG}
 
-build-fd-arm64-base: prepare-build
-	docker buildx build --push --platform linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.arm64.base . -t ${FD_IMG_BASE}
+# Build arm64 Fluentd container image
+build-fd-amd64:
+	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.amd64 . -t ${FD_IMG}
 
 # Use docker buildx to build arm64 Fluentd container image
 build-fd-arm64: prepare-build
