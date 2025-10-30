@@ -128,6 +128,7 @@ build-fb-debug: prepare-build
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile.debug . -t ${FB_IMG_DEBUG}
 
 # Build all amd64 docker images
+PHONY: build-amd64
 build-amd64: build-op-amd64 build-fb-amd64 build-fd-amd64
 
 # Build all arm64 docker images
