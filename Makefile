@@ -131,6 +131,7 @@ build-fb-debug: prepare-build
 build-amd64: build-op-amd64 build-fb-amd64 build-fd-amd64
 
 # Build all arm64 docker images
+PHONY: build-arm64
 build-arm64: build-op-arm64 build-fb-arm64 build-fd-arm64
 
 # Build amd64 Fluent Operator container image
