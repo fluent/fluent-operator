@@ -159,7 +159,8 @@ build-fd-amd64:
 	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentd/Dockerfile.amd64 . -t ${FD_IMG}
 
 # Build arm64 Fluentd container image
-build-fd-amd64:
+PHONY: build-fd-arm64
+build-fd-arm64:
 	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.amd64 . -t ${FD_IMG}
 
 # Use docker buildx to build arm64 Fluentd container image
