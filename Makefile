@@ -149,7 +149,8 @@ build-fb-amd64:
 	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
 
 # Build arm64 Fluent Bit container image
-build-fb-amd64:
+PHONY: build-fb-arm64
+build-fb-arm64:
 	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
 
 # Build amd64 Fluentd container image
