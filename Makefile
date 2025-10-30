@@ -140,6 +140,7 @@ build-op-amd64:
 	docker build --platform=linux/amd64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
 
 # Build arm64 Fluent Operator container image
+PHONY: build-op-amd64
 build-op-amd64:
 	docker build --platform=linux/arm64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
 
