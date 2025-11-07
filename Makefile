@@ -144,8 +144,8 @@ build-op-amd64:
 	docker build --platform=linux/amd64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
 
 # Build arm64 Fluent Operator container image
-.PHONY: build-op-amd64
-build-op-amd64:
+.PHONY: build-op-arm64
+build-op-arm64:
 	docker build --platform=linux/arm64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
 
 # Build amd64 Fluent Bit container image
@@ -161,12 +161,12 @@ build-fb-arm64:
 # Build amd64 Fluentd container image
 .PHONY: build-fd-amd64
 build-fd-amd64:
-	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentd/Dockerfile.amd64 . -t ${FD_IMG}
+	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentd/Dockerfile . -t ${FD_IMG}
 
 # Build arm64 Fluentd container image
 .PHONY: build-fd-arm64
 build-fd-arm64:
-	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.amd64 . -t ${FD_IMG}
+	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile . -t ${FD_IMG}
 
 # Prepare for arm64 building
 prepare-build:
