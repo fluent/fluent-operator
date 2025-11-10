@@ -6,7 +6,7 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/go-kit/log v0.2.1
 	github.com/go-logr/logr v1.4.3
-	github.com/go-openapi/errors v0.22.3
+	github.com/go-openapi/errors v0.22.4
 	github.com/joho/godotenv v1.5.1
 	github.com/oklog/run v1.2.0
 	github.com/onsi/ginkgo/v2 v2.27.2
