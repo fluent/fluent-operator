@@ -117,37 +117,56 @@ run: manifests generate fmt vet ## Run a controller from your host.
 	go run cmd/fluent-manager/main.go
 
 # Build amd64/arm64 Fluent Operator container image
+.PHONY: build-op
 build-op:
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
 
 # Build amd64/arm64 Fluent Bit container image
+.PHONY: build-fb
 build-fb: prepare-build
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
 
+.PHONY: build-fb-debug
 build-fb-debug: prepare-build
 	docker buildx build --push --platform linux/amd64,linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile.debug . -t ${FB_IMG_DEBUG}
 
 # Build all amd64 docker images
+.PHONY: build-amd64
 build-amd64: build-op-amd64 build-fb-amd64 build-fd-amd64
 
+# Build all arm64 docker images
+.PHONY: build-arm64
+build-arm64: build-op-arm64 build-fb-arm64 build-fd-arm64
+
 # Build amd64 Fluent Operator container image
+.PHONY: build-op-amd64
 build-op-amd64:
 	docker build --platform=linux/amd64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
 
+# Build arm64 Fluent Operator container image
+.PHONY: build-op-arm64
+build-op-arm64:
+	docker build --platform=linux/arm64 -f cmd/fluent-manager/Dockerfile . -t ${FO_IMG}
+
 # Build amd64 Fluent Bit container image
+.PHONY: build-fb-amd64
 build-fb-amd64:
 	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
 
+# Build arm64 Fluent Bit container image
+.PHONY: build-fb-arm64
+build-fb-arm64:
+	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentbit/Dockerfile . -t ${FB_IMG}
+
 # Build amd64 Fluentd container image
+.PHONY: build-fd-amd64
 build-fd-amd64:
-	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentd/Dockerfile.amd64 . -t ${FD_IMG}
+	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentd/Dockerfile . -t ${FD_IMG}
 
-build-fd-arm64-base: prepare-build
-	docker buildx build --push --platform linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.arm64.base . -t ${FD_IMG_BASE}
-
-# Use docker buildx to build arm64 Fluentd container image
-build-fd-arm64: prepare-build
-	docker buildx build --push --platform linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile.arm64.quick . -t ${FD_IMG}${ARCH} --build-arg ${FD_IMG_BASE} --build-arg ${FD_IMG_BASE_TAG}
+# Build arm64 Fluentd container image
+.PHONY: build-fd-arm64
+build-fd-arm64:
+	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile . -t ${FD_IMG}
 
 # Prepare for arm64 building
 prepare-build:
