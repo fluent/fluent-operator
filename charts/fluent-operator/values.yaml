@@ -58,11 +58,11 @@ operator:
   logPath:
     # Base paths where container logs are stored for each runtime. The operator appends "/containers".
     # NOTE: Setting fluentbit.containerLogRealPath will override these automatic paths.
-    containerd: /var/log
-    crio: /var/log
     # Docker: If using a non-standard Docker root directory, set this to match
     # your Docker daemon's root directory (found via: docker info | grep "Docker Root Dir")
     docker: /var/lib/docker
+    containerd: /var/log
+    crio: /var/log
   # By default, the operator provisions both Fluent Bit and FluentD controllers.
   # A specific controller can be disabled by setting the disableComponentControllers value.
   # The disableComponentControllers value can be either "fluent-bit" or "fluentd".

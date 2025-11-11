@@ -7,7 +7,7 @@
 To install or upgrade Fluent Operator using Helm:
 
 ```shell
-export FLUENT_OPERATOR_CONTAINER_RUNTIME="containerd" # or "cri-o", "docker" depending on the container runtime being used (see `values.yaml`)
+export FLUENT_OPERATOR_CONTAINER_RUNTIME="containerd" # or "cri-o", "docker" depending on the container runtime being used
 
 helm repo add fluent https://fluent.github.io/helm-charts
 helm upgrade --install fluent-operator fluent/fluent-operator \
@@ -16,6 +16,22 @@ helm upgrade --install fluent-operator fluent/fluent-operator \
 ```
 
 By default, all CRDs required for Fluent Operator will be installed.  To prevent `helm install` from installing CRDs, you can set `fluent-bit.crdsEnable` or `fluentd.crdsEnable` to `false`.
+
+## Container Runtime Configuration
+
+Set `containerRuntime` to match your cluster's container runtime.  This is crucial for Fluent Bit to collect logs from your hosts correctly:
+
+- **`docker`** → `/var/lib/docker/containers`
+- **`containerd`** → `/var/log/containers` (most common)
+- **`crio`** → `/var/log/containers`
+
+If you have a custom configuration, you can override with custom log paths if needed:
+
+```shell
+helm upgrade --install fluent-operator fluent/fluent-operator \
+  --set containerRuntime=docker \
+  --set operator.logPath.docker=/custom/path
+```
 
 ## Upgrading
 
