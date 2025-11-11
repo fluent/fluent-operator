@@ -4,7 +4,8 @@
 
 # Options: containerd, crio, docker
 # This determines where Fluent Bit looks for container logs on the host.
-# NOTE: Setting containerLogRealPath below will override this automatic detection.
+# NOTE: You can override this automatic detection by setting operator.logPath.{docker|containerd|crio}
+# or by setting fluentbit.containerLogRealPath
 containerRuntime: containerd
 #  If you want to deploy a default Fluent Bit pipeline (including Fluent Bit Input, Filter, and output) to collect Kubernetes logs, you'll need to set the Kubernetes parameter to true
 # see https://github.com/fluent/fluent-operator/tree/master/manifests/logging-stack
@@ -57,9 +58,11 @@ operator:
   logPath:
     # Base paths where container logs are stored for each runtime. The operator appends "/containers".
     # NOTE: Setting fluentbit.containerLogRealPath will override these automatic paths.
-    docker: /var/lib/docker
     containerd: /var/log
     crio: /var/log
+    # Docker: If using a non-standard Docker root directory, set this to match
+    # your Docker daemon's root directory (found via: docker info | grep "Docker Root Dir")
+    docker: /var/lib/docker
   # By default, the operator provisions both Fluent Bit and FluentD controllers.
   # A specific controller can be disabled by setting the disableComponentControllers value.
   # The disableComponentControllers value can be either "fluent-bit" or "fluentd".
