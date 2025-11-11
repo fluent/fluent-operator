@@ -1,0 +1,20 @@
+{{- if .Values.operator.enable }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-operator-env
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
+data:
+  fluent-bit.env: |
+    {{- if eq .Values.containerRuntime "docker" }}
+    CONTAINER_ROOT_DIR={{ .Values.operator.logPath.docker }}
+    {{- else if eq .Values.containerRuntime "containerd" }}
+    CONTAINER_ROOT_DIR={{ .Values.operator.logPath.containerd }}
+    {{- else if eq .Values.containerRuntime "crio" }}
+    CONTAINER_ROOT_DIR={{ .Values.operator.logPath.crio }}
+    {{- end }}
+{{- end }}
+

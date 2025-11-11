@@ -165,6 +165,8 @@ helm upgrade --install fluent-operator fluent/fluent-operator \
   --set containerRuntime=${FLUENT_OPERATOR_CONTAINER_RUNTIME}
 ```
 
+The `containerRuntime` setting automatically configures where Fluent Bit looks for container logs and which parser to use.
+
 By default, all CRDs required for Fluent Operator will be installed.  To prevent `helm install` from installing CRDs, you can set `fluent-bit.crdsEnable` or `fluentd.crdsEnable` to `false`.
 
 Helm [does not manage the lifecycle of CRDs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/), so if the Fluent Operator CRDs already exist, subsequent

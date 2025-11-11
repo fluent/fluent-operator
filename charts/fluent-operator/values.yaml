@@ -2,28 +2,15 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Set this to containerd or crio if you want to collect CRI format logs
-containerRuntime: docker
+# Options: containerd, crio, docker
+# This determines where Fluent Bit looks for container logs on the host.
+# NOTE: Setting containerLogRealPath below will override this automatic detection.
+containerRuntime: containerd
 #  If you want to deploy a default Fluent Bit pipeline (including Fluent Bit Input, Filter, and output) to collect Kubernetes logs, you'll need to set the Kubernetes parameter to true
 # see https://github.com/fluent/fluent-operator/tree/master/manifests/logging-stack
 Kubernetes: true
 
 operator:
-  # The init container is to get the actual storage path of the docker log files so that it can be mounted to collect the logs.
-  # see https://github.com/fluent/fluent-operator/blob/master/manifests/setup/fluent-operator-deployment.yaml#L26
-  initcontainer:
-    image:
-      registry: docker.io
-      repository: docker
-      tag: "20.10"
-
-    resources:
-      limits:
-        cpu: 100m
-        memory: 64Mi
-      requests:
-        cpu: 50m
-        memory: 64Mi
   image:
     registry: ghcr.io
     repository: fluent/fluent-operator/fluent-operator
@@ -68,9 +55,11 @@ operator:
   labels: {}
   #  myExampleLabel: someValue
   logPath:
-    # The operator currently assumes a Docker container runtime path for the logs as the default, for other container runtimes you can set the location explicitly below.
-    # crio: /var/log
+    # Base paths where container logs are stored for each runtime. The operator appends "/containers".
+    # NOTE: Setting fluentbit.containerLogRealPath will override these automatic paths.
+    docker: /var/lib/docker
     containerd: /var/log
+    crio: /var/log
   # By default, the operator provisions both Fluent Bit and FluentD controllers.
   # A specific controller can be disabled by setting the disableComponentControllers value.
   # The disableComponentControllers value can be either "fluent-bit" or "fluentd".
@@ -109,6 +98,9 @@ fluentbit:
   # Installs a sub chart carrying the CRDs for the fluent-bit controller. The sub chart is enabled by default.
   crdsEnable: true
   enable: true
+  # Manually set where Fluent Bit looks for container logs. Overrides automatic detection from containerRuntime.
+  # Only set this if your logs are in a non-standard location. Leave unset for automatic detection.
+  # containerLogRealPath: ""
   serviceMonitor:
     enable: false
     interval: 30s
