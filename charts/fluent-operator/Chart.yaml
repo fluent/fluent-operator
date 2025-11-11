@@ -16,6 +16,9 @@ sources:
 maintainers:
   - name: wenchajun
     email: dehaocheng@kubesphere.io
+  - name: marcofranssen
+    email: marco.franssen@gmail.com
+    url: https://marcofranssen.nl
 dependencies:
   - name: fluent-bit-crds
     repository: "file://charts/fluent-bit-crds"
