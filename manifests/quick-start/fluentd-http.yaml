@@ -11,7 +11,7 @@ spec:
         bind: 0.0.0.0
         port: 9880
   replicas: 1
-  image: ghcr.io/fluent/fluent-operator/fluentd:v1.19.0
+  image: ghcr.io/fluent/fluent-operator/fluentd:v1.19.1
   fluentdCfgSelector:
     matchLabels:
       config.fluentd.fluent.io/enabled: "true"
