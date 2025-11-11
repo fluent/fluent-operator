@@ -11,7 +11,7 @@ FB_VERSION?=$(shell grep -v '^#' cmd/fluent-watcher/fluentbit/VERSION | tr -d " 
 # Image URL to use all building/pushing image targets
 FB_IMG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}
 FB_IMG_DEBUG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}-debug
-FD_IMG ?= ghcr.io/fluent/fluent-operator/fluentd:v1.19.0
+FD_IMG ?= ghcr.io/fluent/fluent-operator/fluentd:v1.19.1
 FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
 FD_IMG_BASE ?= ghcr.io/fluent/fluent-operator/fluentd:v1.17.0-arm64-base
 
