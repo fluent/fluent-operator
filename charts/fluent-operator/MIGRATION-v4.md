@@ -172,3 +172,9 @@ operator:
   containerLogPath: "/custom/log/path/containers"
   # Note: append "/containers" to your old path
 ```
+
+## Forward Looking: Planned Changes in v5.0
+
+**Future Change (v5.0):**
+- The `fluent-operator-env` _ConfigMap_, which is used to provide backwards compatibility with fluent-operator =<3.5, will be completely removed
+
