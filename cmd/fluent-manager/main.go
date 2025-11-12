@@ -230,7 +230,8 @@ func main() {
 		}
 	}
 
-	// CONTAINER_ROOT_DIR is the location that Fluent Bit looks for container logs on nodes
+	// CONTAINER_ROOT_DIR provides a volume+mount for the Fluentbit DaemonSet so that
+	// Fluentbit can read container logs from nodes.
 	// Falls back to legacy file-based configuration for backward compatibility
 	if envLogPath := os.Getenv("CONTAINER_LOG_PATH"); envLogPath != "" {
 		logPath = envLogPath
