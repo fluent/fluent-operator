@@ -230,8 +230,18 @@ func main() {
 		}
 	}
 
-	if envs, err := godotenv.Read("/fluent-operator/fluent-bit.env"); err == nil {
+	// CONTAINER_ROOT_DIR is the location that Fluent Bit looks for container logs on nodes
+	// Falls back to legacy file-based configuration for backward compatibility
+	if envLogPath := os.Getenv("CONTAINER_LOG_PATH"); envLogPath != "" {
+		logPath = envLogPath
+	} else if envs, err := godotenv.Read("/fluent-operator/fluent-bit.env"); err == nil {
 		logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
+	}
+
+	// If neither the env var or file based config is available, fall back to the
+	// default path for containerd/CRI-O
+	if logPath == "" {
+		logPath = "/var/log/containers"
 	}
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrlOpts)
