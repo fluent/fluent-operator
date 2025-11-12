@@ -8,15 +8,19 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const (
+	defaultContainerLogPath = "/var/log/containers"
+)
+
 // TestContainerLogPathResolution tests the container log path resolution logic
 // that will be added to main.go
 func TestContainerLogPathResolution(t *testing.T) {
 	tests := []struct {
-		name           string
-		envVar         string
-		fileContent    string
-		expectedPath   string
-		setupFile      bool
+		name         string
+		envVar       string
+		fileContent  string
+		expectedPath string
+		setupFile    bool
 	}{
 		{
 			name:         "prefer environment variable over file",
@@ -43,7 +47,7 @@ func TestContainerLogPathResolution(t *testing.T) {
 			name:         "use default when neither env var nor file present",
 			envVar:       "",
 			fileContent:  "",
-			expectedPath: "/var/log/containers",
+			expectedPath: defaultContainerLogPath,
 			setupFile:    false,
 		},
 		{
@@ -57,7 +61,7 @@ func TestContainerLogPathResolution(t *testing.T) {
 			name:         "handle empty env var (should fallback)",
 			envVar:       "",
 			fileContent:  "CONTAINER_ROOT_DIR=/var/log",
-			expectedPath: "/var/log/containers",
+			expectedPath: defaultContainerLogPath,
 			setupFile:    true,
 		},
 	}
@@ -70,10 +74,18 @@ func TestContainerLogPathResolution(t *testing.T) {
 
 			// Setup environment variable
 			if tt.envVar != "" {
-				os.Setenv("CONTAINER_LOG_PATH", tt.envVar)
-				defer os.Unsetenv("CONTAINER_LOG_PATH")
+				if err := os.Setenv("CONTAINER_LOG_PATH", tt.envVar); err != nil {
+					t.Fatalf("failed to set env var: %v", err)
+				}
+				defer func() {
+					if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
+						t.Errorf("failed to unset env var: %v", err)
+					}
+				}()
 			} else {
-				os.Unsetenv("CONTAINER_LOG_PATH")
+				if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
+					t.Fatalf("failed to unset env var: %v", err)
+				}
 			}
 
 			// Setup file if needed
@@ -99,7 +111,7 @@ func TestContainerLogPathResolution(t *testing.T) {
 
 			// Final fallback to safe default for containerd/CRI-O
 			if logPath == "" {
-				logPath = "/var/log/containers"
+				logPath = defaultContainerLogPath
 			}
 
 			// Verify result
@@ -123,8 +135,14 @@ func TestContainerLogPathEnvVarPrecedence(t *testing.T) {
 
 	// Set env var with different path
 	envPath := "/env/var/wins"
-	os.Setenv("CONTAINER_LOG_PATH", envPath)
-	defer os.Unsetenv("CONTAINER_LOG_PATH")
+	if err := os.Setenv("CONTAINER_LOG_PATH", envPath); err != nil {
+		t.Fatalf("failed to set env var: %v", err)
+	}
+	defer func() {
+		if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
+			t.Errorf("failed to unset env var: %v", err)
+		}
+	}()
 
 	// Execute resolution logic
 	var logPath string
@@ -134,7 +152,7 @@ func TestContainerLogPathEnvVarPrecedence(t *testing.T) {
 		logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
 	}
 	if logPath == "" {
-		logPath = "/var/log/containers"
+		logPath = defaultContainerLogPath
 	}
 
 	// Env var should win
@@ -149,7 +167,9 @@ func TestContainerLogPathFilePathsAppendContainers(t *testing.T) {
 	testFile := filepath.Join(tmpDir, "fluent-bit.env")
 
 	// Unset env var
-	os.Unsetenv("CONTAINER_LOG_PATH")
+	if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
+		t.Fatalf("failed to unset env var: %v", err)
+	}
 
 	tests := []struct {
 		rootDir      string
@@ -181,4 +201,3 @@ func TestContainerLogPathFilePathsAppendContainers(t *testing.T) {
 		})
 	}
 }
-
