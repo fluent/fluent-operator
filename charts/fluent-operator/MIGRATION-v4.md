@@ -86,18 +86,14 @@ The operator initContainer has been removed.
 
 **Migration:**
 
-```yaml
-# v3.x configuration (DEPRECATED)
-operator:
-  logPath:
-    containerd: /var/log
 
-# v4.0 - Use direct path specification
-operator:
-  containerLogPath: "/var/log/containers"
+In v3 the root directory was specified for the log path. In v4 this will be the full path to the container logs folder.
 
-# Note: The v3 config specified the ROOT directory
-# The v4 config specifies the FULL path to containers directory
+```diff
+  operator:
+-   logPath:
+-     containerd: /var/log
++   containerLogPath: "/var/log/containers"
 ```
 
 ## Default Paths by Runtime
