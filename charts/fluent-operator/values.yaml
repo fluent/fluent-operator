@@ -16,7 +16,7 @@ operator:
   #   - crio: /var/log/containers
   #   - docker: /var/lib/docker/containers
   # Override this if your cluster uses a non-standard location
-  containerLogPath: ""
+  containerLogPath: ~
 
   image:
     registry: ghcr.io
