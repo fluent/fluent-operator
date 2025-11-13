@@ -230,20 +230,7 @@ func main() {
 		}
 	}
 
-	// CONTAINER_ROOT_DIR provides a volume+mount for the Fluentbit DaemonSet so that
-	// Fluentbit can read container logs from nodes.
-	// Falls back to legacy file-based configuration for backward compatibility
-	if envLogPath := os.Getenv("CONTAINER_LOG_PATH"); envLogPath != "" {
-		logPath = envLogPath
-	} else if envs, err := godotenv.Read("/fluent-operator/fluent-bit.env"); err == nil {
-		logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
-	}
-
-	// If neither the env var or file based config is available, fall back to the
-	// default path for containerd/CRI-O
-	if logPath == "" {
-		logPath = "/var/log/containers"
-	}
+	logPath = getContainerLogPath("/fluent-operator/fluent-bit.env")
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrlOpts)
 	if err != nil {
@@ -335,4 +322,21 @@ func main() {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
 	}
+}
+
+// getContainerLogPath determines the container log path for FluentBit.
+func getContainerLogPath(envFilePath string) string {
+	var logPath string
+
+	if envLogPath := os.Getenv("CONTAINER_LOG_PATH"); envLogPath != "" {
+		logPath = envLogPath
+	} else if envs, err := godotenv.Read(envFilePath); err == nil {
+		logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
+	}
+
+	if logPath == "" {
+		logPath = "/var/log/containers"
+	}
+
+	return logPath
 }

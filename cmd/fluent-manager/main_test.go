@@ -1,202 +1,119 @@
+/*
+Copyright 2021.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package main
 
 import (
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/joho/godotenv"
 )
 
-const (
-	defaultContainerLogPath = "/var/log/containers"
-)
-
-// TestContainerLogPathResolution tests the container log path resolution logic
-// that will be added to main.go
-func TestContainerLogPathResolution(t *testing.T) {
+func TestGetContainerLogPath(t *testing.T) {
 	tests := []struct {
-		name         string
-		envVar       string
-		fileContent  string
-		expectedPath string
-		setupFile    bool
+		name           string
+		envValue       string
+		setupEnvFile   bool
+		envFileContent string
+		expectedPath   string
 	}{
 		{
-			name:         "prefer environment variable over file",
-			envVar:       "/custom/containers",
-			fileContent:  "CONTAINER_ROOT_DIR=/var/log",
-			expectedPath: "/custom/containers",
-			setupFile:    true,
+			name:         "returns path from CONTAINER_LOG_PATH environment variable",
+			envValue:     "/custom/log/path",
+			setupEnvFile: false,
+			expectedPath: "/custom/log/path",
 		},
 		{
-			name:         "fallback to file when env var not set",
-			envVar:       "",
-			fileContent:  "CONTAINER_ROOT_DIR=/var/log",
+			name:           "returns path from fluent-bit.env file when env var not set",
+			envValue:       "",
+			setupEnvFile:   true,
+			envFileContent: "CONTAINER_ROOT_DIR=/var/lib/docker",
+			expectedPath:   "/var/lib/docker/containers",
+		},
+		{
+			name:           "returns path with different CONTAINER_ROOT_DIR",
+			envValue:       "",
+			setupEnvFile:   true,
+			envFileContent: "CONTAINER_ROOT_DIR=/custom/container/root",
+			expectedPath:   "/custom/container/root/containers",
+		},
+		{
+			name:         "returns default path when neither env var nor file is available",
+			envValue:     "",
+			setupEnvFile: false,
 			expectedPath: "/var/log/containers",
-			setupFile:    true,
 		},
 		{
-			name:         "fallback to file for docker path",
-			envVar:       "",
-			fileContent:  "CONTAINER_ROOT_DIR=/var/lib/docker",
-			expectedPath: "/var/lib/docker/containers",
-			setupFile:    true,
+			name:           "prefers env var over file when both are set",
+			envValue:       "/priority/path",
+			setupEnvFile:   true,
+			envFileContent: "CONTAINER_ROOT_DIR=/var/lib/docker",
+			expectedPath:   "/priority/path",
 		},
 		{
-			name:         "use default when neither env var nor file present",
-			envVar:       "",
-			fileContent:  "",
-			expectedPath: defaultContainerLogPath,
-			setupFile:    false,
-		},
-		{
-			name:         "env var takes precedence even with docker in file",
-			envVar:       "/override/containers",
-			fileContent:  "CONTAINER_ROOT_DIR=/var/lib/docker",
-			expectedPath: "/override/containers",
-			setupFile:    true,
-		},
-		{
-			name:         "handle empty env var (should fallback)",
-			envVar:       "",
-			fileContent:  "CONTAINER_ROOT_DIR=/var/log",
-			expectedPath: defaultContainerLogPath,
-			setupFile:    true,
+			name:           "handles env file with multiple variables",
+			envValue:       "",
+			setupEnvFile:   true,
+			envFileContent: "OTHER_VAR=value\nCONTAINER_ROOT_DIR=/multi/var/test\nANOTHER_VAR=other",
+			expectedPath:   "/multi/var/test/containers",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Create temporary directory for test file
-			tmpDir := t.TempDir()
-			testFile := filepath.Join(tmpDir, "fluent-bit.env")
-
-			// Setup environment variable
-			if tt.envVar != "" {
-				if err := os.Setenv("CONTAINER_LOG_PATH", tt.envVar); err != nil {
-					t.Fatalf("failed to set env var: %v", err)
+			// Save original environment variable
+			originalEnv := os.Getenv("CONTAINER_LOG_PATH")
+			defer func() {
+				if originalEnv != "" {
+					os.Setenv("CONTAINER_LOG_PATH", originalEnv)
+				} else {
+					os.Unsetenv("CONTAINER_LOG_PATH")
 				}
-				defer func() {
-					if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
-						t.Errorf("failed to unset env var: %v", err)
-					}
-				}()
+			}()
+
+			// Set up environment variable for this test
+			if tt.envValue != "" {
+				os.Setenv("CONTAINER_LOG_PATH", tt.envValue)
 			} else {
-				if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
-					t.Fatalf("failed to unset env var: %v", err)
-				}
+				os.Unsetenv("CONTAINER_LOG_PATH")
 			}
 
-			// Setup file if needed
-			if tt.setupFile && tt.fileContent != "" {
-				err := os.WriteFile(testFile, []byte(tt.fileContent), 0644)
+			// Set up temporary fluent-bit.env file if needed
+			var envFilePath string
+			if tt.setupEnvFile {
+				// Create a temporary directory for testing
+				tempDir := t.TempDir()
+				envFilePath = filepath.Join(tempDir, "fluent-bit.env")
+
+				// Write the test env file
+				err := os.WriteFile(envFilePath, []byte(tt.envFileContent), 0644)
 				if err != nil {
-					t.Fatalf("failed to create test file: %v", err)
+					t.Fatalf("Failed to create test env file: %v", err)
 				}
+			} else {
+				// Use a non-existent file path
+				envFilePath = "/non/existent/path/fluent-bit.env"
 			}
 
-			// Execute the resolution logic (mimics what will be in main.go)
-			var logPath string
+			// Call the function with the test file path
+			result := getContainerLogPath(envFilePath)
 
-			// Prefer environment variable for container log path (modern approach)
-			// Fall back to file-based configuration for backward compatibility
-			if envLogPath := os.Getenv("CONTAINER_LOG_PATH"); envLogPath != "" {
-				logPath = envLogPath
-			} else if tt.setupFile {
-				if envs, err := godotenv.Read(testFile); err == nil {
-					logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
-				}
-			}
-
-			// Final fallback to safe default for containerd/CRI-O
-			if logPath == "" {
-				logPath = defaultContainerLogPath
-			}
-
-			// Verify result
-			if logPath != tt.expectedPath {
-				t.Errorf("expected logPath to be %q, got %q", tt.expectedPath, logPath)
-			}
-		})
-	}
-}
-
-// TestContainerLogPathEnvVarPrecedence specifically tests that env var always wins
-func TestContainerLogPathEnvVarPrecedence(t *testing.T) {
-	tmpDir := t.TempDir()
-	testFile := filepath.Join(tmpDir, "fluent-bit.env")
-
-	// Create file with one path
-	err := os.WriteFile(testFile, []byte("CONTAINER_ROOT_DIR=/var/lib/docker"), 0644)
-	if err != nil {
-		t.Fatalf("failed to create test file: %v", err)
-	}
-
-	// Set env var with different path
-	envPath := "/env/var/wins"
-	if err := os.Setenv("CONTAINER_LOG_PATH", envPath); err != nil {
-		t.Fatalf("failed to set env var: %v", err)
-	}
-	defer func() {
-		if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
-			t.Errorf("failed to unset env var: %v", err)
-		}
-	}()
-
-	// Execute resolution logic
-	var logPath string
-	if envLogPath := os.Getenv("CONTAINER_LOG_PATH"); envLogPath != "" {
-		logPath = envLogPath
-	} else if envs, err := godotenv.Read(testFile); err == nil {
-		logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
-	}
-	if logPath == "" {
-		logPath = defaultContainerLogPath
-	}
-
-	// Env var should win
-	if logPath != envPath {
-		t.Errorf("environment variable should take precedence: expected %q, got %q", envPath, logPath)
-	}
-}
-
-// TestContainerLogPathFilePathsAppendContainers verifies /containers is appended
-func TestContainerLogPathFilePathsAppendContainers(t *testing.T) {
-	tmpDir := t.TempDir()
-	testFile := filepath.Join(tmpDir, "fluent-bit.env")
-
-	// Unset env var
-	if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
-		t.Fatalf("failed to unset env var: %v", err)
-	}
-
-	tests := []struct {
-		rootDir      string
-		expectedPath string
-	}{
-		{"/var/log", "/var/log/containers"},
-		{"/var/lib/docker", "/var/lib/docker/containers"},
-		{"/custom/path", "/custom/path/containers"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.rootDir, func(t *testing.T) {
-			// Write test file
-			content := "CONTAINER_ROOT_DIR=" + tt.rootDir
-			err := os.WriteFile(testFile, []byte(content), 0644)
-			if err != nil {
-				t.Fatalf("failed to create test file: %v", err)
-			}
-
-			// Execute resolution logic
-			var logPath string
-			if envs, err := godotenv.Read(testFile); err == nil {
-				logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
-			}
-
-			if logPath != tt.expectedPath {
-				t.Errorf("expected %q, got %q", tt.expectedPath, logPath)
+			// Verify the result
+			if result != tt.expectedPath {
+				t.Errorf("getContainerLogPath() = %q, want %q", result, tt.expectedPath)
 			}
 		})
 	}
