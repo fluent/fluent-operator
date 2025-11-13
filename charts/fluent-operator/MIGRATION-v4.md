@@ -53,22 +53,19 @@ The containerRuntime now defaults to `containerd`. In `v3.x` the implicit defaul
 
 **Migration:**
 
-```yaml
-# v3.x configuration (REMOVED)
-operator:
-  initcontainer:
-    image:
-      registry: docker.io
-      repository: docker
-      tag: "20.10"
+The operator initContainer has been removed.
+
+```diff
+  operator:
+-   initcontainer:
+-     image:
+-       registry: docker.io
+-       repository: docker
+-       tag: "20.10"
     resources:
       limits:
         cpu: 100m
         memory: 64Mi
-
-# v4.0 - No replacement needed
-# initContainer functionality is removed
-# If you need custom resource limits, adjust operator.resources instead
 ```
 
 ### 3. Log Path Configuration Simplified
