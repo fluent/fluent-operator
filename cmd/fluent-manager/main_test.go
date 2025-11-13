@@ -78,17 +78,25 @@ func TestGetContainerLogPath(t *testing.T) {
 			originalEnv := os.Getenv("CONTAINER_LOG_PATH")
 			defer func() {
 				if originalEnv != "" {
-					os.Setenv("CONTAINER_LOG_PATH", originalEnv)
+					if err := os.Setenv("CONTAINER_LOG_PATH", originalEnv); err != nil {
+						t.Errorf("Failed to restore CONTAINER_LOG_PATH: %v", err)
+					}
 				} else {
-					os.Unsetenv("CONTAINER_LOG_PATH")
+					if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
+						t.Errorf("Failed to unset CONTAINER_LOG_PATH: %v", err)
+					}
 				}
 			}()
 
 			// Set up environment variable for this test
 			if tt.envValue != "" {
-				os.Setenv("CONTAINER_LOG_PATH", tt.envValue)
+				if err := os.Setenv("CONTAINER_LOG_PATH", tt.envValue); err != nil {
+					t.Fatalf("Failed to set CONTAINER_LOG_PATH: %v", err)
+				}
 			} else {
-				os.Unsetenv("CONTAINER_LOG_PATH")
+				if err := os.Unsetenv("CONTAINER_LOG_PATH"); err != nil {
+					t.Fatalf("Failed to unset CONTAINER_LOG_PATH: %v", err)
+				}
 			}
 
 			// Set up temporary fluent-bit.env file if needed
