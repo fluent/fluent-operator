@@ -6,7 +6,7 @@ keywords:
   - fluent-bit
   - fluentd
   - operator
-version: 4.0.0-RC.1
+version: 4.0.0-rc1
 # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-operator
 appVersion: "3.5.0"
 icon: https://raw.githubusercontent.com/fluent/fluent-operator/master/docs/images/fluent-operator-icon.svg
