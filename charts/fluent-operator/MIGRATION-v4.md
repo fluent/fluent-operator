@@ -9,18 +9,22 @@ v4.0 simplifies container runtime configuration by removing dynamic detection fo
 ### 1. Default Container Runtime Changed
 
 **What Changed:**
+
 - Default `containerRuntime` changed from `docker` to `containerd`
 
 **Impact:**
+
 - Users who never explicitly set `containerRuntime` will now use containerd defaults
 - Log parser will change from `docker` to `cri` format
 - Systemd filter will target `containerd.service` instead of `docker.service`
 
 **Who Is Affected:**
+
 - Users still running Docker container runtime (uncommon - Docker support was removed from Kubernetes in v1.24, May 2022)
 - Users who relied on the default value without explicit configuration
 
 **Migration:**
+
 ```yaml
 # v3.x implicit default
 # (no configuration)
@@ -36,20 +40,24 @@ containerRuntime: containerd
 ### 2. initContainers Removed
 
 **What Changed:**
+
 - Removed dynamic Docker root directory detection via initContainer
 - Removed `operator.initcontainer.*` configuration options
 - Container log paths are now statically configured
 
 **Impact:**
+
 - initContainer no longer runs before the operator starts
 - Removes dependency on third party outdated images for initContainers
 - Docker socket no longer mounted for path detection
 
 **Who Is Affected:**
+
 - Users who customized `operator.initcontainer.image` or `operator.initcontainer.resources`
 - Users with Docker installations using non-standard root directories
 
 **Migration:**
+
 ```yaml
 # v3.x configuration (REMOVED)
 operator:
@@ -71,17 +79,21 @@ operator:
 ### 3. Log Path Configuration Simplified
 
 **What Changed:**
+
 - Removed `operator.logPath.containerd` and `operator.logPath.crio`
 - Added new `operator.containerLogPath` for direct path specification
 
 **Impact:**
+
 - Old logPath configuration is ignored
 - New configuration accepts full path to container logs (not just root directory)
 
 **Who Is Affected:**
+
 - Users who set custom paths via `operator.logPath.containerd` or `operator.logPath.crio`
 
 **Migration:**
+
 ```yaml
 # v3.x configuration (DEPRECATED)
 operator:
@@ -176,5 +188,5 @@ operator:
 ## Forward Looking: Planned Changes in v5.0
 
 **Future Change (v5.0):**
-- The `fluent-operator-env` _ConfigMap_, which is used to provide backwards compatibility with fluent-operator =<3.5, will be completely removed
 
+- The `fluent-operator-env` _ConfigMap_, which is used to provide backwards compatibility with fluent-operator =<3.5, will be completely removed

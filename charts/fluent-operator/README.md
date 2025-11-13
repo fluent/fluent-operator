@@ -21,14 +21,16 @@ By default, all CRDs required for Fluent Operator will be installed.  To prevent
 
 ### Upgrading to v4.0
 
-⚠️ ** v4.0 contains breaking changes.** Please review the [Migration Guide](MIGRATION-v4.md) before upgrading.
+⚠️ **v4.0 contains breaking changes.** Please review the [Migration Guide](MIGRATION-v4.md) before upgrading.
 
 **Key Changes:**
+
 - Default `containerRuntime` changed from `docker` to `containerd`
 - Removed initContainers for dynamic path detection for the `docker` runtime
 - Simplified configuration with `operator.containerLogPath`
 
 **Quick Migration:**
+
 ```yaml
 # If using Docker, explicitly set in your values:
 containerRuntime: docker
