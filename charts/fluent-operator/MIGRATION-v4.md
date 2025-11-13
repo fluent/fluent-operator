@@ -25,16 +25,11 @@ v4.0 simplifies container runtime configuration by removing dynamic detection fo
 
 **Migration:**
 
-```yaml
-# v3.x implicit default
-# (no configuration)
 
-# v4.0 - If still using Docker, explicitly set:
-containerRuntime: docker
+The containerRuntime now defaults to `containerd`. In `v3.x` the implicit default was `docker`. Use `containerRuntime: docker` to maintain `v3.x` behavior.
 
-# v4.0 - If using containerd/CRI-O (recommended)
-# No changes needed! This is now the default.
-containerRuntime: containerd
+```diff
++ containerRuntime: containerd
 ```
 
 ### 2. initContainers Removed
