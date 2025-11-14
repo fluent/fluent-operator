@@ -230,9 +230,7 @@ func main() {
 		}
 	}
 
-	if envs, err := godotenv.Read("/fluent-operator/fluent-bit.env"); err == nil {
-		logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
-	}
+	logPath = getContainerLogPath("/fluent-operator/fluent-bit.env")
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrlOpts)
 	if err != nil {
@@ -324,4 +322,21 @@ func main() {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
 	}
+}
+
+// getContainerLogPath determines the container log path for FluentBit.
+func getContainerLogPath(envFilePath string) string {
+	var logPath string
+
+	if envLogPath := os.Getenv("CONTAINER_LOG_PATH"); envLogPath != "" {
+		logPath = envLogPath
+	} else if envs, err := godotenv.Read(envFilePath); err == nil {
+		logPath = envs["CONTAINER_ROOT_DIR"] + "/containers"
+	}
+
+	if logPath == "" {
+		logPath = "/var/log/containers"
+	}
+
+	return logPath
 }
