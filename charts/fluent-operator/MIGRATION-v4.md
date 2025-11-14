@@ -79,7 +79,6 @@ The operator initContainer has been removed.
 **Impact:**
 
 - Old `operator.logPath.*` configuration is ignored
-- Custom log paths via `operator.containerLogPath` are no longer supported
 - Each container runtime uses its standard default path
 
 **Who Is Affected:**
