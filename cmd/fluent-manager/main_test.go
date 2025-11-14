@@ -74,7 +74,6 @@ func TestGetContainerLogPath(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Save original environment variable
 			originalEnv := os.Getenv("CONTAINER_LOG_PATH")
 			defer func() {
 				if originalEnv != "" {
@@ -88,7 +87,6 @@ func TestGetContainerLogPath(t *testing.T) {
 				}
 			}()
 
-			// Set up environment variable for this test
 			if tt.envValue != "" {
 				if err := os.Setenv("CONTAINER_LOG_PATH", tt.envValue); err != nil {
 					t.Fatalf("Failed to set CONTAINER_LOG_PATH: %v", err)
@@ -99,27 +97,20 @@ func TestGetContainerLogPath(t *testing.T) {
 				}
 			}
 
-			// Set up temporary fluent-bit.env file if needed
 			var envFilePath string
 			if tt.setupEnvFile {
-				// Create a temporary directory for testing
 				tempDir := t.TempDir()
 				envFilePath = filepath.Join(tempDir, "fluent-bit.env")
 
-				// Write the test env file
 				err := os.WriteFile(envFilePath, []byte(tt.envFileContent), 0644)
 				if err != nil {
 					t.Fatalf("Failed to create test env file: %v", err)
 				}
 			} else {
-				// Use a non-existent file path
 				envFilePath = "/non/existent/path/fluent-bit.env"
 			}
 
-			// Call the function with the test file path
 			result := getContainerLogPath(envFilePath)
-
-			// Verify the result
 			if result != tt.expectedPath {
 				t.Errorf("getContainerLogPath() = %q, want %q", result, tt.expectedPath)
 			}
