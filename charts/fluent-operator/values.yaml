@@ -10,14 +10,6 @@ containerRuntime: containerd
 Kubernetes: true
 
 operator:
-  # Path to container log files on the host
-  # If not set, defaults based on containerRuntime:
-  #   - containerd: /var/log/containers
-  #   - crio: /var/log/containers
-  #   - docker: /var/lib/docker/containers
-  # Override this if your cluster uses a non-standard location
-  containerLogPath: ~
-
   image:
     registry: ghcr.io
     repository: fluent/fluent-operator/fluent-operator

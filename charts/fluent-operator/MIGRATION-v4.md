@@ -68,37 +68,32 @@ The operator initContainer has been removed.
         memory: 64Mi
 ```
 
-### 3. Log Path Configuration Simplified
+### 3. Log Path Configuration Removed
 
 **What Changed:**
 
 - Removed `operator.logPath.containerd` and `operator.logPath.crio`
-- Added new `operator.containerLogPath` for direct path specification
+- Removed ability to configure custom log paths
+- Log paths are now determined automatically based on `containerRuntime`
 
 **Impact:**
 
-- Old logPath configuration is ignored
-- New configuration accepts full path to container logs (not just root directory)
+- Old `operator.logPath.*` configuration is ignored
+- Custom log paths via `operator.containerLogPath` are no longer supported
+- Each container runtime uses its standard default path
 
 **Who Is Affected:**
 
 - Users who set custom paths via `operator.logPath.containerd` or `operator.logPath.crio`
+- Users with non-standard container log directory locations
 
 **Migration:**
 
-
-In v3 the root directory was specified for the log path. In v4 this will be the full path to the container logs folder.
-
-```diff
-  operator:
--   logPath:
--     containerd: /var/log
-+   containerLogPath: "/var/log/containers"
-```
+If you were using custom log paths, you must ensure your container runtime uses the standard default paths shown below, or adjust your container runtime configuration to use these standard paths.
 
 ## Default Paths by Runtime
 
-v4.0 uses the following default paths when `operator.containerLogPath` is not explicitly set:
+v4.0 uses the following default paths based on the configured `containerRuntime`:
 
 | Container Runtime | Default Path |
 |-------------------|--------------|
@@ -131,7 +126,7 @@ containerRuntime: crio
 # Default path /var/log/containers works for most CRI-O installations
 ```
 
-### Scenario 3: Using Docker with Standard Paths
+### Scenario 3: Using Docker
 
 ```yaml
 # v3.x
@@ -140,37 +135,10 @@ containerRuntime: docker
 
 # v4.0 - Must explicitly set runtime
 containerRuntime: docker
-# Default /var/lib/docker/containers works for standard Docker installations
-# No need to set operator.containerLogPath
-```
-
-### Scenario 4: Using Docker with Custom Paths
-
-```yaml
-# v3.x
-containerRuntime: docker
-# (used initContainer to detect custom docker root)
-
-# v4.0 - Must explicitly configure path
-containerRuntime: docker
-operator:
-  containerLogPath: "/custom/docker/root/containers"
-```
-
-### Scenario 5: Custom Log Paths (Any Runtime)
-
-```yaml
-# v3.x
-containerRuntime: containerd
-operator:
-  logPath:
-    containerd: /custom/log/path
-
-# v4.0 - Use new configuration key
-containerRuntime: containerd
-operator:
-  containerLogPath: "/custom/log/path/containers"
-  # Note: append "/containers" to your old path
+# Uses default path: /var/lib/docker/containers
+# This works for standard Docker installations
+# If your Docker uses a custom root directory, you must reconfigure Docker
+# to use the standard path
 ```
 
 ## Forward Looking: Planned Changes in v5.0

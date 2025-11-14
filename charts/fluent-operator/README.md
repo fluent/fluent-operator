@@ -27,7 +27,7 @@ By default, all CRDs required for Fluent Operator will be installed.  To prevent
 
 - Default `containerRuntime` changed from `docker` to `containerd`
 - Removed initContainers for dynamic path detection for the `docker` runtime
-- Simplified configuration with `operator.containerLogPath`
+- Removed ability to configure custom log paths - uses fixed defaults based on `containerRuntime`
 
 **Quick Migration:**
 
@@ -35,9 +35,8 @@ By default, all CRDs required for Fluent Operator will be installed.  To prevent
 # If using Docker, explicitly set in your values:
 containerRuntime: docker
 
-# If using a non-default for `docker` logs, use new configuration:
-operator:
-  containerLogPath: "/var/log/containers"
+# Note: Custom log paths are no longer supported
+# Each runtime uses its fixed default path
 ```
 
 See [MIGRATION-v4.md](MIGRATION-v4.md) for complete migration instructions.

@@ -85,12 +85,10 @@ Util function for generating the image URL based on the provided options.
 {{- end }}
 
 {{/*
-Determine the container log path based on containerRuntime and explicit configuration
+Determine the container log path based on containerRuntime
 */}}
 {{- define "fluent-operator.containerLogPath" -}}
-{{- if .Values.operator.containerLogPath -}}
-{{- .Values.operator.containerLogPath -}}
-{{- else if eq .Values.containerRuntime "docker" -}}
+{{- if eq .Values.containerRuntime "docker" -}}
 /var/lib/docker/containers
 {{- else -}}
 /var/log/containers
