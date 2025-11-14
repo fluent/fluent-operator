@@ -305,13 +305,21 @@ fluentbit:
       logstashPrefix: ks-logstash-log
       bufferSize: 20MB
       traceError: true
-    #      logstashPrefixKey: ks-logstash-log
-    #      suppressTypeName: "On"
-    #      path: ""
-    #      bufferSize: "4KB"
-    #      index: "fluent-bit"
-    #      httpUser:
-    #      httpPassword:
+      #      logstashPrefixKey: ks-logstash-log
+      #      suppressTypeName: "On"
+      #      path: ""
+      #      bufferSize: "4KB"
+      #      index: "fluent-bit"
+      # httpUser:
+      #   valueFrom:
+      #     secretKeyRef:
+      #       key: value
+      #       name: husersecret
+      # httpPassword:
+      #   valueFrom:
+      #     secretKeyRef:
+      #       key: value
+      #       name: hpasssecret
     #      logstashFormat: true
     #      replaceDots: false
     #      writeOperation: upsert
@@ -351,11 +359,11 @@ fluentbit:
     # See https://docs.fluentbit.io/manual/pipeline/outputs/loki
     loki:
       # Switch for generation of fluentbit loki ClusterOutput (and loki basic auth http user and pass secrets if required)
-      enable: false  # Bool
+      enable: false # Bool
       retryLimit: "no_limits"
       logLevel: "info"
-      host: 127.0.0.1  # String
-      port: 3100  # Int
+      host: 127.0.0.1 # String
+      port: 3100 # Int
       # Either, give http{User,Password},tenantID string values specifying them directly
       httpUser: myuser
       httpPassword: mypass
