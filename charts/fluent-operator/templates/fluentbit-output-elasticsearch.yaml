@@ -24,10 +24,12 @@ spec:
     index: {{ . | quote }}
     {{- end }}
     {{- with .Values.fluentbit.output.es.httpUser }}
-    httpUser: {{ toYaml . | nindent 6 }}
+    httpUser: 
+      {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- with .Values.fluentbit.output.es.httpPassword }}
-    httpPassword: {{ toYaml . | nindent 6 }}
+    httpPassword: 
+      {{- toYaml . | nindent 6 }}
     {{- end }}
     logstashFormat: {{ .Values.fluentbit.output.es.logstashFormat | default true }}
     {{- with .Values.fluentbit.output.es.logstashPrefix }}
