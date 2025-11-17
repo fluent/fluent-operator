@@ -340,7 +340,9 @@ func (r *FluentBitConfigReconciler) ListFluentBitConfigResources(
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	if err := listClusterResources(ctx, r.Client, &cfg.Spec.ClusterMultilineParserSelector, &clusterMultipleParsers); err != nil {
+	if err := listClusterResources(
+		ctx, r.Client, &cfg.Spec.ClusterMultilineParserSelector, &clusterMultipleParsers,
+	); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
