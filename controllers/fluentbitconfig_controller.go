@@ -245,7 +245,7 @@ func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 	for _, cfg := range nsCfgs.Items {
 		filterList, outputList, parserList,
 			clusterParserList, multilineParsersList,
-			clusterMultilineParsersList, err := r.ListNamespacedResources(
+			clusterMultilineParsersList, err := r.ListFluentBitConfigResources(
 			ctx, cfg,
 		)
 		if err != nil {
@@ -299,7 +299,9 @@ func listNamespacedResources[T client.ObjectList](
 	return nil
 }
 
-func (r *FluentBitConfigReconciler) ListNamespacedResources(
+// ListFluentBitConfigResources lists all resources (both namespaced and cluster-scoped)
+// needed by the given FluentBitConfig.
+func (r *FluentBitConfigReconciler) ListFluentBitConfigResources(
 	ctx context.Context, cfg fluentbitv1alpha2.FluentBitConfig,
 ) (
 	fluentbitv1alpha2.FilterList,
@@ -324,13 +326,7 @@ func (r *FluentBitConfigReconciler) ListNamespacedResources(
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	if err := listNamespacedResources(
-		ctx,
-		r.Client,
-		&clusterParsers,
-		cfg.Namespace,
-		&cfg.Spec.ClusterParserSelector,
-	); err != nil {
+	if err := listClusterResources(ctx, r.Client, &cfg.Spec.ClusterParserSelector, &clusterParsers); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
@@ -344,13 +340,7 @@ func (r *FluentBitConfigReconciler) ListNamespacedResources(
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
-	if err := listNamespacedResources(
-		ctx,
-		r.Client,
-		&clusterMultipleParsers,
-		cfg.Namespace,
-		&cfg.Spec.ClusterMultilineParserSelector,
-	); err != nil {
+	if err := listClusterResources(ctx, r.Client, &cfg.Spec.ClusterMultilineParserSelector, &clusterMultipleParsers); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
 
