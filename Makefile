@@ -96,7 +96,7 @@ lint-config: golangci-lint ## Verify golangci-lint linter configuration
 ##@ Build
 
 binary:
-	go build -o bin/fb-manager cmd/fluent-manager/main.go
+	go build -o bin/fb-manager ./cmd/fluent-manager
 	go build -o bin/fb-watcher cmd/fluent-watcher/fluentbit/main.go
 	go build -o bin/fd-watcher cmd/fluent-watcher/fluentd/main.go
 
@@ -109,7 +109,7 @@ verify-codegen:
 	./hack/verify-codegen.sh
 
 build: generate fmt vet ## Build manager binary.
-	go build -o bin/fluent-manager cmd/fluent-manager/main.go
+	go build -o bin/fluent-manager ./cmd/fluent-manager
 	go build -o bin/fb-watcher cmd/fluent-watcher/fluentbit/main.go
 	go build -o bin/fd-watcher cmd/fluent-watcher/fluentd/main.go
 
