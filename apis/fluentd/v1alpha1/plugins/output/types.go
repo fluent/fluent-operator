@@ -510,6 +510,190 @@ func (o *Output) opensearchPlugin(parent *params.PluginStore, loader plugins.Sec
 		parent.InsertPairs("ssl_verify", fmt.Sprint(*o.Opensearch.SslVerify))
 	}
 
+	if o.Opensearch.CAFile != nil {
+		parent.InsertPairs("ca_file", fmt.Sprint(*o.Opensearch.CAFile))
+	}
+
+	if o.Opensearch.ClientCert != nil {
+		parent.InsertPairs("client_cert", fmt.Sprint(*o.Opensearch.ClientCert))
+	}
+
+	if o.Opensearch.ClientKey != nil {
+		parent.InsertPairs("client_key", fmt.Sprint(*o.Opensearch.ClientKey))
+	}
+
+	if o.Opensearch.ClientKeyPassword != nil {
+		pwd, err := loader.LoadSecret(*o.Opensearch.ClientKeyPassword)
+		if err != nil {
+			return nil, err
+		}
+		parent.InsertPairs("client_key_pass", pwd)
+	}
+
+	if o.Opensearch.SslVersion != nil {
+		parent.InsertPairs("ssl_version", fmt.Sprint(*o.Opensearch.SslVersion))
+	}
+
+	if o.Opensearch.SslMinVersion != nil {
+		parent.InsertPairs("ssl_min_version", fmt.Sprint(*o.Opensearch.SslMinVersion))
+	}
+
+	if o.Opensearch.SslMaxVersion != nil {
+		parent.InsertPairs("ssl_max_version", fmt.Sprint(*o.Opensearch.SslMaxVersion))
+	}
+
+	if o.Opensearch.LogOs400Reason != nil {
+		parent.InsertPairs("log_os_400_reason", fmt.Sprint(*o.Opensearch.LogOs400Reason))
+	}
+
+	if o.Opensearch.RequestTimeout != nil {
+		parent.InsertPairs("request_timeout", fmt.Sprint(*o.Opensearch.RequestTimeout))
+	}
+
+	if o.Opensearch.ReconnectOnError != nil {
+		parent.InsertPairs("reconnect_on_error", fmt.Sprint(*o.Opensearch.ReconnectOnError))
+	}
+
+	if o.Opensearch.ReloadConnections != nil {
+		parent.InsertPairs("reload_connections", fmt.Sprint(*o.Opensearch.ReloadConnections))
+	}
+
+	if o.Opensearch.ReloadAfter != nil {
+		parent.InsertPairs("reload_after", fmt.Sprint(*o.Opensearch.ReloadAfter))
+	}
+
+	if o.Opensearch.ReloadOnFailure != nil {
+		parent.InsertPairs("reload_on_failure", fmt.Sprint(*o.Opensearch.ReloadOnFailure))
+	}
+
+	if o.Opensearch.MaxRetryGetOsVersion != nil {
+		parent.InsertPairs("max_retry_get_os_version", fmt.Sprint(*o.Opensearch.MaxRetryGetOsVersion))
+	}
+
+	if o.Opensearch.FailOnDetectingOsVersionRetryExceed != nil {
+		parent.InsertPairs("fail_on_detecting_os_version_retry_exceed", fmt.Sprint(*o.Opensearch.FailOnDetectingOsVersionRetryExceed))
+	}
+
+	if o.Opensearch.DefaultOpensearchVersion != nil {
+		parent.InsertPairs("default_opensearch_version", fmt.Sprint(*o.Opensearch.DefaultOpensearchVersion))
+	}
+
+	if o.Opensearch.VerifyOsVersionAtStartup != nil {
+		parent.InsertPairs("verify_os_version_at_startup", fmt.Sprint(*o.Opensearch.VerifyOsVersionAtStartup))
+	}
+
+	if o.Opensearch.TemplateOverwrite != nil {
+		parent.InsertPairs("template_overwrite", fmt.Sprint(*o.Opensearch.TemplateOverwrite))
+	}
+
+	if o.Opensearch.MaxRetryPuttingTemplate != nil {
+		parent.InsertPairs("max_retry_putting_template", fmt.Sprint(*o.Opensearch.MaxRetryPuttingTemplate))
+	}
+
+	if o.Opensearch.FailOnPuttingTemplateRetryExceed != nil {
+		parent.InsertPairs("fail_on_putting_template_retry_exceed", fmt.Sprint(*o.Opensearch.FailOnPuttingTemplateRetryExceed))
+	}
+
+	if o.Opensearch.SnifferClassName != nil {
+		parent.InsertPairs("sniffer_class_name", fmt.Sprint(*o.Opensearch.SnifferClassName))
+	}
+
+	if o.Opensearch.SelectorClassName != nil {
+		parent.InsertPairs("selector_class_name", fmt.Sprint(*o.Opensearch.SelectorClassName))
+	}
+
+	if o.Opensearch.HttpBackend != nil {
+		parent.InsertPairs("http_backend", fmt.Sprint(*o.Opensearch.HttpBackend))
+	}
+
+	if o.Opensearch.HttpBackendExconNonblock != nil {
+		parent.InsertPairs("http_backend_excon_nonblock", fmt.Sprint(*o.Opensearch.HttpBackendExconNonblock))
+	}
+
+	if o.Opensearch.CompressionLevel != nil {
+		parent.InsertPairs("compression_level", fmt.Sprint(*o.Opensearch.CompressionLevel))
+	}
+
+	if o.Opensearch.PreferOjSerializer != nil {
+		parent.InsertPairs("prefer_oj_serializer", fmt.Sprint(*o.Opensearch.PreferOjSerializer))
+	}
+
+	if o.Opensearch.SuppressTypeName != nil {
+		parent.InsertPairs("suppress_type_name", fmt.Sprint(*o.Opensearch.SuppressTypeName))
+	}
+
+	if o.Opensearch.ContentType != nil {
+		parent.InsertPairs("content_type", fmt.Sprint(*o.Opensearch.ContentType))
+	}
+
+	if o.Opensearch.IncludeTagKey != nil {
+		parent.InsertPairs("include_tag_key", fmt.Sprint(*o.Opensearch.IncludeTagKey))
+	}
+
+	if o.Opensearch.TagKey != nil {
+		parent.InsertPairs("tag_key", fmt.Sprint(*o.Opensearch.TagKey))
+	}
+
+	if o.Opensearch.IdKey != nil {
+		parent.InsertPairs("id_key", fmt.Sprint(*o.Opensearch.IdKey))
+	}
+
+	if o.Opensearch.RemoveKeys != nil {
+		parent.InsertPairs("remove_keys", fmt.Sprint(*o.Opensearch.RemoveKeys))
+	}
+
+	if o.Opensearch.RemoveKeysOnUpdate != nil {
+		parent.InsertPairs("remove_keys_on_update", fmt.Sprint(*o.Opensearch.RemoveKeysOnUpdate))
+	}
+
+	if o.Opensearch.WriteOperation != nil {
+		parent.InsertPairs("write_operation", fmt.Sprint(*o.Opensearch.WriteOperation))
+	}
+
+	if o.Opensearch.EmitErrorForMissingId != nil {
+		parent.InsertPairs("emit_error_for_missing_id", fmt.Sprint(*o.Opensearch.EmitErrorForMissingId))
+	}
+
+	if o.Opensearch.CustomHeaders != nil {
+		parent.InsertPairs("custom_headers", fmt.Sprint(*o.Opensearch.CustomHeaders))
+	}
+
+	if o.Opensearch.Pipeline != nil {
+		parent.InsertPairs("pipeline", fmt.Sprint(*o.Opensearch.Pipeline))
+	}
+
+	if o.Opensearch.UtcIndex != nil {
+		parent.InsertPairs("utc_index", fmt.Sprint(*o.Opensearch.UtcIndex))
+	}
+
+	if o.Opensearch.SuppressDocWrap != nil {
+		parent.InsertPairs("suppress_doc_wrap", fmt.Sprint(*o.Opensearch.SuppressDocWrap))
+	}
+
+	if o.Opensearch.IgnoreExceptions != nil {
+		parent.InsertPairs("ignore_exceptions", fmt.Sprint(*o.Opensearch.IgnoreExceptions))
+	}
+
+	if o.Opensearch.ExceptionBackup != nil {
+		parent.InsertPairs("exception_backup", fmt.Sprint(*o.Opensearch.ExceptionBackup))
+	}
+
+	if o.Opensearch.BulkMessageRequestThreshold != nil {
+		parent.InsertPairs("bulk_message_request_threshold", fmt.Sprint(*o.Opensearch.BulkMessageRequestThreshold))
+	}
+
+	if o.Opensearch.ApplicationName != nil {
+		parent.InsertPairs("application_name", fmt.Sprint(*o.Opensearch.ApplicationName))
+	}
+
+	if o.Opensearch.IndexDatePattern != nil {
+		parent.InsertPairs("index_date_pattern", fmt.Sprint(*o.Opensearch.IndexDatePattern))
+	}
+
+	if o.Opensearch.UseLegacyTemplate != nil {
+		parent.InsertPairs("use_legacy_template", fmt.Sprint(*o.Opensearch.UseLegacyTemplate))
+	}
+
 	return parent, nil
 }
 
