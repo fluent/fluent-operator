@@ -2,28 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Set this to containerd or crio if you want to collect CRI format logs
-containerRuntime: docker
+# Container runtime used by your Kubernetes cluster
+# Supported values: containerd, crio, docker
+containerRuntime: containerd
 #  If you want to deploy a default Fluent Bit pipeline (including Fluent Bit Input, Filter, and output) to collect Kubernetes logs, you'll need to set the Kubernetes parameter to true
 # see https://github.com/fluent/fluent-operator/tree/master/manifests/logging-stack
 Kubernetes: true
 
 operator:
-  # The init container is to get the actual storage path of the docker log files so that it can be mounted to collect the logs.
-  # see https://github.com/fluent/fluent-operator/blob/master/manifests/setup/fluent-operator-deployment.yaml#L26
-  initcontainer:
-    image:
-      registry: docker.io
-      repository: docker
-      tag: "20.10"
-
-    resources:
-      limits:
-        cpu: 100m
-        memory: 64Mi
-      requests:
-        cpu: 50m
-        memory: 64Mi
   image:
     registry: ghcr.io
     repository: fluent/fluent-operator/fluent-operator
@@ -67,10 +53,6 @@ operator:
   # Reference one more key-value pairs of labels that should be attached to fluent-operator
   labels: {}
   #  myExampleLabel: someValue
-  logPath:
-    # The operator currently assumes a Docker container runtime path for the logs as the default, for other container runtimes you can set the location explicitly below.
-    # crio: /var/log
-    containerd: /var/log
   # By default, the operator provisions both Fluent Bit and FluentD controllers.
   # A specific controller can be disabled by setting the disableComponentControllers value.
   # The disableComponentControllers value can be either "fluent-bit" or "fluentd".
@@ -358,11 +340,11 @@ fluentbit:
     # See https://docs.fluentbit.io/manual/pipeline/outputs/loki
     loki:
       # Switch for generation of fluentbit loki ClusterOutput (and loki basic auth http user and pass secrets if required)
-      enable: false # Bool
+      enable: false  #  Bool
       retryLimit: "no_limits"
       logLevel: "info"
-      host: 127.0.0.1 # String
-      port: 3100 # Int
+      host: 127.0.0.1  #  String
+      port: 3100  #  Int
       # Either, give http{User,Password},tenantID string values specifying them directly
       httpUser: myuser
       httpPassword: mypass

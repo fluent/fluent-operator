@@ -6,7 +6,7 @@ keywords:
   - fluent-bit
   - fluentd
   - operator
-version: 3.5.2
+version: 4.0.0-rc1
 # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-operator
 appVersion: "3.5.0"
 icon: https://raw.githubusercontent.com/fluent/fluent-operator/master/docs/images/fluent-operator-icon.svg
@@ -19,6 +19,8 @@ maintainers:
   - name: marcofranssen
     email: marco.franssen@gmail.com
     url: https://marcofranssen.nl
+  - name: joshuabaird
+    email: joshbaird@gmail.com
 dependencies:
   - name: fluent-bit-crds
     repository: "file://charts/fluent-bit-crds"

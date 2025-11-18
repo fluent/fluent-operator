@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.24.5
+ARG GO_VERSION=1.25.3
 
 # Build the manager binary \
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine3.21 AS builder
@@ -12,18 +12,18 @@ COPY go.sum go.sum
 RUN go mod download
 
 # Copy the go source
-COPY cmd/fluent-manager/main.go main.go
+COPY cmd/fluent-manager/*.go ./
 COPY apis apis/
 COPY controllers controllers/
 COPY pkg pkg/
 
 ARG TARGETOS
 ARG TARGETARCH
-RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} GO111MODULE=on go build -a -o manager main.go
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} GO111MODULE=on go build -a -o manager .
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM kubesphere/distroless-static:nonroot
+FROM gcr.io/distroless/static:nonroot
 WORKDIR /
 COPY --from=builder /workspace/manager .
 USER nonroot:nonroot

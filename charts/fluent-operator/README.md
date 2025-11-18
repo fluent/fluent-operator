@@ -19,6 +19,30 @@ By default, all CRDs required for Fluent Operator will be installed.  To prevent
 
 ## Upgrading
 
+### Upgrading to v4.0
+
+⚠️ **v4.0 contains breaking changes.** Please review the [Migration Guide](MIGRATION-v4.md) before upgrading.
+
+**Key Changes:**
+
+- Default `containerRuntime` changed from `docker` to `containerd`
+- Removed initContainers for dynamic path detection for the `docker` runtime
+- Removed ability to configure custom log paths - uses fixed defaults based on `containerRuntime`
+
+**Quick Migration:**
+
+```yaml
+# If using Docker, explicitly set in your values:
+containerRuntime: docker
+
+# Note: Custom log paths are no longer supported
+# Each runtime uses its fixed default path
+```
+
+See [MIGRATION-v4.md](MIGRATION-v4.md) for complete migration instructions.
+
+### Upgrading
+
 Helm [does not manage the lifecycle of CRDs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/), so if the Fluent Operator CRDs already exist, subsequent
 chart upgrades will not add or remove CRDs even if they have changed.  During upgrades, users should manually update CRDs:
 
