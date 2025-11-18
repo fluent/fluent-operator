@@ -305,26 +305,33 @@ fluentbit:
       logstashPrefix: ks-logstash-log
       bufferSize: 20MB
       traceError: true
-    #      logstashPrefixKey: ks-logstash-log
-    #      suppressTypeName: "On"
-    #      path: ""
-    #      bufferSize: "4KB"
-    #      index: "fluent-bit"
-    #      httpUser:
-    #      httpPassword:
-    #      logstashFormat: true
-    #      replaceDots: false
-    #      writeOperation: upsert
-    #      tls:
-    #        enable: false
-    #        verify: On
-    #        debug: 1
-    #        caFile: "<Absolute path to CA certificate file>"
-    #        caPath: "<Absolute path to scan for certificate files>"
-    #        crtFile: "<Absolute path to private Key file>"
-    #        keyFile: "<Absolute path to private Key file>"
-    #        keyPassword:
-    #        vhost: "<Hostname to be used for TLS SNI extension>"
+      # logstashPrefixKey: ks-logstash-log
+      # suppressTypeName: "On"
+      # path: ""
+      # index: "fluent-bit"
+      # httpUser:
+      #   valueFrom:
+      #     secretKeyRef:
+      #       key: value
+      #       name: husersecret
+      # httpPassword:
+      #   valueFrom:
+      #     secretKeyRef:
+      #       key: value
+      #       name: hpasssecret
+      # logstashFormat: true
+      # replaceDots: false
+      # writeOperation: upsert
+      # tls:
+      #   enable: false
+      #   verify: On
+      #   debug: 1
+      #   caFile: "<Absolute path to CA certificate file>"
+      #   caPath: "<Absolute path to scan for certificate files>"
+      #   crtFile: "<Absolute path to private Key file>"
+      #   keyFile: "<Absolute path to private Key file>"
+      #   keyPassword:
+      #   vhost: "<Hostname to be used for TLS SNI extension>"
     kafka:
       enable: false
       logLevel: info
@@ -351,11 +358,11 @@ fluentbit:
     # See https://docs.fluentbit.io/manual/pipeline/outputs/loki
     loki:
       # Switch for generation of fluentbit loki ClusterOutput (and loki basic auth http user and pass secrets if required)
-      enable: false  # Bool
+      enable: false # Bool
       retryLimit: "no_limits"
       logLevel: "info"
-      host: 127.0.0.1  # String
-      port: 3100  # Int
+      host: 127.0.0.1 # String
+      port: 3100 # Int
       # Either, give http{User,Password},tenantID string values specifying them directly
       httpUser: myuser
       httpPassword: mypass
