@@ -97,8 +97,8 @@ lint-config: golangci-lint ## Verify golangci-lint linter configuration
 
 binary:
 	go build -o bin/fb-manager ./cmd/fluent-manager
-go build -o bin/fb-watcher ./cmd/fluent-watcher/fluentbit
-go build -o bin/fd-watcher ./cmd/fluent-watcher/fluentd
+	go build -o bin/fb-watcher ./cmd/fluent-watcher/fluentbit
+	go build -o bin/fd-watcher ./cmd/fluent-watcher/fluentd
 
 verify: verify-crds verify-codegen
 
