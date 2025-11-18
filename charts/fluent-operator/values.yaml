@@ -305,11 +305,10 @@ fluentbit:
       logstashPrefix: ks-logstash-log
       bufferSize: 20MB
       traceError: true
-      #      logstashPrefixKey: ks-logstash-log
-      #      suppressTypeName: "On"
-      #      path: ""
-      #      bufferSize: "4KB"
-      #      index: "fluent-bit"
+      # logstashPrefixKey: ks-logstash-log
+      # suppressTypeName: "On"
+      # path: ""
+      # index: "fluent-bit"
       # httpUser:
       #   valueFrom:
       #     secretKeyRef:
@@ -320,19 +319,19 @@ fluentbit:
       #     secretKeyRef:
       #       key: value
       #       name: hpasssecret
-    #      logstashFormat: true
-    #      replaceDots: false
-    #      writeOperation: upsert
-    #      tls:
-    #        enable: false
-    #        verify: On
-    #        debug: 1
-    #        caFile: "<Absolute path to CA certificate file>"
-    #        caPath: "<Absolute path to scan for certificate files>"
-    #        crtFile: "<Absolute path to private Key file>"
-    #        keyFile: "<Absolute path to private Key file>"
-    #        keyPassword:
-    #        vhost: "<Hostname to be used for TLS SNI extension>"
+      # logstashFormat: true
+      # replaceDots: false
+      # writeOperation: upsert
+      # tls:
+      #   enable: false
+      #   verify: On
+      #   debug: 1
+      #   caFile: "<Absolute path to CA certificate file>"
+      #   caPath: "<Absolute path to scan for certificate files>"
+      #   crtFile: "<Absolute path to private Key file>"
+      #   keyFile: "<Absolute path to private Key file>"
+      #   keyPassword:
+      #   vhost: "<Hostname to be used for TLS SNI extension>"
     kafka:
       enable: false
       logLevel: info
