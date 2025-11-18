@@ -19,7 +19,6 @@ package main
 import (
 	"crypto/tls"
 	"errors"
-	"flag"
 	"os"
 	"path/filepath"
 	"strings"
@@ -64,53 +63,15 @@ func init() {
 	// +kubebuilder:scaffold:scheme
 }
 
-// nolint:gocyclo
 func main() {
-	var metricsAddr string
-	var metricsCertPath, metricsCertName, metricsCertKey string
-	var webhookCertPath, webhookCertName, webhookCertKey string
-	var enableLeaderElection bool
-	var probeAddr string
-	var secureMetrics bool
-	var enableHTTP2 bool
-	var watchNamespaces string
 	var logPath string
-	var disabledControllers string
 	var tlsOpts []func(*tls.Config)
 
-	flag.StringVar(&watchNamespaces, "watch-namespaces", "",
-		"Optional comma separated list of namespaces to watch for resources in. Defaults to cluster scope.")
-	flag.StringVar(&metricsAddr, "metrics-bind-address", "0",
-		"The address the metrics endpoint binds to. Use :8443 for HTTPS or :8080 for HTTP, or leave "+
-			"as 0 to disable the metrics service.")
-	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
-		"Enable leader election for controller manager. "+
-			"Enabling this will ensure there is only one active controller manager.")
-	flag.BoolVar(&secureMetrics, "metrics-secure", true,
-		"If set, the metrics endpoint is served securely via HTTPS. Use --metrics-secure=false to use HTTP instead.")
-	flag.StringVar(&webhookCertPath, "webhook-cert-path", "",
-		"The directory that contains the webhook certificate.")
-	flag.StringVar(&webhookCertName, "webhook-cert-name", "tls.crt",
-		"The name of the webhook certificate file.")
-	flag.StringVar(&webhookCertKey, "webhook-cert-key", "tls.key", "The name of the webhook key file.")
-	flag.StringVar(&metricsCertPath, "metrics-cert-path", "",
-		"The directory that contains the metrics server certificate.")
-	flag.StringVar(&metricsCertName, "metrics-cert-name", "tls.crt",
-		"The name of the metrics server certificate file.")
-	flag.StringVar(&metricsCertKey, "metrics-cert-key", "tls.key", "The name of the metrics server key file.")
-	flag.BoolVar(&enableHTTP2, "enable-http2", false,
-		"If set, HTTP/2 will be enabled for the metrics and webhook servers")
-	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
-	flag.StringVar(&disabledControllers, "disable-component-controllers", "",
-		"Optional argument that accepts two values: fluent-bit and fluentd. "+
-			"The specific controller will not be started if it's disabled.")
-	opts := zap.Options{
-		Development: true,
-	}
-	opts.BindFlags(flag.CommandLine)
-	flag.Parse()
+	zapOpts := &zap.Options{Development: true}
+	opts := NewOptions(zapOpts)
+	opts.ParseFlags()
 
-	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+	ctrl.SetLogger(zap.New(zap.UseFlagOptions(zapOpts)))
 
 	// if the enable-http2 flag is false (the default), http/2 should be disabled
 	// due to its vulnerabilities. More specifically, disabling http/2 will
@@ -123,7 +84,7 @@ func main() {
 		c.NextProtos = []string{"http/1.1"}
 	}
 
-	if !enableHTTP2 {
+	if !opts.EnableHTTP2 {
 		tlsOpts = append(tlsOpts, disableHTTP2)
 	}
 
@@ -132,14 +93,18 @@ func main() {
 
 	// Initial webhook TLS options
 	webhookTLSOpts := tlsOpts
-	if len(webhookCertPath) > 0 {
-		setupLog.Info("Initializing webhook certificate watcher using provided certificates",
-			"webhook-cert-path", webhookCertPath, "webhook-cert-name", webhookCertName, "webhook-cert-key", webhookCertKey)
+	if len(opts.WebhookCertPath) > 0 {
+		setupLog.Info(
+			"Initializing webhook certificate watcher using provided certificates",
+			"webhook-cert-path", opts.WebhookCertPath,
+			"webhook-cert-name", opts.WebhookCertName,
+			"webhook-cert-key", opts.WebhookCertKey,
+		)
 
 		var err error
 		webhookCertWatcher, err = certwatcher.New(
-			filepath.Join(webhookCertPath, webhookCertName),
-			filepath.Join(webhookCertPath, webhookCertKey),
+			filepath.Join(opts.WebhookCertPath, opts.WebhookCertName),
+			filepath.Join(opts.WebhookCertPath, opts.WebhookCertKey),
 		)
 		if err != nil {
 			setupLog.Error(err, "Failed to initialize webhook certificate watcher")
@@ -160,12 +125,12 @@ func main() {
 	// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.20.4/pkg/metrics/server
 	// - https://book.kubebuilder.io/reference/metrics.html
 	metricsServerOptions := metricsserver.Options{
-		BindAddress:   metricsAddr,
-		SecureServing: secureMetrics,
+		BindAddress:   opts.MetricsAddr,
+		SecureServing: opts.SecureMetrics,
 		TLSOpts:       tlsOpts,
 	}
 
-	if secureMetrics {
+	if opts.SecureMetrics {
 		// FilterProvider is used to protect the metrics endpoint with authn/authz.
 		// These configurations ensure that only authorized users and service accounts
 		// can access the metrics endpoint. The RBAC are configured in 'config/rbac/kustomization.yaml'. More info:
@@ -180,14 +145,18 @@ func main() {
 	// - [METRICS-WITH-CERTS] at config/default/kustomization.yaml to generate and use certificates
 	// managed by cert-manager for the metrics server.
 	// - [PROMETHEUS-WITH-CERTS] at config/prometheus/kustomization.yaml for TLS certification.
-	if len(metricsCertPath) > 0 {
-		setupLog.Info("Initializing metrics certificate watcher using provided certificates",
-			"metrics-cert-path", metricsCertPath, "metrics-cert-name", metricsCertName, "metrics-cert-key", metricsCertKey)
+	if len(opts.MetricsCertPath) > 0 {
+		setupLog.Info(
+			"Initializing metrics certificate watcher using provided certificates",
+			"metrics-cert-path", opts.MetricsCertPath,
+			"metrics-cert-name", opts.MetricsCertName,
+			"metrics-cert-key", opts.MetricsCertKey,
+		)
 
 		var err error
 		metricsCertWatcher, err = certwatcher.New(
-			filepath.Join(metricsCertPath, metricsCertName),
-			filepath.Join(metricsCertPath, metricsCertKey),
+			filepath.Join(opts.MetricsCertPath, opts.MetricsCertName),
+			filepath.Join(opts.MetricsCertPath, opts.MetricsCertKey),
 		)
 		if err != nil {
 			setupLog.Error(err, "to initialize metrics certificate watcher", "error", err)
@@ -203,8 +172,8 @@ func main() {
 		Scheme:                 scheme,
 		Metrics:                metricsServerOptions,
 		WebhookServer:          webhookServer,
-		HealthProbeBindAddress: probeAddr,
-		LeaderElection:         enableLeaderElection,
+		HealthProbeBindAddress: opts.ProbeAddr,
+		LeaderElection:         opts.EnableLeaderElection,
 		LeaderElectionID:       "45c4fdd2.fluent.io",
 		// LeaderElectionReleaseOnCancel defines if the leader should step down voluntarily
 		// when the Manager ends. This requires the binary to immediately end when the
@@ -220,12 +189,12 @@ func main() {
 	}
 
 	namespacedController := false
-	if watchNamespaces != "" {
+	if opts.WatchNamespaces != "" {
 		config := cache.Config{}
 		namespacedController = true
 
 		ctrlOpts.Cache.DefaultNamespaces = make(map[string]cache.Config)
-		for namespace := range strings.SplitSeq(watchNamespaces, ",") {
+		for namespace := range strings.SplitSeq(opts.WatchNamespaces, ",") {
 			ctrlOpts.Cache.DefaultNamespaces[namespace] = config
 		}
 	}
@@ -239,8 +208,8 @@ func main() {
 	}
 
 	fluentBitEnabled, fluentdEnabled := true, true
-	if disabledControllers != "" {
-		switch disabledControllers {
+	if opts.DisabledControllers != "" {
+		switch opts.DisabledControllers {
 		case fluentBitName:
 			fluentBitEnabled = false
 		case fluentdName:
