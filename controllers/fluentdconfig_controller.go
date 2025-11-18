@@ -607,7 +607,7 @@ func (r *FluentdConfigReconciler) ListNamespacedLevelResources(
 			return nil, nil, nil, err
 		}
 		matchingLabelSelector := client.MatchingLabelsSelector{Selector: selector}
-		if err = r.List(ctx, &inputs, client.InNamespace(namespace), matchingLabelSelector); err != nil {
+		if err = r.List(ctx, &filters, client.InNamespace(namespace), matchingLabelSelector); err != nil {
 			return nil, nil, nil, err
 		}
 	}
@@ -620,7 +620,7 @@ func (r *FluentdConfigReconciler) ListNamespacedLevelResources(
 			return nil, nil, nil, err
 		}
 		matchingLabelSelector := client.MatchingLabelsSelector{Selector: selector}
-		if err = r.List(ctx, &inputs, client.InNamespace(namespace), matchingLabelSelector); err != nil {
+		if err = r.List(ctx, &outputs, client.InNamespace(namespace), matchingLabelSelector); err != nil {
 			return nil, nil, nil, err
 		}
 	}
