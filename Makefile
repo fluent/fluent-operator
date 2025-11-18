@@ -110,8 +110,8 @@ verify-codegen:
 
 build: generate fmt vet ## Build manager binary.
 	go build -o bin/fluent-manager ./cmd/fluent-manager
-go build -o bin/fb-watcher ./cmd/fluent-watcher/fluentbit
-go build -o bin/fd-watcher ./cmd/fluent-watcher/fluentd
+	go build -o bin/fb-watcher ./cmd/fluent-watcher/fluentbit
+	go build -o bin/fd-watcher ./cmd/fluent-watcher/fluentd
 
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run cmd/fluent-manager/main.go
