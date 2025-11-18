@@ -27,64 +27,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      {{- if eq .Values.containerRuntime "docker" }}
       volumes:
       - name: env
-        emptyDir: {}
-      - name: dockersock
-        hostPath:
-          path: /var/run/docker.sock
-      initContainers:
-      - name: setenv
-        image: {{ template "fluent-operator.image" (tuple .Values.operator.initcontainer.image "") }}
-        command:
-        - /bin/sh
-        - '-c'
-        - set -ex;
-          echo CONTAINER_ROOT_DIR=$(docker info -f '{{`{{.DockerRootDir}}`}}' 2> /dev/null) > /fluent-operator/fluent-bit.env
-        resources:
-          {{- toYaml .Values.operator.initcontainer.resources | nindent 10 }}
-        volumeMounts:
-        - name: env
-          mountPath: /fluent-operator
-        - name: dockersock
-          readOnly: true
-          mountPath: /var/run/docker.sock
-      {{- else if eq .Values.containerRuntime "containerd" }}
-      volumes:
-      - name: env
-        emptyDir: {}
-      initContainers:
-      - name: setenv
-        image: {{ template "fluent-operator.image" (tuple .Values.operator.initcontainer.image "") }}
-        command:
-        - /bin/sh
-        - '-c'
-        - set -ex;
-          echo CONTAINER_ROOT_DIR={{ .Values.operator.logPath.containerd }} > /fluent-operator/fluent-bit.env
-        resources:
-          {{- toYaml .Values.operator.initcontainer.resources | nindent 10 }}
-        volumeMounts:
-        - name: env
-          mountPath: /fluent-operator
-      {{- else if eq .Values.containerRuntime "crio" }}
-      volumes:
-        - name: env
-          emptyDir: {}
-      initContainers:
-      - name: setenv
-        image: {{ template "fluent-operator.image" (tuple .Values.operator.initcontainer.image "") }}
-        command:
-        - /bin/sh
-        - '-c'
-        - set -ex;
-          echo CONTAINER_ROOT_DIR={{ .Values.operator.logPath.crio }} > /fluent-operator/fluent-bit.env
-        resources:
-          {{- toYaml .Values.operator.initcontainer.resources | nindent 10 }}
-        volumeMounts:
-        - name: env
-          mountPath: /fluent-operator
-      {{- end }}
+        configMap:
+          name: fluent-operator-env
       containers:
       - name: fluent-operator
         image: {{ template "fluent-operator.image" (tuple .Values.operator.image $.Chart.AppVersion) }}
@@ -100,6 +46,8 @@ spec:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.namespace
+          - name: CONTAINER_LOG_PATH
+            value: {{ include "fluent-operator.containerLogPath" . | quote }}
         args:
           {{- with .Values.operator.extraArgs }}
           {{- toYaml . | nindent 10 }}

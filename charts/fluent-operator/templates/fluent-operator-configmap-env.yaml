@@ -1,0 +1,13 @@
+{{- if .Values.operator.enable }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-operator-env
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
+data:
+  fluent-bit.env: |
+    CONTAINER_ROOT_DIR={{ include "fluent-operator.containerLogPath" . | trimSuffix "/containers" }}
+{{- end }}

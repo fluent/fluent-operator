@@ -83,3 +83,14 @@ Util function for generating the image URL based on the provided options.
 {{- if .digest -}}{{ printf "@%s" .digest }}{{- else -}}{{ printf ":%s" (default $defaultTag .tag) }}{{- end -}}
 {{- end }}
 {{- end }}
+
+{{/*
+Determine the container log path based on containerRuntime
+*/}}
+{{- define "fluent-operator.containerLogPath" -}}
+{{- if eq .Values.containerRuntime "docker" -}}
+/var/lib/docker/containers
+{{- else -}}
+/var/log/containers
+{{- end -}}
+{{- end }}
