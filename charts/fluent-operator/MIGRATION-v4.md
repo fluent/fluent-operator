@@ -1,8 +1,11 @@
 # Migration Guide: Fluent Operator Helm Chart v3.x to v4.0
 
 ## Overview
+Major changes/themes for v4.0:
 
-v4.0 simplifies container runtime configuration by removing dynamic detection for the `docker` runtime via initContainers and adopting static, configuration-based paths. The `docker` runtime has not been used widely since Kubernetes v1.24 (2022) and modern Kubernetes distributions now use the `containerd` runtime.
+1. **Container Runtime Simplification**: Removes dynamic detection for the `docker` runtime via initContainers and adopts static, configuration-based paths. The `docker` runtime has not been used widely since Kubernetes v1.24 (2022) and modern Kubernetes distributions now use the `containerd` runtime.
+
+2. **Fluentd CRDs Separation**: Fluentd CRDs have been moved from a sub-chart to a separate, independently versioned `fluentd-crds` chart. This allows for independent lifecycle management of the CRDs and operator and simplifies the process of updating and managing CRDs.
 
 ## Breaking Changes
 
@@ -138,6 +141,41 @@ containerRuntime: docker
 # This works for standard Docker installations
 # If your Docker uses a custom root directory, you must reconfigure Docker
 # to use the standard path
+```
+
+### 4. Fluentd CRDs Moved to Separate Chart
+
+**What Changed:**
+
+- Fluentd CRDs are no longer included as a sub-chart of `fluent-operator`
+- Fluentd CRDs are now available as a separate top-level chart: `fluentd-crds`
+- The `fluentd-crds` chart is versioned independently from the `fluent-operator` chart
+
+**Impact:**
+
+- Fluentd CRDs will not be installed automatically when installing/upgrading the `fluent-operator` chart
+- Users must install the `fluentd-crds` chart separately if they use Fluentd
+- Users can upgrade the `fluentd-crds` chart independently of the operator
+
+**Who Is Affected:**
+
+- Users who use Fluentd with the fluent-operator
+- Users who relied on Fluentd CRDs being automatically installed with the operator chart
+
+**Migration:**
+
+If you use Fluentd, you must install the `fluentd-crds` chart separately before or alongside the `fluent-operator` chart.
+
+```bash
+# Add the Fluent Helm repository
+helm repo add fluent https://fluent.github.io/helm-charts
+helm repo update
+
+# Install fluentd-crds chart first
+helm install fluentd-crds fluent/fluentd-crds --version 0.1.0
+
+# Then install or upgrade fluent-operator
+helm upgrade --install fluent-operator fluent/fluent-operator --version 4.0.0
 ```
 
 ## Forward Looking: Planned Changes in v5.0
