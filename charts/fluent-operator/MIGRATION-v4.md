@@ -6,7 +6,7 @@ Major changes/themes for v4.0:
 
 1. **Container Runtime Simplification**: Removes dynamic detection for the `docker` runtime via initContainers and adopts static, configuration-based paths. The `docker` runtime has not been used widely since Kubernetes v1.24 (2022) and modern Kubernetes distributions now use the `containerd` runtime.
 
-2. **Fluentd CRDs Now Auto-Upgrade**: Fluentd CRDs have been moved from an embedded sub-chart to a separate, independently versioned `fluentd-crds` chart hosted in the Fluent Helm repository. CRDs are now in the `templates/` directory, enabling automatic upgrades via `helm upgrade`. **Important:** CRDs will now be deleted on `helm uninstall` unless protected with the `helm.sh/resource-policy: keep` annotation (see section 4 for details).
+2. **fluentd-crd lifecycle changes**: Fluentd CRDs have been moved from an embedded sub-chart to a separate, independently versioned `fluentd-crds` chart hosted in the Fluent Helm repository. CRDs are now in the `templates/` directory, enabling automatic upgrades via `helm upgrade`. **Important:** CRDs will now be deleted on `helm uninstall` unless protected with the `helm.sh/resource-policy: keep` annotation (see below for details).
 
 ## Breaking Changes
 
@@ -143,7 +143,7 @@ containerRuntime: docker
 # to use the standard path
 ```
 
-### 4. Fluentd CRDs Moved to Separate Chart with Automatic Upgrades
+## Fluentd CRDs Moved to Separate Chart with Automatic Upgrades
 
 **What Changed:**
 
