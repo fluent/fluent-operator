@@ -23,20 +23,6 @@ spec:
       - name: dockersock
         hostPath:
           path: /var/run/docker.sock
-      initContainers:
-      - name: setenv
-        image: 'docker:20.10'
-        command:
-        - /bin/sh
-        - '-c'
-        - set -ex;
-          echo CONTAINER_ROOT_DIR=$(docker info -f '{{.DockerRootDir}}' 2> /dev/null) > /fluent-operator/fluent-bit.env
-        volumeMounts:
-        - name: env
-          mountPath: /fluent-operator
-        - name: dockersock
-          readOnly: true
-          mountPath: /var/run/docker.sock
       containers:
       - name: fluent-operator
         image: ghcr.io/fluent/fluent-operator/fluent-operator:latest
