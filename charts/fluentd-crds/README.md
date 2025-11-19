@@ -10,6 +10,7 @@ A helm chart for Fluentd custom resource definitions (CRDs) used by fluent-opera
 
 | Name | Email | Url |
 | ---- | ------ | --- |
+| cw-guo |  |  |
 | marcofranssen | <marco.franssen@gmail.com> | <https://marcofranssen.nl> |
 | joshuabaird | <joshbaird@gmail.com> |  |
 
