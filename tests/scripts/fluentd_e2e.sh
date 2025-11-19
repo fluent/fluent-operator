@@ -16,13 +16,14 @@ VERSION="$(tr -d " \t\n\r" < VERSION)"
 LOG_FILE="$(mktemp)"
 IMAGE_NAME="ghcr.io/fluent/fluent-operator/fluent-operator"
 
+GINKGO_BIN="ginkgo"
+if [ -f "$PROJECT_ROOT/bin/ginkgo" ]; then
+  GINKGO_BIN="$PROJECT_ROOT/bin/ginkgo"
+fi
+
 function build_ginkgo_test() {
   pushd "$E2E_DIR" >/dev/null
-  local ginkgo_bin="ginkgo"
-  if [ -f "$PROJECT_ROOT/bin/ginkgo" ]; then
-    ginkgo_bin="$PROJECT_ROOT/bin/ginkgo"
-  fi
-  "$ginkgo_bin" build -r e2e/fluentd/
+  "$GINKGO_BIN" build -r e2e/fluentd/
   popd >/dev/null
 }
 
@@ -69,23 +70,11 @@ function start_fluent_operator() {
 function run_test() {
   # inspired by github.com/kubeedge/kubeedge/tests/e2e/scripts/helm_keadm_e2e.sh
   echo "Logs will be written to $LOG_FILE"
-  # Allow test runner to fail without exiting immediately, so we can parse logs
-  "$E2E_DIR/e2e/fluentd/fluentd.test" "$debugflag" 2>&1 | tee -a "$LOG_FILE" || true
+  
+  export ACK_GINKGO_RC=true
+  "$GINKGO_BIN" -v "$E2E_DIR/e2e/fluentd/fluentd.test" -- "$debugflag"
 
-  # Disable pipefail for grep/sed pipelines where grep might return 1 (no matches)
-  set +o pipefail
-  grep -e "Running Suite" -e "SUCCESS\!" -e "FAIL\!" "$LOG_FILE" | sed -r 's/\x1B\[([0-9];)?([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g' | sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g'
-  echo "Integration Test Final Summary Report"
-  echo "======================================================="
-  echo "Total Number of Test cases = $(grep "Ran " "$LOG_FILE" | awk '{sum+=$2} END {print sum}')"
-  passed=$(grep -e "SUCCESS\!" -e "FAIL\!" "$LOG_FILE" | awk '{print $3}' | sed -r "s/\x1B\[([0-9];)?([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | awk '{sum+=$1} END {print sum}')
-  echo "Number of Test cases PASSED = $passed"
-  fail=$(grep -e "SUCCESS\!" -e "FAIL\!" "$LOG_FILE" | awk '{print $6}' | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | awk '{sum+=$1} END {print sum}')
-  echo "Number of Test cases FAILED = $fail"
-  echo "==================Result Summary======================="
-  set -o pipefail
-
-  if [ "$fail" != "0" ];then
+  if [[ $? != 0 ]]; then
     echo "Integration suite has failures, Please check !!"
     exit 1
   else
