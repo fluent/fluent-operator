@@ -1,6 +1,7 @@
 # Migration Guide: Fluent Operator Helm Chart v3.x to v4.0
 
 ## Overview
+
 Major changes/themes for v4.0:
 
 1. **Container Runtime Simplification**: Removes dynamic detection for the `docker` runtime via initContainers and adopts static, configuration-based paths. The `docker` runtime has not been used widely since Kubernetes v1.24 (2022) and modern Kubernetes distributions now use the `containerd` runtime.
@@ -27,7 +28,6 @@ Major changes/themes for v4.0:
 - Users who relied on the default value without explicit configuration
 
 **Migration:**
-
 
 The containerRuntime now defaults to `containerd`. In `v3.x` the implicit default was `docker`. Use `containerRuntime: docker` to maintain `v3.x` behavior.
 
