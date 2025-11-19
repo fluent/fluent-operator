@@ -28,5 +28,5 @@ dependencies:
     condition: fluentbit.crdsEnable
   - name: fluentd-crds
     repository: https://fluent.github.io/helm-charts
-    condition: fluentd.enabled && fluentd.crdsEnable
+    condition: fluentd.enable && fluentd.crdsEnable
     version: 0.1.0
