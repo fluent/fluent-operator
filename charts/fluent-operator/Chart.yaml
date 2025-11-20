@@ -23,10 +23,10 @@ maintainers:
     email: joshbaird@gmail.com
 dependencies:
   - name: fluent-bit-crds
-    repository: https://fluent.github.io/helm-charts
+    repository: "file://../charts/fluent-bit-crds" #  set to remote repository during release by CI
     version: 0.1.0
     condition: fluentbit.enable && fluentbit.crdsEnable
   - name: fluentd-crds
-    repository: https://fluent.github.io/helm-charts
+    repository: "file://../charts/fluentd-crds" #  set to remote repository during release by CI
     condition: fluentd.enable && fluentd.crdsEnable
     version: 0.1.0
