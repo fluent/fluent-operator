@@ -1,0 +1,22 @@
+apiVersion: v2
+name: fluentd-crds
+description: A helm chart for Fluentd custom resource definitions (CRDs) used by fluent-operator.
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+keywords:
+  - logging
+  - fluentd
+  - fluent-bit
+  - fluent-operator
+home: https://github.com/fluent/fluent-operator
+icon: https://raw.githubusercontent.com/fluent/fluent-operator/master/docs/images/fluent-operator-icon.svg
+sources:
+  - https://github.com/fluent/fluent-operator/tree/master/charts/fluentd-crds
+maintainers:
+  - name: cw-guo
+  - name: marcofranssen
+    email: marco.franssen@gmail.com
+    url: https://marcofranssen.nl
+  - name: joshuabaird
+    email: joshbaird@gmail.com

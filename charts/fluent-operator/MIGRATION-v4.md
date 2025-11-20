@@ -2,7 +2,11 @@
 
 ## Overview
 
-v4.0 simplifies container runtime configuration by removing dynamic detection for the `docker` runtime via initContainers and adopting static, configuration-based paths. The `docker` runtime has not been used widely since Kubernetes v1.24 (2022) and modern Kubernetes distributions now use the `containerd` runtime.
+Major changes/themes for v4.0:
+
+1. **Container Runtime Simplification**: Removes dynamic detection for the `docker` runtime via initContainers and adopts static, configuration-based paths. The `docker` runtime has not been used widely since Kubernetes v1.24 (2022) and modern Kubernetes distributions now use the `containerd` runtime.
+
+2. **fluentd-crd lifecycle changes**: Fluentd CRDs have been moved from an embedded sub-chart to a separate, independently versioned `fluentd-crds` chart hosted in the Fluent Helm repository. CRDs are now in the `templates/` directory, enabling automatic upgrades via `helm upgrade`. **Important:** CRDs will now be deleted on `helm uninstall` unless protected with the `helm.sh/resource-policy: keep` annotation (see below for details).
 
 ## Breaking Changes
 
@@ -24,7 +28,6 @@ v4.0 simplifies container runtime configuration by removing dynamic detection fo
 - Users who relied on the default value without explicit configuration
 
 **Migration:**
-
 
 The containerRuntime now defaults to `containerd`. In `v3.x` the implicit default was `docker`. Use `containerRuntime: docker` to maintain `v3.x` behavior.
 
@@ -102,7 +105,7 @@ v4.0 uses the following default paths based on the configured `containerRuntime`
 
 ## Migration Scenarios
 
-### Scenario 1: Using Containerd (Default) - No Changes Needed ✅
+### Scenario 1: Using Containerd (Default) - No Changes Needed
 
 ```yaml
 # v3.x
@@ -139,6 +142,53 @@ containerRuntime: docker
 # If your Docker uses a custom root directory, you must reconfigure Docker
 # to use the standard path
 ```
+
+## Fluentd CRDs Moved to Separate Chart with Automatic Upgrades
+
+**What Changed:**
+
+- Fluentd CRDs moved from embedded sub-chart to separate `fluentd-crds` chart in the Fluent Helm repository
+- CRDs relocated from `crds/` directory to `templates/` directory, changing their lifecycle behavior
+
+**Impact:**
+
+- **CRDs now upgrade automatically** with `helm upgrade` (previously required manual upgrade)
+- **CRDs will be deleted on `helm uninstall`** (previously they were preserved).
+
+**Who Is Affected:**
+
+- All users who use Fluentd with the fluent-operator
+- Users who rely on CRDs and custom resources persisting after chart uninstall
+
+**Migration:**
+
+Before installing or upgrading, ensure the Fluent Helm repository is added:
+
+```bash
+# Add the Fluent Helm repository (required for the dependency)
+helm repo add fluent https://fluent.github.io/helm-charts
+helm repo update
+
+# Install or upgrade fluent-operator (CRDs installed automatically via dependency)
+helm upgrade --install fluent-operator fluent/fluent-operator \
+  --version 4.0.0 \
+  --set fluentd.enable=true
+```
+
+**Note:** Helm will automatically manage the `fluentd-crds` dependency when `fluentd.enable=true` and `fluentd.crdsEnable=true` (default).
+
+**Protecting CRDs from Deletion:**
+
+To prevent CRDs from being deleted when the `fluentd-crds` chart is uninstalled, add the `helm.sh/resource-policy: keep` annotation:
+
+```bash
+helm upgrade --install fluent-operator fluent/fluent-operator \
+  --version 4.0.0 \
+  --set fluentd.enable=true \
+  --set fluentd-crds.additionalAnnotations."helm\.sh/resource-policy"=keep
+```
+
+With this annotation, Helm will preserve the CRDs and all Fluentd custom resources even if the chart is uninstalled.
 
 ## Forward Looking: Planned Changes in v5.0
 

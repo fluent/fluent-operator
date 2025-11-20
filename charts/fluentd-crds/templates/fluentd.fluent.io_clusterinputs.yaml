@@ -3,23 +3,26 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    {{- with .Values.additionalAnnotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: inputs.fluentd.fluent.io
+  name: clusterinputs.fluentd.fluent.io
 spec:
   group: fluentd.fluent.io
   names:
-    kind: Input
-    listKind: InputList
-    plural: inputs
+    kind: ClusterInput
+    listKind: ClusterInputList
+    plural: clusterinputs
     shortNames:
-    - fdi
-    singular: input
-  scope: Namespaced
+    - cfdi
+    singular: clusterinput
+  scope: Cluster
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Input is the Schema for the inputs API
+        description: ClusterInput is the Schema for the clusterinputs API
         properties:
           apiVersion:
             description: |-
@@ -39,7 +42,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: InputSpec defines the desired state of Input
+            description: ClusterInputSpec defines the desired state of ClusterInput
             properties:
               inputs:
                 items:
@@ -896,7 +899,7 @@ spec:
                 type: array
             type: object
           status:
-            description: InputStatus defines the observed state of Input
+            description: ClusterInputStatus defines the observed state of ClusterInput
             type: object
         type: object
     served: true
