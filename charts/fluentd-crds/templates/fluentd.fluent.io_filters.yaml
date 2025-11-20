@@ -6,9 +6,6 @@ metadata:
     {{- with .Values.additionalAnnotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
-    {{- with .Values.additionalAnnotations }}
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
     controller-gen.kubebuilder.io/version: v0.18.0
   name: filters.fluentd.fluent.io
 spec:
