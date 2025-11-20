@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-operator-env
+  namespace: fluent
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
+data:
+  fluent-bit.env: |
+    CONTAINER_ROOT_DIR="/var/log"

@@ -40326,6 +40326,18 @@ subjects:
   name: fluent-operator
   namespace: fluent
 ---
+apiVersion: v1
+data:
+  fluent-bit.env: |
+    CONTAINER_ROOT_DIR="/var/log"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
+  name: fluent-operator-env
+  namespace: fluent
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -40364,20 +40376,6 @@ spec:
         volumeMounts:
         - mountPath: /fluent-operator
           name: env
-      initContainers:
-      - command:
-        - /bin/sh
-        - -c
-        - set -ex; echo CONTAINER_ROOT_DIR=$(docker info -f '{{.DockerRootDir}}' 2>
-          /dev/null) > /fluent-operator/fluent-bit.env
-        image: docker:20.10
-        name: setenv
-        volumeMounts:
-        - mountPath: /fluent-operator
-          name: env
-        - mountPath: /var/run/docker.sock
-          name: dockersock
-          readOnly: true
       serviceAccountName: fluent-operator
       volumes:
       - emptyDir: {}
