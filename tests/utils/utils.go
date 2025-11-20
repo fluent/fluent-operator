@@ -9,14 +9,16 @@ import (
 var (
 	once sync.Once
 
-	ExpectedFluentdClusterCfgOutputES         []byte
-	ExpectedFluentdClusterCfgOutputKafka      []byte
-	ExpectedFluentdClusterCfgOutputWithBuffer []byte
-	ExpectedFluentdMixedCfgsMultiTenant       []byte
-	ExpectedFluentdMixedCfgsOutputES          []byte
-	ExpectedFluentdNamespacedCfgOutputES      []byte
-	ExpectedDuplicateRemovalCRSPECS           []byte
-	ExpectedFluentdClusterCfgOutputCustom     []byte
+	ExpectedFluentdClusterCfgOutputES                []byte
+	ExpectedFluentdClusterCfgOutputKafka             []byte
+	ExpectedFluentdClusterCfgOutputWithBuffer        []byte
+	ExpectedFluentdMixedCfgsMultiTenant              []byte
+	ExpectedFluentdMixedCfgsOutputES                 []byte
+	ExpectedFluentdNamespacedCfgOutputES             []byte
+	ExpectedDuplicateRemovalCRSPECS                  []byte
+	ExpectedFluentdClusterCfgOutputCustom            []byte
+	ExpectedFluentdNamespacedCfgFilterOutputSelector []byte
+	ExpectedFluentdNamespacedCfgFilterSelector       []byte
 )
 
 func init() {
@@ -37,6 +39,10 @@ func init() {
 			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/duplicate-removal-cr-specs.cfg")
 		ExpectedFluentdClusterCfgOutputCustom =
 			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-cluster-cfg-output-custom.cfg")
+		ExpectedFluentdNamespacedCfgFilterOutputSelector =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-namespaced-cfg-filter-output-selector.cfg")
+		ExpectedFluentdNamespacedCfgFilterSelector =
+			getExpectedCfg("./apis/fluentd/v1alpha1/tests/expected/fluentd-namespaced-cfg-filter-selector.cfg")
 	})
 }
 

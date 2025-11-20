@@ -13,7 +13,6 @@ E2E_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 LOGGING_NAMESPACE="fluent"
 IMAGE_TAG="$(date "+%Y-%m-%d-%H-%M-%S")"
 VERSION="$(tr -d " \t\n\r" < VERSION)"
-LOG_FILE="$(mktemp)"
 IMAGE_NAME="ghcr.io/fluent/fluent-operator/fluent-operator"
 
 GINKGO_BIN="ginkgo"
@@ -42,7 +41,6 @@ function cleanup() {
   # kubectl delete ns $LOGGING_NAMESPACE
   kind delete cluster --name test || true
   popd >/dev/null || true
-  rm -f "$LOG_FILE"
 }
 
 function prepare_cluster() {
@@ -68,9 +66,6 @@ function start_fluent_operator() {
 }
 
 function run_test() {
-  # inspired by github.com/kubeedge/kubeedge/tests/e2e/scripts/helm_keadm_e2e.sh
-  echo "Logs will be written to $LOG_FILE"
-  
   export ACK_GINKGO_RC=true
   "$GINKGO_BIN" -v "$E2E_DIR/e2e/fluentd/fluentd.test" -- "$debugflag"
 

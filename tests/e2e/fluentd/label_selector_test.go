@@ -3,7 +3,6 @@ package fluentd
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -13,6 +12,7 @@ import (
 	"sigs.k8s.io/yaml"
 
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1"
+	"github.com/fluent/fluent-operator/v3/tests/utils"
 )
 
 var (
@@ -34,7 +34,7 @@ spec:
   image: ghcr.io/fluent/fluent-operator/fluentd:v1.19.1
   fluentdCfgSelector:
     matchLabels:
-      config.fluentd.fluent.io/enabled: "true"
+      label.config.fluentd.fluent.io/enabled: "true"
 `
 
 	// FluentdConfig with filterSelector and outputSelector
@@ -45,7 +45,7 @@ metadata:
   name: fluentd-config-label-selector-test
   namespace: fluent
   labels:
-    config.fluentd.fluent.io/enabled: "true"
+    label.config.fluentd.fluent.io/enabled: "true"
 spec:
   filterSelector:
     matchLabels:
@@ -100,7 +100,7 @@ metadata:
   name: fluentd-config-filter-only
   namespace: fluent
   labels:
-    config.fluentd.fluent.io/enabled: "true"
+    label.config.fluentd.fluent.io/enabled: "true"
 spec:
   filterSelector:
     matchLabels:
@@ -199,22 +199,7 @@ var _ = Describe("Test FluentdConfig with namespace-level filter and output sele
 
 			// Verify that the filter configuration is present
 			// Before the fix, the filter would not be loaded because it was written to the inputs list
-			Expect(config).To(ContainSubstring("<filter"))
-			Expect(config).To(ContainSubstring("@type record_transformer"))
-			Expect(config).To(ContainSubstring("hostname"))
-			Expect(config).To(ContainSubstring("test-host"))
-			Expect(config).To(ContainSubstring("environment"))
-			Expect(config).To(ContainSubstring("testing"))
-
-			// Verify that the output configuration is present
-			// Before the fix, the output would not be loaded because it was written to the inputs list
-			Expect(config).To(ContainSubstring("<match"))
-			Expect(config).To(ContainSubstring("@type stdout"))
-
-			// Verify that filter and output are in the correct order (filter before output)
-			filterIndex := strings.Index(config, "<filter")
-			outputIndex := strings.Index(config, "<match")
-			Expect(filterIndex).To(BeNumerically("<", outputIndex), "Filter should appear before output in configuration")
+			Expect(string(utils.ExpectedFluentdNamespacedCfgFilterOutputSelector)).To(Equal(config))
 
 			// Clean up
 			err = DeleteObjs(ctx, objects)
@@ -257,12 +242,7 @@ var _ = Describe("Test FluentdConfig with namespace-level filter and output sele
 				Name:      fmt.Sprintf("%s-config", fluentd.Name),
 			}
 			config, err := GetCfgFromSecret(ctx, seckey)
-			Expect(err).NotTo(HaveOccurred())
-
-			// Verify grep filter is present
-			Expect(config).To(ContainSubstring("@type grep"))
-			Expect(config).To(ContainSubstring("key level"))
-			Expect(config).To(ContainSubstring("pattern /error/"))
+			Expect(string(utils.ExpectedFluentdNamespacedCfgFilterSelector)).To(Equal(config))
 
 			// Clean up
 			err = DeleteObjs(ctx, objects)

@@ -78,8 +78,7 @@ test: manifests generate fmt vet setup-envtest ## Run tests.
 
 # Utilize Kind or modify the e2e tests to load the image locally, enabling compatibility with other vendors.
 .PHONY: test-e2e  # Run the e2e tests against a Kind k8s instance that is spun up.
-test-e2e:
-	go test ./tests/e2e/ -v -ginkgo.v
+test-e2e: fluentd-e2e
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter
@@ -376,10 +375,10 @@ go-deps: # download go dependencies
 docs-update: # update api docs
 	go run ./cmd/doc-gen/main.go
 
-e2e: ginkgo # make e2e tests
+fluentd-e2e: ginkgo # make e2e tests
 	tests/scripts/fluentd_e2e.sh
 
-helm-e2e: ginkgo # make helm e2e tests
+fluentd-helm-e2e: ginkgo # make helm e2e tests
 	tests/scripts/fluentd_helm_e2e.sh
 
 update-helm-package: # update helm repo
