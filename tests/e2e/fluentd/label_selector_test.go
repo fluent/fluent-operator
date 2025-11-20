@@ -3,20 +3,23 @@ package fluentd
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
+	fluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1"
+	cfgrender "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1/tests"
+	"github.com/fluent/fluent-operator/v3/tests/utils"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/yaml"
-
-	fluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1"
-	"github.com/fluent/fluent-operator/v3/tests/utils"
 )
 
 var (
+	once sync.Once
+
 	// Fluentd instance for label selector tests
+	Fluentd                 fluentdv1alpha1.Fluentd
 	FluentdLabelSelectorRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: Fluentd
@@ -38,6 +41,7 @@ spec:
 `
 
 	// FluentdConfig with filterSelector and outputSelector
+	FluentdConfig                 fluentdv1alpha1.FluentdConfig
 	FluentdConfigLabelSelectorRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
@@ -58,6 +62,7 @@ spec:
 `
 
 	// Filter with matching labels
+	FluentdFilter          fluentdv1alpha1.Filter
 	FilterLabelSelectorRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: Filter
@@ -78,6 +83,7 @@ spec:
 `
 
 	// Output with matching labels
+	FluentdOutput          fluentdv1alpha1.Output
 	OutputLabelSelectorRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: Output
@@ -93,6 +99,7 @@ spec:
 `
 
 	// FluentdConfig with only filterSelector
+	FluentdConfigFilterOnly    fluentdv1alpha1.FluentdConfig
 	FluentdConfigFilterOnlyRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: FluentdConfig
@@ -110,8 +117,9 @@ spec:
       output.fluentd.fluent.io/enabled: "true"
 `
 
-	// Grep Filter
-	FilterGrepRaw = `
+	// Grep Filter with matching labels
+	FluentdFilterGrep fluentdv1alpha1.Filter
+	FilterGrepRaw     = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: Filter
 metadata:
@@ -128,6 +136,7 @@ spec:
 `
 
 	// ClusterOutput for filter-only test
+	FluentdClusterOutput   fluentdv1alpha1.ClusterOutput
 	ClusterOutputStdoutRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
 kind: ClusterOutput
@@ -140,6 +149,50 @@ spec:
   - stdout: {}
 `
 )
+
+func init() {
+	once.Do(setupFluentdObjects)
+}
+
+func setupFluentdObjects() {
+	cfgrender.MustParseIntoObject(FluentdLabelSelectorRaw, &Fluentd)
+	cfgrender.MustParseIntoObject(FluentdConfigLabelSelectorRaw, &FluentdConfig)
+	cfgrender.MustParseIntoObject(FluentdConfigFilterOnlyRaw, &FluentdConfigFilterOnly)
+	cfgrender.MustParseIntoObject(FilterLabelSelectorRaw, &FluentdFilter)
+	cfgrender.MustParseIntoObject(OutputLabelSelectorRaw, &FluentdOutput)
+	cfgrender.MustParseIntoObject(FilterGrepRaw, &FluentdFilterGrep)
+	cfgrender.MustParseIntoObject(ClusterOutputStdoutRaw, &FluentdClusterOutput)
+}
+
+// Helper function to run a fluentd label selector test
+func testFluentdLabelSelector(
+	ctx context.Context,
+	expectedConfig []byte,
+	fluentd fluentdv1alpha1.Fluentd,
+	objects []client.Object,
+) {
+	// Create all objects
+	err := CreateObjs(ctx, objects)
+	Expect(err).NotTo(HaveOccurred())
+
+	// Wait for reconciliation
+	time.Sleep(time.Second * 3)
+
+	// Get the generated configuration
+	seckey := types.NamespacedName{
+		Namespace: fluentd.Namespace,
+		Name:      fmt.Sprintf("%s-config", fluentd.Name),
+	}
+	config, err := GetCfgFromSecret(ctx, seckey)
+	Expect(err).NotTo(HaveOccurred())
+
+	// Verify that the configuration matches expected
+	Expect(string(expectedConfig)).To(Equal(config))
+
+	// Clean up
+	err = DeleteObjs(ctx, objects)
+	Expect(err).NotTo(HaveOccurred())
+}
 
 // This test verifies the fix for the bug where filterSelector and outputSelector
 // were incorrectly writing to the inputs list instead of their respective lists.
@@ -157,96 +210,31 @@ var _ = Describe("Test FluentdConfig with namespace-level filter and output sele
 
 	Describe("Test namespace-level resources with label selectors", func() {
 		It("E2E_FLUENTD_NAMESPACE_FILTER_OUTPUT_SELECTORS: FluentdConfig with filterSelector and outputSelector", func() {
-
-			// Parse YAML into objects
-			var fluentd fluentdv1alpha1.Fluentd
-			err := yaml.Unmarshal([]byte(FluentdLabelSelectorRaw), &fluentd)
-			Expect(err).NotTo(HaveOccurred())
-
-			var fluentdConfig fluentdv1alpha1.FluentdConfig
-			err = yaml.Unmarshal([]byte(FluentdConfigLabelSelectorRaw), &fluentdConfig)
-			Expect(err).NotTo(HaveOccurred())
-
-			var testFilter fluentdv1alpha1.Filter
-			err = yaml.Unmarshal([]byte(FilterLabelSelectorRaw), &testFilter)
-			Expect(err).NotTo(HaveOccurred())
-
-			var testOutput fluentdv1alpha1.Output
-			err = yaml.Unmarshal([]byte(OutputLabelSelectorRaw), &testOutput)
-			Expect(err).NotTo(HaveOccurred())
-
-			// Create all objects
-			objects := []client.Object{
-				&fluentd,
-				&fluentdConfig,
-				&testFilter,
-				&testOutput,
-			}
-
-			err = CreateObjs(ctx, objects)
-			Expect(err).NotTo(HaveOccurred())
-
-			// Wait for reconciliation
-			time.Sleep(time.Second * 3)
-
-			// Get the generated configuration
-			seckey := types.NamespacedName{
-				Namespace: fluentd.Namespace,
-				Name:      fmt.Sprintf("%s-config", fluentd.Name),
-			}
-			config, err := GetCfgFromSecret(ctx, seckey)
-			Expect(err).NotTo(HaveOccurred())
-
-			// Verify that the filter configuration is present
-			// Before the fix, the filter would not be loaded because it was written to the inputs list
-			Expect(string(utils.ExpectedFluentdNamespacedCfgFilterOutputSelector)).To(Equal(config))
-
-			// Clean up
-			err = DeleteObjs(ctx, objects)
-			Expect(err).NotTo(HaveOccurred())
+			testFluentdLabelSelector(
+				ctx,
+				utils.ExpectedFluentdNamespacedCfgFilterOutputSelector,
+				Fluentd,
+				[]client.Object{
+					&Fluentd,
+					&FluentdConfig,
+					&FluentdFilter,
+					&FluentdOutput,
+				},
+			)
 		})
 
 		It("E2E_FLUENTD_NAMESPACE_MIXED_SELECTORS: FluentdConfig with only filterSelector", func() {
-
-			// Parse YAML into objects
-			var fluentd fluentdv1alpha1.Fluentd
-			err := yaml.Unmarshal([]byte(FluentdLabelSelectorRaw), &fluentd)
-			Expect(err).NotTo(HaveOccurred())
-
-			var fluentdConfig fluentdv1alpha1.FluentdConfig
-			err = yaml.Unmarshal([]byte(FluentdConfigFilterOnlyRaw), &fluentdConfig)
-			Expect(err).NotTo(HaveOccurred())
-
-			var grepFilter fluentdv1alpha1.Filter
-			err = yaml.Unmarshal([]byte(FilterGrepRaw), &grepFilter)
-			Expect(err).NotTo(HaveOccurred())
-
-			var clusterOutput fluentdv1alpha1.ClusterOutput
-			err = yaml.Unmarshal([]byte(ClusterOutputStdoutRaw), &clusterOutput)
-			Expect(err).NotTo(HaveOccurred())
-
-			objects := []client.Object{
-				&fluentd,
-				&fluentdConfig,
-				&grepFilter,
-				&clusterOutput,
-			}
-
-			err = CreateObjs(ctx, objects)
-			Expect(err).NotTo(HaveOccurred())
-
-			time.Sleep(time.Second * 3)
-
-			seckey := types.NamespacedName{
-				Namespace: fluentd.Namespace,
-				Name:      fmt.Sprintf("%s-config", fluentd.Name),
-			}
-			config, err := GetCfgFromSecret(ctx, seckey)
-			Expect(string(utils.ExpectedFluentdNamespacedCfgFilterSelector)).To(Equal(config))
-
-			// Clean up
-			err = DeleteObjs(ctx, objects)
-			Expect(err).NotTo(HaveOccurred())
+			testFluentdLabelSelector(
+				ctx,
+				utils.ExpectedFluentdNamespacedCfgFilterSelector,
+				Fluentd,
+				[]client.Object{
+					&Fluentd,
+					&FluentdConfigFilterOnly,
+					&FluentdFilterGrep,
+					&FluentdClusterOutput,
+				},
+			)
 		})
 	})
 })
