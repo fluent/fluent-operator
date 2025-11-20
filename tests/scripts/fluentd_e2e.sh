@@ -67,9 +67,7 @@ function start_fluent_operator() {
 
 function run_test() {
   export ACK_GINKGO_RC=true
-  "$GINKGO_BIN" -v "$E2E_DIR/e2e/fluentd/fluentd.test" -- "$debugflag"
-
-  if [[ $? != 0 ]]; then
+  if ! "$GINKGO_BIN" -v "$E2E_DIR/e2e/fluentd/fluentd.test" -- "$debugflag"; then
     echo "Integration suite has failures, Please check !!"
     exit 1
   else
