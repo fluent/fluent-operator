@@ -4,6 +4,7 @@
 
 CRDS=(
   charts/fluentd-crds/templates/*.yaml
+  charts/fluent-bit-crds/templates/*.yaml
 )
 for CRD in "${CRDS[@]}"
 do
