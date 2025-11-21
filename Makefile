@@ -216,7 +216,7 @@ ENVTEST_VERSION ?= $(shell go list -m -f "{{ .Version }}" sigs.k8s.io/controller
 #ENVTEST_K8S_VERSION is the version of Kubernetes to use for setting up ENVTEST binaries (i.e. 1.31)
 ENVTEST_K8S_VERSION ?= $(shell go list -m -f "{{ .Version }}" k8s.io/api | awk -F'[v.]' '{printf "1.%d", $$3}')
 GOLANGCI_LINT_VERSION ?= v2.1.0
-GINKGO_VERSION ?= v2.23.4
+GINKGO_VERSION ?= v2.27.2
 CODE_GENERATOR_VERSION ?= v0.32.3
 KIND_VERSION ?= v0.17.0
 
