@@ -27,5 +27,5 @@ dependencies:
     version: 0.1.0
     condition: fluentbit.enable && fluentbit.crdsEnable
   - name: fluentd-crds
-    condition: fluentd.enable && fluentd.crdsEnable
-    version: 0.1.0
+version: 0.1.0
+condition: fluentd.enable && fluentd.crdsEnable
