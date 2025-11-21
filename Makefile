@@ -218,7 +218,7 @@ ENVTEST_K8S_VERSION ?= $(shell go list -m -f "{{ .Version }}" k8s.io/api | awk -
 GOLANGCI_LINT_VERSION ?= v2.1.0
 GINKGO_VERSION ?= v2.27.2
 CODE_GENERATOR_VERSION ?= v0.32.3
-KIND_VERSION ?= v0.17.0
+KIND_VERSION ?= v0.30.0
 
 .PHONY: kustomize
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
