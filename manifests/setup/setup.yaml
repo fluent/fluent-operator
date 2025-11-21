@@ -40378,8 +40378,6 @@ spec:
           name: env
       serviceAccountName: fluent-operator
       volumes:
-      - emptyDir: {}
+      - configMap:
+          name: fluent-operator-env
         name: env
-      - hostPath:
-          path: /var/run/docker.sock
-        name: dockersock
