@@ -3,23 +3,27 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    {{- with .Values.additionalAnnotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: fluentbitconfigs.fluentbit.fluent.io
+  name: clusterfluentbitconfigs.fluentbit.fluent.io
 spec:
   group: fluentbit.fluent.io
   names:
-    kind: FluentBitConfig
-    listKind: FluentBitConfigList
-    plural: fluentbitconfigs
+    kind: ClusterFluentBitConfig
+    listKind: ClusterFluentBitConfigList
+    plural: clusterfluentbitconfigs
     shortNames:
-    - fbc
-    singular: fluentbitconfig
-  scope: Namespaced
+    - cfbc
+    singular: clusterfluentbitconfig
+  scope: Cluster
   versions:
   - name: v1alpha2
     schema:
       openAPIV3Schema:
-        description: FluentBitConfig is the Schema for the API
+        description: ClusterFluentBitConfig is the Schema for the cluster-level fluentbitconfigs
+          API
         properties:
           apiVersion:
             description: |-
@@ -39,102 +43,64 @@ spec:
           metadata:
             type: object
           spec:
-            description: NamespacedFluentBitCfgSpec defines the desired state of FluentBit
+            description: FluentBitConfigSpec defines the desired state of ClusterFluentBitConfig
             properties:
-              clusterMultilineParserSelector:
-                description: Select cluster level multiline parser config
-                properties:
-                  matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
-                    items:
-                      description: |-
-                        A label selector requirement is a selector that contains values, a key, and an operator that
-                        relates the key and values.
-                      properties:
-                        key:
-                          description: key is the label key that the selector applies
-                            to.
-                          type: string
-                        operator:
-                          description: |-
-                            operator represents a key's relationship to a set of values.
-                            Valid operators are In, NotIn, Exists and DoesNotExist.
-                          type: string
-                        values:
-                          description: |-
-                            values is an array of string values. If the operator is In or NotIn,
-                            the values array must be non-empty. If the operator is Exists or DoesNotExist,
-                            the values array must be empty. This array is replaced during a strategic
-                            merge patch.
-                          items:
-                            type: string
-                          type: array
-                          x-kubernetes-list-type: atomic
-                      required:
-                      - key
-                      - operator
-                      type: object
-                    type: array
-                    x-kubernetes-list-type: atomic
-                  matchLabels:
-                    additionalProperties:
-                      type: string
-                    description: |-
-                      matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-                      map is equivalent to an element of matchExpressions, whose key field is "key", the
-                      operator is "In", and the values array contains only "value". The requirements are ANDed.
-                    type: object
-                type: object
-                x-kubernetes-map-type: atomic
-              clusterParserSelector:
-                description: Select cluster level parser config
-                properties:
-                  matchExpressions:
-                    description: matchExpressions is a list of label selector requirements.
-                      The requirements are ANDed.
-                    items:
-                      description: |-
-                        A label selector requirement is a selector that contains values, a key, and an operator that
-                        relates the key and values.
-                      properties:
-                        key:
-                          description: key is the label key that the selector applies
-                            to.
-                          type: string
-                        operator:
-                          description: |-
-                            operator represents a key's relationship to a set of values.
-                            Valid operators are In, NotIn, Exists and DoesNotExist.
-                          type: string
-                        values:
-                          description: |-
-                            values is an array of string values. If the operator is In or NotIn,
-                            the values array must be non-empty. If the operator is Exists or DoesNotExist,
-                            the values array must be empty. This array is replaced during a strategic
-                            merge patch.
-                          items:
-                            type: string
-                          type: array
-                          x-kubernetes-list-type: atomic
-                      required:
-                      - key
-                      - operator
-                      type: object
-                    type: array
-                    x-kubernetes-list-type: atomic
-                  matchLabels:
-                    additionalProperties:
-                      type: string
-                    description: |-
-                      matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-                      map is equivalent to an element of matchExpressions, whose key field is "key", the
-                      operator is "In", and the values array contains only "value". The requirements are ANDed.
-                    type: object
-                type: object
-                x-kubernetes-map-type: atomic
+              configFileFormat:
+                description: |-
+                  ConfigFileFormat defines the format of the config file, default is "classic",
+                  available options are "classic" and "yaml"
+                enum:
+                - classic
+                - yaml
+                type: string
               filterSelector:
                 description: Select filter plugins
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: |-
+                        A label selector requirement is a selector that contains values, a key, and an operator that
+                        relates the key and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: |-
+                            operator represents a key's relationship to a set of values.
+                            Valid operators are In, NotIn, Exists and DoesNotExist.
+                          type: string
+                        values:
+                          description: |-
+                            values is an array of string values. If the operator is In or NotIn,
+                            the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                            the values array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                          x-kubernetes-list-type: atomic
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                    x-kubernetes-list-type: atomic
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: |-
+                      matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                      map is equivalent to an element of matchExpressions, whose key field is "key", the
+                      operator is "In", and the values array contains only "value". The requirements are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
+              inputSelector:
+                description: Select input plugins
                 properties:
                   matchExpressions:
                     description: matchExpressions is a list of label selector requirements.
@@ -225,6 +191,11 @@ spec:
                     type: object
                 type: object
                 x-kubernetes-map-type: atomic
+              namespace:
+                description: |-
+                  If namespace is defined, then the configmap and secret for fluent-bit is in this namespace.
+                  If it is not defined, it is in the namespace of the fluentd-operator
+                type: string
               outputSelector:
                 description: Select output plugins
                 properties:

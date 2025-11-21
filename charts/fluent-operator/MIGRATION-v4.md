@@ -6,7 +6,7 @@ Major changes/themes for v4.0:
 
 1. **Container Runtime Simplification**: Removes dynamic detection for the `docker` runtime via initContainers and adopts static, configuration-based paths. The `docker` runtime has not been used widely since Kubernetes v1.24 (2022) and modern Kubernetes distributions now use the `containerd` runtime.
 
-2. **fluentd-crd lifecycle changes**: Fluentd CRDs have been moved from an embedded sub-chart to a separate, independently versioned `fluentd-crds` chart hosted in the Fluent Helm repository. CRDs are now in the `templates/` directory, enabling automatic upgrades via `helm upgrade`. **Important:** CRDs will now be deleted on `helm uninstall` unless protected with the `helm.sh/resource-policy: keep` annotation (see below for details).
+2. **CRD lifecycle changes**: Both Fluent Bit and Fluentd CRDs have been moved from embedded sub-charts to separate, independently versioned `fluent-bit-crds` and `fluentd-crds` charts hosted in the Fluent Helm repository. CRDs are now in the `templates/` directory, enabling automatic upgrades via `helm upgrade`. **Important:** CRDs will now be deleted on `helm uninstall` unless protected with the `helm.sh/resource-policy: keep` annotation (see below for details).
 
 ## Breaking Changes
 
@@ -143,10 +143,11 @@ containerRuntime: docker
 # to use the standard path
 ```
 
-## Fluentd CRDs Moved to Separate Chart with Automatic Upgrades
+## CRDs Moved to Separate Charts with Automatic Upgrades
 
 **What Changed:**
 
+- Fluent Bit CRDs moved from embedded sub-chart to separate `fluent-bit-crds` chart in the Fluent Helm repository
 - Fluentd CRDs moved from embedded sub-chart to separate `fluentd-crds` chart in the Fluent Helm repository
 - CRDs relocated from `crds/` directory to `templates/` directory, changing their lifecycle behavior
 
@@ -157,6 +158,7 @@ containerRuntime: docker
 
 **Who Is Affected:**
 
+- All users who use Fluent Bit with the fluent-operator
 - All users who use Fluentd with the fluent-operator
 - Users who rely on CRDs and custom resources persisting after chart uninstall
 
@@ -165,30 +167,35 @@ containerRuntime: docker
 Before installing or upgrading, ensure the Fluent Helm repository is added:
 
 ```bash
-# Add the Fluent Helm repository (required for the dependency)
+# Add the Fluent Helm repository (required for the dependencies)
 helm repo add fluent https://fluent.github.io/helm-charts
 helm repo update
 
-# Install or upgrade fluent-operator (CRDs installed automatically via dependency)
+# Install or upgrade fluent-operator (CRDs installed automatically via dependencies)
 helm upgrade --install fluent-operator fluent/fluent-operator \
   --version 4.0.0 \
+  --set fluentbit.enable=true \
   --set fluentd.enable=true
 ```
 
-**Note:** Helm will automatically manage the `fluentd-crds` dependency when `fluentd.enable=true` and `fluentd.crdsEnable=true` (default).
+**Note:** Helm will automatically manage the CRD chart dependencies:
+- `fluent-bit-crds` when `fluentbit.enable=true` and `fluentbit.crdsEnable=true` (default)
+- `fluentd-crds` when `fluentd.enable=true` and `fluentd.crdsEnable=true` (default)
 
 **Protecting CRDs from Deletion:**
 
-To prevent CRDs from being deleted when the `fluentd-crds` chart is uninstalled, add the `helm.sh/resource-policy: keep` annotation:
+To prevent CRDs from being deleted when the CRD charts are uninstalled, add the `helm.sh/resource-policy: keep` annotation:
 
 ```bash
 helm upgrade --install fluent-operator fluent/fluent-operator \
   --version 4.0.0 \
+  --set fluentbit.enable=true \
   --set fluentd.enable=true \
+  --set fluent-bit-crds.additionalAnnotations."helm\.sh/resource-policy"=keep \
   --set fluentd-crds.additionalAnnotations."helm\.sh/resource-policy"=keep
 ```
 
-With this annotation, Helm will preserve the CRDs and all Fluentd custom resources even if the chart is uninstalled.
+With this annotation, Helm will preserve the CRDs and all custom resources even if the charts are uninstalled.
 
 ## Forward Looking: Planned Changes in v5.0
 

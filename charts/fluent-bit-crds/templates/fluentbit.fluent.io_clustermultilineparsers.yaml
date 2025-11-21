@@ -3,24 +3,27 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    {{- with .Values.additionalAnnotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: multilineparsers.fluentbit.fluent.io
+  name: clustermultilineparsers.fluentbit.fluent.io
 spec:
   group: fluentbit.fluent.io
   names:
-    kind: MultilineParser
-    listKind: MultilineParserList
-    plural: multilineparsers
+    kind: ClusterMultilineParser
+    listKind: ClusterMultilineParserList
+    plural: clustermultilineparsers
     shortNames:
-    - fbmp
-    singular: multilineparser
-  scope: Namespaced
+    - cfbmp
+    singular: clustermultilineparser
+  scope: Cluster
   versions:
   - name: v1alpha2
     schema:
       openAPIV3Schema:
-        description: MultilineParser is the Schema of namespace-level multiline parser
-          API
+        description: ClusterMultilineParser is the Schema for the cluster-level multiline
+          parser API
         properties:
           apiVersion:
             description: |-
