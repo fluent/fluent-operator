@@ -5,10 +5,11 @@ resources:
 - fluent-operator-crd.yaml
 - fluent-operator-clusterRoleBinding.yaml
 - fluent-operator-clusterRole.yaml
+- fluent-operator-configMap-env.yaml
 - fluent-operator-deployment.yaml
 - fluent-operator-serviceAccount.yaml
 
-# Change to the namespace you want such as: 
+# Change to the namespace you want such as:
 # namespace: fluent
 
 # patchesStrategicMerge:
