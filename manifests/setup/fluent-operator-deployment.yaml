@@ -19,10 +19,8 @@ spec:
     spec:
       volumes:
       - name: env
-        emptyDir: {}
-      - name: dockersock
-        hostPath:
-          path: /var/run/docker.sock
+        configMap:
+          name: fluent-operator-env
       containers:
       - name: fluent-operator
         image: ghcr.io/fluent/fluent-operator/fluent-operator:latest
