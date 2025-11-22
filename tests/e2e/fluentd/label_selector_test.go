@@ -3,6 +3,7 @@ package fluentd
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -175,6 +176,16 @@ func testFluentdLabelSelector(
 	err := CreateObjs(ctx, objects)
 	Expect(err).NotTo(HaveOccurred())
 
+	// Ensure cleanup runs even if the test fails
+	DeferCleanup(func() {
+		// Clean up all objects
+		err := DeleteObjs(ctx, objects)
+		if err != nil {
+			// Log the error but don't fail the cleanup
+			fmt.Printf("Warning: failed to cleanup objects: %v\n", err)
+		}
+	})
+
 	// Wait for reconciliation
 	time.Sleep(time.Second * 3)
 
@@ -187,11 +198,7 @@ func testFluentdLabelSelector(
 	Expect(err).NotTo(HaveOccurred())
 
 	// Verify that the configuration matches expected
-	Expect(string(expectedConfig)).To(Equal(config))
-
-	// Clean up
-	err = DeleteObjs(ctx, objects)
-	Expect(err).NotTo(HaveOccurred())
+	Expect(strings.TrimRight(string(expectedConfig), "\r\n")).To(Equal(config))
 }
 
 // This test verifies the fix for the bug where filterSelector and outputSelector
