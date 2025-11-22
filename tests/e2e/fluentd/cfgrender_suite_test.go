@@ -1,6 +1,7 @@
 package fluentd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -22,7 +23,7 @@ var k8sClient client.Client
 func TestCompareFluentdMainAppConfig(t *testing.T) {
 	RegisterFailHandler(Fail)
 
-	BeforeSuite(func() {
+	BeforeSuite(func(ctx context.Context) {
 		path := os.Getenv("TESTCONFIG")
 		if path == "" {
 			path = fmt.Sprintf("%s/.kube/config", os.Getenv("HOME"))
@@ -46,7 +47,7 @@ func TestCompareFluentdMainAppConfig(t *testing.T) {
 		Expect(k8sClient).NotTo(BeNil())
 
 		_, _ = fmt.Fprintf(GinkgoWriter, "%s: Info: Setup Suite Execution\n", time.Now().Format(time.StampMilli))
-	}, 60)
+	}, NodeTimeout(60*time.Second))
 
 	AfterSuite(func() {
 		By("After Suite Execution")
