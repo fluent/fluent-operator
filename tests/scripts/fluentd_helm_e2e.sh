@@ -6,6 +6,7 @@ PROJECT_ROOT=$PWD
 E2E_DIR=$(realpath "$(dirname "$0")/..")
 LOGGING_NAMESPACE=fluent
 IMAGE_TAG=$(date "+%Y-%m-%d-%H-%M-%S")
+KIND_CLUSTER="${KIND_CLUSTER:-fluent-operator-test-e2e}"
 
 function build_ginkgo_test() {
   ginkgo build -r e2e/fluentd/
@@ -18,7 +19,7 @@ function cleanup() {
   #  helm uninstall fluent-operator -n $LOGGING_NAMESPACE
   #  kubectl delete ns $LOGGING_NAMESPACE
   # shellcheck disable=SC2317
-  kind delete cluster --name test-helm
+  kind delete cluster --name "$KIND_CLUSTER"
   # shellcheck disable=SC2317
   popd >/dev/null
   # shellcheck disable=SC2317
@@ -26,17 +27,16 @@ function cleanup() {
 }
 
 function prepare_cluster() {
-  kind create cluster --name test-helm
   kubectl create ns $LOGGING_NAMESPACE
 
-  echo "wait the control-plane ready..."
-  kubectl wait --for=condition=Ready node/test-helm-control-plane --timeout=60s
+  echo "wait the control-plane ready…"
+  kubectl wait --for=condition=Ready "node/${KIND_CLUSTER}-control-plane" --timeout=60s
 }
 
 function build_image() {
   pushd "$PROJECT_ROOT" >/dev/null
   make build-op-amd64 -e "FO_IMG=kubesphere/fluent-operator:$IMAGE_TAG"
-  kind load docker-image "kubesphere/fluent-operator:$IMAGE_TAG" --name test-helm
+  kind load docker-image "kubesphere/fluent-operator:$IMAGE_TAG" --name "$KIND_CLUSTER"
   popd >/dev/null
 }
 
@@ -74,19 +74,19 @@ function run_test() {
 set -Ee
 trap cleanup EXIT ERR
 
-echo -e "\nBuilding testcases..."
+echo -e "\nBuilding testcases…"
 pushd "$E2E_DIR" >/dev/null
 build_ginkgo_test
 popd >/dev/null
 
-echo -e "\nPreparing cluster..."
+echo -e "\nPreparing cluster…"
 prepare_cluster
 
-echo -e "\nBuilding image..."
+echo -e "\nBuilding image…"
 build_image
 
-echo -e "\nStart fluent operator..."
+echo -e "\nStart fluent operator…"
 start_fluent_operator
 
-echo -e "\nRunning test..."
+echo -e "\nRunning test…"
 run_test

@@ -14,6 +14,7 @@ LOGGING_NAMESPACE="fluent"
 IMAGE_TAG="$(date "+%Y-%m-%d-%H-%M-%S")"
 VERSION="$(tr -d " \t\n\r" < VERSION)"
 IMAGE_NAME="ghcr.io/fluent/fluent-operator/fluent-operator"
+KIND_CLUSTER="${KIND_CLUSTER:-fluent-operator-test-e2e}"
 
 GINKGO_BIN="ginkgo"
 if [ -f "$PROJECT_ROOT/bin/ginkgo" ]; then
@@ -29,32 +30,29 @@ function build_ginkgo_test() {
 # shellcheck disable=SC2329
 function cleanup() {
   local exit_code=$?
-  
+
   if [ "${SKIP_CLEANUP:-false}" == "true" ]; then
     echo "Skipping cleanup as requested."
     exit "$exit_code"
   fi
 
-  echo "Cleaning up..."
+  echo "Cleaning up…"
   pushd "$PROJECT_ROOT" >/dev/null || true
-  # kubectl delete -f manifests/setup/setup.yaml
-  # kubectl delete ns $LOGGING_NAMESPACE
-  kind delete cluster --name test || true
+  make cleanup-test-e2e KIND_CLUSTER="$KIND_CLUSTER"
   popd >/dev/null || true
 }
 
 function prepare_cluster() {
-  kind create cluster --name test
   kubectl create ns "$LOGGING_NAMESPACE"
 
-  echo "wait the control-plane ready..."
-  kubectl wait --for=condition=Ready node/test-control-plane --timeout=60s
+  echo "wait the control-plane ready…"
+  kubectl wait --for=condition=Ready "node/${KIND_CLUSTER}-control-plane" --timeout=60s
 }
 
 function build_image() {
   pushd "$PROJECT_ROOT" >/dev/null
   make build-op-amd64 -e "FO_IMG=$IMAGE_NAME:$IMAGE_TAG"
-  kind load docker-image "$IMAGE_NAME:$IMAGE_TAG" --name test
+  kind load docker-image "$IMAGE_NAME:$IMAGE_TAG" --name "$KIND_CLUSTER"
   popd >/dev/null
 }
 
@@ -79,19 +77,19 @@ function run_test() {
 function main() {
   trap cleanup EXIT
 
-  echo -e "\nBuilding testcases..."
+  echo -e "\nBuilding testcases…"
   build_ginkgo_test
 
-  echo -e "\nPreparing cluster..."
+  echo -e "\nPreparing cluster…"
   prepare_cluster
 
-  echo -e "\nBuilding image..."
+  echo -e "\nBuilding image…"
   build_image
 
-  echo -e "\nStart fluent operator..."
+  echo -e "\nStart fluent operator…"
   start_fluent_operator
 
-  echo -e "\nRunning test..."
+  echo -e "\nRunning test…"
   run_test
 }
 

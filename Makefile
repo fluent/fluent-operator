@@ -76,9 +76,27 @@ vet: ## Run go vet against code.
 test: manifests generate fmt vet setup-envtest ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $$(go list ./... | grep -v /e2e) -coverprofile cover.out
 
-# Utilize Kind or modify the e2e tests to load the image locally, enabling compatibility with other vendors.
-.PHONY: test-e2e  # Run the e2e tests against a Kind k8s instance that is spun up.
-test-e2e: fluentd-e2e
+KIND_CLUSTER ?= fluent-operator-test-e2e
+
+.PHONY: setup-test-e2e
+setup-test-e2e: $(KIND) ## Set up a Kind cluster for e2e tests if it does not exist
+	@case "$$($(KIND) get clusters)" in \
+		*"$(KIND_CLUSTER)"*) \
+		echo "Kind cluster '$(KIND_CLUSTER)' already exists. Skipping creation." ;; \
+		*) \
+		echo "Creating Kind cluster '$(KIND_CLUSTER)'…"; \
+		$(KIND) create cluster --name $(KIND_CLUSTER) ;; \
+	esac
+
+.PHONY: cleanup-test-e2e
+cleanup-test-e2e:
+	$(KIND) delete cluster --name $(KIND_CLUSTER)
+
+.PHONY: test-e2e
+test-e2e: setup-test-e2e fluentd-e2e ## Run the e2e tests against a Kind k8s instance that is spun up.
+
+%-e2e: ginkgo
+	@export KIND_CLUSTER=$(KIND_CLUSTER); tests/scripts/$*_e2e.sh
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter
@@ -230,7 +248,7 @@ $(CONTROLLER_GEN): $(LOCALBIN)
 
 .PHONY: setup-envtest
 setup-envtest: envtest ## Download the binaries required for ENVTEST in the local bin directory.
-	@echo "Setting up envtest binaries for Kubernetes version $(ENVTEST_K8S_VERSION)..."
+	@echo "Setting up envtest binaries for Kubernetes version $(ENVTEST_K8S_VERSION)…"
 	@$(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path || { \
 		echo "Error: Failed to set up envtest binaries for version $(ENVTEST_K8S_VERSION)."; \
 		exit 1; \
@@ -255,26 +273,6 @@ $(GINKGO): $(LOCALBIN)
 code-generator: $(CODE_GENERATOR) ## Download code-generator locally if necessary.
 $(CODE_GENERATOR): $(LOCALBIN)
 	$(call go-install-tool,$(CODE_GENERATOR),k8s.io/code-generator,$(CODE_GENERATOR_VERSION))
-
-KIND_CLUSTER ?= fluent-operator-test-e2e
-
-.PHONY: setup-test-e2e
-setup-test-e2e: ## Set up a Kind cluster for e2e tests if it does not exist
-	@command -v $(KIND) >/dev/null 2>&1 || { \
-		echo "Kind is not installed. Please install Kind manually."; \
-		exit 1; \
-	}
-	@case "$$($(KIND) get clusters)" in \
-		*"$(KIND_CLUSTER)"*) \
-		echo "Kind cluster '$(KIND_CLUSTER)' already exists. Skipping creation." ;; \
-		*) \
-		echo "Creating Kind cluster '$(KIND_CLUSTER)'..."; \
-		$(KIND) create cluster --name $(KIND_CLUSTER) ;; \
-	esac
-
-.PHONY: cleanup-test-e2e
-cleanup-test-e2e:
-	$(KIND) delete cluster --name $(KIND_CLUSTER)
 
 .PHONY: kind
 kind: $(KIND) ## Download code-generator locally if necessary.
@@ -374,12 +372,6 @@ go-deps: # download go dependencies
 
 docs-update: # update api docs
 	go run ./cmd/doc-gen/main.go
-
-fluentd-e2e: ginkgo # make e2e tests
-	tests/scripts/fluentd_e2e.sh
-
-fluentd-helm-e2e: ginkgo # make helm e2e tests
-	tests/scripts/fluentd_helm_e2e.sh
 
 update-helm-package: # update helm repo
 	./hack/update-helm-package.sh
