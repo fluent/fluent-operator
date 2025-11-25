@@ -36,7 +36,7 @@ operator:
       name: fluent-operator
     # Adds additional permissions to Fluent Operator, since operator cannot give permissions it does not have.
     # Use case includes adding permission to a custom fluent-bit deployment to access kubelet.
-    AdditionalRules: {}
+    AdditionalRules: []
   # Container security context for Fluent Operator container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   securityContext: {}
   # Fluent Operator resources. Usually user needn't to adjust these.
