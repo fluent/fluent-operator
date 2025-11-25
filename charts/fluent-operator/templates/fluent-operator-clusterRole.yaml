@@ -145,7 +145,7 @@ rules:
       - get
       - watch
       - patch
-  {{- with .Values.rbac.AdditionalRules }}
+  {{- with .Values.operator.rbac.AdditionalRules }}
     {{- toYaml . | nindent 2 }}
   {{- end }}
 {{- end }}
