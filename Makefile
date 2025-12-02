@@ -79,7 +79,7 @@ test: manifests generate fmt vet setup-envtest ## Run tests.
 KIND_CLUSTER ?= fluent-operator-test-e2e
 
 .PHONY: setup-test-e2e
-setup-test-e2e: $(KIND) ## Set up a Kind cluster for e2e tests if it does not exist
+setup-test-e2e: kind ## Set up a Kind cluster for e2e tests if it does not exist
 	@case "$$($(KIND) get clusters)" in \
 		*"$(KIND_CLUSTER)"*) \
 		echo "Kind cluster '$(KIND_CLUSTER)' already exists. Skipping creation." ;; \
@@ -96,7 +96,7 @@ cleanup-test-e2e:
 test-e2e: setup-test-e2e fluentd-e2e ## Run the e2e tests against a Kind k8s instance that is spun up.
 
 %-e2e: ginkgo
-	@export KIND_CLUSTER=$(KIND_CLUSTER); export PATH="bin:$$PATH"; tests/scripts/$*_e2e.sh
+	@export KIND_CLUSTER=$(KIND_CLUSTER); export PATH="$$PWD/bin:$$PATH"; tests/scripts/$*_e2e.sh
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter
