@@ -16,12 +16,10 @@ jobs:
         uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
         with:
           go-version-file: go.mod
+          cache-dependency-path: go.sum
 
-      - name: Install the latest version of kind
-        run: |
-          curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
-          chmod +x ./kind
-          sudo mv ./kind /usr/local/bin/kind
+      - name: Install dependences
+        run: make kind ginkgo setup-test-e2e
 
       - name: Verify kind installation
         run: kind version

@@ -50,7 +50,7 @@ jobs:
           version: ${{ env.HELM_VERSION }}
 
       - name: Install dependences
-        run: make ginkgo kind
+        run: make kind ginkgo setup-test-e2e
 
       - name: Run helm e2e tests
-        run: make helm-e2e
+        run: make fluentd_helm-e2e
