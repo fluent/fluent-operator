@@ -53,4 +53,4 @@ jobs:
         run: make ginkgo kind
 
       - name: Run helm e2e tests
-        run: make helm-fluentd-e2e
+        run: make fluentd-helm-e2e
