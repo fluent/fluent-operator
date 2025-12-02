@@ -275,7 +275,7 @@ $(CODE_GENERATOR): $(LOCALBIN)
 	$(call go-install-tool,$(CODE_GENERATOR),k8s.io/code-generator,$(CODE_GENERATOR_VERSION))
 
 .PHONY: kind
-kind: $(KIND) ## Download code-generator locally if necessary.
+kind: $(KIND) ## Install kind locally if necessary.
 $(KIND): $(LOCALBIN)
 	$(call go-install-tool,$(KIND),sigs.k8s.io/kind,$(KIND_VERSION))
 
