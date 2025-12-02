@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
         with:
           go-version-file: go.mod
+          cache-dependency-path: go.sum
 
       - name: Install dependences
         run: make kind ginkgo setup-test-e2e

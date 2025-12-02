@@ -42,6 +42,7 @@ function build_image() {
 
 function start_fluent_operator() {
   pushd "$PROJECT_ROOT" >/dev/null
+  helm dependency build charts/fluent-operator/
   helm install --wait --timeout 30s fluent-operator  --create-namespace -n $LOGGING_NAMESPACE charts/fluent-operator/ --set "operator.container.tag=$IMAGE_TAG"
   kubectl -n $LOGGING_NAMESPACE wait --for=condition=available deployment/fluent-operator --timeout=60s
   popd >/dev/null
