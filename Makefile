@@ -96,7 +96,7 @@ cleanup-test-e2e:
 test-e2e: setup-test-e2e fluentd-e2e ## Run the e2e tests against a Kind k8s instance that is spun up.
 
 %-e2e: ginkgo
-	@export KIND_CLUSTER=$(KIND_CLUSTER); tests/scripts/$*_e2e.sh
+	@export KIND_CLUSTER=$(KIND_CLUSTER); export PATH="bin:$$PATH"; tests/scripts/$*_e2e.sh
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter
