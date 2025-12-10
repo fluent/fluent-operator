@@ -344,7 +344,7 @@ func (t *Transport) Params(_ plugins.SecretLoader) (*params.PluginStore, error) 
 		ps.InsertPairs("private_key_passphrase", fmt.Sprint(*t.PrivateKeyPassphrase))
 	}
 	if t.ClientCertAuth != nil {
-		ps.InsertPairs("client_certAuth", fmt.Sprint(*t.ClientCertAuth))
+		ps.InsertPairs("client_cert_auth", fmt.Sprint(*t.ClientCertAuth))
 	}
 	if t.CaCertPath != nil {
 		ps.InsertPairs("ca_certPath", fmt.Sprint(*t.CaCertPath))
