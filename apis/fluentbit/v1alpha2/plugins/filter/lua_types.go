@@ -36,6 +36,9 @@ type Lua struct {
 	// If enabled, Lua script will be executed in protected mode.
 	// It prevents to crash when invalid Lua script is executed. Default is true.
 	ProtectedMode *bool `json:"protectedMode,omitempty"`
+	// If enabled, null will be converted to flb_null in Lua.
+	// This helps prevent removing key/value since nil is a special value to remove key/value from map in Lua. Default value: false.
+	EnableFlbNull *bool `json:"enable_flb_null,omitempty"`
 	// By default when the Lua script is invoked, the record timestamp is passed as a
 	// Floating number which might lead to loss precision when the data is converted back.
 	// If you desire timestamp precision enabling this option will pass the timestamp as
@@ -88,6 +91,10 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 
 	if l.ProtectedMode != nil {
 		kvs.Insert("protected_mode", strconv.FormatBool(*l.ProtectedMode))
+	}
+
+	if l.EnableFlbNull != nil {
+		kvs.Insert("enable_flb_null", strconv.FormatBool(*l.EnableFlbNull))
 	}
 
 	if l.TimeAsTable {
