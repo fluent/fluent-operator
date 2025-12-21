@@ -44,6 +44,8 @@ type OpenTelemetry struct {
 	*plugins.TLS `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
+	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+	TotalLimitSize string `json:"totalLimitSize,omitempty"`
 }
 
 // Name implement Section() method
@@ -97,6 +99,8 @@ func (o *OpenTelemetry) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
+	plugins.InsertKVString(kvs, "storage.total_limit_size", o.TotalLimitSize)
 
 	return kvs, nil
 }
