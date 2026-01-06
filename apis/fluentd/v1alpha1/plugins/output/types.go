@@ -458,80 +458,133 @@ func (o *Output) elasticsearchDataStreamPlugin(parent *params.PluginStore, loade
 }
 
 func (o *Output) opensearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
-	if o.Opensearch.Host != nil {
-		parent.InsertPairs("host", fmt.Sprint(*o.Opensearch.Host))
+	if err := o.opensearchBasicConnection(parent, loader); err != nil {
+		return nil, err
 	}
-
-	if o.Opensearch.Port != nil {
-		parent.InsertPairs("port", fmt.Sprint(*o.Opensearch.Port))
+	o.opensearchIndexConfig(parent)
+	if err := o.opensearchSSLConfig(parent, loader); err != nil {
+		return nil, err
 	}
-
-	if o.Opensearch.Hosts != nil {
-		parent.InsertPairs("hosts", fmt.Sprint(*o.Opensearch.Hosts))
-	}
-
-	if o.Opensearch.User != nil {
-		user, err := loader.LoadSecret(*o.Opensearch.User)
-		if err != nil {
-			return nil, err
-		}
-		parent.InsertPairs("user", user)
-	}
-
-	if o.Opensearch.Password != nil {
-		pwd, err := loader.LoadSecret(*o.Opensearch.Password)
-		if err != nil {
-			return nil, err
-		}
-		parent.InsertPairs("password", pwd)
-	}
-
-	if o.Opensearch.Scheme != nil {
-		parent.InsertPairs("scheme", fmt.Sprint(*o.Opensearch.Scheme))
-	}
-
-	if o.Opensearch.Path != nil {
-		parent.InsertPairs("path", fmt.Sprint(*o.Opensearch.Path))
-	}
-
-	if o.Opensearch.IndexName != nil {
-		parent.InsertPairs("index_name", fmt.Sprint(*o.Opensearch.IndexName))
-	}
-
-	if o.Opensearch.LogstashFormat != nil {
-		parent.InsertPairs("logstash_format", fmt.Sprint(*o.Opensearch.LogstashFormat))
-	}
-
-	if o.Opensearch.LogstashPrefix != nil {
-		parent.InsertPairs("logstash_prefix", fmt.Sprint(*o.Opensearch.LogstashPrefix))
-	}
-
-	if o.Opensearch.SslVerify != nil {
-		parent.InsertPairs("ssl_verify", fmt.Sprint(*o.Opensearch.SslVerify))
-	}
+	o.opensearchConnectionManagement(parent)
+	o.opensearchVersionDetection(parent)
+	o.opensearchTemplateManagement(parent)
+	o.opensearchPerformanceTuning(parent)
+	o.opensearchRecordHandling(parent)
+	o.opensearchAdvancedOptions(parent)
 
 	return parent, nil
 }
 
+func (o *Output) opensearchBasicConnection(parent *params.PluginStore, loader plugins.SecretLoader) error {
+	params.InsertPairs(parent, "host", o.Opensearch.Host)
+	params.InsertPairs(parent, "port", o.Opensearch.Port)
+	params.InsertPairs(parent, "hosts", o.Opensearch.Hosts)
+	if o.Opensearch.User != nil {
+		user, err := loader.LoadSecret(*o.Opensearch.User)
+		if err != nil {
+			return err
+		}
+		parent.InsertPairs("user", user)
+	}
+	if o.Opensearch.Password != nil {
+		pwd, err := loader.LoadSecret(*o.Opensearch.Password)
+		if err != nil {
+			return err
+		}
+		parent.InsertPairs("password", pwd)
+	}
+	params.InsertPairs(parent, "scheme", o.Opensearch.Scheme)
+	params.InsertPairs(parent, "path", o.Opensearch.Path)
+	return nil
+}
+
+func (o *Output) opensearchIndexConfig(parent *params.PluginStore) {
+	params.InsertPairs(parent, "index_name", o.Opensearch.IndexName)
+	params.InsertPairs(parent, "logstash_format", o.Opensearch.LogstashFormat)
+	params.InsertPairs(parent, "logstash_prefix", o.Opensearch.LogstashPrefix)
+	params.InsertPairs(parent, "index_date_pattern", o.Opensearch.IndexDatePattern)
+	params.InsertPairs(parent, "utc_index", o.Opensearch.UtcIndex)
+}
+
+func (o *Output) opensearchSSLConfig(parent *params.PluginStore, loader plugins.SecretLoader) error {
+	params.InsertPairs(parent, "ssl_verify", o.Opensearch.SslVerify)
+	params.InsertPairs(parent, "ca_file", o.Opensearch.CAFile)
+	params.InsertPairs(parent, "client_cert", o.Opensearch.ClientCert)
+	params.InsertPairs(parent, "client_key", o.Opensearch.ClientKey)
+	if o.Opensearch.ClientKeyPassword != nil {
+		pwd, err := loader.LoadSecret(*o.Opensearch.ClientKeyPassword)
+		if err != nil {
+			return err
+		}
+		parent.InsertPairs("client_key_pass", pwd)
+	}
+	params.InsertPairs(parent, "ssl_version", o.Opensearch.SslVersion)
+	params.InsertPairs(parent, "ssl_min_version", o.Opensearch.SslMinVersion)
+	params.InsertPairs(parent, "ssl_max_version", o.Opensearch.SslMaxVersion)
+	return nil
+}
+
+func (o *Output) opensearchConnectionManagement(parent *params.PluginStore) {
+	params.InsertPairs(parent, "log_os_400_reason", o.Opensearch.LogOs400Reason)
+	params.InsertPairs(parent, "request_timeout", o.Opensearch.RequestTimeout)
+	params.InsertPairs(parent, "reconnect_on_error", o.Opensearch.ReconnectOnError)
+	params.InsertPairs(parent, "reload_connections", o.Opensearch.ReloadConnections)
+	params.InsertPairs(parent, "reload_after", o.Opensearch.ReloadAfter)
+	params.InsertPairs(parent, "reload_on_failure", o.Opensearch.ReloadOnFailure)
+}
+
+func (o *Output) opensearchVersionDetection(parent *params.PluginStore) {
+	params.InsertPairs(parent, "max_retry_get_os_version", o.Opensearch.MaxRetryGetOsVersion)
+	params.InsertPairs(parent, "fail_on_detecting_os_version_retry_exceed", o.Opensearch.FailOnDetectingOsVersionRetryExceed)
+	params.InsertPairs(parent, "default_opensearch_version", o.Opensearch.DefaultOpensearchVersion)
+	params.InsertPairs(parent, "verify_os_version_at_startup", o.Opensearch.VerifyOsVersionAtStartup)
+}
+
+func (o *Output) opensearchTemplateManagement(parent *params.PluginStore) {
+	params.InsertPairs(parent, "template_overwrite", o.Opensearch.TemplateOverwrite)
+	params.InsertPairs(parent, "max_retry_putting_template", o.Opensearch.MaxRetryPuttingTemplate)
+	params.InsertPairs(parent, "fail_on_putting_template_retry_exceed", o.Opensearch.FailOnPuttingTemplateRetryExceed)
+	params.InsertPairs(parent, "use_legacy_template", o.Opensearch.UseLegacyTemplate)
+}
+
+func (o *Output) opensearchPerformanceTuning(parent *params.PluginStore) {
+	params.InsertPairs(parent, "sniffer_class_name", o.Opensearch.SnifferClassName)
+	params.InsertPairs(parent, "selector_class_name", o.Opensearch.SelectorClassName)
+	params.InsertPairs(parent, "http_backend", o.Opensearch.HttpBackend)
+	params.InsertPairs(parent, "http_backend_excon_nonblock", o.Opensearch.HttpBackendExconNonblock)
+	params.InsertPairs(parent, "compression_level", o.Opensearch.CompressionLevel)
+	params.InsertPairs(parent, "prefer_oj_serializer", o.Opensearch.PreferOjSerializer)
+	params.InsertPairs(parent, "bulk_message_request_threshold", o.Opensearch.BulkMessageRequestThreshold)
+}
+
+func (o *Output) opensearchRecordHandling(parent *params.PluginStore) {
+	params.InsertPairs(parent, "suppress_type_name", o.Opensearch.SuppressTypeName)
+	params.InsertPairs(parent, "content_type", o.Opensearch.ContentType)
+	params.InsertPairs(parent, "include_tag_key", o.Opensearch.IncludeTagKey)
+	params.InsertPairs(parent, "tag_key", o.Opensearch.TagKey)
+	params.InsertPairs(parent, "id_key", o.Opensearch.IdKey)
+	params.InsertPairs(parent, "remove_keys", o.Opensearch.RemoveKeys)
+	params.InsertPairs(parent, "remove_keys_on_update", o.Opensearch.RemoveKeysOnUpdate)
+	params.InsertPairs(parent, "write_operation", o.Opensearch.WriteOperation)
+	params.InsertPairs(parent, "emit_error_for_missing_id", o.Opensearch.EmitErrorForMissingId)
+	params.InsertPairs(parent, "suppress_doc_wrap", o.Opensearch.SuppressDocWrap)
+}
+
+func (o *Output) opensearchAdvancedOptions(parent *params.PluginStore) {
+	params.InsertPairs(parent, "custom_headers", o.Opensearch.CustomHeaders)
+	params.InsertPairs(parent, "pipeline", o.Opensearch.Pipeline)
+	params.InsertPairs(parent, "ignore_exceptions", o.Opensearch.IgnoreExceptions)
+	params.InsertPairs(parent, "exception_backup", o.Opensearch.ExceptionBackup)
+	params.InsertPairs(parent, "application_name", o.Opensearch.ApplicationName)
+}
+
 func (o *Output) kafka2Plugin(parent *params.PluginStore, _ plugins.SecretLoader) *params.PluginStore {
-	if o.Kafka.Brokers != nil {
-		parent.InsertPairs("brokers", fmt.Sprint(*o.Kafka.Brokers))
-	}
-	if o.Kafka.TopicKey != nil {
-		parent.InsertPairs("topic_key", fmt.Sprint(*o.Kafka.TopicKey))
-	}
-	if o.Kafka.DefaultTopic != nil {
-		parent.InsertPairs("default_topic", fmt.Sprint(*o.Kafka.DefaultTopic))
-	}
-	if o.Kafka.UseEventTime != nil {
-		parent.InsertPairs("use_event_time", fmt.Sprint(*o.Kafka.UseEventTime))
-	}
-	if o.Kafka.RequiredAcks != nil {
-		parent.InsertPairs("required_acks", fmt.Sprint(*o.Kafka.RequiredAcks))
-	}
-	if o.Kafka.CompressionCodec != nil {
-		parent.InsertPairs("compression_codec", fmt.Sprint(*o.Kafka.CompressionCodec))
-	}
+	params.InsertPairs(parent, "brokers", o.Kafka.Brokers)
+	params.InsertPairs(parent, "topic_key", o.Kafka.TopicKey)
+	params.InsertPairs(parent, "default_topic", o.Kafka.DefaultTopic)
+	params.InsertPairs(parent, "use_event_time", o.Kafka.UseEventTime)
+	params.InsertPairs(parent, "required_acks", o.Kafka.RequiredAcks)
+	params.InsertPairs(parent, "compression_codec", o.Kafka.CompressionCodec)
 
 	return parent
 }
