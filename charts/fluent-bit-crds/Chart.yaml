@@ -2,7 +2,7 @@ apiVersion: v2
 name: fluent-bit-crds
 description: A helm chart for Fluent-Bit custom resource definitions (CRDs) used by fluent-operator.
 type: application
-version: 0.2.1
+version: 0.2.2
 appVersion: v3.5.0
 keywords:
   - logging
