@@ -20,3 +20,4 @@ The OpenTelemetry plugin allows you to take logs, metrics, and traces from Fluen
 | logsBodyKey | The log body key to look up in the log events body/message. Sets the Body field of the opentelemtry logs data model. | string |
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |
