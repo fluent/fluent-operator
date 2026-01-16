@@ -32,6 +32,8 @@ var (
     Http_Server    true
     Log_Level    info
     Parsers_File    /fluent-bit/etc/parsers.conf
+    scheduler.base    5
+    scheduler.cap    2000
 [Input]
     Name    tail
     Alias    input0_alias
@@ -127,6 +129,8 @@ var (
   http_server: true
   log_level: info
   parsers_file: /fluent-bit/etc/parsers.conf
+  scheduler.base: 5
+  scheduler.cap: 2000
 pipeline:
   inputs:
     - name: tail
@@ -223,6 +227,8 @@ pipeline:
     Http_Server    true
     Log_Level    info
     Parsers_File    /fluent-bit/etc/parsers.conf
+    scheduler.base    5
+    scheduler.cap    2000
 [Input]
     Name    tail
     Path    /var/log/containers/*.log
@@ -260,6 +266,8 @@ pipeline:
   http_server: true
   log_level: info
   parsers_file: /fluent-bit/etc/parsers.conf
+  scheduler.base: 5
+  scheduler.cap: 2000
 pipeline:
   inputs:
     - name: tail
@@ -297,6 +305,8 @@ pipeline:
   http_server: true
   log_level: info
   parsers_file: /fluent-bit/etc/parsers.conf
+  scheduler.base: 5
+  scheduler.cap: 2000
 pipeline:
   inputs:
     - name: tail
@@ -386,12 +396,14 @@ pipeline:
 	cfg = ClusterFluentBitConfig{
 		Spec: FluentBitConfigSpec{
 			Service: &Service{
-				Daemon:       utils.ToPtr(false),
-				FlushSeconds: utils.ToPtr[float64](1),
-				GraceSeconds: utils.ToPtr[int64](30),
-				HttpServer:   utils.ToPtr(true),
-				LogLevel:     "info",
-				ParsersFile:  "parsers.conf",
+				Daemon:        utils.ToPtr(false),
+				FlushSeconds:  utils.ToPtr[float64](1),
+				GraceSeconds:  utils.ToPtr[int64](30),
+				HttpServer:    utils.ToPtr(true),
+				LogLevel:      "info",
+				ParsersFile:   "parsers.conf",
+				SchedulerBase: utils.ToPtr[int32](5),
+				SchedulerCap:  utils.ToPtr[int32](2000),
 			},
 		},
 	}
