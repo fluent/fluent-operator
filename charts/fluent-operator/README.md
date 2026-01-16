@@ -8,7 +8,7 @@ Fluent Operator provides great flexibility in building a logging layer based on 
 
 ## v4.0 Release
 
-**Please see [MIGRATION-v4](./MIGRATION-v4.md) for important information regarding upgrading to v4.0!**
+**Please see [MIGRATION-v4](./MIGRATION-v4.md) for important information regarding the upgrade to v4.0!**
 
 ## Maintainers
 
