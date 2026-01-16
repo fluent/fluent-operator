@@ -23,7 +23,7 @@ spec:
           name: fluent-operator-env
       containers:
       - name: fluent-operator
-        image: ghcr.io/fluent/fluent-operator/fluent-operator:latest
+        image: ghcr.io/fluent/fluent-operator/fluent-operator:v3.6.0
         env:
           - name: NAMESPACE
             valueFrom:
