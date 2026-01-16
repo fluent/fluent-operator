@@ -9,6 +9,12 @@ spec:
   configFileFormat: {{ .Values.fluentbit.configFileFormat | default "classic" | quote }}
   service:
     parsersFile: parsers.conf
+    {{- with .Values.fluentbit.service.schedulerBase }}
+    schedulerBase: {{ . }}
+    {{- end }}
+    {{- with .Values.fluentbit.service.schedulerCap }}
+    schedulerCap: {{ . }}
+    {{- end }}
   inputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"

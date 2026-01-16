@@ -394,6 +394,9 @@ fluentbit:
     # You can configure the stackdriver configuration here
 
   service:
+    # Scheduler configuration for retry wait times (supported in Fluent Bit >= 1.8.7)
+    # schedulerBase: 5    # Base of exponential backoff (seconds, default: 5)
+    # schedulerCap: 2000  # Maximum retry time (seconds, default: 2000)
     storage: {}
   # Remove the above storage section and uncomment below section if you want to configure file-system as storage for buffer
   #    storage:

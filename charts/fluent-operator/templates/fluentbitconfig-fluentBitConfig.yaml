@@ -21,6 +21,12 @@ spec:
     storage:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+    {{- with .Values.fluentbit.service.schedulerBase }}
+    schedulerBase: {{ . }}
+    {{- end }}
+    {{- with .Values.fluentbit.service.schedulerCap }}
+    schedulerCap: {{ . }}
+    {{- end }}
   inputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"

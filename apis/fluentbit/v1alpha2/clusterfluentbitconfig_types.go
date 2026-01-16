@@ -122,6 +122,10 @@ type Service struct {
 	EmitterStorageType string `json:"emitterStorageType,omitempty"`
 	// If true enable reloading via HTTP
 	HotReload *bool `json:"hotReload,omitempty"`
+	// Set a base for exponential backoff in the scheduler. Supported in Fluent Bit >= 1.8.7
+	SchedulerBase *int32 `json:"schedulerBase,omitempty"`
+	// Set a maximum retry time in seconds for the scheduler. Supported in Fluent Bit >= 1.8.7
+	SchedulerCap *int32 `json:"schedulerCap,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -232,6 +236,12 @@ func (s *Service) Params() *params.KVs {
 	}
 	if s.HotReload != nil {
 		m.Insert("Hot_Reload", fmt.Sprint(*s.HotReload))
+	}
+	if s.SchedulerBase != nil {
+		m.Insert("scheduler.base", fmt.Sprint(*s.SchedulerBase))
+	}
+	if s.SchedulerCap != nil {
+		m.Insert("scheduler.cap", fmt.Sprint(*s.SchedulerCap))
 	}
 	return m
 }
