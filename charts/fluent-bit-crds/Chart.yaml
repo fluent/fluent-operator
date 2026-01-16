@@ -3,7 +3,7 @@ name: fluent-bit-crds
 description: A helm chart for Fluent-Bit custom resource definitions (CRDs) used by fluent-operator.
 type: application
 version: 0.2.3
-appVersion: v3.5.0
+appVersion: v3.6.0
 keywords:
   - logging
   - fluentd
