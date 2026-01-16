@@ -1,5 +1,94 @@
 # Change Log
 
+## 3.6.0 / 2026-01-14
+
+### Features
+
+- helm: Allow ports configuration for fluent-bit via operator by @promasu in https://github.com/fluent/fluent-operator/pull/1743
+- Add Tag parameter to fluentbit syslog input by @LeonLow97 in https://github.com/fluent/fluent-operator/pull/1744
+- feat(roles): Allow to change name of serviceAccount, clusterRole and clusterRoleBinding by @kiblik in https://github.com/fluent/fluent-operator/pull/1748
+- Support setting CONTAINER_LOG_PATH via an environment variable by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1773
+- helm-chart: Add ability to configure additional rbac for fluent-operator cluster-role by @ben-dov in https://github.com/fluent/fluent-operator/pull/1806
+- feat(fluentbit): add enable_flb_null to fluentbit filter params by @CharlieR-o-o-t in https://github.com/fluent/fluent-operator/pull/1822
+- Add storage.total_limit_size to OpenTelemetry output plugin by @sugaf1204 in https://github.com/fluent/fluent-operator/pull/1823
+
+### Enhancements
+
+- Update image to v3.5.0 in setup.yaml by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1742
+- ci: remove scan-docker-image-action workflow by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1752
+- ci: remove clone-docker-image-action CI workflow by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1751
+- refactor: switch to reusable pointer conversion method in utils packa… by @LeonLow97 in https://github.com/fluent/fluent-operator/pull/1750
+- ci: Do not push images on pull requests  by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1756
+- ci: Add arm64 makefile targets. by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1755
+- helm-chart: Add Marco Franssen as maintainer by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1768
+- fluentd: Bump fluentd to v1.19.1. by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1769
+- fluent-manager: Refactor CLI options parsing to separate object by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1776
+- Build all files in cmd/fluent-manager by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1781
+- ci/build: Copy and build all go files for fluent-manager by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1784
+- Updates fluent-manager base image by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1789
+- Bump go from 1.24.5 to 1.25.3 by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1788
+- helm-chart(v4): Use env var for setting CONTAINER_LOG_PATH, new default for containerRuntime by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1774
+- helm(v4): Breaks fluentd-crds out into separate top-level chart by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1790
+- Bump fluent-bit to 4.2.0 by @github-actions[bot] in https://github.com/fluent/fluent-operator/pull/1797
+- chore(deps): update ghcr.io/fluent/fluent-operator/fluent-bit docker tag to v4.2.0 by @github-actions[bot] in https://github.com/fluent/fluent-operator/pull/1798
+- helm(v4): Breaks fluent-bit-crds out into separate top-level chart by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1795
+- Remove init containers from deployment/adds env ConfigMaps in setup.yaml by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1792
+- chore(deps): Update ginkgo from 2.23.4 to 2.27.2 by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1799
+- chore(deps): Update operator-sdk from v1.41.1 to v1.42.0 by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1800
+- makefile: Remove unused variable FD_IMG_BASE by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1802
+- chore(deps): Bump kind from 0.17.0 to 0.30.0 by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1801
+- helm: Align crds charts appVersion with operator version by @marcofranssen in https://github.com/fluent/fluent-operator/pull/1803
+- Bump fluent-bit to 4.2.2 by @github-actions[bot] in https://github.com/fluent/fluent-operator/pull/1840
+
+### Dependencies
+
+- build(deps): Bump docker/metadata-action from 5.7.0 to 5.8.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1760
+- build(deps): Bump marcofranssen/setup-kubectl from 1.3.0 to 2.0.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1759
+- build(deps): Bump docker/login-action from 3.4.0 to 3.6.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1757
+- build(deps): Bump renovatebot/github-action from 43.0.14 to 43.0.19 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1758
+- build(deps): Bump sigs.k8s.io/yaml from 1.4.0 to 1.6.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1746
+- build(deps): Bump github.com/onsi/ginkgo/v2 from 2.26.0 to 2.27.2 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1763
+- build(deps): Bump golang.org/x/sync from 0.17.0 to 0.18.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1766
+- build(deps): Bump github.com/go-openapi/errors from 0.22.3 to 0.22.4 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1767
+- build(deps): Bump sigs.k8s.io/controller-runtime from 0.21.0 to 0.22.4 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1762
+- build(deps): Bump the k8s-io group across 1 directory with 3 updates by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1602
+- build(deps): Bump helm/kind-action from 1.12.0 to 1.13.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1811
+- build(deps): Bump renovatebot/github-action from 43.0.19 to 44.0.5 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1808
+- build(deps): Bump docker/metadata-action from 5.8.0 to 5.10.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1807
+- build(deps): Bump golangci/golangci-lint-action from 9.0.0 to 9.1.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1809
+- build(deps): Bump helm/chart-testing-action from 2.7.0 to 2.8.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1810
+- build(deps): Bump docker/setup-buildx-action from 3.11.1 to 3.12.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1830
+- build(deps): Bump renovatebot/github-action from 44.0.5 to 44.2.2 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1829
+- build(deps): Bump peter-evans/create-pull-request from 7 to 8 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1828
+- build(deps): Bump actions/checkout from 5.0.0 to 6.0.1 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1826
+- build(deps): Bump golangci/golangci-lint-action from 9.1.0 to 9.2.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1827
+- build(deps): Bump golang.org/x/sync from 0.18.0 to 0.19.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1818
+- build(deps): Bump github.com/onsi/ginkgo/v2 from 2.27.2 to 2.27.3 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1816
+- build(deps): Bump github.com/go-openapi/errors from 0.22.4 to 0.22.5 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1815
+- build(deps): Bump github.com/onsi/gomega from 1.38.2 to 1.38.3 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1817
+- build(deps): Bump the k8s-io group across 1 directory with 3 updates by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1821
+- build(deps): Bump github.com/onsi/gomega from 1.38.3 to 1.39.0 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1836
+- build(deps): Bump github.com/go-openapi/errors from 0.22.5 to 0.22.6 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1835
+- build(deps): Bump github.com/onsi/ginkgo/v2 from 2.27.3 to 2.27.4 by @dependabot[bot] in https://github.com/fluent/fluent-operator/pull/1837
+
+### Bugfixes
+
+- fix the es httpUser & httpPassword by @cw-Guo in https://github.com/fluent/fluent-operator/pull/1775
+- Fix ClusterParser/ClusterMultilineParser namespace filtering bug (#1778) by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1779
+- fluentd: Fix docker tag by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1770
+- fix fluentd filter / output config by @discostur in https://github.com/fluent/fluent-operator/pull/1783
+- fix: use fully-qualified DNS name in Fluent Bit ClusterOutput by @snoop123 in https://github.com/fluent/fluent-operator/pull/1796
+- fix: fix the e2e test script for fluentd by @cw-Guo in https://github.com/fluent/fluent-operator/pull/1791
+- fix: correct parameter name from client_certAuth to client_cert_auth by @hs0303kr in https://github.com/fluent/fluent-operator/pull/1820
+
+## New Contributors
+
+- @promasu made their first contribution in https://github.com/fluent/fluent-operator/pull/1743
+- @LeonLow97 made their first contribution in https://github.com/fluent/fluent-operator/pull/1744
+- @snoop123 made their first contribution in https://github.com/fluent/fluent-operator/pull/1796
+- @ben-dov made their first contribution in https://github.com/fluent/fluent-operator/pull/1806
+- @hs0303kr made their first contribution in https://github.com/fluent/fluent-operator/pull/1820
+
 ## 3.5.0 / 2025-10-24
 
 ### Features
