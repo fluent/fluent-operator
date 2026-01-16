@@ -1,6 +1,6 @@
 # Change Log
 
-## 3.6.0 / 2026-01-14
+## 3.6.0 / 2026-01-16
 
 ### Features
 
@@ -11,6 +11,7 @@
 - helm-chart: Add ability to configure additional rbac for fluent-operator cluster-role by @ben-dov in https://github.com/fluent/fluent-operator/pull/1806
 - feat(fluentbit): add enable_flb_null to fluentbit filter params by @CharlieR-o-o-t in https://github.com/fluent/fluent-operator/pull/1822
 - Add storage.total_limit_size to OpenTelemetry output plugin by @sugaf1204 in https://github.com/fluent/fluent-operator/pull/1823
+- feat(fluentbit): add scheduler.base and scheduler.cap Service config by @mbdeveci in https://github.com/fluent/fluent-operator/pull/1842
 
 ### Enhancements
 
@@ -88,6 +89,7 @@
 - @snoop123 made their first contribution in https://github.com/fluent/fluent-operator/pull/1796
 - @ben-dov made their first contribution in https://github.com/fluent/fluent-operator/pull/1806
 - @hs0303kr made their first contribution in https://github.com/fluent/fluent-operator/pull/1820
+- @mbdeveci made their first contribution in https://github.com/fluent/fluent-operator/pull/1842
 
 ## 3.5.0 / 2025-10-24
 
