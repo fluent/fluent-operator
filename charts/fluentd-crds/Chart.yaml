@@ -3,7 +3,7 @@ name: fluentd-crds
 description: A helm chart for Fluentd custom resource definitions (CRDs) used by fluent-operator.
 type: application
 version: 0.2.1
-appVersion: v3.5.0
+appVersion: v3.6.0
 keywords:
   - logging
   - fluentd
