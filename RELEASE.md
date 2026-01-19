@@ -48,6 +48,7 @@ This page describes the release process and the currently planned schedule for u
 | v3.3.0         | 2025-02-27            | Chengwei Guo (GitHub: @cw-Guo)          |
 | v3.4.0         | 2025-05-08            | Marco Franssen (GitHub: @marcofranssen) |
 | v3.5.0         | 2025-10-24            | Josh Baird (GitHub: @joshuabaird)       |
+| v3.6.0         | 2025-10-24            | Josh Baird (GitHub: @joshuabaird)       |
 
 ### How to cut a new release
 
