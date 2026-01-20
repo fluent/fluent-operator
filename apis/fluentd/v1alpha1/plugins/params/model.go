@@ -36,7 +36,7 @@ func (ps *PluginStore) InsertPairs(key, value string) {
 }
 
 type ValueType interface {
-	*string | *bool | *int | *int16 | *uint16 | *uint32
+	*string | *bool | *int | *int16 | *int32 | *uint16 | *uint32
 }
 
 func InsertPairs[T ValueType](ps *PluginStore, key string, value T) {
@@ -51,6 +51,8 @@ func InsertPairs[T ValueType](ps *PluginStore, key string, value T) {
 		case *int:
 			ps.InsertPairs(key, strconv.FormatInt(int64(*v), 10))
 		case *int16:
+			ps.InsertPairs(key, strconv.FormatInt(int64(*v), 10))
+		case *int32:
 			ps.InsertPairs(key, strconv.FormatInt(int64(*v), 10))
 		case *uint16:
 			ps.InsertPairs(key, strconv.FormatUint(uint64(*v), 10))
