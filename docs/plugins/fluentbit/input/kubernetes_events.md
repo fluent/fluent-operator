@@ -21,3 +21,4 @@ The KubernetesEvents input plugin allows you to collect kubernetes cluster event
 | tlsDebug | Debug level between 0 (nothing) and 4 (every detail). | *int32 |
 | tlsVerify | When enabled, turns on certificate validation when connecting to the Kubernetes API server. | *bool |
 | tlsVhost | Set optional TLS virtual host. | string |
+| storageType | Set storage type for buffering can be filesystem or memory. | string |
