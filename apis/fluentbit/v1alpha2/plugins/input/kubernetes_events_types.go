@@ -43,6 +43,9 @@ type KubernetesEvents struct {
 	TLSVerify *bool `json:"tlsVerify,omitempty"`
 	// Set optional TLS virtual host.
 	TLSVhost string `json:"tlsVhost,omitempty"`
+	// Specifies the buffering mechanism for use with the input plugin, requires storage.path to be set in the service.
+	// Accepted values: memory or filesystem
+	StorageType string `json:"storageType,omitempty"`
 }
 
 func (*KubernetesEvents) Name() string {
@@ -64,6 +67,7 @@ func (k *KubernetesEvents) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVString(kvs, "Kube_Retention_Time", k.KubeRetentionTime)
 	plugins.InsertKVString(kvs, "Kube_Namespace", k.KubeNamespace)
 	plugins.InsertKVString(kvs, "tls.Vhost", k.TLSVhost)
+	plugins.InsertKVString(kvs, "storage.type", k.StorageType)
 
 	plugins.InsertKVField(kvs, "Interval_Sec", k.IntervalSec)
 	plugins.InsertKVField(kvs, "Interval_Nsec", k.IntervalNsec)
