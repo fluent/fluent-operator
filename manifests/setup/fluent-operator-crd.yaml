@@ -2509,6 +2509,13 @@ spec:
                   tlsVhost:
                     description: Set optional TLS virtual host.
                     type: string
+                  storageType:
+                    description: Specify the buffering mechanism to use. It can be
+                      memory or filesystem
+                    enum:
+                    - filesystem
+                    - memory
+                    type: string
                 type: object
               logLevel:
                 enum:
