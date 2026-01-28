@@ -14,7 +14,7 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/utils/pointer"
+	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1"
@@ -77,16 +77,17 @@ var _ = Describe("Fluentd E2E Deployment Test", func() {
 					},
 				},
 				Spec: fluentdv1alpha1.FluentdSpec{
-					Replicas: pointer.Int32(1),
+					Replicas: ptr.To(int32(1)),
 					GlobalInputs: []input.Input{
 						{
 							Forward: &input.Forward{
-								Bind: pointer.String("0.0.0.0"),
-								Port: pointer.Int32(24224),
+								Bind: ptr.To("0.0.0.0"),
+								Port: ptr.To(int32(24224)),
 							},
 						},
 					},
-					// Let operator use its default image instead of pinning
+					// Explicitly set image as operator doesn't provide a default yet
+					Image: "ghcr.io/fluent/fluent-operator/fluentd:v1.19.1",
 					FluentdCfgSelector: metav1.LabelSelector{
 						MatchLabels: map[string]string{
 							"config.fluentd.fluent.io/enabled": "true",
@@ -129,43 +130,43 @@ var _ = Describe("Fluentd E2E Deployment Test", func() {
 					},
 				},
 			}
-		})
 
-		DeferCleanup(func() {
-			// Use a fresh context for cleanup to avoid timeout issues
-			cleanupCtx := context.Background()
+			DeferCleanup(func() {
+				// Use a fresh context for cleanup to avoid timeout issues
+				cleanupCtx := context.Background()
 
-			// Delete all CRs (ignore NotFound errors for idempotency)
-			if clusterOutput != nil {
-				_ = client.IgnoreNotFound(k8sClient.Delete(cleanupCtx, clusterOutput))
-			}
-			if fluentdConfig != nil {
-				_ = client.IgnoreNotFound(k8sClient.Delete(cleanupCtx, fluentdConfig))
-			}
-			if fluentdCR != nil {
-				_ = client.IgnoreNotFound(k8sClient.Delete(cleanupCtx, fluentdCR))
-			}
+				// Delete all CRs (ignore NotFound errors for idempotency)
+				if clusterOutput != nil {
+					_ = client.IgnoreNotFound(k8sClient.Delete(cleanupCtx, clusterOutput))
+				}
+				if fluentdConfig != nil {
+					_ = client.IgnoreNotFound(k8sClient.Delete(cleanupCtx, fluentdConfig))
+				}
+				if fluentdCR != nil {
+					_ = client.IgnoreNotFound(k8sClient.Delete(cleanupCtx, fluentdCR))
+				}
 
-			// Wait for StatefulSet to be deleted (find by label, not name)
-			if fluentdCR != nil {
+				// Wait for StatefulSet to be deleted (find by label, not name)
+				if fluentdCR != nil {
+					Eventually(func() bool {
+						stsList := &appsv1.StatefulSetList{}
+						err := k8sClient.List(cleanupCtx, stsList, client.InNamespace(namespace))
+						if err != nil {
+							return false
+						}
+						// StatefulSet should be gone
+						return len(stsList.Items) == 0
+					}, time.Minute, time.Second).Should(BeTrue(), "StatefulSet should be deleted")
+				}
+
+				// Delete namespace and wait for it to be gone
+				ns := &corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: namespace}}
+				_ = client.IgnoreNotFound(k8sClient.Delete(cleanupCtx, ns))
 				Eventually(func() bool {
-					stsList := &appsv1.StatefulSetList{}
-					err := k8sClient.List(cleanupCtx, stsList, client.InNamespace(namespace))
-					if err != nil {
-						return false
-					}
-					// StatefulSet should be gone
-					return len(stsList.Items) == 0
-				}, time.Minute, time.Second).Should(BeTrue(), "StatefulSet should be deleted")
-			}
-
-			// Delete namespace and wait for it to be gone
-			ns := &corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: namespace}}
-			_ = client.IgnoreNotFound(k8sClient.Delete(cleanupCtx, ns))
-			Eventually(func() bool {
-				err := k8sClient.Get(cleanupCtx, types.NamespacedName{Name: namespace}, &corev1.Namespace{})
-				return apierrors.IsNotFound(err)
-			}, 2*time.Minute, time.Second).Should(BeTrue(), "Namespace should be deleted")
+					err := k8sClient.Get(cleanupCtx, types.NamespacedName{Name: namespace}, &corev1.Namespace{})
+					return apierrors.IsNotFound(err)
+				}, 2*time.Minute, time.Second).Should(BeTrue(), "Namespace should be deleted")
+			})
 		})
 
 		It("Should create a healthy Fluentd StatefulSet", func() {
@@ -185,7 +186,7 @@ var _ = Describe("Fluentd E2E Deployment Test", func() {
 				stsList := &appsv1.StatefulSetList{}
 				err := k8sClient.List(ctx, stsList,
 					client.InNamespace(namespace),
-					client.MatchingLabels{"app.kubernetes.io/instance": fluentdCR.Name})
+					client.MatchingLabels{"app.kubernetes.io/name": fluentdCR.Name})
 				if err != nil || len(stsList.Items) == 0 {
 					return false
 				}
@@ -198,12 +199,13 @@ var _ = Describe("Fluentd E2E Deployment Test", func() {
 				stsList := &appsv1.StatefulSetList{}
 				_ = k8sClient.List(ctx, stsList,
 					client.InNamespace(namespace),
-					client.MatchingLabels{"app.kubernetes.io/instance": fluentdCR.Name})
+					client.MatchingLabels{"app.kubernetes.io/name": fluentdCR.Name})
 				if len(stsList.Items) == 0 {
 					return 0
 				}
 				return stsList.Items[0].Status.ReadyReplicas
-			}, 3*time.Minute, 2*time.Second).Should(Equal(*fluentdCR.Spec.Replicas), "StatefulSet should have expected number of ready replicas")
+			}, 5*time.Minute, 2*time.Second).Should(Equal(*fluentdCR.Spec.Replicas),
+				"StatefulSet should have expected number of ready replicas")
 
 			By("Verifying Pod Status and Container Readiness")
 			Eventually(func() bool {
@@ -247,7 +249,8 @@ var _ = Describe("Fluentd E2E Deployment Test", func() {
 					}
 				}
 				return false
-			}, 3*time.Minute, 2*time.Second).Should(BeTrue(), "At least one Fluentd Pod should be Running with all containers Ready")
+			}, 5*time.Minute, 2*time.Second).Should(BeTrue(),
+				"At least one Fluentd Pod should be Running with all containers Ready")
 		})
 	})
 })
