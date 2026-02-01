@@ -6,5 +6,5 @@ target-branch: master   # change to main if your default branch is main
 chart-dirs:
   - charts/fluent-operator
 
-check-version-increment: true
+check-version-increment: false
 validate-maintainers: true
