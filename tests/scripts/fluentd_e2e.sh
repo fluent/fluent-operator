@@ -53,6 +53,12 @@ function build_image() {
   pushd "$PROJECT_ROOT" >/dev/null
   make build-op-amd64 -e "FO_IMG=$IMAGE_NAME:$IMAGE_TAG"
   kind load docker-image "$IMAGE_NAME:$IMAGE_TAG" --name "$KIND_CLUSTER"
+  
+  # Build and load Fluentd image for e2e tests
+  echo "Building Fluentd image for e2e tests…"
+  make build-fd-amd64
+  kind load docker-image "ghcr.io/fluent/fluent-operator/fluentd:v1.19.1" --name "$KIND_CLUSTER"
+  
   popd >/dev/null
 }
 
