@@ -178,12 +178,12 @@ build-fb-arm64:
 # Build amd64 Fluentd container image
 .PHONY: build-fd-amd64
 build-fd-amd64:
-	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentd/Dockerfile . -t ${FD_IMG}
+	docker build --platform=linux/amd64 -f cmd/fluent-watcher/fluentd/Dockerfile --build-arg FLUENTD_BASE_VERSION=$(shell cat cmd/fluent-watcher/fluentd/VERSION) . -t ${FD_IMG}
 
 # Build arm64 Fluentd container image
 .PHONY: build-fd-arm64
 build-fd-arm64:
-	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile . -t ${FD_IMG}
+	docker build --platform=linux/arm64 -f cmd/fluent-watcher/fluentd/Dockerfile --build-arg FLUENTD_BASE_VERSION=$(shell cat cmd/fluent-watcher/fluentd/VERSION) . -t ${FD_IMG}
 
 # Prepare for arm64 building
 prepare-build:
