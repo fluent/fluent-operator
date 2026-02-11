@@ -6,5 +6,7 @@ target-branch: master   # change to main if your default branch is main
 chart-dirs:
   - charts/fluent-operator
 
-check-version-increment: true
+# Disabled to allow PRs from forks where master may be behind upstream
+# Chart versioning is still enforced through maintainer review process
+check-version-increment: false
 validate-maintainers: true
