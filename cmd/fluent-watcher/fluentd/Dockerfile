@@ -36,7 +36,7 @@ RUN buildDeps="make gcc g++ libc-dev" \
         fluent-plugin-grafana-loki \
         fluent-plugin-cloudwatch-logs \
         fluent-plugin-datadog \
-        fluent-plugin-prometheus
+        fluent-plugin-prometheus \
  && gem sources --clear-all \
  && apt-get purge -y --auto-remove \
                   -o APT::AutoRemove::RecommendsImportant=false \
