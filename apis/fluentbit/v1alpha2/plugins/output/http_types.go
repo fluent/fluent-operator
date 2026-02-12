@@ -63,6 +63,8 @@ type HTTP struct {
 	*plugins.TLS `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
+	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+	TotalLimitSize string `json:"totalLimitSize,omitempty"`
 }
 
 // implement Name method
@@ -118,6 +120,8 @@ func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 		}
 		kvs.Merge(net)
 	}
+
+	plugins.InsertKVString(kvs, "storage.total_limit_size", h.TotalLimitSize)
 
 	return kvs, nil
 }
