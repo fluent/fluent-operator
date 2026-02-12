@@ -10,11 +10,6 @@ import (
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1"
 )
 
-const (
-	FluentdForwardPortName = "forward"
-	FluentdHttpPortName    = "http"
-)
-
 func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 	var name string
 	var labels map[string]string
@@ -71,7 +66,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 			forwardContainerPort := corev1.ServicePort{
 				Name:       forwardName,
 				Port:       forwardPort,
-				TargetPort: intstr.FromString(FluentdForwardPortName),
+				TargetPort: intstr.FromString(forwardName),
 				Protocol:   corev1.ProtocolTCP,
 			}
 			svc.Spec.Ports = append(svc.Spec.Ports, forwardContainerPort)
@@ -91,7 +86,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 			httpContainerPort := corev1.ServicePort{
 				Name:       httpName,
 				Port:       httpPort,
-				TargetPort: intstr.FromString(FluentdHttpPortName),
+				TargetPort: intstr.FromString(httpName),
 				Protocol:   corev1.ProtocolTCP,
 			}
 			svc.Spec.Ports = append(svc.Spec.Ports, httpContainerPort)
