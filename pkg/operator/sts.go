@@ -188,8 +188,10 @@ func makeFluentdPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 		},
 	}
 
-	// read inputs definition from globalInputs
+	// Read inputs definition from globalInputs
 	globalInputs := fd.Spec.GlobalInputs
+	firstForwardPort := true
+	firstHttpPort := true
 	for _, input := range globalInputs {
 		if input.Forward != nil {
 			forwardPort := DefaultForwardPort
@@ -197,11 +199,16 @@ func makeFluentdPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 				forwardPort = *input.Forward.Port
 			}
 
+			forwardName := DefaultForwardName
+			if !firstForwardPort {
+				forwardName = fmt.Sprintf("%s-%d", DefaultForwardName, forwardPort)
+			}
 			ports = append(ports, corev1.ContainerPort{
-				Name:          DefaultForwardName,
+				Name:          forwardName,
 				ContainerPort: forwardPort,
 				Protocol:      corev1.ProtocolTCP,
 			})
+			firstForwardPort = false
 			continue
 		}
 		if input.Http != nil {
@@ -210,11 +217,16 @@ func makeFluentdPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 				httpPort = *input.Http.Port
 			}
 
+			httpName := DefaultHttpName
+			if !firstHttpPort {
+				httpName = fmt.Sprintf("%s-%d", DefaultHttpName, httpPort)
+			}
 			ports = append(ports, corev1.ContainerPort{
-				Name:          DefaultHttpName,
+				Name:          httpName,
 				ContainerPort: httpPort,
 				Protocol:      corev1.ProtocolTCP,
 			})
+			firstHttpPort = false
 		}
 	}
 
