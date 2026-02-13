@@ -27,17 +27,6 @@ wrap_conditional() {
   fi
 }
 
-# Handle legacy CRD charts (fluent-bit-crds and fluentd-crds)
-CRDS=(
-  charts/fluentd-crds/templates/*.yaml
-  charts/fluent-bit-crds/templates/*.yaml
-)
-for CRD in "${CRDS[@]}"
-do
-  [[ -f "$CRD" ]] || continue
-  add_annotations "$CRD"
-done
-
 # Handle fluent-operator-crds chart - Fluent Bit CRDs
 FLUENT_BIT_CRDS=(charts/fluent-operator-crds/templates/fluent-bit/*.yaml)
 for CRD in "${FLUENT_BIT_CRDS[@]}"
