@@ -21,11 +21,3 @@ maintainers:
     url: https://marcofranssen.nl
   - name: joshuabaird
     email: joshbaird@gmail.com
-dependencies:
-  - name: fluent-bit-crds
-    repository: https://fluent.github.io/helm-charts
-    version: 0.2.3
-    condition: fluentbit.enable && fluentbit.crdsEnable
-  - name: fluentd-crds
-    version: 0.2.1
-    condition: fluentd.enable && fluentd.crdsEnable
