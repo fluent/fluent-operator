@@ -1,45 +1,47 @@
-# Default values for fluentbit-operator.
+# Default values for fluent-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Container runtime used by your Kubernetes cluster
-# Supported values: containerd, crio, docker
+# -- Container runtime used by your Kubernetes cluster. Supported values: containerd, crio, docker
 containerRuntime: containerd
-#  If you want to deploy a default Fluent Bit pipeline (including Fluent Bit Input, Filter, and output) to collect Kubernetes logs, you'll need to set the Kubernetes parameter to true
-# see https://github.com/fluent/fluent-operator/tree/master/manifests/logging-stack
+
+# -- Deploy default Fluent Bit pipeline to collect Kubernetes logs. See https://github.com/fluent/fluent-operator/tree/master/manifests/logging-stack
 Kubernetes: true
 
 operator:
   image:
+    # -- Fluent Operator image registry
     registry: ghcr.io
+    # -- Fluent Operator image repository
     repository: fluent/fluent-operator/fluent-operator
+    # -- Fluent Operator image tag (immutable tags are recommended). Overrides the image tag whose default is the chart appVersion
     tag: ""
-  # If set to false, this will disable the creation of ClusterRole, ClusterRoleBinding,
-  # Deployment, and ServiceAccount resources to avoid conflicts when deploying multiple instances.
+  # -- Enable Fluent Operator deployment. Set to false to disable creation of ClusterRole, ClusterRoleBinding, Deployment, and ServiceAccount
   enable: true
-  # nodeSelector configuration for Fluent Operator. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  # -- Node selector for Fluent Operator pods. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
   nodeSelector: {}
-  # affinity configuration for Fluent Operator. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+  # -- Affinity for Fluent Operator pods. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
   affinity: {}
-  # Node tolerations applied to Fluent Operator. Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  # -- Tolerations for Fluent Operator pods. Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   tolerations: []
-  # Priority class applied to Fluent Operator. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
+  # -- Priority class name for Fluent Operator pods. Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
   priorityClassName: ""
-  # Pod security context for Fluent Operator. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  # -- Pod security context for Fluent Operator. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   podSecurityContext: {}
   rbac:
-    # -- Specifies whether to create the ClusterRole and ClusterRoleBinding.
+    # -- Specifies whether to create the ClusterRole and ClusterRoleBinding
     create: true
     clusterRole:
+      # -- ClusterRole name
       name: fluent-operator
     clusterRoleBinding:
+      # -- ClusterRoleBinding name
       name: fluent-operator
-    # Adds additional permissions to Fluent Operator, since operator cannot give permissions it does not have.
-    # Use case includes adding permission to a custom fluent-bit deployment to access kubelet.
+    # -- Additional RBAC rules for Fluent Operator ClusterRole. Operator cannot give permissions it does not have
     additionalRules: []
-  # Container security context for Fluent Operator container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  # -- Container security context for Fluent Operator container. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   securityContext: {}
-  # Fluent Operator resources. Usually user needn't to adjust these.
+  # -- Fluent Operator resource requests and limits
   resources:
     limits:
       cpu: 100m
@@ -47,46 +49,59 @@ operator:
     requests:
       cpu: 100m
       memory: 20Mi
-  # Specify custom annotations to be added to each Fluent Operator pod.
+  # -- Annotations to add to Fluent Operator pods
   annotations: {}
-  ## Reference to one or more secrets to be used when pulling images
-  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  # -- Image pull secrets for Fluent Operator. Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
   # - name: "image-pull-secret"
-  # Reference one more key-value pairs of labels that should be attached to fluent-operator
+  # -- Labels to add to Fluent Operator pods
   labels: {}
   #  myExampleLabel: someValue
-  # By default, the operator provisions both Fluent Bit and FluentD controllers.
-  # A specific controller can be disabled by setting the disableComponentControllers value.
-  # The disableComponentControllers value can be either "fluent-bit" or "fluentd".
+  # -- Disable specific component controllers. Value can be "fluent-bit" or "fluentd" to disable that controller
   disableComponentControllers: ""
-  # Extra arguments given to the controller flags
+  # -- Extra arguments for the Fluent Operator controller
   extraArgs:
     []
     # - --watch-namespaces=logging
 
   service:
+    # -- Enable Fluent Operator service
     enable: true
+    # -- Service type
     type: ClusterIP
+    # -- Service port name
     portName: metrics
+    # -- Service port
     port: 8080
+    # -- Annotations for Fluent Operator service
     annotations: {}
+    # -- Labels for Fluent Operator service
     labels: {}
 
   serviceMonitor:
+    # -- Enable Prometheus ServiceMonitor for Fluent Operator
     enable: false
+    # -- Scrape interval
     interval: 30s
+    # -- Metrics path
     path: /metrics
+    # -- Scrape timeout
     scrapeTimeout: 10s
+    # -- Use HTTPS for scraping
     secure: false
+    # -- TLS configuration for ServiceMonitor
     tlsConfig: {}
+    # -- Relabeling configs for ServiceMonitor
     relabelings: []
+    # -- Metric relabeling configs for ServiceMonitor
     metricRelabelings: []
 
   serviceAccount:
+    # -- ServiceAccount name for Fluent Operator
     name: fluent-operator
 
 fluentbit:
+  # -- Enable Fluent Bit deployment
   enable: true
   serviceMonitor:
     enable: false
@@ -455,12 +470,11 @@ fluentbit:
   namespaceClusterFbCfg: ""
 
 fluentd:
-  # Valid modes include "collector" and "agent".
+  # -- Enable Fluentd deployment
   enable: false
+  # -- Fluentd name
   name: fluentd
-  # Valid modes include "collector" and "agent".
-  # The "collector" mode will deploy Fluentd as a StatefulSet as before.
-  # The new "agent" mode will deploy Fluentd as a DaemonSet.
+  # -- Fluentd deployment mode. Valid values: "collector" (StatefulSet) or "agent" (DaemonSet)
   mode: "collector"
   port: 24224
   image:
