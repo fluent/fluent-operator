@@ -59,10 +59,6 @@ operator:
   # By default, the operator provisions both Fluent Bit and FluentD controllers.
   # A specific controller can be disabled by setting the disableComponentControllers value.
   # The disableComponentControllers value can be either "fluent-bit" or "fluentd".
-  # This helm chart renders the controllers CRDs in sub charts.
-  # If needed a sub chart, hence corresponding set of CRDs can be disabled by
-  # setting fluentbit.crdsEnable or fluentd.crdsEnable values to false.
-  # By default all CRDs are deployed.
   disableComponentControllers: ""
   # Extra arguments given to the controller flags
   extraArgs:
@@ -91,8 +87,6 @@ operator:
     name: fluent-operator
 
 fluentbit:
-  # Installs a sub chart carrying the CRDs for the fluent-bit controller. The sub chart is enabled by default.
-  crdsEnable: true
   enable: true
   serviceMonitor:
     enable: false
@@ -461,9 +455,7 @@ fluentbit:
   namespaceClusterFbCfg: ""
 
 fluentd:
-  # Installs a sub chart carrying the CRDs for the fluentd controller. The sub chart is enabled by default.
   # Valid modes include "collector" and "agent".
-  crdsEnable: true
   enable: false
   name: fluentd
   # Valid modes include "collector" and "agent".

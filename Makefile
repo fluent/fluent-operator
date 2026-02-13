@@ -55,8 +55,6 @@ shellcheck:
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=config/crd/bases
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=config/crd/bases
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=charts/fluent-bit-crds/templates
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=charts/fluentd-crds/templates
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./apis/fluentbit/..." output:crd:artifacts:config=charts/fluent-operator/crds
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./apis/fluentd/..." output:crd:artifacts:config=charts/fluent-operator/crds
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./apis/fluentbit/..." output:crd:artifacts:config=charts/fluent-operator-crds/templates/fluent-bit
