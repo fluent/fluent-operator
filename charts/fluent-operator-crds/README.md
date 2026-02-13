@@ -1,8 +1,6 @@
-{{ template "chart.header" . }}
+# fluent-operator-crds
 
-{{ template "chart.deprecationWarning" . }}
-
-{{ template "chart.badgesSection" . }}
+![Version: 4.0.0](https://img.shields.io/badge/Version-4.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.6.0](https://img.shields.io/badge/AppVersion-3.6.0-informational?style=flat-square)
 
 ## Overview
 
@@ -58,11 +56,25 @@ helm install fluent-operator-crds fluent/fluent-operator-crds
 helm install fluent-operator fluent/fluent-operator --skip-crds
 ```
 
-{{ template "chart.maintainersSection" . }}
+## Maintainers
 
-{{ template "chart.sourcesSection" . }}
+| Name | Email | Url |
+| ---- | ------ | --- |
+| wenchajun | <dehaocheng@kubesphere.io> |  |
+| marcofranssen | <marco.franssen@gmail.com> | <https://marcofranssen.nl> |
+| joshuabaird | <joshbaird@gmail.com> |  |
 
-{{ template "chart.valuesSection" . }}
+## Source Code
+
+* <https://github.com/fluent/fluent-operator/tree/master/charts/fluent-operator-crds>
+
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| additionalAnnotations | object | `{}` | Additional annotations for all CRDs (e.g., helm.sh/resource-policy: keep to prevent deletion on uninstall) |
+| fluent-bit | object | `{"enabled":true}` | Enable Fluent Bit CRDs |
+| fluentd | object | `{"enabled":true}` | Enable Fluentd CRDs |
 
 ----------------------------------------------
 
