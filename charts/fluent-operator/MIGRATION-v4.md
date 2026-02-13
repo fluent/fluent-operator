@@ -1,5 +1,31 @@
 # Migration Guide: Fluent Operator Helm Chart v3.x to v4.0
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Breaking Changes](#breaking-changes)
+  - [1. Default Container Runtime Changed](#1-default-container-runtime-changed)
+  - [2. CRD Dependencies Removed](#2-crd-dependencies-removed)
+  - [3. initContainers Removed](#3-initcontainers-removed)
+  - [4. Log Path Configuration Removed](#4-log-path-configuration-removed)
+- [Default Paths by Runtime](#default-paths-by-runtime)
+- [Migration Scenarios](#migration-scenarios)
+  - [Scenario 1: Using Containerd (Default)](#scenario-1-using-containerd-default---no-changes-needed)
+  - [Scenario 2: Using CRI-O](#scenario-2-using-cri-o---minimal-changes)
+  - [Scenario 3: Using Docker](#scenario-3-using-docker)
+- [CRD Management Changes](#crd-management-changes)
+- [CRD Installation Methods](#crd-installation-methods)
+  - [Method 1: Standard Installation (Recommended)](#method-1-standard-installation-recommended)
+  - [Method 2: Helm-Managed CRDs (Advanced)](#method-2-helm-managed-crds-advanced)
+- [Migration from v3.x to v4.0](#migration-from-v3x-to-v40)
+  - [Upgrading Standard Installation](#upgrading-standard-installation)
+  - [Migrating to Helm-Managed CRDs](#migrating-to-helm-managed-crds)
+  - [Fresh v4.0 Installation](#fresh-v40-installation)
+- [Legacy Chart Migration](#legacy-chart-migration)
+- [Forward Looking: Planned Changes in v5.0](#forward-looking-planned-changes-in-v50)
+
+---
+
 ## Overview
 
 Major changes/themes for v4.0:
