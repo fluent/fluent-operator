@@ -1,0 +1,10 @@
+# -- Enable Fluent Bit CRDs
+fluent-bit:
+  enabled: true
+
+# -- Enable Fluentd CRDs
+fluentd:
+  enabled: true
+
+# -- Additional annotations for all CRDs (e.g., helm.sh/resource-policy: keep to prevent deletion on uninstall)
+additionalAnnotations: {}

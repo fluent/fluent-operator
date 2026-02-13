@@ -1,18 +1,20 @@
 apiVersion: v2
-name: fluent-operator
-description: Fluent Operator provides great flexibility in building a logging layer based on Fluent Bit and Fluentd.
-keywords:
-  - logging
-  - fluent-bit
-  - fluentd
-  - operator
+name: fluent-operator-crds
+description: Custom Resource Definitions (CRDs) for Fluent Operator. Includes both Fluent Bit and Fluentd CRDs with Helm lifecycle management.
+type: application
 version: 4.0.0
 # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-operator
 appVersion: "3.6.0"
+keywords:
+  - logging
+  - fluentd
+  - fluent-bit
+  - fluent-operator
+  - crds
+home: https://github.com/fluent/fluent-operator
 icon: https://raw.githubusercontent.com/fluent/fluent-operator/master/docs/images/fluent-operator-icon.svg
-home: https://www.fluentd.org/
 sources:
-  - https://github.com/fluent/fluent-operator
+  - https://github.com/fluent/fluent-operator/tree/master/charts/fluent-operator-crds
 maintainers:
   - name: wenchajun
     email: dehaocheng@kubesphere.io
