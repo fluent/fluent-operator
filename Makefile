@@ -380,5 +380,5 @@ update-helm-package: # update helm repo
 
 .PHONY: helm-docs
 helm-docs:
-	cd charts/fluentd-crds && helm-docs
-	cd charts/fluent-bit-crds && helm-docs
+	cd charts/fluent-operator && helm-docs
+	cd charts/fluent-operator-crds && helm-docs
