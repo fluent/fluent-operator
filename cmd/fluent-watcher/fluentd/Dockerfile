@@ -17,9 +17,10 @@ LABEL org.opencontainers.image.description "A Fluentd image for use with fluent-
 USER root
 
 RUN buildDeps="make gcc g++ libc-dev" \
+ && pluginDeps="rdkafka" \
  && apt-get update \
  && apt-get install -y --no-install-recommends $buildDeps \
- && gem install \
+ && gem install $pluginDeps \
         fluent-plugin-s3 \
         fluent-plugin-grok-parser \
         fluent-plugin-rewrite-tag-filter \
