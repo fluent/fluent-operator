@@ -297,20 +297,6 @@ helm install fluent-operator-crds fluent/fluent-operator-crds \
 
 ---
 
-## Comparison: CRD Management Methods
-
-| Feature | Method 1: Standard | Method 2: Helm-Managed |
-|---------|-------------------|----------------------|
-| **Ease of Use** | ⭐⭐⭐⭐⭐ Simple | ⭐⭐⭐ Advanced |
-| **Auto CRD Install** | ✅ Yes | ✅ Yes |
-| **Auto CRD Upgrade** | ❌ Manual | ✅ Automatic |
-| **Auto CRD Delete** | ❌ No | ✅ Yes (configurable) |
-| **Selective CRDs** | ❌ All or none | ✅ Granular control |
-| **GitOps Friendly** | ⭐⭐⭐ Good | ⭐⭐⭐⭐⭐ Excellent |
-| **Recommended For** | Most users | Advanced users |
-
----
-
 ## Migration from v3.x to v4.0
 
 ### Upgrading Standard Installation
@@ -344,7 +330,7 @@ helm upgrade fluent-operator fluent/fluent-operator --version 4.0.0 --skip-crds
 
 For new installations, simply choose your preferred method:
 
-**Standard (Recommended):**
+**Standard:**
 ```bash
 helm install fluent-operator fluent/fluent-operator
 ```
