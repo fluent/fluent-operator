@@ -4,17 +4,13 @@
 
 {{ template "chart.badgesSection" . }}
 
-{{ template "chart.description" . }}
-
-{{ template "chart.homepageLine" . }}
-
 ## Overview
 
 A Helm chart for Fluent Operator, a tool that provides flexibility in building a logging pipeline based on Fluent-Bit and Fluentd.
 
 ## Installation
 
-### Method 1: Standard Installation (Recommended)
+### Method 1: Standard Installation
 
 The simplest way to install Fluent Operator with CRDs included:
 
@@ -26,9 +22,9 @@ helm install fluent-operator fluent/fluent-operator
 ```
 
 **Behavior:**
-- ✅ CRDs automatically installed from the `crds/` directory
-- ⚠️ Helm does NOT upgrade CRDs on `helm upgrade` (manual upgrade required)
-- ⚠️ Helm does NOT delete CRDs on `helm uninstall`
+- CRDs automatically installed from the `crds/` directory
+- Helm does NOT upgrade CRDs on `helm upgrade` (manual upgrade required)
+- Helm does NOT delete CRDs on `helm uninstall`
 
 **Upgrading CRDs:**
 
@@ -69,9 +65,9 @@ helm install fluent-operator fluent/fluent-operator --skip-crds
 ```
 
 **Behavior:**
-- ✅ CRDs automatically upgrade with `helm upgrade fluent-operator-crds`
-- ✅ Fine-grained control (enable/disable Fluent Bit or Fluentd CRDs)
-- ⚠️ CRDs deleted on `helm uninstall` (unless protected with annotation)
+- CRDs automatically upgrade with `helm upgrade fluent-operator-crds`
+- Fine-grained control (enable/disable Fluent Bit or Fluentd CRDs)
+- CRDs deleted on `helm uninstall` (unless protected with annotation)
 
 **Protecting CRDs:**
 
