@@ -44,7 +44,7 @@ type KubernetesEvents struct {
 	// Set optional TLS virtual host.
 	TLSVhost string `json:"tlsVhost,omitempty"`
 	// Specifies the buffering mechanism for use with the input plugin, requires storage.path to be set in the service.
-	// Accepted values: memory or filesystem
+	// +kubebuilder:validation:Enum:=filesystem;memory
 	StorageType string `json:"storageType,omitempty"`
 }
 

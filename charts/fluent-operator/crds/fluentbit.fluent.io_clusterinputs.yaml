@@ -351,6 +351,13 @@ spec:
                   kubeURL:
                     description: API Server end-point
                     type: string
+                  storageType:
+                    description: Specifies the buffering mechanism for use with the
+                      input plugin, requires storage.path to be set in the service.
+                    enum:
+                    - filesystem
+                    - memory
+                    type: string
                   tag:
                     description: Tag name associated to all records coming from this
                       plugin.
@@ -365,9 +372,6 @@ spec:
                     type: boolean
                   tlsVhost:
                     description: Set optional TLS virtual host.
-                    type: string
-                  storageType:
-                    description: Set buffering method to filesystem or memory
                     type: string
                 type: object
               logLevel:
