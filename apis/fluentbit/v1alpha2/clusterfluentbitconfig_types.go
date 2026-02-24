@@ -126,6 +126,9 @@ type Service struct {
 	SchedulerBase *int32 `json:"schedulerBase,omitempty"`
 	// Set a maximum retry time in seconds for the scheduler. Supported in Fluent Bit >= 1.8.7
 	SchedulerCap *int32 `json:"schedulerCap,omitempty"`
+	// Set a default buffer size limit for multiline parsers. The value must be according to the Unit Size specification.
+	// +kubebuilder:validation:Pattern:="^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
+	MultilineBufferLimit string `json:"multilineBufferLimit,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -242,6 +245,9 @@ func (s *Service) Params() *params.KVs {
 	}
 	if s.SchedulerCap != nil {
 		m.Insert("scheduler.cap", fmt.Sprint(*s.SchedulerCap))
+	}
+	if s.MultilineBufferLimit != "" {
+		m.Insert("multiline_buffer_limit", s.MultilineBufferLimit)
 	}
 	return m
 }
