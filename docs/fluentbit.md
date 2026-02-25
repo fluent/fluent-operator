@@ -646,6 +646,7 @@ ParserSpec defines the desired state of ClusterParser
 | hotReload | If true enable reloading via HTTP | *bool |
 | schedulerBase | Set a base for exponential backoff in the scheduler. Supported in Fluent Bit >= 1.8.7 | *int32 |
 | schedulerCap | Set a maximum retry time in seconds for the scheduler. Supported in Fluent Bit >= 1.8.7 | *int32 |
+| multilineBufferLimit | Set a default buffer size limit for multiline parsers. The value must be according to the Unit Size specification. | string |
 
 [Back to TOC](#table-of-contents)
 # Storage

@@ -1184,6 +1184,47 @@ func TestRenderMainConfigK8sInYaml(t *testing.T) {
 	g.Expect(yamlConfig).To(Equal(expectedK8sYamlWithClusterFilterOutput))
 }
 
+func TestClusterFluentBitConfig_Service_MultilineBufferLimit(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	cfbc := ClusterFluentBitConfig{
+		Spec: FluentBitConfigSpec{
+			Service: &Service{
+				Daemon:               utils.ToPtr(false),
+				FlushSeconds:         utils.ToPtr[float64](1),
+				MultilineBufferLimit: "5MB",
+			},
+		},
+	}
+
+	expectedClassic := `[Service]
+    Daemon    false
+    Flush    1
+    multiline_buffer_limit    5MB
+`
+	expectedYamlFmt := `service:
+  daemon: false
+  flush: 1
+  multiline_buffer_limit: 5MB
+pipeline:
+  inputs:
+  outputs:
+`
+
+	config, err := cfbc.RenderMainConfig(
+		sl, ClusterInputList{}, ClusterFilterList{}, ClusterOutputList{}, nil, nil, nil,
+	)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(config).To(Equal(expectedClassic))
+
+	yamlConfig, err := cfbc.RenderMainConfigInYaml(
+		sl, ClusterInputList{}, ClusterFilterList{}, ClusterOutputList{}, nil, nil, nil,
+	)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(yamlConfig).To(Equal(expectedYamlFmt))
+}
+
 func TestClusterFluentBitConfig_RenderMainConfig_WithParsersFiles(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, "testnamespace")
