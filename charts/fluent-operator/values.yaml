@@ -475,7 +475,7 @@ fluentd:
     registry: ghcr.io
     repository: fluent/fluent-operator/fluentd
     # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluentd
-    tag: v1.19.1
+    tag: 1.19.2
 
   # Numbers of the Fluentd instance
   # Applicable when the mode is "collector", and will be ignored when the mode is "agent"
