@@ -4,37 +4,38 @@
 
 ## Features
 
-  * Add more parameters to opensearch output plugin by @discostur in https://github.com/fluent/fluent-operator/pull/1785
-  * feat: add E2E deployment test for Fluentd by @ishaanxgupta in https://github.com/fluent/fluent-operator/pull/1849
-  * feat: add storage.total_limit_size support to http output by @JeelDasvani in https://github.com/fluent/fluent-operator/pull/1865
-  * Addition of rdkafka gem to support rdkafka_group for fluent-plugin-kafka by @suckowbiz in https://github.com/fluent/fluent-operator/pull/1868
-  * feat(fluentbit): add support for multiline_buffer_limit configuration by @eatmyrust in https://github.com/fluent/fluent-operator/pull/1877
+- Add more parameters to opensearch output plugin by @discostur in https://github.com/fluent/fluent-operator/pull/1785
+- feat: add E2E deployment test for Fluentd by @ishaanxgupta in https://github.com/fluent/fluent-operator/pull/1849
+- feat: add storage.total_limit_size support to http output by @JeelDasvani in https://github.com/fluent/fluent-operator/pull/1865
+- Addition of rdkafka gem to support rdkafka_group for fluent-plugin-kafka by @suckowbiz in https://github.com/fluent/fluent-operator/pull/1868
+- feat(fluentbit): add support for multiline_buffer_limit configuration by @eatmyrust in https://github.com/fluent/fluent-operator/pull/1877
 
 ## Dependencies
 
-  * build(deps): Bump sigs.k8s.io/controller-runtime from 0.22.4 to 0.23.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1851
-  * build(deps): Bump sigs.k8s.io/controller-runtime from 0.23.0 to 0.23.1 by @dependabot in https://github.com/fluent/fluent-operator/pull/1855
-  * build(deps): Bump marcofranssen/setup-kubectl from 2.0.0 to 2.1.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1856
-  * build(deps): Bump actions/setup-go from 6.0.0 to 6.2.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1857
-  * build(deps): Bump docker/login-action from 3.6.0 to 3.7.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1858
-  * build(deps): Bump renovatebot/github-action from 44.2.2 to 46.0.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1859
-  * build(deps): Bump actions/checkout from 6.0.1 to 6.0.2 by @dependabot in https://github.com/fluent/fluent-operator/pull/1860
-  * build(deps): Bump github.com/onsi/gomega from 1.39.0 to 1.39.1 by @dependabot in https://github.com/fluent/fluent-operator/pull/1861
-  * build(deps): Bump github.com/onsi/ginkgo/v2 from 2.27.5 to 2.28.1 by @dependabot in https://github.com/fluent/fluent-operator/pull/1862
-  * build(deps): Bump the k8s-io group across 1 directory with 3 updates by @dependabot in https://github.com/fluent/fluent-operator/pull/1872
+- build(deps): Bump sigs.k8s.io/controller-runtime from 0.22.4 to 0.23.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1851
+- build(deps): Bump sigs.k8s.io/controller-runtime from 0.23.0 to 0.23.1 by @dependabot in https://github.com/fluent/fluent-operator/pull/1855
+- build(deps): Bump marcofranssen/setup-kubectl from 2.0.0 to 2.1.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1856
+- build(deps): Bump actions/setup-go from 6.0.0 to 6.2.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1857
+- build(deps): Bump docker/login-action from 3.6.0 to 3.7.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1858
+- build(deps): Bump renovatebot/github-action from 44.2.2 to 46.0.0 by @dependabot in https://github.com/fluent/fluent-operator/pull/1859
+- build(deps): Bump actions/checkout from 6.0.1 to 6.0.2 by @dependabot in https://github.com/fluent/fluent-operator/pull/1860
+- build(deps): Bump github.com/onsi/gomega from 1.39.0 to 1.39.1 by @dependabot in https://github.com/fluent/fluent-operator/pull/1861
+- build(deps): Bump github.com/onsi/ginkgo/v2 from 2.27.5 to 2.28.1 by @dependabot in https://github.com/fluent/fluent-operator/pull/1862
+- build(deps): Bump the k8s-io group across 1 directory with 3 updates by @dependabot in https://github.com/fluent/fluent-operator/pull/1872
 
 ## Enhancements
-  * Bump fluent-bit to 4.2.3 by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1880
-  * Bump fluentd to v1.19.2 by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1879
+
+- Bump fluent-bit to 4.2.3 by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1880
+- Bump fluentd to v1.19.2 by @joshuabaird in https://github.com/fluent/fluent-operator/pull/1879
 
 ## New Contributors
 
-  * @ishaanxgupta made their first contribution in https://github.com/fluent/fluent-operator/pull/1849
-  * @JeelDasvani made their first contribution in https://github.com/fluent/fluent-operator/pull/1865
-  * @suckowbiz made their first contribution in https://github.com/fluent/fluent-operator/pull/1868
-  * @eatmyrust made their first contribution in https://github.com/fluent/fluent-operator/pull/1877
+- @ishaanxgupta made their first contribution in https://github.com/fluent/fluent-operator/pull/1849
+- @JeelDasvani made their first contribution in https://github.com/fluent/fluent-operator/pull/1865
+- @suckowbiz made their first contribution in https://github.com/fluent/fluent-operator/pull/1868
+- @eatmyrust made their first contribution in https://github.com/fluent/fluent-operator/pull/1877
 
-  **Full Changelog**: https://github.com/fluent/fluent-operator/compare/v3.6.0...v3.7.0
+**Full Changelog**: https://github.com/fluent/fluent-operator/compare/v3.6.0...v3.7.0
 
 ## 3.6.0 / 2026-01-16
 
