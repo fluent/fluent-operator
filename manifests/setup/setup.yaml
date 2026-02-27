@@ -41596,7 +41596,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        image: ghcr.io/fluent/fluent-operator/fluent-operator:latest
+        image: ghcr.io/fluent/fluent-operator/fluent-operator:v3.7.0
         name: fluent-operator
         resources:
           limits:
