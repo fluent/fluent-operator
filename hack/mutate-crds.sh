@@ -3,6 +3,18 @@
 # Support additional annotations for CRDs
 # This script is idempotent - it can be run multiple times safely
 
+# Function to strip the leading YAML document separator added by controller-gen
+strip_doc_separator() {
+  local CRD="$1"
+  sed -i '' '/^---$/d' "$CRD"
+}
+
+# Function to strip the controller-gen version annotation added by controller-gen
+strip_controller_gen_annotation() {
+  local CRD="$1"
+  sed -i '' '/controller-gen\.kubebuilder\.io\/version:/d' "$CRD"
+}
+
 # Function to add annotations templating to a CRD if not already present
 add_annotations() {
   local CRD="$1"
@@ -34,6 +46,9 @@ do
   [[ -f "$CRD" ]] || continue
   [[ "$(basename "$CRD")" == ".gitkeep" ]] && continue
 
+  strip_doc_separator "$CRD"
+  strip_controller_gen_annotation "$CRD"
+
   # Add annotations first (before conditional wrapper)
   add_annotations "$CRD"
 
@@ -47,6 +62,9 @@ for CRD in "${FLUENTD_CRDS[@]}"
 do
   [[ -f "$CRD" ]] || continue
   [[ "$(basename "$CRD")" == ".gitkeep" ]] && continue
+
+  strip_doc_separator "$CRD"
+  strip_controller_gen_annotation "$CRD"
 
   # Add annotations first (before conditional wrapper)
   add_annotations "$CRD"
