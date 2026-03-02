@@ -380,5 +380,5 @@ update-helm-package: # update helm repo
 
 .PHONY: helm-docs
 helm-docs:
-	cd charts/fluent-operator && helm-docs
-	cd charts/fluent-operator-crds && helm-docs
+	cd charts/fluent-operator && helm-docs -t _templates.gotmpl -t README.md.gotmpl
+	cd charts/fluent-operator-crds && helm-docs -t _templates.gotmpl -t README.md.gotmpl

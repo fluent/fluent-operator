@@ -2,4 +2,4 @@
 
 The Helm charts in this directory are considered "development" and are [synced](../RELEASE.md) to the [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/) repository for each release.
 
-Users are instructed to install the Fluent Operator Helm chart from the [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/) repo.
+To install these helm charts and view their documentation, visit the official [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/) repo.
