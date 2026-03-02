@@ -153,8 +153,7 @@ fluentbit:
     # -- Fluent Bit image repository
     repository: fluent/fluent-operator/fluent-bit
     # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-bit
-    # -- Fluent Bit image tag
-    tag: "4.2.2"
+    tag: "4.2.3"
 
   # -- Fluent Bit resource requests and limits. You can adjust it based on the log volume.
   # If you do want to specify resources, adjust them as necessary
@@ -581,8 +580,7 @@ fluentd:
     # -- Fluentd image repository
     repository: fluent/fluent-operator/fluentd
     # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluentd
-    # -- Fluentd image tag
-    tag: v1.19.1
+    tag: 1.19.2
 
   # -- Number of Fluentd replicas
   # Applicable when the mode is "collector", and will be ignored when the mode is "agent"
