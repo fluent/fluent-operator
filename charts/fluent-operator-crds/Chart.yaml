@@ -2,7 +2,7 @@ apiVersion: v2
 name: fluent-operator-crds
 description: Custom Resource Definitions (CRDs) for Fluent Operator. Includes both Fluent Bit and Fluentd CRDs with Helm lifecycle management.
 type: application
-version: 0.0.1-dev.0
+version: 0.0.0-dev.0 # This is a development chart which gets released and versioned in the fluent/helm-charts repo
 # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-operator
 appVersion: 3.7.0
 keywords:
