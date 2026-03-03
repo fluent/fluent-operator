@@ -39,6 +39,14 @@ wrap_conditional() {
   fi
 }
 
+# Handle fluent-operator chart - bundled CRDs (crds/ directory)
+OPERATOR_CRDS=(charts/fluent-operator/crds/*.yaml)
+for CRD in "${OPERATOR_CRDS[@]}"
+do
+  [[ -f "$CRD" ]] || continue
+  strip_doc_separator "$CRD"
+done
+
 # Handle fluent-operator-crds chart - Fluent Bit CRDs
 FLUENT_BIT_CRDS=(charts/fluent-operator-crds/templates/fluent-bit/*.yaml)
 for CRD in "${FLUENT_BIT_CRDS[@]}"
