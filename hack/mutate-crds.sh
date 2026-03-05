@@ -61,7 +61,7 @@ do
   add_annotations "$CRD"
 
   # Wrap with conditional
-  wrap_conditional "$CRD" "{{- if .Values.fluent-bit.enabled }}"
+  wrap_conditional "$CRD" "{{- if .Values.fluentbit.enabled }}"
 done
 
 # Handle fluent-operator-crds chart - Fluentd CRDs

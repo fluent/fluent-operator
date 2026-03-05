@@ -17,7 +17,7 @@ helm install fluent-operator-crds fluent/fluent-operator-crds \
 
 ```bash
 helm install fluent-operator-crds fluent/fluent-operator-crds \
-  --set fluent-bit.enabled=false
+  --set fluentbit.enabled=false
 ```
 
 ## Protecting CRDs from Deletion
