@@ -1,5 +1,5 @@
 # -- Enable Fluent Bit CRDs
-fluent-bit:
+fluentbit:
   enabled: true
 
 # -- Enable Fluentd CRDs
