@@ -14,6 +14,7 @@ The http output plugin allows to flush your records into a HTTP endpoint. <br />
 | compress | Set payload compression mechanism. Option available is 'gzip' | string |
 | format | Specify the data format to be used in the HTTP request body, by default it uses msgpack. Other supported formats are json, json_stream and json_lines and gelf. | string |
 | allowDuplicatedHeaders | Specify if duplicated headers are allowed. If a duplicated header is found, the latest key/value set is preserved. | *bool |
+| logResponsePayload | Specify if the response paylod should be logged or not. | *bool |
 | headerTag | Specify an optional HTTP header field for the original message tag. | string |
 | headers | Add a HTTP header key/value pair. Multiple headers can be set. | map[string]string |
 | jsonDateKey | Specify the name of the time key in the output record. To disable the time key just set the value to false. | string |

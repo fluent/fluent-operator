@@ -25,16 +25,17 @@ func TestHTTP_Params(t *testing.T) {
 
 	sl := plugins.NewSecretLoader(fc, "test_namespace")
 	h := HTTP{
-		Host:           "example.com",
-		Port:           utils.ToPtr[int32](443),
-		HTTPUser:       &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_user"}}},
-		HTTPPasswd:     &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_passwd"}}},
-		Uri:            "/logs",
-		Format:         "json",
-		Headers:        map[string]string{"X-Custom": "value"},
-		TLS:            &plugins.TLS{Verify: utils.ToPtr(false)},
-		Networking:     &plugins.Networking{SourceAddress: utils.ToPtr("expected_source_address")},
-		TotalLimitSize: "512M",
+		Host:               "example.com",
+		Port:               utils.ToPtr[int32](443),
+		HTTPUser:           &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_user"}}},
+		HTTPPasswd:         &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_passwd"}}},
+		Uri:                "/logs",
+		Format:             "json",
+		LogResponsePayload: utils.ToPtr(false),
+		Headers:            map[string]string{"X-Custom": "value"},
+		TLS:                &plugins.TLS{Verify: utils.ToPtr(false)},
+		Networking:         &plugins.Networking{SourceAddress: utils.ToPtr("expected_source_address")},
+		TotalLimitSize:     "512M",
 	}
 
 	expected := params.NewKVs()
@@ -44,6 +45,7 @@ func TestHTTP_Params(t *testing.T) {
 	expected.Insert("port", "443")
 	expected.Insert("uri", "/logs")
 	expected.Insert("format", "json")
+	expected.Insert("log_response_payload", "Off")
 	expected.Insert("header", " X-Custom    value")
 	expected.Insert("tls", "On")
 	expected.Insert("tls.verify", "false")
