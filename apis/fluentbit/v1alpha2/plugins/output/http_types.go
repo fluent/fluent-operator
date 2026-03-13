@@ -38,6 +38,8 @@ type HTTP struct {
 	// Specify if duplicated headers are allowed.
 	// If a duplicated header is found, the latest key/value set is preserved.
 	AllowDuplicatedHeaders *bool `json:"allowDuplicatedHeaders,omitempty"`
+	// Specify if the response paylod should be logged or not.
+	LogResponsePayload *bool `json:"logResponsePayload,omitempty"`
 	// Specify an optional HTTP header field for the original message tag.
 	HeaderTag string `json:"headerTag,omitempty"`
 	// Add a HTTP header key/value pair. Multiple headers can be set.
@@ -105,6 +107,7 @@ func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVString(kvs, "gelf_full_message_key", h.GelfFullMessageKey)
 	plugins.InsertKVString(kvs, "gelf_level_key", h.GelfLevelKey)
 	plugins.InsertKVField(kvs, "allow_duplicated_headers", h.AllowDuplicatedHeaders)
+	plugins.InsertKVField(kvs, "log_response_payload", h.LogResponsePayload)
 
 	if h.TLS != nil {
 		tls, err := h.TLS.Params(sl)

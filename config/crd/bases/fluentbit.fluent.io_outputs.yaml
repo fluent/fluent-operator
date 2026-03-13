@@ -1582,6 +1582,10 @@ spec:
                       Specify the name of the time key in the output record.
                       To disable the time key just set the value to false.
                     type: string
+                  logResponsePayload:
+                    description: Specify if the response paylod should be logged or
+                      not.
+                    type: boolean
                   networking:
                     description: Include fluentbit networking options for this output-plugin
                     properties:
