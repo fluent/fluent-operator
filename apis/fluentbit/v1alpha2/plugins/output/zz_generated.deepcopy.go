@@ -432,6 +432,11 @@ func (in *HTTP) DeepCopyInto(out *HTTP) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.LogResponsePayload != nil {
+		in, out := &in.LogResponsePayload, &out.LogResponsePayload
+		*out = new(bool)
+		**out = **in
+	}
 	if in.Headers != nil {
 		in, out := &in.Headers, &out.Headers
 		*out = make(map[string]string, len(*in))
