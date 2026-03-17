@@ -293,6 +293,49 @@ func TestClusterFilterList_Load_With_Ordinals(t *testing.T) {
 	}
 }
 
+func TestClusterFilterList_Load_Grep_LogicalOp(t *testing.T) {
+	filtersExpected := `[Filter]
+    Name    grep
+    Match    *
+    Regex    log aa
+    Exclude    log bb
+    Logical_Op    and
+`
+
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	filterObj := &ClusterFilter{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterFilter",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "filter-grep-logical-op",
+		},
+		Spec: FilterSpec{
+			Match: "*",
+			FilterItems: []FilterItem{
+				{
+					Grep: &filter.Grep{
+						Regex:     "log aa",
+						Exclude:   "log bb",
+						LogicalOp: "and",
+					},
+				},
+			},
+		},
+	}
+
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{*filterObj},
+	}
+
+	clusterFilters, err := filters.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterFilters).To(Equal(filtersExpected))
+}
+
 func TestClusterFilter_RecordModifier_Generated(t *testing.T) {
 	filtersExpected := `[Filter]
     Name    record_modifier
