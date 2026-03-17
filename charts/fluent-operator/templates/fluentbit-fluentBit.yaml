@@ -118,7 +118,7 @@ spec:
     {{- toYaml .Values.fluentbit.rbacRules | nindent 4 }}
   {{- end }}
   {{- with .Values.fluentbit.disableLogVolumes }}
-  disableLogVolumes: {{ . | quote }}
+  disableLogVolumes: {{ . }}
   {{- end }}
   {{- with .Values.fluentbit.initContainers }}
   initContainers:
