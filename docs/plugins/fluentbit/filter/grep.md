@@ -7,4 +7,4 @@ The Grep Filter plugin allows to match or exclude specific records based in regu
 | ----- | ----------- | ------ |
 | regex | Keep records which field matches the regular expression. Value Format: FIELD REGEX | string |
 | exclude | Exclude records which field matches the regular expression. Value Format: FIELD REGEX | string |
-| logicalOp | Specify the logical operator for multiple regex/exclude rules. | string |
+| logicalOp | Specify the logical operator for multiple regex/exclude rules. Valid values: `and`, `or`. | string |
