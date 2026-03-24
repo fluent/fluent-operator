@@ -99,6 +99,14 @@ cleanup-test-e2e:
 .PHONY: test-e2e
 test-e2e: setup-test-e2e fluentd-e2e ## Run the e2e tests against a Kind k8s instance that is spun up.
 
+.PHONY: helm-v4-e2e
+helm-v4-e2e: setup-test-e2e ## Run Helm v4 chart e2e tests against a Kind k8s instance.
+	@export KIND_CLUSTER=$(KIND_CLUSTER); export PATH="$$PWD/bin:$$PATH"; tests/scripts/helm_v4_e2e.sh
+
+.PHONY: helm-upgrade-e2e
+helm-upgrade-e2e: setup-test-e2e ## Run Helm v4 upgrade e2e tests (v3 → v4) against a Kind k8s instance.
+	@export KIND_CLUSTER=$(KIND_CLUSTER); export PATH="$$PWD/bin:$$PATH"; tests/scripts/helm_v4_upgrade_e2e.sh
+
 %-e2e: ginkgo
 	@export KIND_CLUSTER=$(KIND_CLUSTER); export PATH="$$PWD/bin:$$PATH"; tests/scripts/$*_e2e.sh
 

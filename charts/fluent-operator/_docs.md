@@ -23,12 +23,12 @@ When upgrading, manually apply CRD updates before upgrading the chart. You can o
 ```bash
 # Option 1: Extract from the chart
 helm pull fluent/fluent-operator --untar
-kubectl apply -f fluent-operator/crds/
+kubectl apply --server-side --force-conflicts -f fluent-operator/crds/
 
 # Option 2: Clone the repository
 git clone https://github.com/fluent/fluent-operator.git
 cd fluent-operator
-kubectl apply -f charts/fluent-operator/crds/
+kubectl apply --server-side --force-conflicts -f charts/fluent-operator/crds/
 
 # Then upgrade the chart
 helm upgrade fluent-operator fluent/fluent-operator

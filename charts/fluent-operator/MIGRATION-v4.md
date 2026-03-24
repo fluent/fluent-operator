@@ -263,8 +263,13 @@ When upgrading, manually apply CRD updates before upgrading the chart:
 helm repo update
 
 # Extract and apply CRD updates
+# Note: --server-side --force-conflicts is required:
+# - --server-side: the v4 CRDs exceed the 262144-byte annotation limit of
+#   client-side apply.
+# - --force-conflicts: Helm owns the existing CRD fields; kubectl must take
+#   over management to apply the v4 schema changes.
 helm pull fluent/fluent-operator --version 4.0.0 --untar
-kubectl apply -f fluent-operator/crds/
+kubectl apply --server-side --force-conflicts -f fluent-operator/crds/
 
 # Then upgrade the chart
 helm upgrade fluent-operator fluent/fluent-operator --version 4.0.0
@@ -341,15 +346,30 @@ helm upgrade fluent-operator fluent/fluent-operator --version 4.0.0
 
 ### Migrating to Helm-Managed CRDs
 
-If you want to switch to full Helm management of CRDs:
+If you want to switch to full Helm lifecycle management of CRDs after upgrading to v4.0:
 
 ```bash
-# Step 1: Install the new CRDs chart (existing CRDs will be adopted)
+# Step 1: Apply v4 CRDs manually (see Upgrading Standard Installation above)
+kubectl apply --server-side --force-conflicts -f fluent-operator/crds/
+
+# Step 2: Add Helm ownership metadata to all existing fluent.io CRDs.
+# Helm cannot adopt pre-existing cluster resources without this metadata.
+NAMESPACE=fluent  # set to your release namespace
+kubectl get crds -o name | grep '\.fluent\.io' | while read crd; do
+  kubectl label "$crd" app.kubernetes.io/managed-by=Helm --overwrite
+  kubectl annotate "$crd" \
+    meta.helm.sh/release-name=fluent-operator-crds \
+    meta.helm.sh/release-namespace="${NAMESPACE}" --overwrite
+done
+
+# Step 3: Install the CRDs chart — it will adopt the annotated CRDs
 helm install fluent-operator-crds fluent/fluent-operator-crds \
+  --namespace "${NAMESPACE}" \
   --set additionalAnnotations."helm\.sh/resource-policy"=keep
 
-# Step 2: Upgrade operator to v4.0 with --skip-crds
-helm upgrade fluent-operator fluent/fluent-operator --version 4.0.0 --skip-crds
+# Step 4: Upgrade operator to v4.0 with --skip-crds
+helm upgrade fluent-operator fluent/fluent-operator --version 4.0.0 \
+  --namespace "${NAMESPACE}" --skip-crds
 ```
 
 ### Fresh v4.0 Installation
