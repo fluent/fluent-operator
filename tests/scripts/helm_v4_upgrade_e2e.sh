@@ -37,20 +37,6 @@ assert_crds_present() {
   fail "CRDs matching '$pattern' not found after $((retries * 5))s"
 }
 
-assert_crds_absent() {
-  local pattern="$1"
-  local retries=20
-  for ((i=0; i<retries; i++)); do
-    if ! kubectl get crds --context "kind-${KIND_CLUSTER}" 2>&1 | grep -q "$pattern"; then
-      pass "CRDs matching '$pattern' are absent (as expected)"
-      return
-    fi
-    sleep 5
-  done
-  echo "  DEBUG: kubectl get crds output:"
-  kubectl get crds --context "kind-${KIND_CLUSTER}" 2>&1 | grep "$pattern" || true
-  fail "CRDs matching '$pattern' still present after $((retries * 5))s"
-}
 
 wait_operator() {
   kubectl -n "$LOGGING_NAMESPACE" wait --for=condition=available \
