@@ -17,6 +17,9 @@ type Grep struct {
 	// Exclude records which field matches the regular expression.
 	// Value Format: FIELD REGEX
 	Exclude string `json:"exclude,omitempty"`
+	// Specify the logical operator for multiple regex/exclude rules.
+	// +kubebuilder:validation:Enum:=and;or
+	LogicalOp string `json:"logicalOp,omitempty"`
 }
 
 func (*Grep) Name() string {
@@ -34,6 +37,9 @@ func (g *Grep) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if g.Exclude != "" {
 		kvs.Insert("Exclude", g.Exclude)
+	}
+	if g.LogicalOp != "" {
+		kvs.Insert("Logical_Op", g.LogicalOp)
 	}
 	return kvs, nil
 }
