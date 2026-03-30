@@ -212,8 +212,8 @@ func (i *Input) tailPlugin(parent *params.PluginStore, loader plugins.SecretLoad
 		parent.InsertPairs("emit_unmatched_lines", fmt.Sprint(*tailModel.EmitUnmatchedLines))
 	}
 
-	if tailModel.IgnoreRepatedPermissionError != nil {
-		parent.InsertPairs("ignore_repeated_permission_error", fmt.Sprint(*tailModel.IgnoreRepatedPermissionError))
+	if tailModel.IgnoreRepeatedPermissionError != nil {
+		parent.InsertPairs("ignore_repeated_permission_error", fmt.Sprint(*tailModel.IgnoreRepeatedPermissionError))
 	}
 
 	return parent

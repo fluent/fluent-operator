@@ -73,7 +73,7 @@ type Tail struct {
 	// Emits unmatched lines when <parse> format is not matched for incoming logs.
 	EmitUnmatchedLines *bool `json:"emitUnmatchedLines,omitempty"`
 	// If you have to exclude the non-permission files from the watch list, set this parameter to true. It suppresses the repeated permission error logs.
-	IgnoreRepatedPermissionError *bool `json:"ignoreRepeatedPermissionError,omitempty"`
+	IgnoreRepeatedPermissionError *bool `json:"ignoreRepeatedPermissionError,omitempty"`
 	// The in_tail plugin can assign each log file to a group, based on user defined rules.
 	// The limit parameter controls the total number of lines collected for a group within a rate_period time interval.
 	Group *Group `json:"group,omitempty"`
