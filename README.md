@@ -152,29 +152,41 @@ kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/mas
 
 #### Deploy Fluent Operator with Helm
 
-> NOTE: For the helm based install, Helm v3.2.1 or higher is needed.
+> NOTE: Helm v3.2.1 or higher is required.
 
-To install or upgrade Fluent Operator using Helm:
+**Standard installation** (CRDs bundled in chart):
 
 ```shell
-export FLUENT_OPERATOR_CONTAINER_RUNTIME="containerd" # or "cri-o", "docker" depending on the container runtime being used (see `values.yaml`)
-
 helm repo add fluent https://fluent.github.io/helm-charts
-helm upgrade --install fluent-operator fluent/fluent-operator \
-  --create-namespace \
-  --set containerRuntime=${FLUENT_OPERATOR_CONTAINER_RUNTIME}
+helm repo update
+
+helm install fluent-operator fluent/fluent-operator \
+  --create-namespace -n fluent
 ```
 
-By default, all CRDs required for Fluent Operator will be installed.  To prevent `helm install` from installing CRDs, you can set `fluent-bit.crdsEnable` or `fluentd.crdsEnable` to `false`.
+The default container runtime is `containerd`. Set `--set containerRuntime=docker` or `--set containerRuntime=crio` if your cluster uses a different runtime.
 
-Helm [does not manage the lifecycle of CRDs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/), so if the Fluent Operator CRDs already exist, subsequent
-chart upgrades will not add or remove CRDs even if they have changed.  During upgrades, users should manually update CRDs:
+Helm installs CRDs on first install but [does not upgrade or delete them](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/) on subsequent `helm upgrade` or `helm uninstall` calls. To update CRDs when upgrading the chart:
 
+```shell
+helm pull fluent/fluent-operator --untar
+kubectl apply --server-side --force-conflicts -f fluent-operator/crds/
+helm upgrade fluent-operator fluent/fluent-operator -n fluent
 ```
-wget https://github.com/fluent/fluent-operator/releases/download/<version>/fluent-operator.tgz
-tar -xf fluent-operator.tgz
-kubectl replace -f fluent-operator/crds
+
+**Advanced installation** — full Helm lifecycle management of CRDs via the separate `fluent-operator-crds` chart:
+
+```shell
+# Step 1: install CRDs as a separately managed release
+helm install fluent-operator-crds fluent/fluent-operator-crds -n fluent --create-namespace
+
+# Step 2: install the operator, skipping CRDs (already installed above)
+helm install fluent-operator fluent/fluent-operator -n fluent --skip-crds
 ```
+
+With this approach, CRDs are upgraded with `helm upgrade fluent-operator-crds` and can be protected from deletion with `--set additionalAnnotations."helm\.sh/resource-policy"=keep`.
+
+See the [MIGRATION-v4.md](charts/fluent-operator/MIGRATION-v4.md) guide for more information on upgrading from v3.x.
 
 ### Fluent Operator Walkthrough
 
@@ -200,16 +212,10 @@ kubectl apply -f manifests/logging-stack
 
 #### Deploy the Kubernetes logging pipeline with Helm
 
-You can also deploy the Kubernetes logging pipeline with Helm, just need to set the `Kubernetes` parameter to `true` (default):
+The Kubernetes logging pipeline (container log collection via Fluent Bit) is enabled by default (`Kubernetes: true`). To also deploy Fluentd as a log aggregation layer:
 
 ```shell
-helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set containerRuntime=docker
-```
-
-If you want to deploy  `fluentd`, just need to set the `fluentd.enable` parameter to `true`:
-
-```shell
-helm upgrade fluent-operator --create-namespace -n fluent charts/fluent-operator/  --set containerRuntime=docker,fluentd.enable=true
+helm upgrade fluent-operator fluent/fluent-operator -n fluent --set fluentd.enable=true
 ```
 
 Within a couple of minutes, you should observe an index available:
