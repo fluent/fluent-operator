@@ -152,8 +152,8 @@ fluentbit:
     registry: ghcr.io
     # -- Fluent Bit image repository
     repository: fluent/fluent-operator/fluent-bit
-    # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-bit
     # -- Fluent Bit image tag
+    # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-bit
     tag: "5.0.2"
 
   # -- Fluent Bit resource requests and limits. You can adjust it based on the log volume.
