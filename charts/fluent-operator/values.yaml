@@ -113,6 +113,8 @@ operator:
 fluentbit:
   # -- Enable Fluent Bit deployment
   enable: true
+  # -- Override the namespace for FluentBit resources; defaults to .Release.Namespace
+  namespaceOverride: ""
   serviceMonitor:
     # -- Enable Prometheus ServiceMonitor for Fluent Bit
     enable: false
