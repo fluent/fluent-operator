@@ -4,7 +4,7 @@ apiVersion: fluentbit.fluent.io/v1alpha2
 kind: FluentBit
 metadata:
   name: fluent-bit
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ default .Release.Namespace .Values.fluentbit.namespaceOverride | quote }}
   labels:
     app.kubernetes.io/name: fluent-bit
 spec:
