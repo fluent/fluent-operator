@@ -27,7 +27,7 @@ func indentation(config string) string {
 	var buf bytes.Buffer
 	for split := range strings.SplitSeq(config, "\n") {
 		if split != "" {
-			buf.WriteString(fmt.Sprintf("  %s\n", split))
+			fmt.Fprintf(&buf, "  %s\n", split)
 		}
 	}
 	return buf.String()

@@ -61,7 +61,7 @@ func indentation(str string) string {
 	var buf bytes.Buffer
 	for s := range strings.SplitSeq(str, "\n") {
 		if s != "" {
-			buf.WriteString(fmt.Sprintf("    %s\n", strings.TrimSpace(s)))
+			fmt.Fprintf(&buf, "    %s\n", strings.TrimSpace(s))
 		}
 	}
 	return buf.String()
@@ -73,14 +73,14 @@ func MakeCustomConfigNamespaced(customConfig string, namespace string) string {
 		section = strings.TrimSpace(section)
 		idx := strings.LastIndex(section, " ")
 		if strings.HasPrefix(section, "Match_Regex") {
-			buf.WriteString(fmt.Sprintf("Match_Regex %s\n", utils.GenerateNamespacedMatchRegExpr(namespace, section[idx+1:])))
+			fmt.Fprintf(&buf, "Match_Regex %s\n", utils.GenerateNamespacedMatchRegExpr(namespace, section[idx+1:]))
 			continue
 		}
 		if strings.HasPrefix(section, "Match") {
-			buf.WriteString(fmt.Sprintf("Match %s\n", utils.GenerateNamespacedMatchExpr(namespace, section[idx+1:])))
+			fmt.Fprintf(&buf, "Match %s\n", utils.GenerateNamespacedMatchExpr(namespace, section[idx+1:]))
 			continue
 		}
-		buf.WriteString(fmt.Sprintf("%s\n", section))
+		fmt.Fprintf(&buf, "%s\n", section)
 	}
 	return buf.String()
 }

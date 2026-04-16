@@ -76,7 +76,7 @@ func (o *Output) Name() string {
 
 func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error) {
 	ps := params.NewPluginStore(o.Name())
-	childs := make([]*params.PluginStore, 0)
+	childs := make([]*params.PluginStore, 0, 3)
 
 	ps.InsertPairs("@id", fmt.Sprint(*o.Id))
 
@@ -184,11 +184,10 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 	}
 
 	return o.customOutput(ps, loader), nil
-
 }
 
 func (o *Output) forwardPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
-	childs := make([]*params.PluginStore, 0)
+	childs := make([]*params.PluginStore, 0, 3)
 
 	if len(o.Forward.Servers) > 0 {
 		for _, s := range o.Forward.Servers {
@@ -402,7 +401,6 @@ func (o *Output) elasticsearchPluginCommon(cmn *ElasticsearchCommon, parent *par
 }
 
 func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
-
 	parent, err := o.elasticsearchPluginCommon(&o.Elasticsearch.ElasticsearchCommon, parent, loader)
 	if err != nil {
 		return nil, err
@@ -424,7 +422,6 @@ func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.
 }
 
 func (o *Output) elasticsearchDataStreamPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
-
 	parent, err := o.elasticsearchPluginCommon(&o.ElasticsearchDataStream.ElasticsearchCommon, parent, loader)
 	if err != nil {
 		return nil, err
@@ -740,7 +737,7 @@ func (o *Output) lokiPlugin(parent *params.PluginStore, loader plugins.SecretLoa
 }
 
 func (o *Output) cloudWatchPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
-	childs := make([]*params.PluginStore, 0)
+	childs := make([]*params.PluginStore, 0, 3)
 
 	params.InsertPairs(parent, "auto_create_stream", o.CloudWatch.AutoCreateStream)
 	if o.CloudWatch.AwsKeyId != nil {

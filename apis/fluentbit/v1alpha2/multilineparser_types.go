@@ -87,7 +87,7 @@ func load[T multilineParserInterface](items []T, sl plugins.SecretLoader) (strin
 			}
 
 			buf.WriteString("[MULTILINE_PARSER]\n")
-			buf.WriteString(fmt.Sprintf("    Name    %s\n", item.name()))
+			fmt.Fprintf(&buf, "    Name    %s\n", item.name())
 
 			kvs, err := p.Params(sl)
 			if err != nil {

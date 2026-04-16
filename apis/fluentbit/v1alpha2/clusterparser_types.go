@@ -103,8 +103,8 @@ func (list ClusterParserList) Load(sl plugins.SecretLoader, existingParsers map[
 			}
 
 			buf.WriteString("[PARSER]\n")
-			buf.WriteString(fmt.Sprintf("    Name    %s\n", item.Name))
-			buf.WriteString(fmt.Sprintf("    Format    %s\n", p.Name()))
+			fmt.Fprintf(&buf, "    Name    %s\n", item.Name)
+			fmt.Fprintf(&buf, "    Format    %s\n", p.Name())
 
 			kvs, err := p.Params(sl)
 			if err != nil {
@@ -114,10 +114,10 @@ func (list ClusterParserList) Load(sl plugins.SecretLoader, existingParsers map[
 
 			for _, decorder := range item.Spec.Decoders {
 				if decorder.DecodeField != "" {
-					buf.WriteString(fmt.Sprintf("    Decode_Field    %s\n", decorder.DecodeField))
+					fmt.Fprintf(&buf, "    Decode_Field    %s\n", decorder.DecodeField)
 				}
 				if decorder.DecodeFieldAs != "" {
-					buf.WriteString(fmt.Sprintf("    Decode_Field_As    %s\n", decorder.DecodeFieldAs))
+					fmt.Fprintf(&buf, "    Decode_Field_As    %s\n", decorder.DecodeFieldAs)
 				}
 			}
 			existingParsers[item.Name] = true

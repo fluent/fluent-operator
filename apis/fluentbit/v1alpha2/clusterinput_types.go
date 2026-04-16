@@ -126,13 +126,13 @@ func (list ClusterInputList) Load(sl plugins.SecretLoader) (string, error) {
 
 			buf.WriteString("[Input]\n")
 			if p.Name() != "" {
-				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+				fmt.Fprintf(&buf, "    Name    %s\n", p.Name())
 			}
 			if item.Spec.Alias != "" {
-				buf.WriteString(fmt.Sprintf("    Alias    %s\n", item.Spec.Alias))
+				fmt.Fprintf(&buf, "    Alias    %s\n", item.Spec.Alias)
 			}
 			if item.Spec.LogLevel != "" {
-				buf.WriteString(fmt.Sprintf("    Log_Level    %s\n", item.Spec.LogLevel))
+				fmt.Fprintf(&buf, "    Log_Level    %s\n", item.Spec.LogLevel)
 			}
 			kvs, err := p.Params(sl)
 			if err != nil {
@@ -157,7 +157,7 @@ func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (str
 	var buf bytes.Buffer
 
 	sort.Sort(InputByName(list.Items))
-	buf.WriteString(fmt.Sprintf("%sinputs:\n", utils.YamlIndent(depth)))
+	fmt.Fprintf(&buf, "%sinputs:\n", utils.YamlIndent(depth))
 	padding := utils.YamlIndent(depth + 2)
 
 	for _, item := range list.Items {
@@ -167,16 +167,16 @@ func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (str
 			}
 
 			if p.Name() != "" {
-				buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
+				fmt.Fprintf(&buf, "%s- name: %s\n", utils.YamlIndent(depth+1), p.Name())
 			}
 			if item.Spec.Alias != "" {
-				buf.WriteString(fmt.Sprintf("%salias: %s\n", padding, item.Spec.Alias))
+				fmt.Fprintf(&buf, "%salias: %s\n", padding, item.Spec.Alias)
 			}
 			if item.Spec.LogLevel != "" {
-				buf.WriteString(fmt.Sprintf("%slog_level: %s\n", padding, item.Spec.LogLevel))
+				fmt.Fprintf(&buf, "%slog_level: %s\n", padding, item.Spec.LogLevel)
 			}
 			if item.Spec.Processors != nil {
-				buf.WriteString(fmt.Sprintf("%sprocessors:\n", padding))
+				fmt.Fprintf(&buf, "%sprocessors:\n", padding)
 				processorYaml, err := yaml.Marshal(item.Spec.Processors)
 				if err != nil {
 					return fmt.Errorf("error marshalling processor: %w", err)
