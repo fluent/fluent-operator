@@ -707,6 +707,11 @@ spec:
                     - "on"
                     - "off"
                     type: string
+                  storagePath:
+                    description: |-
+                      Set an optional location in the file system to store streams and chunks of data.
+                      If this parameter is not set, Input plugins can only use in-memory buffering.
+                    type: string
                   storageType:
                     description: Specify the buffering mechanism to use. It can be
                       memory or filesystem
@@ -901,6 +906,11 @@ spec:
                       Skip_Long_Lines alter that behavior and instruct Fluent Bit to skip long lines
                       and continue processing other lines that fits into the buffer size.
                     type: boolean
+                  storagePath:
+                    description: |-
+                      Set an optional location in the file system to store streams and chunks of data.
+                      If this parameter is not set, Input plugins can only use in-memory buffering.
+                    type: string
                   storageType:
                     description: Specify the buffering mechanism to use. It can be
                       memory or filesystem

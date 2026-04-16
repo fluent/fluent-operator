@@ -16,4 +16,5 @@ The Systemd input plugin allows to collect log messages from the Journald daemon
 | readFromTail | Start reading new entries. Skip entries already stored in Journald. | string |
 | stripUnderscores | Remove the leading underscore of the Journald field (key). For example the Journald field _PID becomes the key PID. | string |
 | storageType | Specify the buffering mechanism to use. It can be memory or filesystem | string |
+| storagePath | Set an optional location in the file system to store streams and chunks of data. If this parameter is not set, Input plugins can only use in-memory buffering. | string |
 | pauseOnChunksOverlimit | Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached. | string |

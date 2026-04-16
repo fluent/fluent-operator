@@ -34,6 +34,7 @@ The Tail input plugin allows to monitor one or several text files. <br /> It has
 | disableInotifyWatcher | DisableInotifyWatcher will disable inotify and use the file stat watcher instead. | *bool |
 | multilineParser | This will help to reassembly multiline messages originally split by Docker or CRI Specify one or Multiline Parser definition to apply to the content. | string |
 | storageType | Specify the buffering mechanism to use. It can be memory or filesystem | string |
+| storagePath | Set an optional location in the file system to store streams and chunks of data. If this parameter is not set, Input plugins can only use in-memory buffering. | string |
 | pauseOnChunksOverlimit | Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached. | string |
 | skipEmptyLines | Skips empty lines in the log file from any further processing or output. | *bool |
 | threaded | Threaded mechanism allows input plugin to run in a separate thread which helps to desaturate the main pipeline. | *string |
