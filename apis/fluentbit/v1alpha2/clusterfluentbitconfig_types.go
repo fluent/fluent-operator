@@ -337,7 +337,7 @@ func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
 		buf.WriteString(rtc)
 	}
 	if filterSections == "" && nsFilterSections != nil {
-		buf.WriteString(fmt.Sprintf("%sfilters:\n", utils.YamlIndent(1)))
+		fmt.Fprintf(&buf, "%sfilters:\n", utils.YamlIndent(1))
 	} else {
 		// 1. filterSections == "" && nsFilterSections == nil
 		// 2. filterSections != "" && nsFilterSections != nil
@@ -348,7 +348,7 @@ func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
 		buf.WriteString(filters)
 	}
 	if outputSections == "" && nsOutputSections != nil {
-		buf.WriteString(fmt.Sprintf("%soutputs:\n", utils.YamlIndent(1)))
+		fmt.Fprintf(&buf, "%soutputs:\n", utils.YamlIndent(1))
 	} else {
 		// 1. outputSections == "" && nsOutputSections == nil
 		// 2. outputSections != "" && nsOutputSections != nil

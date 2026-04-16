@@ -131,16 +131,16 @@ func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 
 			buf.WriteString("[Filter]\n")
 			if p.Name() != "" {
-				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+				fmt.Fprintf(&buf, "    Name    %s\n", p.Name())
 			}
 			if item.Spec.LogLevel != "" {
-				buf.WriteString(fmt.Sprintf("    Log_Level    %s\n", item.Spec.LogLevel))
+				fmt.Fprintf(&buf, "    Log_Level    %s\n", item.Spec.LogLevel)
 			}
 			if item.Spec.Match != "" {
-				buf.WriteString(fmt.Sprintf("    Match    %s\n", item.Spec.Match))
+				fmt.Fprintf(&buf, "    Match    %s\n", item.Spec.Match)
 			}
 			if item.Spec.MatchRegex != "" {
-				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", item.Spec.MatchRegex))
+				fmt.Fprintf(&buf, "    Match_Regex    %s\n", item.Spec.MatchRegex)
 			}
 			kvs, err := p.Params(sl)
 			if err != nil {
@@ -170,7 +170,7 @@ func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (st
 	if len(list.Items) == 0 {
 		return "", nil
 	}
-	buf.WriteString(fmt.Sprintf("%sfilters:\n", utils.YamlIndent(depth)))
+	fmt.Fprintf(&buf, "%sfilters:\n", utils.YamlIndent(depth))
 	padding := utils.YamlIndent(depth + 2)
 
 	for _, item := range list.Items {
@@ -180,16 +180,16 @@ func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (st
 			}
 
 			if p.Name() != "" {
-				buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
+				fmt.Fprintf(&buf, "%s- name: %s\n", utils.YamlIndent(depth+1), p.Name())
 			}
 			if item.Spec.LogLevel != "" {
-				buf.WriteString(fmt.Sprintf("%slog_level: %s\n", padding, item.Spec.LogLevel))
+				fmt.Fprintf(&buf, "%slog_level: %s\n", padding, item.Spec.LogLevel)
 			}
 			if item.Spec.Match != "" {
-				buf.WriteString(fmt.Sprintf("%smatch: \"%s\"\n", padding, item.Spec.Match))
+				fmt.Fprintf(&buf, "%smatch: \"%s\"\n", padding, item.Spec.Match)
 			}
 			if item.Spec.MatchRegex != "" {
-				buf.WriteString(fmt.Sprintf("%smatch_regex: %s\n", padding, item.Spec.MatchRegex))
+				fmt.Fprintf(&buf, "%smatch_regex: %s\n", padding, item.Spec.MatchRegex)
 			}
 			kvs, err := p.Params(sl)
 			if err != nil {

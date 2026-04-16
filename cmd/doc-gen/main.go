@@ -89,7 +89,7 @@ func plugins(docsLocations []DocumentsLocation) {
 				return err
 			}
 			if strings.HasSuffix(path, ".go") {
-				var flag = true
+				flag := true
 				for _, keyword := range unincludedKeyWords {
 					flag = flag && !strings.Contains(path, keyword)
 				}
@@ -111,13 +111,13 @@ func plugins(docsLocations []DocumentsLocation) {
 			for _, t := range types {
 				strukt := t[0]
 				if len(t) > 1 {
-					buffer.WriteString(fmt.Sprintf("# %s\n\n%s\n\n\n", strukt.Name, strukt.Doc))
+					fmt.Fprintf(&buffer, "# %s\n\n%s\n\n\n", strukt.Name, strukt.Doc)
 
 					buffer.WriteString("| Field | Description | Scheme |\n")
 					buffer.WriteString("| ----- | ----------- | ------ |\n")
 					fields := t[1:]
 					for _, f := range fields {
-						buffer.WriteString(fmt.Sprintf("| %s | %s | %s |\n", f.Name, f.Doc, f.Type))
+						fmt.Fprintf(&buffer, "| %s | %s | %s |\n", f.Name, f.Doc, f.Type)
 					}
 					buffer.WriteString("")
 				}
@@ -163,7 +163,8 @@ func crds(docsLocations []DocumentsLocation) {
 		}
 
 		var buffer bytes.Buffer
-		var types []KubeTypes
+
+		types := make([]KubeTypes, 0, 10)
 		for _, src := range srcs {
 			types = append(types, ParseDocumentationFrom(src, dl.name, false)...)
 		}
@@ -177,13 +178,13 @@ func crds(docsLocations []DocumentsLocation) {
 		for _, t := range types {
 			strukt := t[0]
 			if len(t) > 1 {
-				buffer.WriteString(fmt.Sprintf("# %s\n\n%s\n\n\n", strukt.Name, strukt.Doc))
+				fmt.Fprintf(&buffer, "# %s\n\n%s\n\n\n", strukt.Name, strukt.Doc)
 
 				buffer.WriteString("| Field | Description | Scheme |\n")
 				buffer.WriteString("| ----- | ----------- | ------ |\n")
 				fields := t[1:]
 				for _, f := range fields {
-					buffer.WriteString(fmt.Sprintf("| %s | %s | %s |\n", f.Name, f.Doc, f.Type))
+					fmt.Fprintf(&buffer, "| %s | %s | %s |\n", f.Name, f.Doc, f.Type)
 				}
 				buffer.WriteString("\n")
 				buffer.WriteString("[Back to TOC](#table-of-contents)\n")
@@ -215,7 +216,7 @@ func printTOC(types []KubeTypes) bytes.Buffer {
 	for _, t := range types {
 		strukt := t[0]
 		if len(t) > 1 {
-			buffer.WriteString(fmt.Sprintf("* [%s](#%s)\n", strukt.Name, toSectionLink(strukt.Name)))
+			fmt.Fprintf(&buffer, "* [%s](#%s)\n", strukt.Name, toSectionLink(strukt.Name))
 		}
 	}
 	return buffer

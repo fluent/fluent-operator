@@ -71,19 +71,19 @@ func (list OutputList) Load(sl plugins.SecretLoader) (string, error) {
 
 			buf.WriteString("[Output]\n")
 			if p.Name() != "" {
-				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+				fmt.Fprintf(&buf, "    Name    %s\n", p.Name())
 			}
 			if item.Spec.Match != "" {
-				buf.WriteString(fmt.Sprintf("    Match    %s\n", utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match)))
+				fmt.Fprintf(&buf, "    Match    %s\n", utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match))
 			}
 			if item.Spec.MatchRegex != "" {
-				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex)))
+				fmt.Fprintf(&buf, "    Match_Regex    %s\n", utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex))
 			}
 			if item.Spec.Alias != "" {
-				buf.WriteString(fmt.Sprintf("    Alias    %s\n", item.Spec.Alias))
+				fmt.Fprintf(&buf, "    Alias    %s\n", item.Spec.Alias)
 			}
 			if item.Spec.RetryLimit != "" {
-				buf.WriteString(fmt.Sprintf("    Retry_Limit    %s\n", item.Spec.RetryLimit))
+				fmt.Fprintf(&buf, "    Retry_Limit    %s\n", item.Spec.RetryLimit)
 			}
 			if item.Spec.CustomPlugin != nil && item.Spec.CustomPlugin.Config != "" {
 				item.Spec.CustomPlugin.Config = custom.MakeCustomConfigNamespaced(item.Spec.CustomPlugin.Config, item.Namespace)
@@ -125,19 +125,19 @@ func (list OutputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, e
 			}
 
 			if p.Name() != "" {
-				buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
+				fmt.Fprintf(&buf, "%s- name: %s\n", utils.YamlIndent(depth+1), p.Name())
 			}
 			if item.Spec.Match != "" {
-				buf.WriteString(fmt.Sprintf("%smatch: \"%s\"\n", padding, utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match)))
+				fmt.Fprintf(&buf, "%smatch: \"%s\"\n", padding, utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match))
 			}
 			if item.Spec.MatchRegex != "" {
-				buf.WriteString(fmt.Sprintf("%smatch_regex: %s\n", padding, utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex)))
+				fmt.Fprintf(&buf, "%smatch_regex: %s\n", padding, utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex))
 			}
 			if item.Spec.Alias != "" {
-				buf.WriteString(fmt.Sprintf("%salias: %s\n", padding, item.Spec.Alias))
+				fmt.Fprintf(&buf, "%salias: %s\n", padding, item.Spec.Alias)
 			}
 			if item.Spec.RetryLimit != "" {
-				buf.WriteString(fmt.Sprintf("%sretry_limit: %s\n", padding, item.Spec.RetryLimit))
+				fmt.Fprintf(&buf, "%sretry_limit: %s\n", padding, item.Spec.RetryLimit)
 			}
 			if item.Spec.CustomPlugin != nil && item.Spec.CustomPlugin.YamlConfig != nil {
 				item.Spec.CustomPlugin.MakeNamespaced(item.Namespace)

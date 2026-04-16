@@ -174,8 +174,9 @@ func (b *Buffer) Params(_ plugins.SecretLoader) (*params.PluginStore, error) {
 		if strings.HasPrefix(*b.Path, "/buffers") {
 			ps.InsertPairs("path", *b.Path)
 		} else {
-			targetPaths := []string{"/buffers"}
 			paths := strings.Split(*b.Path, "/")
+			targetPaths := make([]string, 0, 1+len(paths))
+			targetPaths[0] = "/buffers"
 			targetPaths = append(targetPaths, paths...)
 			ps.InsertPairs("path", filepath.Join(targetPaths...))
 		}

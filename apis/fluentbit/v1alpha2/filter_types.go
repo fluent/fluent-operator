@@ -78,13 +78,13 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 
 			buf.WriteString("[Filter]\n")
 			if p.Name() != "" {
-				buf.WriteString(fmt.Sprintf("    Name    %s\n", p.Name()))
+				fmt.Fprintf(&buf, "    Name    %s\n", p.Name())
 			}
 			if item.Spec.Match != "" {
-				buf.WriteString(fmt.Sprintf("    Match    %s\n", utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match)))
+				fmt.Fprintf(&buf, "    Match    %s\n", utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match))
 			}
 			if item.Spec.MatchRegex != "" {
-				buf.WriteString(fmt.Sprintf("    Match_Regex    %s\n", utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex)))
+				fmt.Fprintf(&buf, "    Match_Regex    %s\n", utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex))
 			}
 
 			var iface interface{} = p
@@ -125,13 +125,13 @@ func (list FilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, e
 			}
 
 			if p.Name() != "" {
-				buf.WriteString(fmt.Sprintf("%s- name: %s\n", utils.YamlIndent(depth+1), p.Name()))
+				fmt.Fprintf(&buf, "%s- name: %s\n", utils.YamlIndent(depth+1), p.Name())
 			}
 			if item.Spec.Match != "" {
-				buf.WriteString(fmt.Sprintf("%smatch: \"%s\"\n", padding, utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match)))
+				fmt.Fprintf(&buf, "%smatch: \"%s\"\n", padding, utils.GenerateNamespacedMatchExpr(item.Namespace, item.Spec.Match))
 			}
 			if item.Spec.MatchRegex != "" {
-				buf.WriteString(fmt.Sprintf("%smatch_regex: %s\n", padding, utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex)))
+				fmt.Fprintf(&buf, "%smatch_regex: %s\n", padding, utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex))
 			}
 
 			var iface interface{} = p

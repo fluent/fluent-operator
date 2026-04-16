@@ -1,5 +1,5 @@
 ARG FLUENTD_BASE_VERSION \
-    GO_VERSION=1.25.3
+    GO_VERSION=1.26.2
 
 FROM golang:${GO_VERSION} AS builder
 

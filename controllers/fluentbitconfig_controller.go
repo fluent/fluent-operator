@@ -384,26 +384,22 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 		return ""
 	}
 	var buf bytes.Buffer
-	buf.WriteString(fmt.Sprintln("[Filter]"))
-	buf.WriteString(fmt.Sprintln("    Name    rewrite_tag"))
-	buf.WriteString(fmt.Sprintf("    Match    %s\n", tag))
-	buf.WriteString(
-		fmt.Sprintf(
-			"    Rule    $kubernetes['namespace_name'] ^(%s)$ %x.$TAG false\n", cfg.Namespace,
-			md5.Sum([]byte(cfg.Namespace)),
-		),
-	)
+	fmt.Fprintln(&buf, "[Filter]")
+	fmt.Fprintln(&buf, "    Name    rewrite_tag")
+	fmt.Fprintf(&buf, "    Match    %s\n", tag)
+	fmt.Fprintf(&buf, "    Rule    $kubernetes['namespace_name'] ^(%s)$ %x.$TAG false\n", cfg.Namespace,
+		md5.Sum([]byte(cfg.Namespace)))
 	if cfg.Spec.Service != nil {
 		if cfg.Spec.Service.EmitterName != "" {
-			buf.WriteString(fmt.Sprintf("    Emitter_Name    %s\n", cfg.Spec.Service.EmitterName))
+			fmt.Fprintf(&buf, "    Emitter_Name    %s\n", cfg.Spec.Service.EmitterName)
 		} else {
-			buf.WriteString(fmt.Sprintf("    Emitter_Name    re_emitted_%x\n", md5.Sum([]byte(cfg.Namespace))))
+			fmt.Fprintf(&buf, "    Emitter_Name    re_emitted_%x\n", md5.Sum([]byte(cfg.Namespace)))
 		}
 		if cfg.Spec.Service.EmitterStorageType != "" {
-			buf.WriteString(fmt.Sprintf("    Emitter_Storage.type    %s\n", cfg.Spec.Service.EmitterStorageType))
+			fmt.Fprintf(&buf, "    Emitter_Storage.type    %s\n", cfg.Spec.Service.EmitterStorageType)
 		}
 		if cfg.Spec.Service.EmitterMemBufLimit != "" {
-			buf.WriteString(fmt.Sprintf("    Emitter_Mem_Buf_Limit    %s\n", cfg.Spec.Service.EmitterMemBufLimit))
+			fmt.Fprintf(&buf, "    Emitter_Mem_Buf_Limit    %s\n", cfg.Spec.Service.EmitterMemBufLimit)
 		}
 	}
 	return buf.String()

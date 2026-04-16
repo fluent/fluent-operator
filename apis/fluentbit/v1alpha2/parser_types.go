@@ -69,8 +69,8 @@ func (list ParserList) Load(sl plugins.SecretLoader) (string, error) {
 			}
 
 			buf.WriteString("[PARSER]\n")
-			buf.WriteString(fmt.Sprintf("    Name    %s\n", fmt.Sprintf("%s-%x", item.Name, md5.Sum([]byte(item.Namespace)))))
-			buf.WriteString(fmt.Sprintf("    Format    %s\n", p.Name()))
+			fmt.Fprintf(&buf, "    Name    %s\n", fmt.Sprintf("%s-%x", item.Name, md5.Sum([]byte(item.Namespace))))
+			fmt.Fprintf(&buf, "    Format    %s\n", p.Name())
 
 			kvs, err := p.Params(sl)
 			if err != nil {
@@ -80,10 +80,10 @@ func (list ParserList) Load(sl plugins.SecretLoader) (string, error) {
 
 			for _, decorder := range item.Spec.Decoders {
 				if decorder.DecodeField != "" {
-					buf.WriteString(fmt.Sprintf("    Decode_Field    %s\n", decorder.DecodeField))
+					fmt.Fprintf(&buf, "    Decode_Field    %s\n", decorder.DecodeField)
 				}
 				if decorder.DecodeFieldAs != "" {
-					buf.WriteString(fmt.Sprintf("    Decode_Field_As    %s\n", decorder.DecodeFieldAs))
+					fmt.Fprintf(&buf, "    Decode_Field_As    %s\n", decorder.DecodeFieldAs)
 				}
 			}
 			return nil

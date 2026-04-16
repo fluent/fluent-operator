@@ -65,7 +65,7 @@ func (kvs *KVs) String() string {
 
 	var buf bytes.Buffer
 	for i := 0; i < len(kvs.keys); i++ {
-		buf.WriteString(fmt.Sprintf("    %s    %s\n", kvs.keys[i], kvs.values[i]))
+		fmt.Fprintf(&buf, "    %s    %s\n", kvs.keys[i], kvs.values[i])
 	}
 	return buf.String()
 }
@@ -89,14 +89,14 @@ func (kvs *KVs) YamlString(depth int) string {
 	for _, key := range kvs.keys { // keep the order
 		values := keyValuesMap[key]
 		if len(values) == 1 {
-			buf.WriteString(fmt.Sprintf("%s%s: %s\n", utils.YamlIndent(depth), strings.ToLower(key), values[0]))
+			fmt.Fprintf(&buf, "%s%s: %s\n", utils.YamlIndent(depth), strings.ToLower(key), values[0])
 		} else {
 			if _, ok := keyFinishedMap[key]; ok { // avoid output multiple times
 				continue
 			}
-			buf.WriteString(fmt.Sprintf("%s%s:\n", utils.YamlIndent(depth), strings.ToLower(key)))
+			fmt.Fprintf(&buf, "%s%s:\n", utils.YamlIndent(depth), strings.ToLower(key))
 			for _, value := range values {
-				buf.WriteString(fmt.Sprintf("%s  - %s\n", utils.YamlIndent(depth), value))
+				fmt.Fprintf(&buf, "%s  - %s\n", utils.YamlIndent(depth), value)
 			}
 			keyFinishedMap[key] = true
 		}
