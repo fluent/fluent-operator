@@ -24,22 +24,71 @@ strip_controller_gen_annotation() {
   sedi '/controller-gen\.kubebuilder\.io\/version:/d' "$CRD"
 }
 
-# Function to add annotations templating to a CRD if not already present.
-# Wraps the entire annotations field in {{- with }} so that an empty
-# additionalAnnotations value produces no annotations key at all, avoiding
-# a null annotations field that fails kubeconform / Kubernetes OpenAPI validation.
+# Function to add additionalAnnotations Helm templating to a CRD.
+# Handles three cases robustly in a single awk pass:
+#
+#   Case 1 — annotations: key is present but empty (current controller-gen output
+#             after strip_controller_gen_annotation):
+#             Wrap the entire field in {{- with }} so an empty additionalAnnotations
+#             value produces no annotations key, avoiding a null field that fails
+#             kubeconform / Kubernetes OpenAPI validation.
+#
+#   Case 2 — annotations: key is present with existing entries:
+#             Keep the field unconditional (it already has real content) and merge
+#             additionalAnnotations inside the block, preserving existing entries.
+#
+#   Case 3 — annotations: key is absent entirely (future-proofing for controller-gen
+#             versions that may omit the field):
+#             Insert the conditional block under metadata: before the name: field.
+#
+# The function is idempotent — it is safe to run multiple times.
 add_annotations() {
   local CRD="$1"
-  # Check if additionalAnnotations templating already exists (idempotent)
-  if ! grep -q "{{- with .Values.additionalAnnotations }}" "$CRD"; then
-    awk '/  annotations:/ && !n {
+  if grep -q "{{- with .Values.additionalAnnotations }}" "$CRD"; then
+    return
+  fi
+
+  awk '
+    /^metadata:/ { in_meta = 1 }
+    /^spec:/     { in_meta = 0 }
+
+    in_meta && /^  annotations:/ && !done {
+      done = 1
+      # Read ahead to collect any existing annotation entries (4-space-indented lines).
+      existing = ""
+      while ((getline nxt) > 0) {
+        if (nxt ~ /^    [^ ]/) { existing = existing nxt "\n"; continue }
+        break
+      }
+      if (existing == "") {
+        # Case 1: empty annotations block — make the entire field conditional.
+        print "  {{- with .Values.additionalAnnotations }}"
+        print "  annotations:"
+        print "    {{- toYaml . | nindent 4 }}"
+        print "  {{- end }}"
+      } else {
+        # Case 2: existing entries — keep field unconditional, merge inside.
+        print "  annotations:"
+        printf "%s", existing
+        print "    {{- with .Values.additionalAnnotations }}"
+        print "    {{- toYaml . | nindent 4 }}"
+        print "    {{- end }}"
+      }
+      print nxt  # first line after the annotations block (already read by getline)
+      next
+    }
+
+    # Case 3: no annotations: key seen under metadata — insert before name:.
+    in_meta && !done && /^  name:/ {
       print "  {{- with .Values.additionalAnnotations }}"
       print "  annotations:"
       print "    {{- toYaml . | nindent 4 }}"
       print "  {{- end }}"
-      n++; next
-    } {print}' "$CRD" > "$CRD.new" && mv "$CRD.new" "$CRD"
-  fi
+      done = 1
+    }
+
+    { print }
+  ' "$CRD" > "$CRD.new" && mv "$CRD.new" "$CRD"
 }
 
 # Handle fluent-operator chart - bundled CRDs (crds/ directory)
