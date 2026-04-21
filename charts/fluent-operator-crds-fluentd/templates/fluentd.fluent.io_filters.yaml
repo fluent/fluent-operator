@@ -1,27 +1,26 @@
-{{- if .Values.fluentd.enabled }}
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
+  {{- with .Values.additionalAnnotations }}
   annotations:
-    {{- with .Values.additionalAnnotations }}
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
-  name: clusterfilters.fluentd.fluent.io
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: filters.fluentd.fluent.io
 spec:
   group: fluentd.fluent.io
   names:
-    kind: ClusterFilter
-    listKind: ClusterFilterList
-    plural: clusterfilters
+    kind: Filter
+    listKind: FilterList
+    plural: filters
     shortNames:
-    - cfdf
-    singular: clusterfilter
-  scope: Cluster
+    - fdf
+    singular: filter
+  scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ClusterFilter is the Schema for the clusterfilters API
+        description: Filter is the Schema for the filters API
         properties:
           apiVersion:
             description: |-
@@ -41,7 +40,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ClusterFilterSpec defines the desired state of ClusterFilter
+            description: FilterSpec defines the desired state of Filter
             properties:
               filters:
                 items:
@@ -486,11 +485,10 @@ spec:
                 type: array
             type: object
           status:
-            description: ClusterFilterStatus defines the observed state of ClusterFilter
+            description: FilterStatus defines the observed state of Filter
             type: object
         type: object
     served: true
     storage: true
     subresources:
       status: {}
-{{- end }}
