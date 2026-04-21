@@ -32,7 +32,7 @@ Major changes/themes for v4.0:
 
 1. **Container Runtime Simplification**: Removes dynamic detection for the `docker` runtime via initContainers and adopts static, configuration-based paths. The `docker` runtime has not been used widely since Kubernetes v1.24 (2022) and modern Kubernetes distributions now use the `containerd` runtime.
 
-2. **CRD Management Modernization**: CRDs are now included in the main `fluent-operator` chart's `crds/` directory following Helm v3 best practices. A new optional `fluent-operator-crds` chart provides full Helm lifecycle management for advanced users. The legacy `fluent-bit-crds` and `fluentd-crds` dependency sub-charts have been removed.
+2. **CRD Management Modernization**: CRDs are now included in the main `fluent-operator` chart's `crds/` directory following Helm v3 best practices. New optional `fluent-operator-crds-fluent-bit` and `fluent-operator-crds-fluentd` charts provide full Helm lifecycle management for advanced users. The legacy `fluent-bit-crds` and `fluentd-crds` dependency sub-charts have been removed.
 
 3. **Simplified Architecture**: The main chart no longer has dependencies, providing a cleaner, more maintainable structure. Users choose their preferred CRD management method (standard or Helm-managed) based on their operational needs.
 
@@ -69,7 +69,7 @@ The containerRuntime now defaults to `containerd`. In `v3.x` the implicit defaul
 
 - Chart no longer has dependencies on `fluent-bit-crds` and `fluentd-crds` sub-charts
 - `fluentbit.crdsEnable` and `fluentd.crdsEnable` values removed
-- CRDs now included in main chart's `crds/` directory or managed via separate `fluent-operator-crds` chart
+- CRDs now included in main chart's `crds/` directory or managed via separate `fluent-operator-crds-fluent-bit` / `fluent-operator-crds-fluentd` charts
 
 **Impact:**
 
@@ -211,14 +211,14 @@ containerRuntime: docker
 **What Changed:**
 
 - CRDs now included in the main `fluent-operator` chart's `crds/` directory (Helm v3 standard)
-- New optional `fluent-operator-crds` chart available for Helm-managed CRD lifecycle
+- New optional `fluent-operator-crds-fluent-bit` and `fluent-operator-crds-fluentd` charts available for Helm-managed CRD lifecycle
 - Removed dependencies on legacy `fluent-bit-crds` and `fluentd-crds` sub-charts
 - Two installation methods now available depending on your CRD management needs
 
 **Impact:**
 
 - **Standard Installation**: CRDs in `crds/` directory are installed automatically but NOT upgraded/deleted by Helm
-- **Advanced Installation**: Optional `fluent-operator-crds` chart provides full Helm lifecycle management
+- **Advanced Installation**: Optional `fluent-operator-crds-fluent-bit` and `fluent-operator-crds-fluentd` charts provide full Helm lifecycle management
 - Simpler, cleaner chart structure with no dependencies
 
 **Who Is Affected:**
@@ -287,19 +287,22 @@ helm install fluent-operator fluent/fluent-operator --skip-crds
 
 ### Method 2: Helm-Managed CRDs (Advanced)
 
-The new `fluent-operator-crds` chart provides full Helm management of CRDs.
+The `fluent-operator-crds-fluent-bit` and `fluent-operator-crds-fluentd` charts provide full Helm management of CRDs. They are released together and versioned in sync with the operator.
 
 ```bash
-# Step 1: Install CRDs with Helm management
-helm install fluent-operator-crds fluent/fluent-operator-crds
+# Step 1: Install Fluent Bit CRDs with Helm management
+helm install fluent-operator-crds-fluent-bit fluent/fluent-operator-crds-fluent-bit
 
-# Step 2: Install operator (skip CRDs since already installed)
+# Step 2: Install Fluentd CRDs with Helm management (optional)
+helm install fluent-operator-crds-fluentd fluent/fluent-operator-crds-fluentd
+
+# Step 3: Install operator (skip CRDs since already installed)
 helm install fluent-operator fluent/fluent-operator --skip-crds
 ```
 
 **Behavior:**
-- ✅ CRDs automatically upgrade with `helm upgrade fluent-operator-crds`
-- ✅ Fine-grained control (enable/disable Fluent Bit or Fluentd CRDs)
+- ✅ CRDs automatically upgrade with `helm upgrade fluent-operator-crds-fluent-bit` / `helm upgrade fluent-operator-crds-fluentd`
+- ✅ Fine-grained control — install only the CRD chart(s) you need
 - ⚠️ CRDs deleted on `helm uninstall` (unless protected with annotation)
 
 **When to use:**
@@ -310,20 +313,23 @@ helm install fluent-operator fluent/fluent-operator --skip-crds
 **Protecting CRDs from Deletion:**
 
 ```bash
-helm install fluent-operator-crds fluent/fluent-operator-crds \
+helm install fluent-operator-crds-fluent-bit fluent/fluent-operator-crds-fluent-bit \
+  --set additionalAnnotations."helm\.sh/resource-policy"=keep
+
+helm install fluent-operator-crds-fluentd fluent/fluent-operator-crds-fluentd \
   --set additionalAnnotations."helm\.sh/resource-policy"=keep
 ```
 
 **Selective CRD Installation:**
 
+Install only the chart(s) you need — omitting a chart means those CRDs are simply not installed:
+
 ```bash
 # Only Fluent Bit CRDs
-helm install fluent-operator-crds fluent/fluent-operator-crds \
-  --set fluentd.enabled=false
+helm install fluent-operator-crds-fluent-bit fluent/fluent-operator-crds-fluent-bit
 
 # Only Fluentd CRDs
-helm install fluent-operator-crds fluent/fluent-operator-crds \
-  --set fluent-bit.enabled=false
+helm install fluent-operator-crds-fluentd fluent/fluent-operator-crds-fluentd
 ```
 
 ---
@@ -352,18 +358,32 @@ If you want to switch to full Helm lifecycle management of CRDs after upgrading 
 # Step 1: Apply v4 CRDs manually (see Upgrading Standard Installation above)
 kubectl apply --server-side --force-conflicts -f fluent-operator/crds/
 
-# Step 2: Add Helm ownership metadata to all existing fluent.io CRDs.
+# Step 2: Add Helm ownership metadata to existing CRDs.
 # Helm cannot adopt pre-existing cluster resources without this metadata.
+# Fluent Bit and Fluentd CRDs are annotated separately since they are owned
+# by two distinct Helm releases.
 NAMESPACE=fluent  # set to your release namespace
-kubectl get crds -o name | grep '\.fluent\.io' | while read crd; do
+
+kubectl get crds -o name | grep 'fluentbit\.fluent\.io' | while read crd; do
   kubectl label "$crd" app.kubernetes.io/managed-by=Helm --overwrite
   kubectl annotate "$crd" \
-    meta.helm.sh/release-name=fluent-operator-crds \
+    meta.helm.sh/release-name=fluent-operator-crds-fluent-bit \
     meta.helm.sh/release-namespace="${NAMESPACE}" --overwrite
 done
 
-# Step 3: Install the CRDs chart — it will adopt the annotated CRDs
-helm install fluent-operator-crds fluent/fluent-operator-crds \
+kubectl get crds -o name | grep 'fluentd\.fluent\.io' | while read crd; do
+  kubectl label "$crd" app.kubernetes.io/managed-by=Helm --overwrite
+  kubectl annotate "$crd" \
+    meta.helm.sh/release-name=fluent-operator-crds-fluentd \
+    meta.helm.sh/release-namespace="${NAMESPACE}" --overwrite
+done
+
+# Step 3: Install the CRD charts — they will adopt the annotated CRDs
+helm install fluent-operator-crds-fluent-bit fluent/fluent-operator-crds-fluent-bit \
+  --namespace "${NAMESPACE}" \
+  --set additionalAnnotations."helm\.sh/resource-policy"=keep
+
+helm install fluent-operator-crds-fluentd fluent/fluent-operator-crds-fluentd \
   --namespace "${NAMESPACE}" \
   --set additionalAnnotations."helm\.sh/resource-policy"=keep
 
@@ -383,7 +403,8 @@ helm install fluent-operator fluent/fluent-operator
 
 **Helm-Managed:**
 ```bash
-helm install fluent-operator-crds fluent/fluent-operator-crds
+helm install fluent-operator-crds-fluent-bit fluent/fluent-operator-crds-fluent-bit
+helm install fluent-operator-crds-fluentd fluent/fluent-operator-crds-fluentd
 helm install fluent-operator fluent/fluent-operator --skip-crds
 ```
 
@@ -392,8 +413,8 @@ helm install fluent-operator fluent/fluent-operator --skip-crds
 ## Legacy Chart Migration
 
 The following charts have been **removed** in v4.0:
-- `fluent-bit-crds` (standalone chart) - Replaced by CRDs in main chart or `fluent-operator-crds`
-- `fluentd-crds` (standalone chart) - Replaced by CRDs in main chart or `fluent-operator-crds`
+- `fluent-bit-crds` (standalone chart) - Replaced by CRDs in main chart or `fluent-operator-crds-fluent-bit`
+- `fluentd-crds` (standalone chart) - Replaced by CRDs in main chart or `fluent-operator-crds-fluentd`
 
 **If you were using these charts directly:**
 
@@ -406,8 +427,9 @@ helm uninstall fluentd-crds
 # Option A: Use main chart (CRDs preserved)
 helm install fluent-operator fluent/fluent-operator
 
-# Option B: Use new unified CRD chart
-helm install fluent-operator-crds fluent/fluent-operator-crds
+# Option B: Use new dedicated CRD charts
+helm install fluent-operator-crds-fluent-bit fluent/fluent-operator-crds-fluent-bit
+helm install fluent-operator-crds-fluentd fluent/fluent-operator-crds-fluentd
 helm install fluent-operator fluent/fluent-operator --skip-crds
 ```
 
