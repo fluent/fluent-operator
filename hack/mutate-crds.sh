@@ -14,7 +14,7 @@ sedi() {
 
 # Function to strip the leading YAML document separator added by controller-gen
 strip_doc_separator() {
-  local CRD="$1" 
+  local CRD="$1"
   sedi '/^---$/d' "$CRD"
 }
 
