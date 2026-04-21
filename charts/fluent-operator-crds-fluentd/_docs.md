@@ -22,7 +22,7 @@ With this annotation, Helm will preserve the CRDs even if the chart is uninstall
 After installing the CRDs with this chart, install the operator with `--skip-crds`:
 
 ```bash
-# Step 1: Install Fluent Bit CRDs
+# Step 1: Install Fluentd CRDs
 helm install fluent-operator-crds-fluent-bit fluent/fluent-operator-crds-fluent-bit
 
 # Step 2: Install Fluentd CRDs
