@@ -25,9 +25,6 @@ After installing the CRDs with this chart, install the operator with `--skip-crd
 # Step 1: Install Fluent Bit CRDs
 helm install fluent-operator-crds-fluent-bit fluent/fluent-operator-crds-fluent-bit
 
-# Step 2: Optionally install Fluentd CRDs
-helm install fluent-operator-crds-fluentd fluent/fluent-operator-crds-fluentd
-
-# Step 3: Install operator (skip CRDs since already installed)
+# Step 2: Install operator (skip CRDs since already installed)
 helm install fluent-operator fluent/fluent-operator --skip-crds
 ```
