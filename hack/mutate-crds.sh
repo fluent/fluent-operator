@@ -99,8 +99,8 @@ do
   strip_doc_separator "$CRD"
 done
 
-# Handle fluent-operator-crds-fluent-bit chart - Fluent Bit CRDs
-FLUENT_BIT_CRDS=(charts/fluent-operator-crds-fluent-bit/templates/*.yaml)
+# Handle fluent-operator-fluent-bit-crds chart - Fluent Bit CRDs
+FLUENT_BIT_CRDS=(charts/fluent-operator-fluent-bit-crds/templates/*.yaml)
 for CRD in "${FLUENT_BIT_CRDS[@]}"
 do
   [[ -f "$CRD" ]] || continue
@@ -111,8 +111,8 @@ do
   add_annotations "$CRD"
 done
 
-# Handle fluent-operator-crds-fluentd chart - Fluentd CRDs
-FLUENTD_CRDS=(charts/fluent-operator-crds-fluentd/templates/*.yaml)
+# Handle fluent-operator-fluentd-crds chart - Fluentd CRDs
+FLUENTD_CRDS=(charts/fluent-operator-fluentd-crds/templates/*.yaml)
 for CRD in "${FLUENTD_CRDS[@]}"
 do
   [[ -f "$CRD" ]] || continue

@@ -1,5 +1,5 @@
 apiVersion: v2
-name: fluent-operator-crds-fluentd
+name: fluent-operator-fluentd-crds
 description: Custom Resource Definitions (CRDs) for Fluentd. Provides full Helm lifecycle management for all Fluentd CRDs used by Fluent Operator.
 type: application
 version: 0.0.0-dev.0  # This is a development chart which gets released and versioned in the fluent/helm-charts repo
@@ -13,7 +13,7 @@ keywords:
 home: https://github.com/fluent/fluent-operator
 icon: https://raw.githubusercontent.com/fluent/fluent-operator/master/docs/images/fluent-operator-icon.svg
 sources:
-  - https://github.com/fluent/fluent-operator/tree/master/charts/fluent-operator-crds-fluentd
+  - https://github.com/fluent/fluent-operator/tree/master/charts/fluent-operator-fluentd-crds
 maintainers:
   - name: wenchajun
     email: dehaocheng@kubesphere.io
