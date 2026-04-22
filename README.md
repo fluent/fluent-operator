@@ -174,17 +174,20 @@ kubectl apply --server-side --force-conflicts -f fluent-operator/crds/
 helm upgrade fluent-operator fluent/fluent-operator -n fluent
 ```
 
-**Advanced installation** — full Helm lifecycle management of CRDs via the separate `fluent-operator-crds` chart:
+**Advanced installation** — full Helm lifecycle management of CRDs via the separate `fluent-operator-fluent-bit-crds` and `fluent-operator-fluentd-crds` charts:
 
 ```shell
-# Step 1: install CRDs as a separately managed release
-helm install fluent-operator-crds fluent/fluent-operator-crds -n fluent --create-namespace
+# Step 1: install Fluent Bit CRDs as a separately managed release
+helm install fluent-operator-fluent-bit-crds fluent/fluent-operator-fluent-bit-crds -n fluent --create-namespace
 
-# Step 2: install the operator, skipping CRDs (already installed above)
+# Step 2: install Fluentd CRDs as a separately managed release (optional)
+helm install fluent-operator-fluentd-crds fluent/fluent-operator-fluentd-crds -n fluent
+
+# Step 3: install the operator, skipping CRDs (already installed above)
 helm install fluent-operator fluent/fluent-operator -n fluent --skip-crds
 ```
 
-With this approach, CRDs are upgraded with `helm upgrade fluent-operator-crds` and can be protected from deletion with `--set additionalAnnotations."helm\.sh/resource-policy"=keep`.
+With this approach, CRDs are upgraded with `helm upgrade fluent-operator-fluent-bit-crds` / `helm upgrade fluent-operator-fluentd-crds` and can be protected from deletion with `--set additionalAnnotations."helm\.sh/resource-policy"=keep`.
 
 See the [MIGRATION-v4.md](charts/fluent-operator/MIGRATION-v4.md) guide for more information on upgrading from v3.x.
 

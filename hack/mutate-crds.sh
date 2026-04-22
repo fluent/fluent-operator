@@ -24,28 +24,71 @@ strip_controller_gen_annotation() {
   sedi '/controller-gen\.kubebuilder\.io\/version:/d' "$CRD"
 }
 
-# Function to add annotations templating to a CRD if not already present
+# Function to add additionalAnnotations Helm templating to a CRD.
+# Handles three cases robustly in a single awk pass:
+#
+#   Case 1 — annotations: key is present but empty (current controller-gen output
+#             after strip_controller_gen_annotation):
+#             Wrap the entire field in {{- with }} so an empty additionalAnnotations
+#             value produces no annotations key, avoiding a null field that fails
+#             kubeconform / Kubernetes OpenAPI validation.
+#
+#   Case 2 — annotations: key is present with existing entries:
+#             Keep the field unconditional (it already has real content) and merge
+#             additionalAnnotations inside the block, preserving existing entries.
+#
+#   Case 3 — annotations: key is absent entirely (future-proofing for controller-gen
+#             versions that may omit the field):
+#             Insert the conditional block under metadata: before the name: field.
+#
+# The function is idempotent — it is safe to run multiple times.
 add_annotations() {
   local CRD="$1"
-  # Check if additionalAnnotations templating already exists
-  if ! grep -q "{{- with .Values.additionalAnnotations }}" "$CRD"; then
-    awk '{print} /  annotations:/ && !n {print "    {{- with .Values.additionalAnnotations }}\n      {{- toYaml . | nindent 4 }}\n    {{- end }}"; n++}' "$CRD" > "$CRD.new" && mv "$CRD.new" "$CRD"
+  if grep -q "{{- with .Values.additionalAnnotations }}" "$CRD"; then
+    return
   fi
-}
 
-# Function to wrap CRD with conditional if not already present
-wrap_conditional() {
-  local CRD="$1"
-  local CONDITION="$2"
+  awk '
+    /^metadata:/ { in_meta = 1 }
+    /^spec:/     { in_meta = 0 }
 
-  # Check if conditional already exists
-  if ! head -1 "$CRD" | grep -q "{{- if"; then
-    {
-      echo "$CONDITION"
-      cat "$CRD"
-      echo "{{- end }}"
-    } > "$CRD.new" && mv "$CRD.new" "$CRD"
-  fi
+    in_meta && /^  annotations:/ && !done {
+      done = 1
+      # Read ahead to collect any existing annotation entries (4-space-indented lines).
+      existing = ""
+      while ((getline nxt) > 0) {
+        if (nxt ~ /^    [^ ]/) { existing = existing nxt "\n"; continue }
+        break
+      }
+      if (existing == "") {
+        # Case 1: empty annotations block — make the entire field conditional.
+        print "  {{- with .Values.additionalAnnotations }}"
+        print "  annotations:"
+        print "    {{- toYaml . | nindent 4 }}"
+        print "  {{- end }}"
+      } else {
+        # Case 2: existing entries — keep field unconditional, merge inside.
+        print "  annotations:"
+        printf "%s", existing
+        print "    {{- with .Values.additionalAnnotations }}"
+        print "    {{- toYaml . | nindent 4 }}"
+        print "    {{- end }}"
+      }
+      print nxt  # first line after the annotations block (already read by getline)
+      next
+    }
+
+    # Case 3: no annotations: key seen under metadata — insert before name:.
+    in_meta && !done && /^  name:/ {
+      print "  {{- with .Values.additionalAnnotations }}"
+      print "  annotations:"
+      print "    {{- toYaml . | nindent 4 }}"
+      print "  {{- end }}"
+      done = 1
+    }
+
+    { print }
+  ' "$CRD" > "$CRD.new" && mv "$CRD.new" "$CRD"
 }
 
 # Handle fluent-operator chart - bundled CRDs (crds/ directory)
@@ -56,8 +99,8 @@ do
   strip_doc_separator "$CRD"
 done
 
-# Handle fluent-operator-crds chart - Fluent Bit CRDs
-FLUENT_BIT_CRDS=(charts/fluent-operator-crds/templates/fluent-bit/*.yaml)
+# Handle fluent-operator-fluent-bit-crds chart - Fluent Bit CRDs
+FLUENT_BIT_CRDS=(charts/fluent-operator-fluent-bit-crds/templates/*.yaml)
 for CRD in "${FLUENT_BIT_CRDS[@]}"
 do
   [[ -f "$CRD" ]] || continue
@@ -65,16 +108,11 @@ do
 
   strip_doc_separator "$CRD"
   strip_controller_gen_annotation "$CRD"
-
-  # Add annotations first (before conditional wrapper)
   add_annotations "$CRD"
-
-  # Wrap with conditional
-  wrap_conditional "$CRD" "{{- if .Values.fluentbit.enabled }}"
 done
 
-# Handle fluent-operator-crds chart - Fluentd CRDs
-FLUENTD_CRDS=(charts/fluent-operator-crds/templates/fluentd/*.yaml)
+# Handle fluent-operator-fluentd-crds chart - Fluentd CRDs
+FLUENTD_CRDS=(charts/fluent-operator-fluentd-crds/templates/*.yaml)
 for CRD in "${FLUENTD_CRDS[@]}"
 do
   [[ -f "$CRD" ]] || continue
@@ -82,10 +120,5 @@ do
 
   strip_doc_separator "$CRD"
   strip_controller_gen_annotation "$CRD"
-
-  # Add annotations first (before conditional wrapper)
   add_annotations "$CRD"
-
-  # Wrap with conditional
-  wrap_conditional "$CRD" "{{- if .Values.fluentd.enabled }}"
 done
