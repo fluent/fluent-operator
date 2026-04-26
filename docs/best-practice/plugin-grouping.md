@@ -6,5 +6,6 @@ For fluenbit,input, filter, and output plugins are connected by label selectors.
 
 However, for filter plugins, if you want a filter chain, the order of filters matters. You need to organize multiple filters into an array as the demo [logging stack](https://github.com/fluent/fluent-operator/blob/master/manifests/logging-stack/filter-kubernetes.yaml) suggests.For more info on various use cases of Fluent Operator Fluentd CRDs, you can refer to [Fluent-Operator-Walkthrough](https://github.com/kubesphere-sigs/fluent-operator-walkthrough#fluent-bit--fluentd-mode).
 
+For Fluentd configs that select more than nine child plugins in one label section, set `.spec.pluginSortOrder: index` on `FluentdConfig` or `ClusterFluentdConfig` to use numeric-aware plugin ordering. The default `lexicographic` order is kept for backward compatibility.
 
 
