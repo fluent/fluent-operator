@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/fluent/fluent-operator/v3/pkg/utils"
 )
@@ -21,6 +22,10 @@ type PluginStore struct {
 	// The flag whether to ignore the path field in buffer
 	IgnorePath bool
 	Content    string
+	// NumericIdSort enables numeric-aware comparison for @id suffixes when
+	// sorting child plugins. When false (default), lexicographic order is used,
+	// preserving the behaviour that existed before this flag was introduced.
+	NumericIdSort bool
 }
 
 func NewPluginStore(name string) *PluginStore {
@@ -155,8 +160,13 @@ func (ps *PluginStore) String() string {
 	ps.setWhitespaces(parentPrefixWhitespaces + IntervalWhitespaces)
 	ps.processBody(&buf)
 	if len(ps.Childs) > 0 {
-		sort.Sort(PluginStoreByNameById(ps.Childs))
+		if ps.NumericIdSort {
+			sort.Sort(PluginStoreByNameByIdNumeric(ps.Childs))
+		} else {
+			sort.Sort(PluginStoreByNameById(ps.Childs))
+		}
 		for _, child := range ps.Childs {
+			child.NumericIdSort = ps.NumericIdSort
 			child.setWhitespaces(ps.PrefixWhitespaces)
 			buf.WriteString(child.String())
 		}
@@ -257,4 +267,51 @@ func (a PluginStoreByNameById) Less(i, j int) bool {
 	} else {
 		return a[i].Name < a[j].Name
 	}
+}
+
+// +kubebuilder:object:generate=false
+type PluginStoreByNameByIdNumeric []*PluginStore
+
+func (a PluginStoreByNameByIdNumeric) Len() int      { return len(a) }
+func (a PluginStoreByNameByIdNumeric) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a PluginStoreByNameByIdNumeric) Less(i, j int) bool {
+	if a[i].Name == a[j].Name {
+		if a[i].GetTag() == "**" && a[j].GetTag() != "**" {
+			return false
+		}
+		if a[i].GetTag() != "**" && a[j].GetTag() == "**" {
+			return true
+		}
+		return lessId(a[i].GetId(), a[j].GetId())
+	} else {
+		return a[i].Name < a[j].Name
+	}
+}
+
+// lessId orders @id strings so that numeric suffixes compare numerically once
+// both ids share a "<prefix>-<index>" shape. A plain lexicographic compare
+// would place "<p>-10" before "<p>-2" because '1' < '2'. Falls back to
+// lexicographic order when either side lacks a numeric trailing segment or
+// when the parsed prefixes differ.
+func lessId(id1, id2 string) bool {
+	p1, n1, ok1 := splitIdIndex(id1)
+	p2, n2, ok2 := splitIdIndex(id2)
+	if ok1 && ok2 && p1 == p2 {
+		return n1 < n2
+	}
+	return id1 < id2
+}
+
+// splitIdIndex splits an @id at the last '-'. It returns the prefix, the
+// parsed numeric index, and true when the trailing segment is an integer.
+func splitIdIndex(id string) (string, int, bool) {
+	idx := strings.LastIndex(id, "-")
+	if idx < 0 {
+		return "", 0, false
+	}
+	n, err := strconv.Atoi(id[idx+1:])
+	if err != nil {
+		return "", 0, false
+	}
+	return id[:idx], n, true
 }

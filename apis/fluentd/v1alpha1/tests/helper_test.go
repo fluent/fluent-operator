@@ -498,6 +498,80 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 	}
 }
 
+// Test_ClusterCfgOutputOrderByIndex guards against a string-sort regression:
+// outputs with @id suffixes "-0..-10" must render in numeric order when
+// pluginSortOrder is set to "index". Without the flag the default lexicographic
+// order would place plugin-10 before plugin-2.
+func Test_ClusterCfgOutputOrderByIndex(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
+
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
+	g.Expect(err).NotTo(HaveOccurred())
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterInput{}, []fluentdv1alpha1.ClusterFilter{}, []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputOrderByIndex})
+	clustercfgResources.NumericIdSort = true
+	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	for i := 0; i < maxRuntimes; i++ {
+		config, errs := psr.RenderMainConfig(false)
+		g.Expect(errs).NotTo(HaveOccurred())
+		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-order-by-index.cfg"))).To(Equal(config))
+	}
+}
+
+// Test_ClusterCfgFilterOrderByIndex guards against the same string-sort regression
+// for filters attached as children of a label plugin, with pluginSortOrder "index".
+func Test_ClusterCfgFilterOrderByIndex(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
+
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
+	g.Expect(err).NotTo(HaveOccurred())
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), []fluentdv1alpha1.ClusterInput{}, []fluentdv1alpha1.ClusterFilter{FluentdClusterFilterOrderByIndex}, []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ES})
+	clustercfgResources.NumericIdSort = true
+	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	for i := 0; i < maxRuntimes; i++ {
+		config, errs := psr.RenderMainConfig(false)
+		g.Expect(errs).NotTo(HaveOccurred())
+		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-filter-order-by-index.cfg"))).To(Equal(config))
+	}
+}
+
+// Test_ClusterCfgInputOrderByIndex asserts that inputs declared in a single CR
+// render in CR definition order. Inputs are not re-sorted by @id in
+// RenderMainConfig, so this acts as a boundary guard for any future change that
+// would accidentally introduce such a sort on the input rendering path.
+func Test_ClusterCfgInputOrderByIndex(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
+
+	clustercfgRouter, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
+	g.Expect(err).NotTo(HaveOccurred())
+	clusterInputs := []fluentdv1alpha1.ClusterInput{FluentdClusterInputOrderByIndex}
+	clusterOutputs := []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ES}
+	clustercfgResources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(), clusterInputs, []fluentdv1alpha1.ClusterFilter{}, clusterOutputs)
+	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	for i := 0; i < maxRuntimes; i++ {
+		config, errs := psr.RenderMainConfig(false)
+		g.Expect(errs).NotTo(HaveOccurred())
+		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-input-order-by-index.cfg"))).To(Equal(config))
+	}
+}
+
 func Test_RecordTransformer(t *testing.T) {
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 	testClusterConfigWithFiltersAndOutputs(t, sl, Fluentd, &FluentdClusterFluentdConfig1, []fluentdv1alpha1.ClusterFilter{FluentdClusterRecordTransformerFilter}, []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputCluster}, "./expected/fluentd-cluster-cfg-filter-recordTransformer.cfg", false)

@@ -45,6 +45,11 @@ type CfgResources struct {
 	InputsHashcodes  map[string]bool
 	FiltersHashcodes map[string]bool
 	OutputsHashcodes map[string]bool
+
+	// NumericIdSort enables numeric-aware @id ordering for child plugins inside
+	// the label plugin produced by WithCfgResources. When false (default),
+	// lexicographic order is used, matching the behaviour prior to this flag.
+	NumericIdSort bool
 }
 
 // NewGlobalPluginResources represents a combined global fluentd resources
@@ -345,6 +350,7 @@ func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResourc
 
 	cfgLabelPlugin := params.NewPluginStore("label")
 	cfgLabelPlugin.InsertPairs("tag", cfgRouteLabel)
+	cfgLabelPlugin.NumericIdSort = r.NumericIdSort
 
 	// insert filter plugins of this fluentd config
 	for _, f := range r.FilterPlugins {

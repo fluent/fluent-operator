@@ -906,6 +906,180 @@ spec:
       insecure: true
 `
 
+	// FluentdClusterFilterOrderByIndex contains 11 recordTransformer filters (indexes 0..10).
+	// Once the index reaches 10, the string-based comparison on @id surfaces a mis-order bug.
+	FluentdClusterFilterOrderByIndex    fluentdv1alpha1.ClusterFilter
+	FluentdClusterFilterOrderByIndexRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFilter
+metadata:
+  name: fluentd-filter-order
+  labels:
+    filter.fluentd.fluent.io/enabled: "true"
+spec:
+  filters:
+  - recordTransformer:
+      records:
+      - key: k00
+        value: v00
+  - recordTransformer:
+      records:
+      - key: k01
+        value: v01
+  - recordTransformer:
+      records:
+      - key: k02
+        value: v02
+  - recordTransformer:
+      records:
+      - key: k03
+        value: v03
+  - recordTransformer:
+      records:
+      - key: k04
+        value: v04
+  - recordTransformer:
+      records:
+      - key: k05
+        value: v05
+  - recordTransformer:
+      records:
+      - key: k06
+        value: v06
+  - recordTransformer:
+      records:
+      - key: k07
+        value: v07
+  - recordTransformer:
+      records:
+      - key: k08
+        value: v08
+  - recordTransformer:
+      records:
+      - key: k09
+        value: v09
+  - recordTransformer:
+      records:
+      - key: k10
+        value: v10
+`
+
+	// FluentdClusterInputOrderByIndex contains 11 sample inputs (indexes 0..10) inside a single CR.
+	// Used to assert that the input rendering path preserves CR definition order.
+	FluentdClusterInputOrderByIndex    fluentdv1alpha1.ClusterInput
+	FluentdClusterInputOrderByIndexRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterInput
+metadata:
+  name: fluentd-input-order
+  labels:
+    input.fluentd.fluent.io/enabled: "true"
+spec:
+  inputs:
+  - sample:
+      tag: input-order-00
+      rate: 1
+  - sample:
+      tag: input-order-01
+      rate: 2
+  - sample:
+      tag: input-order-02
+      rate: 3
+  - sample:
+      tag: input-order-03
+      rate: 4
+  - sample:
+      tag: input-order-04
+      rate: 5
+  - sample:
+      tag: input-order-05
+      rate: 6
+  - sample:
+      tag: input-order-06
+      rate: 7
+  - sample:
+      tag: input-order-07
+      rate: 8
+  - sample:
+      tag: input-order-08
+      rate: 9
+  - sample:
+      tag: input-order-09
+      rate: 10
+  - sample:
+      tag: input-order-10
+      rate: 11
+`
+
+	// FluentdClusterOutputOrderByIndex contains 11 elasticsearch outputs (indexes 0..10).
+	// Once the index reaches 10, the string-based comparison on @id surfaces a mis-order bug.
+	FluentdClusterOutputOrderByIndex    fluentdv1alpha1.ClusterOutput
+	FluentdClusterOutputOrderByIndexRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-order
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec:
+  outputs:
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-00
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-01
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-02
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-03
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-04
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-05
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-06
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-07
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-08
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-09
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log-10
+`
+
 	esCredentials    corev1.Secret
 	esCredentialsRaw = `
 apiVersion: v1
@@ -1071,6 +1245,9 @@ func init() {
 			MustParseIntoObject(FluentdOutputMixedCopy1Raw, &FluentdOutputMixedCopy1)
 			MustParseIntoObject(FluentdOutputMixedCopy2Raw, &FluentdOutputMixedCopy2)
 			MustParseIntoObject(FluentdOutputMixedCopy3Raw, &FluentdOutputMixedCopy3)
+			MustParseIntoObject(FluentdClusterFilterOrderByIndexRaw, &FluentdClusterFilterOrderByIndex)
+			MustParseIntoObject(FluentdClusterInputOrderByIndexRaw, &FluentdClusterInputOrderByIndex)
+			MustParseIntoObject(FluentdClusterOutputOrderByIndexRaw, &FluentdClusterOutputOrderByIndex)
 			MustParseIntoObject(esCredentialsRaw, &esCredentials)
 			MustParseIntoObject(lokiHttpCredentialsRaw, &lokiHttpCredentials)
 			MustParseIntoObject(lokiTenantNameRaw, &lokiTenantName)
