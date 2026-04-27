@@ -9,7 +9,7 @@ require (
 	github.com/go-openapi/errors v0.22.7
 	github.com/joho/godotenv v1.5.1
 	github.com/oklog/run v1.2.0
-	github.com/onsi/ginkgo/v2 v2.28.1
+	github.com/onsi/ginkgo/v2 v2.28.2
 	github.com/onsi/gomega v1.39.1
 	golang.org/x/sync v0.20.0
 	k8s.io/api v0.35.4
