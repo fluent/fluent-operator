@@ -134,6 +134,31 @@ The operator initContainer has been removed.
         memory: 64Mi
 ```
 
+> **Important — Deployment must be recreated on upgrade**
+>
+> The `env` volume on the operator Deployment changed from `emptyDir` (v3.x) to `configMap` (v4.0).
+> Kubernetes cannot patch a volume's type in-place, so a standard `helm upgrade` will fail with:
+>
+> ```
+> The Deployment "fluent-operator" is invalid:
+> * spec.template.spec.volumes[0].configMap: Forbidden: may not specify more than 1 volume type
+> * spec.template.spec.containers[0].volumeMounts[0].name: Not found: "env"
+> * spec.template.spec.initContainers[0].volumeMounts[0].name: Not found: "env"
+> ```
+>
+> Use `--force` to have Helm delete and recreate the Deployment automatically:
+>
+> ```bash
+> helm upgrade fluent-operator fluent/fluent-operator --version 4.0.0 --force
+> ```
+>
+> Or delete the Deployment manually before upgrading:
+>
+> ```bash
+> kubectl delete deployment fluent-operator -n <namespace>
+> helm upgrade fluent-operator fluent/fluent-operator --version 4.0.0
+> ```
+
 ### 4. Log Path Configuration Removed
 
 **What Changed:**
