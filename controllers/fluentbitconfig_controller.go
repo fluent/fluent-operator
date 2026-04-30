@@ -282,8 +282,11 @@ func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 		return nil, nil, nil, nil, nil, nil, nil, err
 	}
 
-	// Sort namespace configs by namespace name for deterministic rendering
+	// Sort namespace configs by namespace and name for deterministic rendering
 	sort.Slice(nsCfgs.Items, func(i, j int) bool {
+		if nsCfgs.Items[i].Namespace == nsCfgs.Items[j].Namespace {
+			return nsCfgs.Items[i].Name < nsCfgs.Items[j].Name
+		}
 		return nsCfgs.Items[i].Namespace < nsCfgs.Items[j].Namespace
 	})
 
