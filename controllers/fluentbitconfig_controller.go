@@ -54,10 +54,15 @@ var storeNamespaces map[string]bool
 
 func computeConfigHash(configFileName, mainAppCfg, parserCfg, multilineParserCfg string, scripts []fluentbitv1alpha2.Script) string {
 	h := sha256.New()
-	h.Write([]byte(configFileName))
-	h.Write([]byte(mainAppCfg))
-	h.Write([]byte(parserCfg))
-	h.Write([]byte(multilineParserCfg))
+	// Use null bytes as delimiters to prevent hash collisions between fields
+	_, _ = h.Write([]byte(configFileName))
+	_, _ = h.Write([]byte{0})
+	_, _ = h.Write([]byte(mainAppCfg))
+	_, _ = h.Write([]byte{0})
+	_, _ = h.Write([]byte(parserCfg))
+	_, _ = h.Write([]byte{0})
+	_, _ = h.Write([]byte(multilineParserCfg))
+	_, _ = h.Write([]byte{0})
 
 	sortedScripts := make([]fluentbitv1alpha2.Script, len(scripts))
 	copy(sortedScripts, scripts)
@@ -66,8 +71,10 @@ func computeConfigHash(configFileName, mainAppCfg, parserCfg, multilineParserCfg
 	})
 
 	for _, s := range sortedScripts {
-		h.Write([]byte(s.Name))
-		h.Write([]byte(s.Content))
+		_, _ = h.Write([]byte(s.Name))
+		_, _ = h.Write([]byte{0})
+		_, _ = h.Write([]byte(s.Content))
+		_, _ = h.Write([]byte{0})
 	}
 
 	return fmt.Sprintf("%x", h.Sum(nil))
