@@ -20,8 +20,10 @@ import (
 	"bytes"
 	"context"
 	"crypto/md5"
+	"crypto/sha256"
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 
@@ -49,6 +51,27 @@ type FluentBitConfigReconciler struct {
 }
 
 var storeNamespaces map[string]bool
+
+func computeConfigHash(configFileName, mainAppCfg, parserCfg, multilineParserCfg string, scripts []fluentbitv1alpha2.Script) string {
+	h := sha256.New()
+	h.Write([]byte(configFileName))
+	h.Write([]byte(mainAppCfg))
+	h.Write([]byte(parserCfg))
+	h.Write([]byte(multilineParserCfg))
+
+	sortedScripts := make([]fluentbitv1alpha2.Script, len(scripts))
+	copy(sortedScripts, scripts)
+	sort.Slice(sortedScripts, func(i, j int) bool {
+		return sortedScripts[i].Name < sortedScripts[j].Name
+	})
+
+	for _, s := range sortedScripts {
+		h.Write([]byte(s.Name))
+		h.Write([]byte(s.Content))
+	}
+
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
 
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterfluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
@@ -169,46 +192,72 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 				return ctrl.Result{}, err
 			}
 
-			// Create or update the corresponding Secret
+			configFileName := "fluent-bit.conf"
+			if cfg.Spec.ConfigFileFormat != nil && *cfg.Spec.ConfigFileFormat == "yaml" {
+				configFileName = "fluent-bit.yaml"
+			}
+
+			newConfigHash := computeConfigHash(configFileName, mainAppCfg, parserCfg, multilineParserCfg, scripts)
+
 			sec := &corev1.Secret{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      cfg.Name,
 					Namespace: ns,
 				},
 			}
+			existingSecret := &corev1.Secret{}
+			err = r.Client.Get(ctx, client.ObjectKey{Name: cfg.Name, Namespace: ns}, existingSecret)
+			needsUpdate := false
 
-			if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
-				return ctrl.Result{}, err
-			}
-			// todo: fix the filename
-			configFileName := "fluent-bit.conf"
-			if cfg.Spec.ConfigFileFormat != nil && *cfg.Spec.ConfigFileFormat == "yaml" {
-				configFileName = "fluent-bit.yaml"
-			}
-			if _, err := controllerutil.CreateOrPatch(
-				ctx, r.Client, sec, func() error {
-					sec.Data = map[string][]byte{
-						configFileName:           []byte(mainAppCfg),
-						"parsers.conf":           []byte(parserCfg),
-						"parsers_multiline.conf": []byte(multilineParserCfg),
-					}
-					for _, s := range scripts {
-						sec.Data[s.Name] = []byte(s.Content)
-					}
-					sec.SetOwnerReferences(nil)
-					if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
-						return err
-					}
-					return nil
-				},
-			); err != nil {
-				return ctrl.Result{}, err
+			if err != nil {
+				if errors.IsNotFound(err) {
+					needsUpdate = true
+				} else {
+					return ctrl.Result{}, err
+				}
+			} else {
+				existingHash, ok := existingSecret.Annotations["fluent.io/config-hash"]
+				if !ok || existingHash != newConfigHash {
+					needsUpdate = true
+				}
 			}
 
-			r.Log.Info(
-				"Fluent Bit main configuration has updated", "logging-control-plane", ns, "fluentbitconfig", cfg.Name,
-				"secret", sec.Name,
-			)
+			if needsUpdate {
+				if _, err := controllerutil.CreateOrPatch(
+					ctx, r.Client, sec, func() error {
+						if sec.Annotations == nil {
+							sec.Annotations = make(map[string]string)
+						}
+						sec.Annotations["fluent.io/config-hash"] = newConfigHash
+
+						sec.Data = map[string][]byte{
+							configFileName:           []byte(mainAppCfg),
+							"parsers.conf":           []byte(parserCfg),
+							"parsers_multiline.conf": []byte(multilineParserCfg),
+						}
+						for _, s := range scripts {
+							sec.Data[s.Name] = []byte(s.Content)
+						}
+						sec.SetOwnerReferences(nil)
+						if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
+							return err
+						}
+						return nil
+					},
+				); err != nil {
+					return ctrl.Result{}, err
+				}
+
+				r.Log.Info(
+					"Fluent Bit main configuration has updated", "logging-control-plane", ns, "fluentbitconfig", cfg.Name,
+					"secret", sec.Name, "config-hash", newConfigHash,
+				)
+			} else {
+				r.Log.V(1).Info(
+					"Fluent Bit configuration unchanged, skipping update", "logging-control-plane", ns, "fluentbitconfig", cfg.Name,
+					"secret", cfg.Name, "config-hash", newConfigHash,
+				)
+			}
 		}
 	}
 
@@ -232,6 +281,11 @@ func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 	if err := r.List(ctx, &nsCfgs, client.MatchingLabelsSelector{Selector: selector}); err != nil {
 		return nil, nil, nil, nil, nil, nil, nil, err
 	}
+
+	// Sort namespace configs by namespace name for deterministic rendering
+	sort.Slice(nsCfgs.Items, func(i, j int) bool {
+		return nsCfgs.Items[i].Namespace < nsCfgs.Items[j].Namespace
+	})
 
 	filters := make([]fluentbitv1alpha2.FilterList, 0, len(nsCfgs.Items))
 	outputs := make([]fluentbitv1alpha2.OutputList, 0, len(nsCfgs.Items))
