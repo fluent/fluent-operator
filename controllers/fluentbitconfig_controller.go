@@ -69,7 +69,7 @@ func computeConfigHash(
 
 	sortedScripts := make([]fluentbitv1alpha2.Script, len(scripts))
 	copy(sortedScripts, scripts)
-	sort.Slice(sortedScripts, func(i, j int) bool {
+	sort.SliceStable(sortedScripts, func(i, j int) bool {
 		if sortedScripts[i].Name == sortedScripts[j].Name {
 			return sortedScripts[i].Content < sortedScripts[j].Content
 		}
