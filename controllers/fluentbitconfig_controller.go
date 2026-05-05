@@ -83,6 +83,77 @@ func computeConfigHash(
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
+func (r *FluentBitConfigReconciler) updateSecretIfNeeded(
+	ctx context.Context,
+	cfgName, ns, configFileName, mainAppCfg, parserCfg, multilineParserCfg string,
+	scripts []fluentbitv1alpha2.Script,
+	setControllerRef func(*corev1.Secret) error,
+) error {
+	newConfigHash := computeConfigHash(configFileName, mainAppCfg, parserCfg, multilineParserCfg, scripts)
+
+	sec := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cfgName,
+			Namespace: ns,
+		},
+	}
+	existingSecret := &corev1.Secret{}
+	err := r.Get(ctx, client.ObjectKey{Name: cfgName, Namespace: ns}, existingSecret)
+	needsUpdate := false
+
+	if err != nil {
+		if errors.IsNotFound(err) {
+			needsUpdate = true
+		} else {
+			return err
+		}
+	} else {
+		existingHash, ok := existingSecret.Annotations["fluent.io/config-hash"]
+		if !ok || existingHash != newConfigHash {
+			needsUpdate = true
+		}
+	}
+
+	if needsUpdate {
+		if _, err := controllerutil.CreateOrPatch(
+			ctx, r.Client, sec, func() error {
+				if sec.Annotations == nil {
+					sec.Annotations = make(map[string]string)
+				}
+				sec.Annotations["fluent.io/config-hash"] = newConfigHash
+
+				sec.Data = map[string][]byte{
+					configFileName:           []byte(mainAppCfg),
+					"parsers.conf":           []byte(parserCfg),
+					"parsers_multiline.conf": []byte(multilineParserCfg),
+				}
+				for _, s := range scripts {
+					sec.Data[s.Name] = []byte(s.Content)
+				}
+				sec.SetOwnerReferences(nil)
+				if err := setControllerRef(sec); err != nil {
+					return err
+				}
+				return nil
+			},
+		); err != nil {
+			return err
+		}
+
+		r.Log.Info(
+			"Fluent Bit main configuration has updated", "logging-control-plane", ns, "fluentbitconfig", cfgName,
+			"secret", sec.Name, "config-hash", newConfigHash,
+		)
+	} else {
+		r.Log.V(1).Info(
+			"Fluent Bit configuration unchanged, skipping update", "logging-control-plane", ns, "fluentbitconfig", cfgName,
+			"secret", cfgName, "config-hash", newConfigHash,
+		)
+	}
+
+	return nil
+}
+
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterfluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs;clusterparsers;clustermultilineparsers,verbs=list
@@ -207,66 +278,13 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 				configFileName = "fluent-bit.yaml"
 			}
 
-			newConfigHash := computeConfigHash(configFileName, mainAppCfg, parserCfg, multilineParserCfg, scripts)
-
-			sec := &corev1.Secret{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      cfg.Name,
-					Namespace: ns,
+			if err := r.updateSecretIfNeeded(
+				ctx, cfg.Name, ns, configFileName, mainAppCfg, parserCfg, multilineParserCfg, scripts,
+				func(sec *corev1.Secret) error {
+					return ctrl.SetControllerReference(&cfg, sec, r.Scheme)
 				},
-			}
-			existingSecret := &corev1.Secret{}
-			err = r.Get(ctx, client.ObjectKey{Name: cfg.Name, Namespace: ns}, existingSecret)
-			needsUpdate := false
-
-			if err != nil {
-				if errors.IsNotFound(err) {
-					needsUpdate = true
-				} else {
-					return ctrl.Result{}, err
-				}
-			} else {
-				existingHash, ok := existingSecret.Annotations["fluent.io/config-hash"]
-				if !ok || existingHash != newConfigHash {
-					needsUpdate = true
-				}
-			}
-
-			if needsUpdate {
-				if _, err := controllerutil.CreateOrPatch(
-					ctx, r.Client, sec, func() error {
-						if sec.Annotations == nil {
-							sec.Annotations = make(map[string]string)
-						}
-						sec.Annotations["fluent.io/config-hash"] = newConfigHash
-
-						sec.Data = map[string][]byte{
-							configFileName:           []byte(mainAppCfg),
-							"parsers.conf":           []byte(parserCfg),
-							"parsers_multiline.conf": []byte(multilineParserCfg),
-						}
-						for _, s := range scripts {
-							sec.Data[s.Name] = []byte(s.Content)
-						}
-						sec.SetOwnerReferences(nil)
-						if err := ctrl.SetControllerReference(&cfg, sec, r.Scheme); err != nil {
-							return err
-						}
-						return nil
-					},
-				); err != nil {
-					return ctrl.Result{}, err
-				}
-
-				r.Log.Info(
-					"Fluent Bit main configuration has updated", "logging-control-plane", ns, "fluentbitconfig", cfg.Name,
-					"secret", sec.Name, "config-hash", newConfigHash,
-				)
-			} else {
-				r.Log.V(1).Info(
-					"Fluent Bit configuration unchanged, skipping update", "logging-control-plane", ns, "fluentbitconfig", cfg.Name,
-					"secret", cfg.Name, "config-hash", newConfigHash,
-				)
+			); err != nil {
+				return ctrl.Result{}, err
 			}
 		}
 	}
