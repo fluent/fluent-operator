@@ -52,7 +52,10 @@ type FluentBitConfigReconciler struct {
 
 var storeNamespaces map[string]bool
 
-func computeConfigHash(configFileName, mainAppCfg, parserCfg, multilineParserCfg string, scripts []fluentbitv1alpha2.Script) string {
+func computeConfigHash(
+	configFileName, mainAppCfg, parserCfg, multilineParserCfg string,
+	scripts []fluentbitv1alpha2.Script,
+) string {
 	h := sha256.New()
 	// Use null bytes as delimiters to prevent hash collisions between fields
 	_, _ = h.Write([]byte(configFileName))
@@ -213,7 +216,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 				},
 			}
 			existingSecret := &corev1.Secret{}
-			err = r.Client.Get(ctx, client.ObjectKey{Name: cfg.Name, Namespace: ns}, existingSecret)
+			err = r.Get(ctx, client.ObjectKey{Name: cfg.Name, Namespace: ns}, existingSecret)
 			needsUpdate := false
 
 			if err != nil {
