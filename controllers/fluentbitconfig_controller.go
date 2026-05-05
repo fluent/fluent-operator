@@ -118,7 +118,7 @@ func (r *FluentBitConfigReconciler) updateSecretIfNeeded(
 	}
 
 	if needsUpdate {
-		if _, err := controllerutil.CreateOrPatch(
+		opResult, err := controllerutil.CreateOrPatch(
 			ctx, r.Client, sec, func() error {
 				if sec.Annotations == nil {
 					sec.Annotations = make(map[string]string)
@@ -139,14 +139,23 @@ func (r *FluentBitConfigReconciler) updateSecretIfNeeded(
 				}
 				return nil
 			},
-		); err != nil {
+		)
+		if err != nil {
 			return err
 		}
 
-		r.Log.Info(
-			"Fluent Bit main configuration has updated", "logging-control-plane", ns, "fluentbitconfig", cfgName,
-			"secret", sec.Name, "config-hash", newConfigHash,
-		)
+		// Only log update if CreateOrPatch actually performed a write
+		if opResult != controllerutil.OperationResultNone {
+			r.Log.Info(
+				"Fluent Bit main configuration has updated", "logging-control-plane", ns, "fluentbitconfig", cfgName,
+				"secret", sec.Name, "config-hash", newConfigHash,
+			)
+		} else {
+			r.Log.V(1).Info(
+				"Fluent Bit configuration unchanged (concurrent update)", "logging-control-plane", ns, "fluentbitconfig", cfgName,
+				"secret", cfgName, "config-hash", newConfigHash,
+			)
+		}
 	} else {
 		r.Log.V(1).Info(
 			"Fluent Bit configuration unchanged, skipping update", "logging-control-plane", ns, "fluentbitconfig", cfgName,
