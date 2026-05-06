@@ -14,7 +14,6 @@ func TestOutput_Syslog_Params(t *testing.T) {
 
 	sl := plugins.NewSecretLoader(nil, "test-namespace")
 
-	// Initialize Syslog struct based on your provided types
 	syslog := Syslog{
 		Host:               "127.0.0.1",
 		Port:               utils.ToPtr[int32](514),
@@ -33,7 +32,6 @@ func TestOutput_Syslog_Params(t *testing.T) {
 		Workers:            utils.ToPtr[int32](2),
 	}
 
-	// Define the expected Key-Value pairs based on your Params() logic
 	expected := params.NewKVs()
 	expected.Insert("Host", "127.0.0.1")
 	expected.Insert("port", "514")
@@ -44,17 +42,15 @@ func TestOutput_Syslog_Params(t *testing.T) {
 	expected.Insert("syslog_format", "rfc5424")
 	expected.Insert("syslog_severity_key", "severity")
 	expected.Insert("syslog_facility_key", "facility")
-	expected.Insert("syslog_procid_key", "pid") // Note: matches your implementation
+	expected.Insert("syslog_procid_key", "pid")
 	expected.Insert("syslog_msgid_key", "msgid")
-	expected.Insert("syslog_sd_key", "structured_data") // Note: matches your implementation
+	expected.Insert("syslog_sd_key", "structured_data")
 	expected.Insert("storage.total_limit_size", "1G")
 	expected.Insert("syslog_maxsize", "2048")
 	expected.Insert("workers", "2")
 
-	// Execute the translation
 	kvs, err := syslog.Params(sl)
 
-	// Assertions
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(kvs).To(Equal(expected))
 }
