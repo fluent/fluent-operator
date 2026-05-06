@@ -99,7 +99,3 @@ func (list ParserList) Load(sl plugins.SecretLoader) (string, error) {
 
 	return buf.String(), nil
 }
-
-func init() {
-	SchemeBuilder.Register(&Parser{}, &ParserList{})
-}
