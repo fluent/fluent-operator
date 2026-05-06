@@ -12,7 +12,7 @@ PROJECT_ROOT="$PWD"
 E2E_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 LOGGING_NAMESPACE="fluent"
 IMAGE_TAG="$(date "+%Y-%m-%d-%H-%M-%S")"
-VERSION="$(tr -d " \t\n\r" < VERSION)"
+VERSION="$(tr -d " \t\n\r" < version.txt)"
 IMAGE_NAME="ghcr.io/fluent/fluent-operator/fluent-operator"
 KIND_CLUSTER="${KIND_CLUSTER:-fluent-operator-test-e2e}"
 

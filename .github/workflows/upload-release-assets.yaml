@@ -1,0 +1,33 @@
+name: Upload Release Assets
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  upload-assets:
+    name: Upload setup.yaml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Read version
+        id: version
+        run: echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
+
+      - name: Stamp image tag in setup.yaml
+        run: |
+          sed -i \
+            's|ghcr.io/fluent/fluent-operator/fluent-operator:latest|ghcr.io/fluent/fluent-operator/fluent-operator:v${{ steps.version.outputs.version }}|g' \
+            manifests/setup/setup.yaml
+
+      - name: Upload setup.yaml to release
+        run: gh release upload "${{ github.event.release.tag_name }}" manifests/setup/setup.yaml --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -133,9 +133,9 @@ Kubernetes v1.16.13+ is necessary for running Fluent Operator.
 Install the latest stable version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/release-3.7/manifests/setup/setup.yaml
+kubectl apply -f https://github.com/fluent/fluent-operator/releases/latest/download/setup.yaml
 
-# You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch
+# You can change the namespace in manifests/setup/kustomization.yaml
 # and then use command below to install to another namespace
 # kubectl kustomize manifests/setup/ | kubectl apply -f -
 ```
@@ -143,7 +143,7 @@ kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/releas
 Install the development version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/master/manifests/setup/setup.yaml
+kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/master/manifests/setup/setup.yaml
 
 # You can change the namespace in manifests/setup/kustomization.yaml
 # and then use command below to install to another namespace
