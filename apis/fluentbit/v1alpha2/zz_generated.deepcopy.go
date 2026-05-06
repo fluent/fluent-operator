@@ -1780,6 +1780,16 @@ func (in *Service) DeepCopyInto(out *Service) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.HotReloadEnsureThreadSafety != nil {
+		in, out := &in.HotReloadEnsureThreadSafety, &out.HotReloadEnsureThreadSafety
+		*out = new(bool)
+		**out = **in
+	}
+	if in.HotReloadTimeout != nil {
+		in, out := &in.HotReloadTimeout, &out.HotReloadTimeout
+		*out = new(int32)
+		**out = **in
+	}
 	if in.SchedulerBase != nil {
 		in, out := &in.SchedulerBase, &out.SchedulerBase
 		*out = new(int32)
