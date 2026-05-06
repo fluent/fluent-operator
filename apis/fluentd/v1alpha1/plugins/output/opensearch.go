@@ -111,7 +111,7 @@ type Opensearch struct {
 	IgnoreExceptions *string `json:"ignoreExceptions,omitempty"`
 	// Optional, Backup chunk when ignore exception occurs (default: true)
 	ExceptionBackup *bool `json:"exceptionBackup,omitempty"`
-	// Optional, Configure bulk_message request splitting threshold size (default: -1 unlimited)
+	// Optional, Configure bulk_message_request_threshold splitting threshold size (default: -1 unlimited)
 	BulkMessageRequestThreshold *int32 `json:"bulkMessageRequestThreshold,omitempty"`
 	// Optional, Specify the application name for the rollover index to be created (default: default)
 	ApplicationName *string `json:"applicationName,omitempty"`

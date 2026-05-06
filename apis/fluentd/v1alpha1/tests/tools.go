@@ -367,6 +367,24 @@ spec:
       logstashPrefix: ks-logstash-log
 `
 
+	FluentdclusterOutput2ESBulkThreshold    fluentdv1alpha1.ClusterOutput
+	FluentdclusterOutput2ESBulkThresholdRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: fluentd-output-es-bulk
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec:
+  outputs:
+  - elasticsearch:
+      host: elasticsearch-logging-data.kubesphere-logging-system.svc
+      port: 9200
+      logstashFormat: true
+      logstashPrefix: ks-logstash-log
+      bulkMessageRequestThreshold: 20000000
+`
+
 	FluentdclusterOutput2ESDataStream    fluentdv1alpha1.ClusterOutput
 	FluentdclusterOutput2ESDataStreamRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -1226,6 +1244,7 @@ func init() {
 			MustParseIntoObject(FluentdClusterOutputBufferRaw, &FluentdClusterOutputBuffer)
 			MustParseIntoObject(FluentdClusterOutputMemoryBufferRaw, &FluentdClusterOutputMemoryBuffer)
 			MustParseIntoObject(FluentdclusterOutput2ESRaw, &FluentdclusterOutput2ES)
+			MustParseIntoObject(FluentdclusterOutput2ESBulkThresholdRaw, &FluentdclusterOutput2ESBulkThreshold)
 			MustParseIntoObject(FluentdclusterOutput2ESDataStreamRaw, &FluentdclusterOutput2ESDataStream)
 			MustParseIntoObject(FluentdclusterOutput2CopyESDataStreamRaw, &FluentdclusterOutput2CopyESDataStream)
 			MustParseIntoObject(FluentdOutput2ES1Raw, &FluentdOutput2ES1)
