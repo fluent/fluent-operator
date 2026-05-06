@@ -396,6 +396,7 @@ func (o *Output) elasticsearchPluginCommon(cmn *ElasticsearchCommon, parent *par
 	params.InsertPairs(parent, "ilm_policy", cmn.IlmPolicy)
 	params.InsertPairs(parent, "ilm_policy_overwrite", cmn.IlmPolicyOverwrite)
 	params.InsertPairs(parent, "log_es_400_reason", cmn.LogEs400Reason)
+	params.InsertPairs(parent, "bulk_message_request_threshold", cmn.BulkMessageRequestThreshold)
 
 	return parent, nil
 }
