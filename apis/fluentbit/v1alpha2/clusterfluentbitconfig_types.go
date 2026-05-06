@@ -122,6 +122,10 @@ type Service struct {
 	EmitterStorageType string `json:"emitterStorageType,omitempty"`
 	// If true enable reloading via HTTP
 	HotReload *bool `json:"hotReload,omitempty"`
+	// If true, preserve thread safety during hot reload by waiting for in-flight work to drain before reloading; this wait can be bounded by hotReloadTimeout.
+	HotReloadEnsureThreadSafety *bool `json:"hotReloadEnsureThreadSafety,omitempty"`
+	// Maximum time in seconds to wait for a hot reload to complete before aborting.
+	HotReloadTimeout *int32 `json:"hotReloadTimeout,omitempty"`
 	// Set a base for exponential backoff in the scheduler. Supported in Fluent Bit >= 1.8.7
 	SchedulerBase *int32 `json:"schedulerBase,omitempty"`
 	// Set a maximum retry time in seconds for the scheduler. Supported in Fluent Bit >= 1.8.7
@@ -159,6 +163,13 @@ func init() {
 
 func (s *Service) Params() *params.KVs {
 	m := params.NewKVs()
+	s.appendCoreParams(m)
+	s.appendParserAndStorageParams(m)
+	s.appendHotReloadAndSchedulerParams(m)
+	return m
+}
+
+func (s *Service) appendCoreParams(m *params.KVs) {
 	if s.Daemon != nil {
 		m.Insert("Daemon", fmt.Sprint(*s.Daemon))
 	}
@@ -198,6 +209,9 @@ func (s *Service) Params() *params.KVs {
 	if s.LogLevel != "" {
 		m.Insert("Log_Level", s.LogLevel)
 	}
+}
+
+func (s *Service) appendParserAndStorageParams(m *params.KVs) {
 	if s.ParsersFile != "" {
 		if s.ParsersFile == "parsers.conf" {
 			// For backwards compatibility, if the "usual" parsers.conf is
@@ -237,8 +251,17 @@ func (s *Service) Params() *params.KVs {
 			m.Insert("storage.delete_irrecoverable_chunks", s.Storage.DeleteIrrecoverableChunks)
 		}
 	}
+}
+
+func (s *Service) appendHotReloadAndSchedulerParams(m *params.KVs) {
 	if s.HotReload != nil {
 		m.Insert("Hot_Reload", fmt.Sprint(*s.HotReload))
+	}
+	if s.HotReloadEnsureThreadSafety != nil {
+		m.Insert("Hot_Reload.Ensure_Thread_Safety", fmt.Sprint(*s.HotReloadEnsureThreadSafety))
+	}
+	if s.HotReloadTimeout != nil {
+		m.Insert("Hot_Reload.Timeout", fmt.Sprint(*s.HotReloadTimeout))
 	}
 	if s.SchedulerBase != nil {
 		m.Insert("scheduler.base", fmt.Sprint(*s.SchedulerBase))
@@ -249,7 +272,6 @@ func (s *Service) Params() *params.KVs {
 	if s.MultilineBufferLimit != "" {
 		m.Insert("multiline_buffer_limit", s.MultilineBufferLimit)
 	}
-	return m
 }
 
 func (cfg ClusterFluentBitConfig) RenderMainConfigWithTargetFormat(sl plugins.SecretLoader, inputs ClusterInputList, filters ClusterFilterList,
