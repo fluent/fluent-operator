@@ -1,0 +1,48 @@
+name: Lint PR Title
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+permissions:
+  pull-requests: write
+
+jobs:
+  lint:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+        id: lint_pr_title
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        if: always() && (steps.lint_pr_title.outputs.error_message != null)
+        with:
+          header: pr-title-lint-error
+          message: |
+            Thank you for your pull request! :wave:
+
+            Your PR title needs to follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format so it can be included correctly in the changelog.
+
+            **Examples of valid titles:**
+            - `feat: add support for new filter plugin`
+            - `fix: correct nil pointer in controller reconcile`
+            - `chore: update dependencies`
+            - `docs: improve installation guide`
+
+            **Details:**
+            ```
+            ${{ steps.lint_pr_title.outputs.error_message }}
+            ```
+
+      - uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        if: ${{ steps.lint_pr_title.outputs.error_message == null }}
+        with:
+          header: pr-title-lint-error
+          delete: true
