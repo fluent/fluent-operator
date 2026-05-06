@@ -2117,6 +2117,18 @@ spec:
                 - record
                 - batch
                 type: string
+              pluginSortOrder:
+                default: lexicographic
+                description: |-
+                  PluginSortOrder controls how child plugins within a label section are
+                  ordered by their @id. "lexicographic" (default) preserves the original
+                  string-comparison behaviour. "index" switches to numeric-aware ordering
+                  so that a CR with more than nine plugins renders in definition order
+                  (e.g. plugin-2 before plugin-10).
+                enum:
+                - lexicographic
+                - index
+                type: string
               stickyTags:
                 description: |-
                   Sticky tags will match only one record from an event stream. The same tag will be treated the same way.
@@ -25185,6 +25197,18 @@ spec:
                     type: object
                 type: object
                 x-kubernetes-map-type: atomic
+              pluginSortOrder:
+                default: lexicographic
+                description: |-
+                  PluginSortOrder controls how child plugins within a label section are
+                  ordered by their @id. "lexicographic" (default) preserves the original
+                  string-comparison behaviour. "index" switches to numeric-aware ordering
+                  so that a CR with more than nine plugins renders in definition order
+                  (e.g. plugin-2 before plugin-10).
+                enum:
+                - lexicographic
+                - index
+                type: string
               stickyTags:
                 description: |-
                   Sticky tags will match only one record from an event stream. The same tag will be treated the same way.
