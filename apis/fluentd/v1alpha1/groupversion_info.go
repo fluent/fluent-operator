@@ -25,31 +25,38 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-// localSchemeBuilder replaces the deprecated sigs.k8s.io/controller-runtime/pkg/scheme.Builder,
-// registering types with a fixed GroupVersion via init() calls in each type file.
-type localSchemeBuilder struct {
-	gv    schema.GroupVersion
-	types []runtime.Object
-}
-
-func (b *localSchemeBuilder) Register(objects ...runtime.Object) *localSchemeBuilder {
-	b.types = append(b.types, objects...)
-	return b
-}
-
-func (b *localSchemeBuilder) AddToScheme(s *runtime.Scheme) error {
-	s.AddKnownTypes(b.gv, b.types...)
-	metav1.AddToGroupVersion(s, b.gv)
-	return nil
-}
-
 var (
 	// GroupVersion is group version used to register these objects
 	SchemeGroupVersion = schema.GroupVersion{Group: "fluentd.fluent.io", Version: "v1alpha1"}
 
 	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
-	SchemeBuilder = &localSchemeBuilder{gv: SchemeGroupVersion}
+	SchemeBuilder = runtime.NewSchemeBuilder(addKnownTypes)
 
 	// AddToScheme adds the types in this group-version to the given scheme.
 	AddToScheme = SchemeBuilder.AddToScheme
 )
+
+func addKnownTypes(scheme *runtime.Scheme) error {
+	scheme.AddKnownTypes(SchemeGroupVersion,
+		&ClusterFilter{},
+		&ClusterFilterList{},
+		&ClusterFluentdConfig{},
+		&ClusterFluentdConfigList{},
+		&ClusterInput{},
+		&ClusterInputList{},
+		&ClusterOutput{},
+		&ClusterOutputList{},
+		&Filter{},
+		&FilterList{},
+		&Fluentd{},
+		&FluentdList{},
+		&FluentdConfig{},
+		&FluentdConfigList{},
+		&Input{},
+		&InputList{},
+		&Output{},
+		&OutputList{},
+	)
+	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
+	return nil
+}
