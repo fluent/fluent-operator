@@ -66,7 +66,7 @@ type ElasticsearchCommon struct {
 	IlmPolicyOverwrite *bool `json:"ilmPolicyOverride,omitempty"`
 	// Optional, Enable logging of 400 reason without enabling debug log level
 	LogEs400Reason *bool `json:"logEs400Reason,omitempty"`
-	// Optional, Configure bulk_message request splitting threshold size.
+	// Optional, Configure bulk_message_request_threshold splitting threshold size.
 	// Default value is -1 (unlimited).
 	// If a bulk message exceeds this threshold, the request is split into multiple smaller requests.
 	BulkMessageRequestThreshold *int32 `json:"bulkMessageRequestThreshold,omitempty"`
