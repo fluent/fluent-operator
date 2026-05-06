@@ -30,7 +30,7 @@ func TestOutput_Syslog_Params(t *testing.T) {
 		SyslogSDKey:        "structured_data",
 		SyslogMessageKey:   "message",
 		TotalLimitSize:     "1G",
-		workers:            utils.ToPtr[int32](2),
+		Workers:            utils.ToPtr[int32](2),
 	}
 
 	// Define the expected Key-Value pairs based on your Params() logic
