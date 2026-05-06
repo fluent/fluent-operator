@@ -157,10 +157,6 @@ type ClusterFluentBitConfigList struct {
 	Items           []ClusterFluentBitConfig `json:"items"`
 }
 
-func init() {
-	SchemeBuilder.Register(&ClusterFluentBitConfig{}, &ClusterFluentBitConfigList{})
-}
-
 func (s *Service) Params() *params.KVs {
 	m := params.NewKVs()
 	s.appendCoreParams(m)
