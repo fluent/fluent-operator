@@ -19,7 +19,7 @@ jobs:
 
       - name: Read version
         id: version
-        run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
+        run: echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
 
       - name: Stamp image tag in setup.yaml
         run: |
