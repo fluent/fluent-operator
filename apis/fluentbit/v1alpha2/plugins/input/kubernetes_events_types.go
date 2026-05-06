@@ -46,6 +46,9 @@ type KubernetesEvents struct {
 	// Specifies the buffering mechanism for use with the input plugin, requires storage.path to be set in the service.
 	// +kubebuilder:validation:Enum:=filesystem;memory
 	StorageType string `json:"storageType,omitempty"`
+	// Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached.
+	// +kubebuilder:validation:Enum:=on;off
+	PauseOnChunksOverlimit string `json:"pauseOnChunksOverlimit,omitempty"`
 }
 
 func (*KubernetesEvents) Name() string {
@@ -68,6 +71,7 @@ func (k *KubernetesEvents) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVString(kvs, "Kube_Namespace", k.KubeNamespace)
 	plugins.InsertKVString(kvs, "tls.Vhost", k.TLSVhost)
 	plugins.InsertKVString(kvs, "storage.type", k.StorageType)
+	plugins.InsertKVString(kvs, "storage.pause_on_chunks_overlimit", k.PauseOnChunksOverlimit)
 
 	plugins.InsertKVField(kvs, "Interval_Sec", k.IntervalSec)
 	plugins.InsertKVField(kvs, "Interval_Nsec", k.IntervalNsec)
