@@ -211,7 +211,3 @@ func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (st
 
 	return buf.String(), nil
 }
-
-func init() {
-	SchemeBuilder.Register(&ClusterFilter{}, &ClusterFilterList{})
-}

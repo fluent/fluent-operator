@@ -54,7 +54,3 @@ type FilterList struct {
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Filter `json:"items"`
 }
-
-func init() {
-	SchemeBuilder.Register(&Filter{}, &FilterList{})
-}

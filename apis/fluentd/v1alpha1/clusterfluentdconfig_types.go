@@ -94,10 +94,6 @@ type ClusterFluentdConfigList struct {
 	Items           []ClusterFluentdConfig `json:"items"`
 }
 
-func init() {
-	SchemeBuilder.Register(&ClusterFluentdConfig{}, &ClusterFluentdConfigList{})
-}
-
 func (cfg *ClusterFluentdConfig) GetNamespace() string {
 	return cfg.Namespace
 }

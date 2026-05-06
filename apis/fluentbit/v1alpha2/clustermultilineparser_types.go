@@ -82,7 +82,3 @@ func (list ClusterMultilineParserList) Load(sl plugins.SecretLoader) (string, er
 
 	return load(list.Items, sl)
 }
-
-func init() {
-	SchemeBuilder.Register(&ClusterMultilineParser{}, &ClusterMultilineParserList{})
-}
