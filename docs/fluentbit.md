@@ -644,6 +644,8 @@ ParserSpec defines the desired state of ClusterParser
 | emitterMemBufLimit |  | string |
 | emitterStorageType |  | string |
 | hotReload | If true enable reloading via HTTP | *bool |
+| hotReloadEnsureThreadSafety | If true, preserve thread safety during hot reload by waiting for in-flight work to drain before reloading; this wait can be bounded by hotReloadTimeout. | *bool |
+| hotReloadTimeout | Maximum time in seconds to wait for a hot reload to complete before aborting. | *int32 |
 | schedulerBase | Set a base for exponential backoff in the scheduler. Supported in Fluent Bit >= 1.8.7 | *int32 |
 | schedulerCap | Set a maximum retry time in seconds for the scheduler. Supported in Fluent Bit >= 1.8.7 | *int32 |
 | multilineBufferLimit | Set a default buffer size limit for multiline parsers. The value must be according to the Unit Size specification. | string |

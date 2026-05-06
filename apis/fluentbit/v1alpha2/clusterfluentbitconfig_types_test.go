@@ -32,6 +32,8 @@ var (
     Http_Server    true
     Log_Level    info
     Parsers_File    /fluent-bit/etc/parsers.conf
+    Hot_Reload.Ensure_Thread_Safety    false
+    Hot_Reload.Timeout    60
     scheduler.base    5
     scheduler.cap    2000
 [Input]
@@ -129,6 +131,8 @@ var (
   http_server: true
   log_level: info
   parsers_file: /fluent-bit/etc/parsers.conf
+  hot_reload.ensure_thread_safety: false
+  hot_reload.timeout: 60
   scheduler.base: 5
   scheduler.cap: 2000
 pipeline:
@@ -227,6 +231,8 @@ pipeline:
     Http_Server    true
     Log_Level    info
     Parsers_File    /fluent-bit/etc/parsers.conf
+    Hot_Reload.Ensure_Thread_Safety    false
+    Hot_Reload.Timeout    60
     scheduler.base    5
     scheduler.cap    2000
 [Input]
@@ -266,6 +272,8 @@ pipeline:
   http_server: true
   log_level: info
   parsers_file: /fluent-bit/etc/parsers.conf
+  hot_reload.ensure_thread_safety: false
+  hot_reload.timeout: 60
   scheduler.base: 5
   scheduler.cap: 2000
 pipeline:
@@ -305,6 +313,8 @@ pipeline:
   http_server: true
   log_level: info
   parsers_file: /fluent-bit/etc/parsers.conf
+  hot_reload.ensure_thread_safety: false
+  hot_reload.timeout: 60
   scheduler.base: 5
   scheduler.cap: 2000
 pipeline:
@@ -396,14 +406,16 @@ pipeline:
 	cfg = ClusterFluentBitConfig{
 		Spec: FluentBitConfigSpec{
 			Service: &Service{
-				Daemon:        utils.ToPtr(false),
-				FlushSeconds:  utils.ToPtr[float64](1),
-				GraceSeconds:  utils.ToPtr[int64](30),
-				HttpServer:    utils.ToPtr(true),
-				LogLevel:      "info",
-				ParsersFile:   "parsers.conf",
-				SchedulerBase: utils.ToPtr[int32](5),
-				SchedulerCap:  utils.ToPtr[int32](2000),
+				Daemon:                      utils.ToPtr(false),
+				FlushSeconds:                utils.ToPtr[float64](1),
+				GraceSeconds:                utils.ToPtr[int64](30),
+				HttpServer:                  utils.ToPtr(true),
+				LogLevel:                    "info",
+				ParsersFile:                 "parsers.conf",
+				HotReloadEnsureThreadSafety: utils.ToPtr(false),
+				HotReloadTimeout:            utils.ToPtr[int32](60),
+				SchedulerBase:               utils.ToPtr[int32](5),
+				SchedulerCap:                utils.ToPtr[int32](2000),
 			},
 		},
 	}
