@@ -49,6 +49,14 @@ type FluentdConfigSpec struct {
 	ClusterOutputSelector *metav1.LabelSelector `json:"clusterOutputSelector,omitempty"`
 	// Select cluster input plugins
 	ClusterInputSelector *metav1.LabelSelector `json:"clusterInputSelector,omitempty"`
+	// PluginSortOrder controls how child plugins within a label section are
+	// ordered by their @id. "lexicographic" (default) preserves the original
+	// string-comparison behaviour. "index" switches to numeric-aware ordering
+	// so that a CR with more than nine plugins renders in definition order
+	// (e.g. plugin-2 before plugin-10).
+	// +kubebuilder:validation:Enum:=lexicographic;index
+	// +kubebuilder:default:=lexicographic
+	PluginSortOrder string `json:"pluginSortOrder,omitempty"`
 }
 
 // FluentdConfigStatus defines the observed state of FluentdConfig
