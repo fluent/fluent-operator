@@ -34,6 +34,7 @@ Elasticsearch defines the parameters for out_es output plugin
 | ilmPolicy | Optional, Specify ILM policy contents as Hash | *string |
 | ilmPolicyOverride | Optional, Specify whether overwriting ilm policy or not | *bool |
 | logEs400Reason | Optional, Enable logging of 400 reason without enabling debug log level | *bool |
+| bulkMessageRequestThreshold | Optional, Configure bulk_message request splitting threshold size. Default value is -1 (unlimited). If a bulk message exceeds this threshold, the request is split into multiple smaller requests. | *int32 |
 # Elasticsearch
 
 

@@ -9186,6 +9186,13 @@ spec:
                     elasticsearch:
                       description: out_es plugin
                       properties:
+                        bulkMessageRequestThreshold:
+                          description: |-
+                            Optional, Configure bulk_message_request_threshold splitting threshold size.
+                            Default value is -1 (unlimited).
+                            If a bulk message exceeds this threshold, the request is split into multiple smaller requests.
+                          format: int32
+                          type: integer
                         caFile:
                           description: Optional, Absolute path to CA certificate file
                           type: string
@@ -9482,6 +9489,13 @@ spec:
                     elasticsearchDataStream:
                       description: out_es datastreams plugin
                       properties:
+                        bulkMessageRequestThreshold:
+                          description: |-
+                            Optional, Configure bulk_message_request_threshold splitting threshold size.
+                            Default value is -1 (unlimited).
+                            If a bulk message exceeds this threshold, the request is split into multiple smaller requests.
+                          format: int32
+                          type: integer
                         caFile:
                           description: Optional, Absolute path to CA certificate file
                           type: string
@@ -10808,8 +10822,8 @@ spec:
                             the rollover index to be created (default: default)'
                           type: string
                         bulkMessageRequestThreshold:
-                          description: 'Optional, Configure bulk_message request splitting
-                            threshold size (default: -1 unlimited)'
+                          description: 'Optional, Configure bulk_message_request_threshold
+                            splitting threshold size (default: -1 unlimited)'
                           format: int32
                           type: integer
                         caFile:
@@ -39259,6 +39273,13 @@ spec:
                     elasticsearch:
                       description: out_es plugin
                       properties:
+                        bulkMessageRequestThreshold:
+                          description: |-
+                            Optional, Configure bulk_message_request_threshold splitting threshold size.
+                            Default value is -1 (unlimited).
+                            If a bulk message exceeds this threshold, the request is split into multiple smaller requests.
+                          format: int32
+                          type: integer
                         caFile:
                           description: Optional, Absolute path to CA certificate file
                           type: string
@@ -39555,6 +39576,13 @@ spec:
                     elasticsearchDataStream:
                       description: out_es datastreams plugin
                       properties:
+                        bulkMessageRequestThreshold:
+                          description: |-
+                            Optional, Configure bulk_message_request_threshold splitting threshold size.
+                            Default value is -1 (unlimited).
+                            If a bulk message exceeds this threshold, the request is split into multiple smaller requests.
+                          format: int32
+                          type: integer
                         caFile:
                           description: Optional, Absolute path to CA certificate file
                           type: string
@@ -40881,8 +40909,8 @@ spec:
                             the rollover index to be created (default: default)'
                           type: string
                         bulkMessageRequestThreshold:
-                          description: 'Optional, Configure bulk_message request splitting
-                            threshold size (default: -1 unlimited)'
+                          description: 'Optional, Configure bulk_message_request_threshold
+                            splitting threshold size (default: -1 unlimited)'
                           format: int32
                           type: integer
                         caFile:
