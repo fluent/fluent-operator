@@ -73,7 +73,8 @@ jobs:
 
       - name: Go mod
         run: |
-          export PATH=$PATH:$(go env GOPATH)/bin
+          GOPATH=$(go env GOPATH)
+          export PATH="$PATH:$GOPATH/bin"
           go mod download
 
       - name: Install kubebuilder
