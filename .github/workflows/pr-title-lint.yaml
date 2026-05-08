@@ -5,7 +5,7 @@ on:
   # post comments (not possible with pull_request).
   #
   # WARNING!
-  # We MJST ensure that code is NEVER checked out (eg, actions/checkout) in this
+  # We MUST ensure that code is NEVER checked out (eg, actions/checkout) in this
   # workflow, otherwise it opens up a path for attacker-controlled PR code execution!
   pull_request_target:
     types:
