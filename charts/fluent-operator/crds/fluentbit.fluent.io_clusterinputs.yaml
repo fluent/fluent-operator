@@ -351,6 +351,21 @@ spec:
                   kubeURL:
                     description: API Server end-point
                     type: string
+                  pauseOnChunksOverlimit:
+                    description: Specifies if the input plugin should be paused (stop
+                      ingesting new data) when the storage.max_chunks_up value is
+                      reached.
+                    enum:
+                    - "on"
+                    - "off"
+                    type: string
+                  storageType:
+                    description: Specifies the buffering mechanism for use with the
+                      input plugin, requires storage.path to be set in the service.
+                    enum:
+                    - filesystem
+                    - memory
+                    type: string
                   tag:
                     description: Tag name associated to all records coming from this
                       plugin.

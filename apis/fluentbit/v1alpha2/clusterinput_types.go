@@ -201,7 +201,3 @@ func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (str
 
 	return buf.String(), nil
 }
-
-func init() {
-	SchemeBuilder.Register(&ClusterInput{}, &ClusterInputList{})
-}

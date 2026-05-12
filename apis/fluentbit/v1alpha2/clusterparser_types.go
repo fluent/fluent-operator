@@ -134,7 +134,3 @@ func (list ClusterParserList) Load(sl plugins.SecretLoader, existingParsers map[
 
 	return buf.String(), nil
 }
-
-func init() {
-	SchemeBuilder.Register(&ClusterParser{}, &ClusterParserList{})
-}

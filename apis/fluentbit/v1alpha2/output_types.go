@@ -161,7 +161,3 @@ func (list OutputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, e
 
 	return buf.String(), nil
 }
-
-func init() {
-	SchemeBuilder.Register(&Output{}, &OutputList{})
-}

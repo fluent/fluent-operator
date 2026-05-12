@@ -90,10 +90,6 @@ type FluentdConfigList struct {
 	Items           []FluentdConfig `json:"items"`
 }
 
-func init() {
-	SchemeBuilder.Register(&FluentdConfig{}, &FluentdConfigList{})
-}
-
 func (cfg *FluentdConfig) GetNamespace() string {
 	return cfg.Namespace
 }

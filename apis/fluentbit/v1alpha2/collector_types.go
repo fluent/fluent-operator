@@ -143,7 +143,3 @@ type CollectorList struct {
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Collector `json:"items"`
 }
-
-func init() {
-	SchemeBuilder.Register(&Collector{}, &CollectorList{})
-}

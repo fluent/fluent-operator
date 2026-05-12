@@ -45,6 +45,8 @@ type Syslog struct {
 	*plugins.Networking `json:"networking,omitempty"`
 	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
 	TotalLimitSize string `json:"totalLimitSize,omitempty"`
+	// Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0.
+	Workers *int32 `json:"workers,omitempty"`
 }
 
 func (*Syslog) Name() string {
@@ -69,6 +71,7 @@ func (s *Syslog) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVString(kvs, "syslog_sd_key", s.SyslogSDKey)
 	plugins.InsertKVString(kvs, "storage.total_limit_size", s.TotalLimitSize)
 	plugins.InsertKVField(kvs, "syslog_maxsize", s.SyslogMaxSize)
+	plugins.InsertKVField(kvs, "workers", s.Workers)
 
 	if s.TLS != nil {
 		tls, err := s.TLS.Params(sl)

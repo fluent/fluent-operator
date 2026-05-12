@@ -246,6 +246,3 @@ func (list ClusterOutputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (st
 
 	return buf.String(), nil
 }
-func init() {
-	SchemeBuilder.Register(&ClusterOutput{}, &ClusterOutputList{})
-}

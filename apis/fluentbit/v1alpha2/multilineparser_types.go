@@ -114,7 +114,3 @@ func (list MultilineParserList) Load(sl plugins.SecretLoader) (string, error) {
 
 	return load(list.Items, sl)
 }
-
-func init() {
-	SchemeBuilder.Register(&MultilineParser{}, &MultilineParserList{})
-}

@@ -55,7 +55,3 @@ type ClusterInputList struct {
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []ClusterInput `json:"items"`
 }
-
-func init() {
-	SchemeBuilder.Register(&ClusterInput{}, &ClusterInputList{})
-}

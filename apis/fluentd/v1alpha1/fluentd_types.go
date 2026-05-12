@@ -201,7 +201,3 @@ type FluentdList struct {
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Fluentd `json:"items"`
 }
-
-func init() {
-	SchemeBuilder.Register(&Fluentd{}, &FluentdList{})
-}

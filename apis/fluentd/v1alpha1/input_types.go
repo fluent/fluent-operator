@@ -57,7 +57,3 @@ type InputList struct {
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Input `json:"items"`
 }
-
-func init() {
-	SchemeBuilder.Register(&Input{}, &InputList{})
-}
