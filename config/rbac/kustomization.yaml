@@ -1,28 +1,17 @@
 resources:
-# All RBAC will be applied under this service account in
-# the deployment namespace. You may comment out this resource
-# if your manager will use a service account that exists at
-# runtime. Be sure to update RoleBinding and ClusterRoleBinding
-# subjects if changing service account names.
 - service_account.yaml
 - role.yaml
 - role_binding.yaml
-- leader_election_role.yaml
-- leader_election_role_binding.yaml
-# The following RBAC configurations are used to protect
-# the metrics endpoint with authn/authz. These configurations
-# ensure that only authorized users and service accounts
-# can access the metrics endpoint. Comment the following
-# permissions if you want to disable this protection.
-# More info: https://book.kubebuilder.io/reference/metrics.html
-- metrics_auth_role.yaml
-- metrics_auth_role_binding.yaml
-- metrics_reader_role.yaml
-# The following RBAC configurations grant end-users (not the operator)
-# permission to edit/view each custom resource kind. They use aggregation
-# labels (aggregate-to-admin/edit/view) so they layer onto the default
-# Kubernetes user-facing roles. Safe to comment out if you manage CR
-# access through your own RBAC.
+# Leader election and metrics-auth RBAC are intentionally disabled — the
+# production deployment does not enable --leader-elect or expose protected
+# metrics. Uncomment to re-enable when those features ship.
+#- leader_election_role.yaml
+#- leader_election_role_binding.yaml
+#- metrics_auth_role.yaml
+#- metrics_auth_role_binding.yaml
+#- metrics_reader_role.yaml
+# User-facing aggregation roles for editing/viewing CRs. Layer onto
+# kubernetes admin/edit/view roles. Safe to enable per-deployment.
 #- clusterfilter_editor_role.yaml
 #- clusterfilter_viewer_role.yaml
 #- clusterfluentdconfig_editor_role.yaml

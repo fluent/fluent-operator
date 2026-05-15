@@ -1,16 +1,25 @@
-# Adds namespace to all resources.
-namespace: fluentbit-operator-system
+# This is the canonical kustomize entry point for the production install
+# bundle. `kubectl kustomize config/default/` produces a complete install:
+# CRDs, RBAC, ServiceAccount, env ConfigMap, and the operator Deployment.
+#
+# It is rendered to manifests/setup/setup.yaml by `make manifests`.
 
-# Value of this field is prepended to the
-# names of all resources, e.g. a deployment named
-# "wordpress" becomes "alices-wordpress".
-# Note that it should also match with the prefix (text before '-') of the namespace
-# field above.
-namePrefix: fluentbit-operator-
+# The default namespace for the install. Override with `kustomize edit
+# set namespace <ns>` or by editing manifests/setup/kustomization.yaml.
+namespace: fluent
 
-# Labels to add to all resources and selectors.
-#commonLabels:
-#  someName: someValue
+# Map the placeholder image used in config/manager/manager.yaml to the
+# real published operator image. Release tooling bumps `newTag` here.
+images:
+  - name: controller
+    newName: ghcr.io/fluent/fluent-operator/fluent-operator
+    newTag: latest
+
+#labels:
+#  - includeSelectors: false
+#    pairs:
+#      app.kubernetes.io/component: controller
+#      app.kubernetes.io/name: fluent-operator
 
 resources:
 - ../crd
@@ -22,9 +31,9 @@ resources:
 # [CERTMANAGER] To enable cert-manager, uncomment all sections with 'CERTMANAGER'. 'WEBHOOK' components are required.
 #- ../certmanager
 # [PROMETHEUS] To enable prometheus monitor, uncomment all sections with 'PROMETHEUS'.
-- ../prometheus
+#- ../prometheus
 # [METRICS] Expose the controller manager metrics service.
-- metrics_service.yaml
+#- metrics_service.yaml
 # [NETWORK POLICY] Protect the /metrics endpoint and Webhook Server with NetworkPolicy.
 # Only Pod(s) running a namespace labeled with 'metrics: enabled' will be able to gather the metrics.
 # Only CR(s) which requires webhooks and are applied on namespaces labeled with 'webhooks: enabled' will
