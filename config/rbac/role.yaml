@@ -1,22 +1,15 @@
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
   name: manager-role
 rules:
 - apiGroups:
-  - apps
+  - ""
   resources:
-  - daemonsets
+  - events
   verbs:
-  - create
-  - delete
-  - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - ""
@@ -28,17 +21,6 @@ rules:
   - ""
   resources:
   - secrets
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ""
-  resources:
   - serviceaccounts
   verbs:
   - create
@@ -49,17 +31,10 @@ rules:
   - update
   - watch
 - apiGroups:
-  - fluentd.fluent.io
+  - apps
   resources:
-  - clusterfilters
-  - clusterinputs
-  - clusteroutputs
-  verbs:
-  - list
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
-  - clusterfluentdconfigs
+  - daemonsets
+  - statefulsets
   verbs:
   - create
   - delete
@@ -68,69 +43,23 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
-  - filters
-  - inputs
-  - outputs
-  verbs:
-  - list
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
-  - fluentdconfigs
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
-  - fluentdconfigs/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
-  - fluentdconfigs/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
-  - fluentds
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
-  - fluentds/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
-  - fluentds/status
-  verbs:
-  - get
-  - patch
-  - update
 - apiGroups:
   - fluentbit.fluent.io
   resources:
+  - clusterfilters
+  - clusterinputs
+  - clustermultilineparsers
+  - clusteroutputs
+  - clusterparsers
+  - multilineparsers
+  - parsers
+  verbs:
+  - list
+- apiGroups:
+  - fluentbit.fluent.io
+  resources:
+  - clusterfluentbitconfigs
+  - collectors
   - filters
   - fluentbitconfigs
   - fluentbits
@@ -145,18 +74,22 @@ rules:
   - update
   - watch
 - apiGroups:
-  - fluentbit.fluent.io
+  - fluentd.fluent.io
   resources:
+  - clusterfilters
+  - clusterinputs
+  - clusteroutputs
   - filters
   - inputs
   - outputs
-  - parsers
   verbs:
   - list
 - apiGroups:
-  - fluentbit.fluent.io
+  - fluentd.fluent.io
   resources:
-  - fluentbitconfigs
+  - clusterfluentdconfigs
+  - fluentdconfigs
+  - fluentds
   verbs:
   - create
   - delete
@@ -166,42 +99,31 @@ rules:
   - update
   - watch
 - apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentdconfigs/finalizers
+  - fluentds/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentdconfigs/status
+  - fluentds/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - rbac.authorization.k8s.io
   resources:
   - clusterrolebindings
-  verbs:
-  - create
-  - list
-  - get
-  - watch
-  - patch
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
   - clusterroles
-  verbs:
-  - create
-  - list
-  - get
-  - watch
-  - patch
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
   - rolebindings
-  verbs:
-  - create
-  - list
-  - get
-  - watch
-  - patch
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
   - roles
   verbs:
   - create
-  - list
   - get
-  - watch
+  - list
   - patch
+  - watch
