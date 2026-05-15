@@ -55,7 +55,7 @@ MANIFEST_PATHS := ./apis/fluentbit/...;./apis/fluentd/...;./controllers/...
 
 .PHONY: manifests
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook \
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=fluent-operator webhook \
 		paths="$(MANIFEST_PATHS)" \
 		output:crd:artifacts:config=config/crd/bases
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="$(MANIFEST_PATHS)" \
@@ -64,8 +64,7 @@ manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and Cust
 		output:crd:artifacts:config=charts/fluent-operator-fluent-bit-crds/templates
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./apis/fluentd/...;./controllers/..." \
 		output:crd:artifacts:config=charts/fluent-operator-fluentd-crds/templates
-	kubectl kustomize config/crd/bases/ | sed -e '/creationTimestamp/d' > manifests/setup/fluent-operator-crd.yaml
-	kubectl kustomize manifests/setup/ | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
+	kubectl kustomize config/default/ | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
 	hack/mutate-crds.sh
 
 .PHONY: generate
