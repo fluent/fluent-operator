@@ -32,12 +32,16 @@ spec:
         - --health-probe-bind-address=:8081
         image: controller:latest
         name: manager
-        ports: []
+        ports:
+        - containerPort: 8081
+          name: health
+          protocol: TCP
         securityContext:
+          readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
           capabilities:
             drop:
-            - ALL
+              - "ALL"
         livenessProbe:
           httpGet:
             path: /healthz
@@ -52,11 +56,11 @@ spec:
           periodSeconds: 10
         resources:
           limits:
-            cpu: 100m
-            memory: 30Mi
+            cpu: 200m
+            memory: 128Mi
           requests:
-            cpu: 100m
-            memory: 20Mi
+            cpu: 10m
+            memory: 64Mi
         volumeMounts: []
       volumes: []
       serviceAccountName: controller-manager
