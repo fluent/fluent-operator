@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: manager-role
+  name: fluent-operator
 rules:
 - apiGroups:
   - ""
@@ -22,6 +22,7 @@ rules:
   resources:
   - secrets
   - serviceaccounts
+  - services
   verbs:
   - create
   - delete
