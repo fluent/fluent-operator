@@ -84,8 +84,8 @@ type FluentdConfigReconciler struct {
 
 // +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentdconfigs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=fluentd.fluent.io,resources=clusterfluentdconfigs,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=inputs;filters;outputs,verbs=list
-// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs,verbs=list;
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=inputs;filters;outputs,verbs=list;watch
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs,verbs=list;watch
 // +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds,verbs=list
 // +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds/status,verbs=patch
 // +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentdconfigs/status,verbs=get;update;patch

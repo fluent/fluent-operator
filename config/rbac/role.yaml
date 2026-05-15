@@ -56,6 +56,7 @@ rules:
   - parsers
   verbs:
   - list
+  - watch
 - apiGroups:
   - fluentbit.fluent.io
   resources:
@@ -85,6 +86,7 @@ rules:
   - outputs
   verbs:
   - list
+  - watch
 - apiGroups:
   - fluentd.fluent.io
   resources:
