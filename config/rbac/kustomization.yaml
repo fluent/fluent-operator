@@ -18,3 +18,30 @@ resources:
 - metrics_auth_role.yaml
 - metrics_auth_role_binding.yaml
 - metrics_reader_role.yaml
+# The following RBAC configurations grant end-users (not the operator)
+# permission to edit/view each custom resource kind. They use aggregation
+# labels (aggregate-to-admin/edit/view) so they layer onto the default
+# Kubernetes user-facing roles. Safe to comment out if you manage CR
+# access through your own RBAC.
+#- clusterfilter_editor_role.yaml
+#- clusterfilter_viewer_role.yaml
+#- clusterfluentdconfig_editor_role.yaml
+#- clusterfluentdconfig_viewer_role.yaml
+#- clusteroutput_editor_role.yaml
+#- clusteroutput_viewer_role.yaml
+#- filter_editor_role.yaml
+#- filter_viewer_role.yaml
+#- fluentbit_editor_role.yaml
+#- fluentbit_viewer_role.yaml
+#- fluentbitconfig_editor_role.yaml
+#- fluentbitconfig_viewer_role.yaml
+#- fluentd_editor_role.yaml
+#- fluentd_viewer_role.yaml
+#- fluentdconfig_editor_role.yaml
+#- fluentdconfig_viewer_role.yaml
+#- input_editor_role.yaml
+#- input_viewer_role.yaml
+#- output_editor_role.yaml
+#- output_viewer_role.yaml
+#- parser_editor_role.yaml
+#- parser_viewer_role.yaml
