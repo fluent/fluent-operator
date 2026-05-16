@@ -41568,13 +41568,7 @@ rules:
 - apiGroups:
   - ""
   resources:
-  - events
-  verbs:
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
+  - configmaps
   - pods
   verbs:
   - get
@@ -41582,6 +41576,15 @@ rules:
   - ""
   resources:
   - secrets
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
   - serviceaccounts
   - services
   verbs:
@@ -41590,7 +41593,6 @@ rules:
   - get
   - list
   - patch
-  - update
   - watch
 - apiGroups:
   - apps
@@ -41603,17 +41605,20 @@ rules:
   - get
   - list
   - patch
-  - update
   - watch
 - apiGroups:
   - fluentbit.fluent.io
   resources:
   - clusterfilters
+  - clusterfluentbitconfigs
   - clusterinputs
   - clustermultilineparsers
   - clusteroutputs
   - clusterparsers
+  - filters
+  - fluentbitconfigs
   - multilineparsers
+  - outputs
   - parsers
   verbs:
   - list
@@ -41621,28 +41626,29 @@ rules:
 - apiGroups:
   - fluentbit.fluent.io
   resources:
-  - clusterfluentbitconfigs
   - collectors
-  - filters
-  - fluentbitconfigs
   - fluentbits
-  - inputs
-  - outputs
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
   - update
   - watch
+- apiGroups:
+  - fluentbit.fluent.io
+  resources:
+  - collectors/finalizers
+  - fluentbits/finalizers
+  verbs:
+  - update
 - apiGroups:
   - fluentd.fluent.io
   resources:
   - clusterfilters
+  - clusterfluentdconfigs
   - clusterinputs
   - clusteroutputs
   - filters
+  - fluentdconfigs
   - inputs
   - outputs
   verbs:
@@ -41651,27 +41657,7 @@ rules:
 - apiGroups:
   - fluentd.fluent.io
   resources:
-  - clusterfluentdconfigs
-  - fluentdconfigs
-  - fluentds
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
-  - fluentdconfigs/finalizers
-  - fluentds/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - fluentd.fluent.io
-  resources:
+  - clusterfluentdconfigs/status
   - fluentdconfigs/status
   - fluentds/status
   verbs:
@@ -41679,14 +41665,39 @@ rules:
   - patch
   - update
 - apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentds
+  verbs:
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentds/finalizers
+  verbs:
+  - update
+- apiGroups:
   - rbac.authorization.k8s.io
   resources:
   - clusterrolebindings
   - clusterroles
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
   - rolebindings
   - roles
   verbs:
   - create
+  - delete
   - get
   - list
   - patch
