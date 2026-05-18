@@ -36,6 +36,17 @@ type Firehose struct {
 	STSEndpoint *string `json:"stsEndpoint,omitempty"`
 	// Immediately retry failed requests to AWS services once. This option does not affect the normal Fluent Bit retry mechanism with backoff. Instead, it enables an immediate retry with no delay for networking errors, which may help improve throughput when there are transient/random networking issues.
 	AutoRetryRequests *bool `json:"autoRetryRequests,omitempty"`
+	// Compression type to use when compressing the data. Valid values are: gzip, snappy, lz4, zstd. If you do not specify a compression type, the data will be sent uncompressed.
+	// +kubebuilder:validation:Enum=gzip;snappy;lz4;zstd
+	Compression *string `json:"compression,omitempty"`
+	// Specify an external ID for the STS API, can be used with the role_arn parameter if your role requires an external ID.
+	ExternalID *string `json:"externalID,omitempty"`
+	// Option to specify an AWS Profile for credentials.
+	Profile *string `json:"profile,omitempty"`
+	// Option to enable simple aggregation for the Firehose output plugin.
+	SimpleAggregation *bool `json:"simpleAggregation,omitempty"`
+	// Specify number of worker threads to use to output to Firehose
+	Workers *int32 `json:"workers,omitempty"`
 }
 
 // implement Section() method
@@ -74,6 +85,22 @@ func (l *Firehose) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 
 	if l.AutoRetryRequests != nil {
 		kvs.Insert("auto_retry_requests", strconv.FormatBool(*l.AutoRetryRequests))
+	}
+
+	if l.Compression != nil && *l.Compression != "" {
+		kvs.Insert("compression", *l.Compression)
+	}
+	if l.ExternalID != nil && *l.ExternalID != "" {
+		kvs.Insert("external_id", *l.ExternalID)
+	}
+	if l.SimpleAggregation != nil {
+		kvs.Insert("simple_aggregation", strconv.FormatBool(*l.SimpleAggregation))
+	}
+	if l.Profile != nil && *l.Profile != "" {
+		kvs.Insert("profile", *l.Profile)
+	}
+	if l.Workers != nil {
+		kvs.Insert("workers", strconv.FormatInt(int64(*l.Workers), 10))
 	}
 
 	return kvs, nil
