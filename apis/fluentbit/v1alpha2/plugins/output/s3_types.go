@@ -65,8 +65,40 @@ type S3 struct {
 	// Option to specify an AWS Profile for credentials.
 	Profile string `json:"Profile,omitempty"`
 	// Specify number of worker threads to use to output to S3
-	Workers      *int32 `json:"Workers,omitempty"`
-	*plugins.TLS `json:"tls,omitempty"`
+	Workers *int32 `json:"Workers,omitempty"`
+	// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
+	ConnectTimeout *int32 `json:"ConnectTimeout,omitempty"`
+	// On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message.
+	ConnectTimeoutLogError *bool `json:"connectTimeoutLogError,omitempty"`
+	// Select the primary DNS connection type (TCP or UDP).
+	// +kubebuilder:validation:Enum:="TCP";"UDP"
+	DNSMode *string `json:"DNSMode,omitempty"`
+	// Prioritize IPv4 DNS results when trying to establish a connection.
+	DNSPreferIPv4 *bool `json:"DNSPreferIPv4,omitempty"`
+	// Prioritize IPV6 DNS results when trying to establish a connection.
+	DNSPreferIPv6 *bool `json:"DNSPreferIPv6,omitempty"`
+	// Set maximum time a connection can stay idle while assigned.
+	IoTimeout *int32 `json:"IoTimeout,omitempty"`
+	// Set maximum number of times a keepalive connection can be used before it is retired.
+	KeepaliveMaxRecycle *int32 `json:"keepaliveMaxRecycle,omitempty"`
+	// Set maximum number of TCP connections that can be established per worker.
+	MaxWorkerConnections *int32 `json:"maxWorkerConnections,omitempty"`
+	// Ignore the environment variables HTTP_PROXY, HTTPS_PROXY and NO_PROXY when set.
+	ProxyEnvIgnore *bool `json:"proxyEnvIgnore,omitempty"`
+	// Specify network address to bind for data traffic.
+	SourceAddress *string `json:"sourceAddress,omitempty"`
+	// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+	// +kubebuilder:validation:Enum:="on";"off"
+	Keepalive *string `json:"keepalive,omitempty"`
+	// Interval between TCP keepalive probes when no response is received on a keepidle probe.
+	TCPKeepaliveInterval *int32 `json:"tcpKeepaliveInterval,omitempty"`
+	// Number of unacknowledged probes to consider a connection dead.
+	TCPKeepaliveProbes *int32 `json:"tcpKeepaliveProbes,omitempty"`
+	// Interval between the last data packet sent and the first TCP keepalive probe.
+	TCPKeepaliveTime *int32 `json:"tcpKeepaliveTime,omitempty"`
+	// Set maximum time expressed in seconds for an idle keepalive connection.
+	KeepaliveIdleTimeout *int32 `json:"keepaliveIdleTimeout,omitempty"`
+	*plugins.TLS         `json:"tls,omitempty"`
 }
 
 // Name implement Section() method
@@ -105,6 +137,21 @@ func (o *S3) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVString(kvs, "external_id", o.ExternalId)
 	plugins.InsertKVString(kvs, "profile", o.Profile)
 	plugins.InsertKVField(kvs, "workers", o.Workers)
+	plugins.InsertKVField(kvs, "net.connect_timeout", o.ConnectTimeout)
+	plugins.InsertKVField(kvs, "net.connect_timeout_log_error", o.ConnectTimeoutLogError)
+	plugins.InsertKVField(kvs, "net.dns.mode", o.DNSMode)
+	plugins.InsertKVField(kvs, "net.dns.prefer_ipv4", o.DNSPreferIPv4)
+	plugins.InsertKVField(kvs, "net.dns.prefer_ipv6", o.DNSPreferIPv6)
+	plugins.InsertKVField(kvs, "net.io_timeout", o.IoTimeout)
+	plugins.InsertKVField(kvs, "net.keepalive_max_recycle", o.KeepaliveMaxRecycle)
+	plugins.InsertKVField(kvs, "net.max_worker_connections", o.MaxWorkerConnections)
+	plugins.InsertKVField(kvs, "net.proxy_env_ignore", o.ProxyEnvIgnore)
+	plugins.InsertKVField(kvs, "net.source_address", o.SourceAddress)
+	plugins.InsertKVField(kvs, "net.tcp_keepalive", o.Keepalive)
+	plugins.InsertKVField(kvs, "net.tcp_keepalive_interval", o.TCPKeepaliveInterval)
+	plugins.InsertKVField(kvs, "net.tcp_keepalive_probes", o.TCPKeepaliveProbes)
+	plugins.InsertKVField(kvs, "net.tcp_keepalive_time", o.TCPKeepaliveTime)
+	plugins.InsertKVField(kvs, "net.keepalive_idle_timeout", o.KeepaliveIdleTimeout)
 
 	if o.TLS != nil {
 		tls, err := o.TLS.Params(sl)

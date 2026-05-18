@@ -963,6 +963,81 @@ func (in *S3) DeepCopyInto(out *S3) {
 		*out = new(int32)
 		**out = **in
 	}
+	if in.ConnectTimeout != nil {
+		in, out := &in.ConnectTimeout, &out.ConnectTimeout
+		*out = new(int32)
+		**out = **in
+	}
+	if in.ConnectTimeoutLogError != nil {
+		in, out := &in.ConnectTimeoutLogError, &out.ConnectTimeoutLogError
+		*out = new(bool)
+		**out = **in
+	}
+	if in.DNSMode != nil {
+		in, out := &in.DNSMode, &out.DNSMode
+		*out = new(string)
+		**out = **in
+	}
+	if in.DNSPreferIPv4 != nil {
+		in, out := &in.DNSPreferIPv4, &out.DNSPreferIPv4
+		*out = new(bool)
+		**out = **in
+	}
+	if in.DNSPreferIPv6 != nil {
+		in, out := &in.DNSPreferIPv6, &out.DNSPreferIPv6
+		*out = new(bool)
+		**out = **in
+	}
+	if in.IoTimeout != nil {
+		in, out := &in.IoTimeout, &out.IoTimeout
+		*out = new(int32)
+		**out = **in
+	}
+	if in.KeepaliveMaxRecycle != nil {
+		in, out := &in.KeepaliveMaxRecycle, &out.KeepaliveMaxRecycle
+		*out = new(int32)
+		**out = **in
+	}
+	if in.MaxWorkerConnections != nil {
+		in, out := &in.MaxWorkerConnections, &out.MaxWorkerConnections
+		*out = new(int32)
+		**out = **in
+	}
+	if in.ProxyEnvIgnore != nil {
+		in, out := &in.ProxyEnvIgnore, &out.ProxyEnvIgnore
+		*out = new(bool)
+		**out = **in
+	}
+	if in.SourceAddress != nil {
+		in, out := &in.SourceAddress, &out.SourceAddress
+		*out = new(string)
+		**out = **in
+	}
+	if in.Keepalive != nil {
+		in, out := &in.Keepalive, &out.Keepalive
+		*out = new(string)
+		**out = **in
+	}
+	if in.TCPKeepaliveInterval != nil {
+		in, out := &in.TCPKeepaliveInterval, &out.TCPKeepaliveInterval
+		*out = new(int32)
+		**out = **in
+	}
+	if in.TCPKeepaliveProbes != nil {
+		in, out := &in.TCPKeepaliveProbes, &out.TCPKeepaliveProbes
+		*out = new(int32)
+		**out = **in
+	}
+	if in.TCPKeepaliveTime != nil {
+		in, out := &in.TCPKeepaliveTime, &out.TCPKeepaliveTime
+		*out = new(int32)
+		**out = **in
+	}
+	if in.KeepaliveIdleTimeout != nil {
+		in, out := &in.KeepaliveIdleTimeout, &out.KeepaliveIdleTimeout
+		*out = new(int32)
+		**out = **in
+	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
 		*out = new(plugins.TLS)
