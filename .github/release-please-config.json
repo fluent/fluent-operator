@@ -5,19 +5,16 @@
     ".": {
       "extra-files": [
         {
-          "type": "yaml",
-          "path": "charts/fluent-operator/Chart.yaml",
-          "jsonpath": "$.appVersion"
+          "type": "generic",
+          "path": "charts/fluent-operator/Chart.yaml"
         },
         {
-          "type": "yaml",
-          "path": "charts/fluent-operator-fluent-bit-crds/Chart.yaml",
-          "jsonpath": "$.appVersion"
+          "type": "generic",
+          "path": "charts/fluent-operator-fluent-bit-crds/Chart.yaml"
         },
         {
-          "type": "yaml",
-          "path": "charts/fluent-operator-fluentd-crds/Chart.yaml",
-          "jsonpath": "$.appVersion"
+          "type": "generic",
+          "path": "charts/fluent-operator-fluentd-crds/Chart.yaml"
         }
       ]
     }
