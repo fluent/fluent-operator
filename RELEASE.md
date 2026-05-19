@@ -74,7 +74,7 @@ Releases are fully automated via [release-please](https://github.com/googleapis/
 2. When you are ready to ship, review the Release PR — edit the changelog body if needed — and merge it.
 3. release-please automatically pushes the git tag and creates the GitHub Release.
 4. The [`build-op-image`](./github/workflows/build-op-image.yaml) workflow fires on the tag and builds and pushes multi-arch operator images to GHCR and Docker Hub.
-5. The [`upload-release-assets`](.github/workflows/upload-release-assets.yaml) workflow fires on the release publication and attaches `setup.yaml` (with the correct image tag stamped in) as a release asset.
+5. The [`release`](.github/workflows/release-please.yaml) workflow stamps the correct image tag into `setup.yaml` and attaches it as a release asset.
 
 To force a specific version instead of the auto-calculated one, dispatch the [Release Please](https://github.com/fluent/fluent-operator/actions/workflows/release-please.yaml) workflow manually with the `release-as` input set to the desired version (e.g. `3.8.0`).
 
