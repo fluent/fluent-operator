@@ -55,6 +55,14 @@ spec:
           {{- with .Values.operator.disableComponentControllers }}
           - --disable-component-controllers={{ . }}
           {{- end }}
+        {{- with .Values.operator.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.operator.readinessProbe }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: env
           mountPath: /fluent-operator

@@ -57,7 +57,7 @@ Opensearch defines the parameters for out_opensearch plugin
 | suppressDocWrap | Optional, Suppress doc_wrap (default: false) | *bool |
 | ignoreExceptions | Optional, List of exception classes to ignore | *string |
 | exceptionBackup | Optional, Backup chunk when ignore exception occurs (default: true) | *bool |
-| bulkMessageRequestThreshold | Optional, Configure bulk_message request splitting threshold size (default: -1 unlimited) | *int32 |
+| bulkMessageRequestThreshold | Optional, Configure bulk_message_request_threshold splitting threshold size (default: -1 unlimited) | *int32 |
 | applicationName | Optional, Specify the application name for the rollover index to be created (default: default) | *string |
 | indexDatePattern | Optional, Specify the index date pattern for creating a rollover index (default: now/d) | *string |
 | useLegacyTemplate | Optional, Use legacy template or not (default: false for composable templates) | *bool |
