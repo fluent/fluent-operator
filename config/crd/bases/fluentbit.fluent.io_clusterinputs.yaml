@@ -788,6 +788,10 @@ spec:
                     description: Specify that the database will be accessed only by
                       Fluent Bit.
                     type: boolean
+                  dbCompareFilename:
+                    description: Whether to compare filenames. When enabled, the database
+                      uses the filename for comparison.
+                    type: boolean
                   dbSync:
                     description: 'Set a default synchronization (I/O) method. Values:
                       Extra, Full, Normal, Off.'

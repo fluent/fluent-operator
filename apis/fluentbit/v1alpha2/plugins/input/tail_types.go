@@ -61,6 +61,8 @@ type Tail struct {
 	DBSync string `json:"dbSync,omitempty"`
 	// Specify that the database will be accessed only by Fluent Bit.
 	DBLocking *bool `json:"dbLocking,omitempty"`
+	// Whether to compare filenames. When enabled, the database uses the filename for comparison.
+	DBCompareFilename *bool `json:"dbCompareFilename,omitempty"`
 	// Set a limit of memory that Tail plugin can use when appending data to the Engine.
 	// If the limit is reach, it will be paused; when the data is flushed it resumes.
 	MemBufLimit string `json:"memBufLimit,omitempty"`
@@ -148,6 +150,7 @@ func (t *Tail) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVField(kvs, "Read_from_Head", t.ReadFromHead)
 	plugins.InsertKVField(kvs, "Rotate_Wait", t.RotateWaitSeconds)
 	plugins.InsertKVField(kvs, "DB.locking", t.DBLocking)
+	plugins.InsertKVField(kvs, "DB.compare_filename", t.DBCompareFilename)
 	plugins.InsertKVField(kvs, "Multiline", t.Multiline)
 	plugins.InsertKVField(kvs, "Multiline_Flush", t.MultilineFlushSeconds)
 	plugins.InsertKVField(kvs, "Skip_Empty_Lines", t.SkipEmptyLines)

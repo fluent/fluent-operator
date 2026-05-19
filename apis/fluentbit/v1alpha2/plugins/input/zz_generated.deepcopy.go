@@ -467,6 +467,11 @@ func (in *Tail) DeepCopyInto(out *Tail) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.DBCompareFilename != nil {
+		in, out := &in.DBCompareFilename, &out.DBCompareFilename
+		*out = new(bool)
+		**out = **in
+	}
 	if in.Multiline != nil {
 		in, out := &in.Multiline, &out.Multiline
 		*out = new(bool)
