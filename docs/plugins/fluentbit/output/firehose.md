@@ -15,3 +15,8 @@ The Firehose output plugin, allows to ingest your records into AWS Firehose. <br
 | endpoint | Specify a custom endpoint for the Kinesis Firehose API. | *string |
 | stsEndpoint | Specify a custom endpoint for the STS API; used to assume your custom role provided with role_arn. | *string |
 | autoRetryRequests | Immediately retry failed requests to AWS services once. This option does not affect the normal Fluent Bit retry mechanism with backoff. Instead, it enables an immediate retry with no delay for networking errors, which may help improve throughput when there are transient/random networking issues. | *bool |
+| compression | Compression type to use when compressing the data. Valid values are: gzip, snappy, lz4, zstd. If you do not specify a compression type, the data will be sent uncompressed. | *string |
+| externalID | Specify an external ID for the STS API, can be used with the role_arn parameter if your role requires an external ID. | *string |
+| profile | Option to specify an AWS Profile for credentials. | *string |
+| simpleAggregation | Option to enable simple aggregation for the Firehose output plugin. | *bool |
+| workers | Specify number of worker threads to use to output to Firehose | *int32 |
