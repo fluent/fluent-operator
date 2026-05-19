@@ -1,8 +1,8 @@
 name: Lint PR Title
 
 on:
-  # This workflow uses pull_request_target because it needs "pull_request: write" to
-  # post comments (not possible with pull_request).
+  # This workflow uses pull_request_target because it needs "pull_requests: write"
+  # and "issues: write" to post comments (not possible with pull_request).
   #
   # WARNING!
   # We MUST ensure that code is NEVER checked out (eg, actions/checkout) in this
@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      issues: write
     steps:
       - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
         id: lint_pr_title
