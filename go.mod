@@ -10,7 +10,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/oklog/run v1.2.0
 	github.com/onsi/ginkgo/v2 v2.28.3
-	github.com/onsi/gomega v1.40.0
+	github.com/onsi/gomega v1.41.0
 	golang.org/x/sync v0.20.0
 	k8s.io/api v0.36.0
 	k8s.io/apimachinery v0.36.0
