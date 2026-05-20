@@ -1,20 +1,33 @@
 resources:
-# All RBAC will be applied under this service account in
-# the deployment namespace. You may comment out this resource
-# if your manager will use a service account that exists at
-# runtime. Be sure to update RoleBinding and ClusterRoleBinding
-# subjects if changing service account names.
 - service_account.yaml
 - role.yaml
 - role_binding.yaml
 - leader_election_role.yaml
 - leader_election_role_binding.yaml
-# The following RBAC configurations are used to protect
-# the metrics endpoint with authn/authz. These configurations
-# ensure that only authorized users and service accounts
-# can access the metrics endpoint. Comment the following
-# permissions if you want to disable this protection.
-# More info: https://book.kubebuilder.io/reference/metrics.html
-- metrics_auth_role.yaml
-- metrics_auth_role_binding.yaml
-- metrics_reader_role.yaml
+#- metrics_auth_role.yaml
+#- metrics_auth_role_binding.yaml
+#- metrics_reader_role.yaml
+# User-facing aggregation roles for editing/viewing CRs. Layer onto
+# kubernetes admin/edit/view roles. Safe to enable per-deployment.
+#- clusterfilter_editor_role.yaml
+#- clusterfilter_viewer_role.yaml
+#- clusterfluentdconfig_editor_role.yaml
+#- clusterfluentdconfig_viewer_role.yaml
+#- clusteroutput_editor_role.yaml
+#- clusteroutput_viewer_role.yaml
+#- filter_editor_role.yaml
+#- filter_viewer_role.yaml
+#- fluentbit_editor_role.yaml
+#- fluentbit_viewer_role.yaml
+#- fluentbitconfig_editor_role.yaml
+#- fluentbitconfig_viewer_role.yaml
+#- fluentd_editor_role.yaml
+#- fluentd_viewer_role.yaml
+#- fluentdconfig_editor_role.yaml
+#- fluentdconfig_viewer_role.yaml
+#- input_editor_role.yaml
+#- input_viewer_role.yaml
+#- output_editor_role.yaml
+#- output_viewer_role.yaml
+#- parser_editor_role.yaml
+#- parser_viewer_role.yaml

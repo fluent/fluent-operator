@@ -166,11 +166,12 @@ func (r *FluentBitConfigReconciler) updateSecretIfNeeded(
 	return nil
 }
 
-// +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterfluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=fluentbitconfigs,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs;clusterparsers;clustermultilineparsers,verbs=list
-// +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=filters;outputs;parsers;multilineparsers,verbs=list
-// +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterfluentbitconfigs,verbs=list;watch
+// +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=fluentbitconfigs,verbs=list;watch
+// +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs;clusterparsers;clustermultilineparsers,verbs=list;watch
+// +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=filters;outputs;parsers;multilineparsers,verbs=list;watch
+// +kubebuilder:rbac:groups=core,resources=configmaps,verbs=get
+// +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch;create;patch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

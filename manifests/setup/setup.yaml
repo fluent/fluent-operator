@@ -1,3 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fluent
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -41518,13 +41523,77 @@ metadata:
   namespace: fluent
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: leader-election-role
+  namespace: fluent
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  labels:
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/name: fluent-operator
   name: fluent-operator
 rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - pods
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  - services
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - watch
 - apiGroups:
   - apps
   resources:
@@ -41536,140 +41605,123 @@ rules:
   - get
   - list
   - patch
-  - update
   - watch
 - apiGroups:
-  - ""
+  - fluentbit.fluent.io
   resources:
-  - pods
-  verbs:
-  - get
-- apiGroups:
-  - ""
-  resources:
-  - events
+  - clusterfilters
+  - clusterfluentbitconfigs
+  - clusterinputs
+  - clustermultilineparsers
+  - clusteroutputs
+  - clusterparsers
+  - filters
+  - fluentbitconfigs
+  - multilineparsers
+  - outputs
+  - parsers
   verbs:
   - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  - configmaps
-  - serviceaccounts
-  - configmaps
-  - services
-  - namespaces
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - fluentbit.fluent.io
   resources:
   - collectors
   - fluentbits
-  - fluentbits/finalizers
-  - clusterfluentbitconfigs
-  - clusterfluentbitconfigs/finalizers
-  - clusterfilters
-  - clusterfilters/finalizers
-  - clusterinputs
-  - clusterinputs/finalizers
-  - clusteroutputs
-  - clusteroutputs/finalizers
-  - clusterparsers
-  - clusterparsers/finalizers
-  - fluentbitconfigs
-  - fluentbitconfigs/finalizers
-  - multilineparsers
-  - multilineparsers/finalizers
-  - clustermultilineparsers
-  - clustermultilineparsers/finalizers
-  - filters
-  - outputs
-  - parsers
   verbs:
-  - create
-  - delete
   - get
   - list
+  - update
+  - watch
+- apiGroups:
+  - fluentbit.fluent.io
+  resources:
+  - collectors/finalizers
+  - fluentbits/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - clusterfilters
+  - clusterfluentdconfigs
+  - clusterinputs
+  - clusteroutputs
+  - filters
+  - fluentdconfigs
+  - inputs
+  - outputs
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - clusterfluentdconfigs/status
+  - fluentdconfigs/status
+  - fluentds/status
+  verbs:
+  - get
   - patch
+  - update
+- apiGroups:
+  - fluentd.fluent.io
+  resources:
+  - fluentds
+  verbs:
+  - get
+  - list
   - update
   - watch
 - apiGroups:
   - fluentd.fluent.io
   resources:
-  - fluentds
-  - fluentds/status
-  - clusterfluentdconfigs
-  - clusterfluentdconfigs/status
-  - fluentdconfigs
-  - fluentdconfigs/status
-  - clusterfilters
-  - filters
-  - clusteroutputs
-  - outputs
-  - inputs
-  - clusterinputs
+  - fluentds/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterrolebindings
+  - clusterroles
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
   verbs:
   - create
   - delete
   - get
   - list
   - patch
-  - update
   - watch
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - clusterrolebindings
-  verbs:
-  - create
-  - list
-  - get
-  - watch
-  - patch
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - clusterroles
-  verbs:
-  - create
-  - list
-  - get
-  - watch
-  - patch
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - rolebindings
-  verbs:
-  - create
-  - list
-  - get
-  - watch
-  - patch
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - roles
-  verbs:
-  - create
-  - list
-  - get
-  - watch
-  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: leader-election-rolebinding
+  namespace: fluent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: fluent-operator
+  namespace: fluent
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    app.kubernetes.io/component: controller
+    app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluent-operator
   name: fluent-operator
 roleRef:
@@ -41713,25 +41765,50 @@ spec:
         app.kubernetes.io/name: fluent-operator
     spec:
       containers:
-      - env:
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
+      - args:
+        - --metrics-bind-address=:8443
+        - --leader-elect
+        - --health-probe-bind-address=:8081
+        command:
+        - /manager
         image: ghcr.io/fluent/fluent-operator/fluent-operator:latest
-        name: fluent-operator
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: manager
+        ports:
+        - containerPort: 8081
+          name: health
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
         resources:
           limits:
             cpu: 200m
-            memory: 60Mi
+            memory: 128Mi
           requests:
-            cpu: 100m
-            memory: 20Mi
+            cpu: 10m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /fluent-operator
           name: env
+      securityContext:
+        runAsNonRoot: true
       serviceAccountName: fluent-operator
+      terminationGracePeriodSeconds: 10
       volumes:
       - configMap:
           name: fluent-operator-env

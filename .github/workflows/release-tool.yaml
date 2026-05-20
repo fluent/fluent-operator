@@ -84,19 +84,15 @@ jobs:
 
       - name: Update manifest files
         run: |
-          # Update deployment manifests
-          files=(
-            "manifests/setup/fluent-operator-deployment.yaml"
-            "manifests/setup/setup.yaml"
-          )
-          for file in "${files[@]}"; do
-            if [ -f "$file" ]; then
-              sed -i 's/fluent-operator:latest/fluent-operator:v${{ needs.validate-and-prepare.outputs.version_without_v }}/' "$file"
-            else
-              echo "Warning: File $file not found"
-              exit 1
-            fi
-          done
+          # Bump the operator image tag in the kustomize images: transformer.
+          # config/default/kustomization.yaml is the single source of truth;
+          # manifests/setup/setup.yaml is regenerated below.
+          if [ ! -f "config/default/kustomization.yaml" ]; then
+            echo "Error: config/default/kustomization.yaml not found"
+            exit 1
+          fi
+          sed -i 's|newTag: .*|newTag: v${{ needs.validate-and-prepare.outputs.version_without_v }}|' config/default/kustomization.yaml
+          make manifests
 
       - name: Update Helm chart values
         run: |
@@ -124,8 +120,8 @@ jobs:
 
             ### Changes
             The following files have been updated:
-            - manifests/setup/fluent-operator-deployment.yaml
-            - manifests/setup/setup.yaml
+            - config/default/kustomization.yaml (image tag)
+            - manifests/setup/setup.yaml (regenerated)
             - charts/fluent-operator/values.yaml
             - VERSION
 

@@ -51,16 +51,20 @@ help: ## Display this help.
 shellcheck:
 	@find . -type f -name *.sh -exec docker run --rm -v $(shell pwd):/mnt koalaman/shellcheck:stable {} +
 
+MANIFEST_PATHS := ./apis/fluentbit/...;./apis/fluentd/...;./controllers/...
+
 .PHONY: manifests
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=config/crd/bases
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=config/crd/bases
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=charts/fluent-operator/crds
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=charts/fluent-operator/crds
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=charts/fluent-operator-fluent-bit-crds/templates
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=charts/fluent-operator-fluentd-crds/templates
-	kubectl kustomize config/crd/bases/ | sed -e '/creationTimestamp/d' > manifests/setup/fluent-operator-crd.yaml
-	kubectl kustomize manifests/setup/ | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=fluent-operator webhook \
+		paths="$(MANIFEST_PATHS)" \
+		output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="$(MANIFEST_PATHS)" \
+		output:crd:artifacts:config=charts/fluent-operator/crds
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./apis/fluentbit/...;./controllers/..." \
+		output:crd:artifacts:config=charts/fluent-operator-fluent-bit-crds/templates
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./apis/fluentd/...;./controllers/..." \
+		output:crd:artifacts:config=charts/fluent-operator-fluentd-crds/templates
+	kubectl kustomize config/default/ | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
 	hack/mutate-crds.sh
 
 .PHONY: generate

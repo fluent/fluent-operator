@@ -12,9 +12,20 @@ PROJECT_ROOT="$PWD"
 E2E_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 LOGGING_NAMESPACE="fluent"
 IMAGE_TAG="$(date "+%Y-%m-%d-%H-%M-%S")"
-VERSION="$(tr -d " \t\n\r" < VERSION)"
 IMAGE_NAME="ghcr.io/fluent/fluent-operator/fluent-operator"
 KIND_CLUSTER="${KIND_CLUSTER:-fluent-operator-test-e2e}"
+BUILD_ARCH="${E2E_IMAGE_ARCH:-}"
+
+if [ -z "$BUILD_ARCH" ]; then
+  case "$(uname -m)" in
+    arm64|aarch64) BUILD_ARCH="arm64" ;;
+    x86_64|amd64) BUILD_ARCH="amd64" ;;
+    *)
+      echo "Unsupported architecture: $(uname -m). Set E2E_IMAGE_ARCH to amd64 or arm64."
+      exit 1
+      ;;
+  esac
+fi
 
 GINKGO_BIN="ginkgo"
 if [ -f "$PROJECT_ROOT/bin/ginkgo" ]; then
@@ -43,29 +54,29 @@ function cleanup() {
 }
 
 function prepare_cluster() {
-  kubectl create ns "$LOGGING_NAMESPACE"
-
   echo "wait the control-plane ready…"
   kubectl wait --for=condition=Ready "node/${KIND_CLUSTER}-control-plane" --timeout=60s
 }
 
 function build_image() {
   pushd "$PROJECT_ROOT" >/dev/null
-  make build-op-amd64 -e "FO_IMG=$IMAGE_NAME:$IMAGE_TAG"
+  make "build-op-${BUILD_ARCH}" -e "FO_IMG=$IMAGE_NAME:$IMAGE_TAG"
   kind load docker-image "$IMAGE_NAME:$IMAGE_TAG" --name "$KIND_CLUSTER"
-  
+
   # Build and load Fluentd image for e2e tests
   local fd_img="${FD_IMG:-ghcr.io/fluent/fluent-operator/fluentd:v1.19.2}"
   echo "Building Fluentd image for e2e tests…"
-  make build-fd-amd64 -e "FD_IMG=$fd_img"
+  make "build-fd-${BUILD_ARCH}" -e "FD_IMG=$fd_img"
   kind load docker-image "$fd_img" --name "$KIND_CLUSTER"
-  
+
   popd >/dev/null
 }
 
 function start_fluent_operator() {
   pushd "$PROJECT_ROOT" >/dev/null
-  sed "s#$IMAGE_NAME:${VERSION}#$IMAGE_NAME:$IMAGE_TAG#g" < manifests/setup/setup.yaml | kubectl create -f -
+  sed -E \
+    -e "s#^([[:space:]]*)image: ${IMAGE_NAME}:.*#\1image: ${IMAGE_NAME}:${IMAGE_TAG}\n\1imagePullPolicy: Never#" \
+    < manifests/setup/setup.yaml | kubectl create -f -
   kubectl -n "$LOGGING_NAMESPACE" wait --for=condition=available deployment/fluent-operator --timeout=60s
   popd >/dev/null
 }
