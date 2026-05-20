@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "packages": {
+    ".": {
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "charts/fluent-operator/Chart.yaml"
+        },
+        {
+          "type": "generic",
+          "path": "charts/fluent-operator-fluent-bit-crds/Chart.yaml"
+        },
+        {
+          "type": "generic",
+          "path": "charts/fluent-operator-fluentd-crds/Chart.yaml"
+        }
+      ]
+    }
+  }
+}

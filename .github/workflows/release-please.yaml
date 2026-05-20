@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      release-as:
+        description: 'Override the next release version (e.g. 3.8.0). Leave empty for automatic versioning from conventional commits.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: .github/release-please-config.json
+          manifest-file: .github/.release-please-manifest.json
+          release-as: ${{ inputs.release-as }}
+
+      - name: Checkout release tag
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ steps.release.outputs.tag_name }}
+
+      - name: Stamp image tag in setup.yaml
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          sed -i \
+            's|ghcr.io/fluent/fluent-operator/fluent-operator:latest|ghcr.io/fluent/fluent-operator/fluent-operator:${{ steps.release.outputs.tag_name }}|g' \
+            manifests/setup/setup.yaml
+
+      - name: Upload setup.yaml to release
+        if: ${{ steps.release.outputs.release_created }}
+        run: gh release upload "${{ steps.release.outputs.tag_name }}" manifests/setup/setup.yaml --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
