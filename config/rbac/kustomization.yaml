@@ -2,9 +2,6 @@ resources:
 - service_account.yaml
 - role.yaml
 - role_binding.yaml
-# Leader election and metrics-auth RBAC are intentionally disabled — the
-# production deployment does not enable --leader-elect or expose protected
-# metrics. Uncomment to re-enable when those features ship.
 - leader_election_role.yaml
 - leader_election_role_binding.yaml
 #- metrics_auth_role.yaml
