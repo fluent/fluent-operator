@@ -324,6 +324,7 @@ Most files under the folder [manifests/setup](manifests/setup) are automatically
 ## Community
 
 ### About the community
+Fluent Operator was previously sponsored and open-sourced by the [KubeSphere](http://kubesphere.io/) Team and maintained by the Fluent community.
 
 This project was accepted by the Fluent community as a sub-project in 2021 and is currently a vendor-neutral and community-driven project.
 
