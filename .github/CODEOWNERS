@@ -1,0 +1,16 @@
+# Fluent Operator Code Owners
+# ----------------------
+# The following file list the code owners or responsibles for code
+# review on different components or extensions of Fluent Bit, applicable for
+# any original code author (not only maintainers).
+#
+# NOTE: if you are a original code author and you are not listed here, please
+# open a PR with the proper modification :)
+
+# CI
+# ------------------------------------
+/.github/ @joshuabaird @benjaminhuo @cw-Guo @marcofranssen @wanjunlei
+
+# CODEOWNERS
+# ------------------------------------
+.github/CODEOWNERS  @joshuabaird @benjaminhuo @cw-Guo @marcofranssen @wanjunlei
