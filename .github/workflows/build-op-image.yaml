@@ -88,9 +88,11 @@ jobs:
         run: |
           tag="${{ inputs.tag }}"
           version="${tag#v}"
-          echo "WD_TAG=${tag}" >> "$GITHUB_ENV"
-          echo "WD_VERSION=${version}" >> "$GITHUB_ENV"
-          echo "WD_MAJOR_MINOR=${version%.*}" >> "$GITHUB_ENV"
+          {
+            echo "WD_TAG=${tag}"
+            echo "WD_VERSION=${version}"
+            echo "WD_MAJOR_MINOR=${version%.*}"
+          } >> "$GITHUB_ENV"
 
       - name: Install Go
         id: setup-go
