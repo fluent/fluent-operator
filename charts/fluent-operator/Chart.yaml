@@ -10,7 +10,7 @@ version: 0.0.0-dev.0  # This is a development chart which gets released and vers
 # renovate: datasource=docker depName=ghcr.io/fluent/fluent-operator/fluent-operator
 appVersion: 3.8.0  # x-release-please-version
 icon: https://raw.githubusercontent.com/fluent/fluent-operator/master/docs/images/fluent-operator-icon.svg
-home: https://www.fluentd.org/
+home: https://github.com/fluent/fluent-operator
 sources:
   - https://github.com/fluent/fluent-operator
 maintainers:
