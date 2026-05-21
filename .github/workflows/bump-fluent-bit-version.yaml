@@ -43,8 +43,7 @@ jobs:
 
       - name: Update version in VERSION file
         run: |
-          echo ${{ github.event.inputs.version }} > cmd/fluent-watcher/fluentbit/VERSION
-          if [ $? -ne 0 ]; then
+          if ! echo "${{ github.event.inputs.version }}" > cmd/fluent-watcher/fluentbit/VERSION; then
             echo "Failed to update VERSION file"
             exit 1
           fi
@@ -60,8 +59,7 @@ jobs:
             "manifests/regex-parser/fluentbit-fluentBit.yaml"
           )
           for file in "${files[@]}"; do
-            sed -i 's|image: ghcr.io/fluent/fluent-operator/fluent-bit:.*|image: ghcr.io/fluent/fluent-operator/fluent-bit:${{ github.event.inputs.version }}|' "$file"
-            if [ $? -ne 0 ]; then
+            if ! sed -i 's|image: ghcr.io/fluent/fluent-operator/fluent-bit:.*|image: ghcr.io/fluent/fluent-operator/fluent-bit:${{ github.event.inputs.version }}|' "$file"; then
               echo "Failed to update $file"
               exit 1
             fi
@@ -69,8 +67,7 @@ jobs:
 
       - name: Update version in values.yaml
         run: |
-          sed -i '/repository: "ghcr.io\/fluent\/fluent-operator\/fluent-bit"/!b;n;s/tag: .*/tag: "${{ github.event.inputs.version }}"/' charts/fluent-operator/values.yaml
-          if [ $? -ne 0 ]; then
+          if ! sed -i '/repository: "ghcr.io\/fluent\/fluent-operator\/fluent-bit"/!b;n;s/tag: .*/tag: "${{ github.event.inputs.version }}"/' charts/fluent-operator/values.yaml; then
             echo "Failed to update values.yaml"
             exit 1
           fi
