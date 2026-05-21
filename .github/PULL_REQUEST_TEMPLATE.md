@@ -1,4 +1,9 @@
 <!--
+PR titles must follow Conventional Commits format: https://www.conventionalcommits.org
+Examples: feat: add X | fix: correct Y | chore: update Z | docs: improve W
+-->
+
+<!--
 Thank you for contributing to Fluent Operator!
 Your commits need to follow DCO: https://probot.github.io/apps/dco/
 And please provide the following information to help us make the most of your pull request:
