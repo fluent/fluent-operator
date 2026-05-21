@@ -1,6 +1,9 @@
 name: Build/Push Fluent Operator image
 
 on:
+  workflow_dispatch:
+  release:
+    types: [published]
   push:
     branches:
       - "master"
