@@ -24,7 +24,7 @@ jobs:
         run: |
           changed=$(ct list-changed --chart-dirs charts/fluent-operator --config .github/ct.yaml)
           if [[ -n "$changed" ]]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Run chart-testing (lint)

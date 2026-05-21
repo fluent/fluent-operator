@@ -37,9 +37,9 @@ jobs:
         run: |
           VERSION=$(cat cmd/fluent-watcher/fluentbit/VERSION)  # Read the version from the VERSION file
           VERSION_WITHOUT_V=${VERSION#v}
-          MAJOR_MINOR=$(echo $VERSION_WITHOUT_V | cut -d. -f1-2)
+          MAJOR_MINOR=$(echo "$VERSION_WITHOUT_V" | cut -d. -f1-2)
 
-          if skopeo inspect docker://${{ env.GHCR_REPO }}:${VERSION}; then
+          if skopeo inspect "docker://${{ env.GHCR_REPO }}:${VERSION}"; then
             echo "${VERSION} tag already exists, assuming we're building a patch release!"
             LATEST_PATCH_VERSION=$(skopeo list-tags docker://${{ env.GHCR_REPO }} | grep -E "${VERSION}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2 | tr -d ',')
             NEW_PATCH_VERSION=$((LATEST_PATCH_VERSION + 1))
@@ -50,9 +50,11 @@ jobs:
             IMAGE_BASE_TAG="${VERSION}"
           fi
 
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "image-base-tag=$IMAGE_BASE_TAG" >> $GITHUB_OUTPUT
-          echo "image-major-minor=$MAJOR_MINOR" >> $GITHUB_OUTPUT
+          {
+            echo "version=$VERSION"
+            echo "image-base-tag=$IMAGE_BASE_TAG"
+            echo "image-major-minor=$MAJOR_MINOR"
+          } >> "$GITHUB_OUTPUT"
 
   build-tags:
     name: Get image tags
@@ -157,7 +159,7 @@ jobs:
           platform="${{ matrix.platform }}"
           # Convert "linux/amd64" or "linux/arm64" to just amd64 or arm64 for the output variable name
           arch=${platform#linux/}
-          echo "${arch}=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
+          echo "${arch}=${{ steps.build.outputs.digest }}" >> "$GITHUB_OUTPUT"
 
   build-debug:
     name: Build/push debug image (${{ matrix.platform }})
@@ -219,7 +221,7 @@ jobs:
           platform="${{ matrix.platform }}"
           # Convert "linux/amd64" to just amd64 for the output variable name
           arch=${platform#linux/}
-          echo "${arch}=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
+          echo "${arch}=${{ steps.build.outputs.digest }}" >> "$GITHUB_OUTPUT"
 
   manifest:
     name: Publish image manifests

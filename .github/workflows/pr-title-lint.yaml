@@ -1,0 +1,55 @@
+name: Lint PR Title
+
+on:
+  # This workflow uses pull_request_target because it needs "pull_requests: write"
+  # and "issues: write" to post comments (not possible with pull_request).
+  #
+  # WARNING!
+  # We MUST ensure that code is NEVER checked out (eg, actions/checkout) in this
+  # workflow, otherwise it opens up a path for attacker-controlled PR code execution!
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - edited
+
+permissions: {}
+
+jobs:
+  lint:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+        id: lint_pr_title
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        if: always() && (steps.lint_pr_title.outputs.error_message != null)
+        with:
+          header: pr-title-lint-error
+          message: |
+            Thank you for your pull request! :wave:
+
+            Your PR title needs to follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format so it can be included correctly in the changelog.
+
+            **Examples of valid titles:**
+            - `feat: add support for new filter plugin`
+            - `fix: correct nil pointer in controller reconcile`
+            - `chore: update dependencies`
+            - `docs: improve installation guide`
+
+            **Details:**
+            ```
+            ${{ steps.lint_pr_title.outputs.error_message }}
+            ```
+
+      - uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        if: ${{ steps.lint_pr_title.outputs.error_message == null }}
+        with:
+          header: pr-title-lint-error
+          delete: true
