@@ -14,6 +14,12 @@
 
 ## [UNRELEASED]
 
+## [v4.1.0] - 2026-05-21
+
+### Changed
+
+- Updates to CRDs for fluent-operator v3.8.0 compatibility
+
 ## [v4.0.0] - 2026-04-19
 
 ### Changed
@@ -24,4 +30,5 @@
 RELEASE LINKS
 -->
 [UNRELEASED]: https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator-crds-fluentd
+[v4.1.0]: https://github.com/fluent/helm-charts/releases/tag/fluent-operator-crds-fluentd-4.1.0
 [v4.0.0]: https://github.com/fluent/helm-charts/releases/tag/fluent-operator-crds-fluentd-4.0.0
