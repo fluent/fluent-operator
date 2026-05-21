@@ -2,6 +2,11 @@ name: Build/Push Fluent Operator image
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag to build (e.g. v3.8.0)'
+        required: true
+        type: string
   release:
     types: [published]
   push:
@@ -75,7 +80,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          ref: ${{ inputs.tag || github.ref }}
           fetch-depth: 0
+
+      - name: Set version env for workflow_dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          tag="${{ inputs.tag }}"
+          version="${tag#v}"
+          echo "WD_TAG=${tag}" >> "$GITHUB_ENV"
+          echo "WD_VERSION=${version}" >> "$GITHUB_ENV"
+          echo "WD_MAJOR_MINOR=${version%.*}" >> "$GITHUB_ENV"
 
       - name: Install Go
         id: setup-go
@@ -115,8 +130,10 @@ jobs:
           flavor: |
             latest=false
           tags: |
-            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' || github.event_name == 'workflow_dispatch' }}
             type=ref,event=tag
+            type=raw,value=${{ env.WD_TAG }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=${{ env.WD_MAJOR_MINOR }},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=semver,pattern={{version}},enable=${{ github.ref_type == 'tag' }}
             type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
             type=sha,format=long,prefix=,priority=1000
