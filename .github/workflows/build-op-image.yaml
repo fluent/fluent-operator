@@ -135,6 +135,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref_type == 'tag' || github.event_name == 'workflow_dispatch' }}
             type=ref,event=tag
             type=raw,value=${{ env.WD_TAG }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=${{ env.WD_VERSION }},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=raw,value=${{ env.WD_MAJOR_MINOR }},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=semver,pattern={{version}},enable=${{ github.ref_type == 'tag' }}
             type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
