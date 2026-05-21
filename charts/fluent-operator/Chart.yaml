@@ -1,6 +1,6 @@
 apiVersion: v2
 name: fluent-operator
-description: Fluent Operator provides great flexibility in building a logging layer based on Fluent Bit and Fluentd.
+description: Kubernetes operator for Fluent Bit and Fluentd—define collectors, pipelines, and outputs as custom resources.
 keywords:
   - logging
   - fluent-bit
