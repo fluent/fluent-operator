@@ -10,35 +10,6 @@ on:
   push:
     branches:
       - "master"
-    tags:
-      - "v*"
-    paths:
-      - ".github/workflows/build-op-image.yaml"
-      - ".github/workflows/clone-docker-image-action.yaml"
-      - "apis/**"
-      - "cmd/fluent-manager/**"
-      - "controllers/**"
-      - "hack/**"
-      - "manifests/setup/setup.yaml"
-      - "pkg/fluentd/router/**"
-      - "pkg/fluentd/operator/**"
-      - "pkg/fluentd/utils/**"
-      - "Makefile"
-
-  pull_request:
-    branches:
-      - "master"
-    paths:
-      - ".github/workflows/build-op-image.yaml"
-      - ".github/workflows/clone-docker-image-action.yaml"
-      - "apis/**"
-      - "cmd/fluent-manager/**"
-      - "controllers/**"
-      - "hack/**"
-      - "manifests/setup/setup.yaml"
-      - "pkg/fluentd/router/**"
-      - "pkg/fluentd/operator/**"
-      - "pkg/fluentd/utils/**"
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-operator'
@@ -49,8 +20,8 @@ permissions:
   packages: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -132,7 +103,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
 
       - name: Login to GHCR
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: ghcr.io
@@ -140,7 +110,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: docker.io
@@ -153,37 +122,17 @@ jobs:
         with:
           images: |
             ${{ env.GHCR_REPO }}
-            ${{ github.event_name != 'pull_request' && env.DOCKERHUB_REPO || '' }}
+            ${{ env.DOCKERHUB_REPO }}
           flavor: |
             latest=false
           tags: |
-            type=raw,value=latest,enable=${{ github.ref_type == 'tag' || (github.event_name == 'workflow_dispatch' && env.WD_PRERELEASE == '') }}
-            type=ref,event=tag
+            type=raw,value=latest,enable=${{ github.event_name == 'workflow_dispatch' && env.WD_PRERELEASE == '' }}
             type=raw,value=${{ env.WD_TAG }},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=raw,value=${{ env.WD_VERSION }},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=raw,value=${{ env.WD_MAJOR_MINOR }},enable=${{ github.event_name == 'workflow_dispatch' && env.WD_PRERELEASE == '' }}
-            type=semver,pattern={{version}},enable=${{ github.ref_type == 'tag' }}
-            type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
             type=sha,format=long,prefix=,priority=1000,enable=${{ github.event_name != 'workflow_dispatch' }}
 
-      - name: Build image (pull request)
-        if: github.event_name == 'pull_request'
-        id: build-pr
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
-        with:
-          context: .
-          file: cmd/fluent-manager/Dockerfile
-          platforms: ${{ matrix.platform }}
-          labels: ${{ steps.image-metadata.outputs.labels }}
-          provenance: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            GO_VERSION=${{ steps.setup-go.outputs.go-version }}
-          push: false
-
       - name: Build and push image
-        if: github.event_name != 'pull_request'
         id: build
         uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
@@ -199,7 +148,6 @@ jobs:
           outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests
-        if: github.event_name != 'pull_request'
         id: output-digests
         run: |
           platform="${{ matrix.platform }}"
@@ -209,7 +157,6 @@ jobs:
 
   manifest:
     name: Publish image manifest
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     needs: [build]
     steps:
