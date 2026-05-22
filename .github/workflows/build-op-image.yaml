@@ -85,11 +85,12 @@ jobs:
 
       - name: Set version env for workflow_dispatch
         if: github.event_name == 'workflow_dispatch'
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
         run: |
-          tag="${{ inputs.tag }}"
-          version="${tag#v}"
+          version="${INPUT_TAG#v}"
           {
-            echo "WD_TAG=${tag}"
+            echo "WD_TAG=${INPUT_TAG}"
             echo "WD_VERSION=${version}"
             echo "WD_MAJOR_MINOR=${version%.*}"
           } >> "$GITHUB_ENV"
