@@ -52,6 +52,7 @@ jobs:
         run: |
           gh workflow run build-op-image.yaml \
             --repo "${{ github.repository }}" \
+            --ref "${{ steps.release.outputs.tag_name }}" \
             --field tag="${{ steps.release.outputs.tag_name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
