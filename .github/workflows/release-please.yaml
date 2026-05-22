@@ -14,6 +14,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   release-please:
@@ -43,5 +44,14 @@ jobs:
       - name: Upload setup.yaml to release
         if: ${{ steps.release.outputs.release_created }}
         run: gh release upload "${{ steps.release.outputs.tag_name }}" manifests/setup/setup.yaml --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger operator image build
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          gh workflow run build-op-image.yaml \
+            --repo "${{ github.repository }}" \
+            --field tag="${{ steps.release.outputs.tag_name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

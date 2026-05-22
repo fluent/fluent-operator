@@ -7,8 +7,6 @@ on:
         description: 'Git tag to build (e.g. v3.8.0 or v3.8.0-rc1)'
         required: true
         type: string
-  release:
-    types: [published]
   push:
     branches:
       - "master"
