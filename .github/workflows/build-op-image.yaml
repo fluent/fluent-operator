@@ -10,6 +10,17 @@ on:
   push:
     branches:
       - "master"
+    paths:
+      - ".github/workflows/build-op-image.yaml"
+      - "apis/**"
+      - "cmd/fluent-manager/**"
+      - "controllers/**"
+      - "hack/**"
+      - "manifests/setup/setup.yaml"
+      - "pkg/fluentd/router/**"
+      - "pkg/fluentd/operator/**"
+      - "pkg/fluentd/utils/**"
+      - "Makefile"
 
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-operator'
