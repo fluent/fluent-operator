@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Git tag to build (e.g. v3.8.0)'
+        description: 'Git tag to build (e.g. v3.8.0 or v3.8.0-rc1)'
         required: true
         type: string
   release:
@@ -102,16 +102,23 @@ jobs:
               ;;
           esac
 
-          if [[ ! "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "workflow_dispatch input 'tag' must match format v<major>.<minor>.<patch> (for example: v3.8.0)" >&2
+          if [[ ! "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9][a-zA-Z0-9.-]*)?$ ]]; then
+            echo "workflow_dispatch input 'tag' must match format v<major>.<minor>.<patch> or v<major>.<minor>.<patch>-<pre-release> (for example: v3.8.0 or v3.8.0-rc1)" >&2
             exit 1
           fi
 
           version="${tag#v}"
+          base_version="${version%%-*}"  # strip pre-release suffix (e.g. 3.8.0-rc1 -> 3.8.0)
+          major_minor="${base_version%.*}"  # e.g. 3.8.0 -> 3.8
+          prerelease=""
+          if [[ "${version}" != "${base_version}" ]]; then
+            prerelease="true"
+          fi
           {
             echo "WD_TAG=${tag}"
             echo "WD_VERSION=${version}"
-            echo "WD_MAJOR_MINOR=${version%.*}"
+            echo "WD_MAJOR_MINOR=${major_minor}"
+            echo "WD_PRERELEASE=${prerelease}"
           } >> "$GITHUB_ENV"
 
       - name: Install Go
@@ -152,11 +159,11 @@ jobs:
           flavor: |
             latest=false
           tags: |
-            type=raw,value=latest,enable=${{ github.ref_type == 'tag' || github.event_name == 'workflow_dispatch' }}
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' || (github.event_name == 'workflow_dispatch' && env.WD_PRERELEASE == '') }}
             type=ref,event=tag
             type=raw,value=${{ env.WD_TAG }},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=raw,value=${{ env.WD_VERSION }},enable=${{ github.event_name == 'workflow_dispatch' }}
-            type=raw,value=${{ env.WD_MAJOR_MINOR }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=${{ env.WD_MAJOR_MINOR }},enable=${{ github.event_name == 'workflow_dispatch' && env.WD_PRERELEASE == '' }}
             type=semver,pattern={{version}},enable=${{ github.ref_type == 'tag' }}
             type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
             type=sha,format=long,prefix=,priority=1000
