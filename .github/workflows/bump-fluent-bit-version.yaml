@@ -75,13 +75,13 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
-          commit-message: "Bump fluent-bit to ${{ github.event.inputs.version }}
+          commit-message: "chore(deps): bump fluent-bit to ${{ github.event.inputs.version }}
 
           - Updated VERSION file
           - Updated manifest files
           - Updated values.yaml in Helm chart"
           signoff: true
-          title: "Bump fluent-bit to ${{ github.event.inputs.version }}"
+          title: "chore(deps): bump fluent-bit to ${{ github.event.inputs.version }}"
           body: |
             This PR updates the version to ${{ github.event.inputs.version }} in the following files:
             - cmd/fluent-watcher/fluentbit/VERSION
