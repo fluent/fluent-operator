@@ -1,5 +1,73 @@
 # Change Log
 
+## [3.9.0](https://github.com/joshuabaird/fluent-operator/compare/v3.8.0...v3.9.0) (2026-05-22)
+
+
+### Features
+
+* add E2E deployment test for Fluentd ([#1849](https://github.com/joshuabaird/fluent-operator/issues/1849)) ([4c8aff6](https://github.com/joshuabaird/fluent-operator/commit/4c8aff63b51a431a4bc5062137f54552a468bcab))
+* add envFrom support for fluentd daemonset and statefulsets ([bda6ebd](https://github.com/joshuabaird/fluent-operator/commit/bda6ebd22e401e9af201a1975b05ad38c12331a8))
+* add generated CRD manifests and tests for grep logical_op ([2278374](https://github.com/joshuabaird/fluent-operator/commit/2278374229fd2b4ade2bf0bfcbaa3fe275a5962b))
+* add HostAliases support to Fluent Bit and Fluentd specifications ([#1413](https://github.com/joshuabaird/fluent-operator/issues/1413)) ([c9150cd](https://github.com/joshuabaird/fluent-operator/commit/c9150cd16d478ad2415636efedaefec8f385a6a6))
+* Add livenessProbe to FluentBit template (fluentbit-fluentBit.yaml) ([6187276](https://github.com/joshuabaird/fluent-operator/commit/61872761f043f2a7663ab9e08654536a74d0ff11))
+* add logical_op support to grep filter ([83fa1bb](https://github.com/joshuabaird/fluent-operator/commit/83fa1bbc23f0f095562eebb1c356d09d5c173d9e)), closes [#1316](https://github.com/joshuabaird/fluent-operator/issues/1316)
+* add pipeline to bump fluent bit version ([#1448](https://github.com/joshuabaird/fluent-operator/issues/1448)) ([9798273](https://github.com/joshuabaird/fluent-operator/commit/9798273621be71d9177095dd5a8ffacc034e4582))
+* add rdkafka gem installation to Dockerfiles for fluent-watcher ([#1415](https://github.com/joshuabaird/fluent-operator/issues/1415)) ([92df045](https://github.com/joshuabaird/fluent-operator/commit/92df045557f5f9f308f09a714dc6587781f2343f))
+* add servicemonitor for fluent-operator to helm chart ([#1677](https://github.com/joshuabaird/fluent-operator/issues/1677)) ([cb12b1a](https://github.com/joshuabaird/fluent-operator/commit/cb12b1a0cbebe7cc89b7b41776747d25d913ad44))
+* add storage.path support to tail and systemd input plugins ([#1901](https://github.com/joshuabaird/fluent-operator/issues/1901)) ([ff0fee9](https://github.com/joshuabaird/fluent-operator/commit/ff0fee951c7ce19bcfee01fcb4a2b3163be6f135))
+* add storage.total_limit_size support to http output ([#1865](https://github.com/joshuabaird/fluent-operator/issues/1865)) ([1b098bf](https://github.com/joshuabaird/fluent-operator/commit/1b098bf9bcc82dba38103510ae4fa465bfee510e))
+* Add structured metadata support for Loki output plugin ([b50c4ad](https://github.com/joshuabaird/fluent-operator/commit/b50c4ad00f70d493c6b804f9170b2cb3917828f0))
+* add support for envfrom on fluentd ([b0a5b82](https://github.com/joshuabaird/fluent-operator/commit/b0a5b821d572e870d4f9340d7a99ceb20ed9cdd7))
+* add support for logs_body_key parameter on Opentelemetry output plugin (https://github.com/fluent/fluent-operator/issues/1410) ([4b2aa28](https://github.com/joshuabaird/fluent-operator/commit/4b2aa28783dd8171bafa4f199e90318c75a3e11b))
+* add support for logs_body_key parameter on Opentelemetry output… ([e2f6c80](https://github.com/joshuabaird/fluent-operator/commit/e2f6c80339fccd44b13a78a916f511c7d728e165))
+* Add support for reload_after, sniffer_class_name es output parameters ([6c6016a](https://github.com/joshuabaird/fluent-operator/commit/6c6016a2ccd2600f86dfd423cbf32b4933facde8))
+* Add support for reload_after, sniffer_class_name es output parameters ([68171fe](https://github.com/joshuabaird/fluent-operator/commit/68171fee3231ac874785566b73bf18ba9e6208aa))
+* add VERSION file for fluentbit image ([abccb78](https://github.com/joshuabaird/fluent-operator/commit/abccb7898253fca2895fa26b67313316e2686b22))
+* **charts:** Add ability for custom `positionDB` for `FluentBit` ([a28a662](https://github.com/joshuabaird/fluent-operator/commit/a28a6625619914d4c510442c74973067eae4ffe1))
+* **charts:** Add ability for custom `positionDB` for `FluentBit` ([87b933c](https://github.com/joshuabaird/fluent-operator/commit/87b933c6cdf58bef188c38f01d7b188c3520c181))
+* filter ordinals ([#1386](https://github.com/joshuabaird/fluent-operator/issues/1386)) ([cc23366](https://github.com/joshuabaird/fluent-operator/commit/cc23366ea3edfe3d84d946a9d1625086c2205901))
+* **fluentbit:** add enable_flb_null to fluentbit filter params ([47295c7](https://github.com/joshuabaird/fluent-operator/commit/47295c7e5d4593b641c25ab8497a444f10556732))
+* **fluentbit:** add scheduler.base and scheduler.cap Service configuration ([#1842](https://github.com/joshuabaird/fluent-operator/issues/1842)) ([5424830](https://github.com/joshuabaird/fluent-operator/commit/542483041b4a8472010421585176d7db36627934)), closes [#1838](https://github.com/joshuabaird/fluent-operator/issues/1838)
+* **fluentbit:** add support for multiline_buffer_limit configuration to FluentBitConfig and ClusterFluentBitConfig ([#1877](https://github.com/joshuabaird/fluent-operator/issues/1877)) ([84a3076](https://github.com/joshuabaird/fluent-operator/commit/84a3076ef2b7ea4f4143bb030985cb5e06a8c8de))
+* **fluentbit:** add text_payload_key to stackdriver ([#1669](https://github.com/joshuabaird/fluent-operator/issues/1669)) ([1f87640](https://github.com/joshuabaird/fluent-operator/commit/1f8764035c5dd2134f8ebd4978950547c8a9b4ef))
+* **fluentbit:** adds support for workers to syslog output ([#1874](https://github.com/joshuabaird/fluent-operator/issues/1874)) ([4f0160c](https://github.com/joshuabaird/fluent-operator/commit/4f0160cc50b37f4fefe4ce79f6cce57bd650e049))
+* **fluentd:** add null output plugin ([5486405](https://github.com/joshuabaird/fluent-operator/commit/5486405d298f98f4624d3d7ec021408a3b08b1be))
+* **fluentd:** add pluginSortOrder field to control plugin [@id](https://github.com/id) sort behavior ([52c62b6](https://github.com/joshuabaird/fluent-operator/commit/52c62b697266ad75d323a14dc1bdb81746996150))
+* **helm/fluent-operator:** add option to disable rbac creation ([#1556](https://github.com/joshuabaird/fluent-operator/issues/1556)) ([087a7da](https://github.com/joshuabaird/fluent-operator/commit/087a7dab06295a84287f192afff1b7b5b1769624))
+* **helm:** add namespaceOverride support to FluentBit chart ([af76698](https://github.com/joshuabaird/fluent-operator/commit/af7669857f85f115e1baf9254cda4d7a2cb72a9f)), closes [#1918](https://github.com/joshuabaird/fluent-operator/issues/1918)
+* **helm:** expose args and command attributes for FluentBit CRD ([15042f5](https://github.com/joshuabaird/fluent-operator/commit/15042f59f830d1ef88b38cab27ceec683e0e6c2b))
+* improve pipelines and add documents ([dd91ab5](https://github.com/joshuabaird/fluent-operator/commit/dd91ab526453dfdbb7706b2bbb1ec8fb48d6a003))
+* release 3.3.0 ([6cbb560](https://github.com/joshuabaird/fluent-operator/commit/6cbb560e437395b6e80b770b9db6c89d0f107498))
+* **roles:** Allow to change name of serviceAccount, clusterRole and clusterRoleBinding ([#1748](https://github.com/joshuabaird/fluent-operator/issues/1748)) ([787d2df](https://github.com/joshuabaird/fluent-operator/commit/787d2df25f096d11571d263422841e289c366708))
+* support fluentbit tail offsetKey parameters ([#1437](https://github.com/joshuabaird/fluent-operator/issues/1437)) ([a12acde](https://github.com/joshuabaird/fluent-operator/commit/a12acde64d4f83bc197a7d1594438d271aeb68d4))
+* support rollout restart for daemonset and statefulset ([dbb6848](https://github.com/joshuabaird/fluent-operator/commit/dbb6848692e87bc96125eb0b95cf0be8c6bd0fa7))
+* update pr as requested ([9dd2abf](https://github.com/joshuabaird/fluent-operator/commit/9dd2abf30d1a4a430a40afe95ec25edc557bdfbe))
+
+
+### Bug Fixes
+
+* add signoff to release pr ([66c107c](https://github.com/joshuabaird/fluent-operator/commit/66c107c62d520e2173e0b1e114a9d69ac390e64f))
+* correct parameter name from ca_certPath to ca_cert_path ([fe64c66](https://github.com/joshuabaird/fluent-operator/commit/fe64c668a09009248b6f14f6db0a950d3e25e975))
+* correct parameter name from client_certAuth to client_cert_auth ([4b15c26](https://github.com/joshuabaird/fluent-operator/commit/4b15c26337ae1b1b8236fafe3bdaa1d8c29f4246)), closes [#1819](https://github.com/joshuabaird/fluent-operator/issues/1819)
+* **crd:** add `properties: {}` to logfmt parser to prevent null config from crashing fluent-bit ([deb8c0b](https://github.com/joshuabaird/fluent-operator/commit/deb8c0b61355848193c5bbd63503ac5646a9f03a))
+* **crd:** disallow null values for logfmt parser to prevent fluent-bit crash ([0ee3330](https://github.com/joshuabaird/fluent-operator/commit/0ee3330043b6e97a5a03afeef556b421ae431de3))
+* **crd:** disallow null values for logfmt parser to prevent fluent-bit crash ([e3f8a50](https://github.com/joshuabaird/fluent-operator/commit/e3f8a50ea7ced27d8fc5d6c8d17d2fdb83e17900))
+* **crd:** disallow null values for logfmt parser to prevent fluent-bit crash ([6c79dfd](https://github.com/joshuabaird/fluent-operator/commit/6c79dfdce9831b2892616c2b42ae257dcb1ce896))
+* **crd:** disallow null values for logfmt parser to prevent fluent-bit crash ([8f2198e](https://github.com/joshuabaird/fluent-operator/commit/8f2198efa58bb16a9409f0aba83831e4868ba710))
+* **doc:** open_search.md referencing elasticsearch name ([#1408](https://github.com/joshuabaird/fluent-operator/issues/1408)) ([17d8068](https://github.com/joshuabaird/fluent-operator/commit/17d8068794ac80c9097b42a60a4b5a0c2b178d6a))
+* fix pipeline bugs and improve the validation ([a4180d4](https://github.com/joshuabaird/fluent-operator/commit/a4180d4128ff73b40619f3b561526b027a3930cf))
+* fix the e2e test script for fluentd ([#1791](https://github.com/joshuabaird/fluent-operator/issues/1791)) ([a77cbef](https://github.com/joshuabaird/fluent-operator/commit/a77cbef92e5bd518e5082a8d5ac91189c948423a))
+* **fluent-operator:** broken link about nodeselector ([#1626](https://github.com/joshuabaird/fluent-operator/issues/1626)) ([8a954f8](https://github.com/joshuabaird/fluent-operator/commit/8a954f81dc2e195bdae763a737ffc60b396e03b5))
+* **fluentbitconfig:** hash-based compare to prevent unnecessary updates ([c4ee008](https://github.com/joshuabaird/fluent-operator/commit/c4ee008da234bc1ef528e8946d87ec87bad2e6d6))
+* **fluentbitconfig:** hash-based compare to prevent unnecessary updates ([19cdbac](https://github.com/joshuabaird/fluent-operator/commit/19cdbac7376497088a5a30c1a9342cb4884d40cc))
+* Invalid reference ([5fe89ee](https://github.com/joshuabaird/fluent-operator/commit/5fe89ee30323d1efa9d098c3c6e40e29c2470dc4))
+* missing cloudAuth/cloudId pair inserts ([2f1c90b](https://github.com/joshuabaird/fluent-operator/commit/2f1c90b35e43c2b257559039e3c24775e0a3587d))
+* missing cloudAuth/cloudId pair inserts ([842c7e2](https://github.com/joshuabaird/fluent-operator/commit/842c7e27dfe3d7af515c5bab59be35d2e42d21f7))
+* remove quote filter from boolean disableLogVolumes in helm template ([5ff5e89](https://github.com/joshuabaird/fluent-operator/commit/5ff5e892a7a0a02acb09fdaeb8b1bf2f64c1df50))
+* remove quote filter from boolean disableLogVolumes in helm template ([eab0391](https://github.com/joshuabaird/fluent-operator/commit/eab0391cebd3223400f9e0fbe7ea810220dcc84c)), closes [#1871](https://github.com/joshuabaird/fluent-operator/issues/1871)
+* Update outdated crds ([254c687](https://github.com/joshuabaird/fluent-operator/commit/254c6877aa673baa9ee537fa4efff90a3a7603cd))
+* use fully-qualified DNS name in Fluent Bit ClusterOutput ([2b4eabd](https://github.com/joshuabaird/fluent-operator/commit/2b4eabd2122df0b4cc2d39b626f2cd41555cc849)), closes [#1794](https://github.com/joshuabaird/fluent-operator/issues/1794)
+
 ## [3.8.0](https://github.com/fluent/fluent-operator/compare/v3.7.0...v3.8.0) (2026-05-21)
 
 
