@@ -121,6 +121,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Docker Hub
+        if: secrets.REGISTRY_USER != ''
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: docker.io
@@ -133,7 +134,7 @@ jobs:
         with:
           images: |
             ${{ env.GHCR_REPO }}
-            ${{ env.DOCKERHUB_REPO }}
+            ${{ secrets.REGISTRY_USER != '' && env.DOCKERHUB_REPO || '' }}
           flavor: |
             latest=false
           tags: |
@@ -156,7 +157,7 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
-          outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,"name=${{ env.GHCR_REPO }}${{ secrets.REGISTRY_USER != '' && format(',{0}', env.DOCKERHUB_REPO) || '' }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests
         id: output-digests
@@ -179,6 +180,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Docker Hub
+        if: secrets.REGISTRY_USER != ''
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: docker.io
