@@ -166,7 +166,7 @@ jobs:
             type=raw,value=${{ env.WD_MAJOR_MINOR }},enable=${{ github.event_name == 'workflow_dispatch' && env.WD_PRERELEASE == '' }}
             type=semver,pattern={{version}},enable=${{ github.ref_type == 'tag' }}
             type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
-            type=sha,format=long,prefix=,priority=1000
+            type=sha,format=long,prefix=,priority=1000,enable=${{ github.event_name != 'workflow_dispatch' }}
 
       - name: Build image (pull request)
         if: github.event_name == 'pull_request'
