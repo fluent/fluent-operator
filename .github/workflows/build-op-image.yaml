@@ -88,9 +88,28 @@ jobs:
         env:
           INPUT_TAG: ${{ inputs.tag }}
         run: |
-          version="${INPUT_TAG#v}"
+          tag="${INPUT_TAG}"
+
+          if [ -z "${tag}" ]; then
+            echo "workflow_dispatch input 'tag' must not be empty" >&2
+            exit 1
+          fi
+
+          case "${tag}" in
+            *$'\n'*|*$'\r'*)
+              echo "workflow_dispatch input 'tag' must not contain carriage returns or newlines" >&2
+              exit 1
+              ;;
+          esac
+
+          if [[ ! "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "workflow_dispatch input 'tag' must match format v<major>.<minor>.<patch> (for example: v3.8.0)" >&2
+            exit 1
+          fi
+
+          version="${tag#v}"
           {
-            echo "WD_TAG=${INPUT_TAG}"
+            echo "WD_TAG=${tag}"
             echo "WD_VERSION=${version}"
             echo "WD_MAJOR_MINOR=${version%.*}"
           } >> "$GITHUB_ENV"
