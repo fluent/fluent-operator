@@ -4,11 +4,7 @@
 #
 # It is rendered to manifests/setup/setup.yaml by `make manifests`.
 
-# The default namespace for the install. This bundle also includes a
-# Namespace resource from config/manager/manager.yaml, so changing this
-# value alone is not sufficient. If you need a different install
-# namespace, update both this field and the Namespace object's
-# metadata.name to keep them in sync.
+# The default namespace for the installment
 namespace: fluent
 
 # Map the placeholder image used in config/manager/manager.yaml to the
