@@ -8,11 +8,12 @@ SHELL = /usr/bin/env bash -o pipefail
 
 VERSION ?= $(shell cat version.txt | tr -d " \t\n\r")
 FB_VERSION?=$(shell grep -v '^#' cmd/fluent-watcher/fluentbit/VERSION | tr -d " \t\n\r")
+FD_VERSION?=$(shell grep -v '^#' cmd/fluent-watcher/fluentd/VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
 FB_IMG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}
 FB_IMG_DEBUG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}-debug
-FD_IMG ?= ghcr.io/fluent/fluent-operator/fluentd:v1.19.2
-FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
+FD_IMG ?= ghcr.io/fluent/fluent-operator/fluentd:v${FD_VERSION}
+FO_IMG ?= ghcr.io/fluent/fluent-operator/fluent-operator:$(VERSION)
 
 ARCH ?= arm64
 
