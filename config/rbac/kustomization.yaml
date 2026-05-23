@@ -4,9 +4,9 @@ resources:
 - role_binding.yaml
 - leader_election_role.yaml
 - leader_election_role_binding.yaml
-#- metrics_auth_role.yaml
-#- metrics_auth_role_binding.yaml
-#- metrics_reader_role.yaml
+- metrics_auth_role.yaml
+- metrics_auth_role_binding.yaml
+- metrics_reader_role.yaml
 # User-facing aggregation roles for editing/viewing CRs. Layer onto
 # kubernetes admin/edit/view roles. Safe to enable per-deployment.
 #- clusterfilter_editor_role.yaml
