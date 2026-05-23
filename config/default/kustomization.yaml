@@ -4,7 +4,10 @@
 #
 # It is rendered to manifests/setup/setup.yaml by `make manifests`.
 
-# The default namespace for the installment
+# The default namespace for namespaced resources in the install bundle.
+# This setting does not create a Namespace object by itself. If you need
+# a different install namespace, update this field and ensure that
+# namespace exists in the cluster before applying the rendered manifests.
 namespace: fluent
 
 # Map the placeholder image used in config/manager/manager.yaml to the
