@@ -140,7 +140,7 @@ build: generate fmt vet ## Build manager binary.
 	go build -o bin/fd-watcher ./cmd/fluent-watcher/fluentd
 
 run: manifests generate fmt vet ## Run a controller from your host.
-	go run cmd/fluent-manager/main.go
+	go run ./cmd/fluent-manager/
 
 # Build amd64/arm64 Fluent Operator container image
 .PHONY: build-op
