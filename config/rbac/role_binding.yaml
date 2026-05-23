@@ -12,3 +12,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: fluent-operator
+  # Defaults to the install namespace. Kustomize overlays (e.g. config/default)
+  # rewrite this to match their `namespace:` setting, so changing the install
+  # namespace there is enough — no need to edit this file.
+  namespace: fluent
