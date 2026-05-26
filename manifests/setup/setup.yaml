@@ -41828,6 +41828,12 @@ spec:
         - --metrics-bind-address=:8443
         command:
         - /manager
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
         image: ghcr.io/fluent/fluent-operator/fluent-operator:latest
         livenessProbe:
           httpGet:
