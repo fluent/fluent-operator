@@ -16,5 +16,6 @@ Forward is the protocol used by Fluentd to route messages between peers. <br /> 
 | username | Specify the username to present to a Fluentd server that enables user_auth. | *[plugins.Secret](../secret.md) |
 | password | Specify the password corresponding to the username. | *[plugins.Secret](../secret.md) |
 | selfHostname | Default value of the auto-generated certificate common name (CN). | string |
+| retainMetadataInForwardMode | Retain metadata when forwarding in forward mode. | *bool |
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
