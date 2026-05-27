@@ -47,9 +47,13 @@ type FluentdReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds,verbs=get;list;watch;update
 // +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds/finalizers,verbs=update
+// +kubebuilder:rbac:groups=apps,resources=daemonsets;statefulsets,verbs=get;list;watch;create;patch;delete
+// +kubebuilder:rbac:groups=core,resources=secrets,verbs=get
+// +kubebuilder:rbac:groups=core,resources=serviceaccounts;services,verbs=get;list;watch;create;patch;delete
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles;clusterrolebindings,verbs=create;get;list;watch;patch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

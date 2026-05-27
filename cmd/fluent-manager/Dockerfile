@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.26.2
+ARG GO_VERSION=1.26.3
 
 # Build the manager binary \
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine3.23 AS builder
@@ -26,6 +26,6 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} GO111MODULE=on go build 
 FROM gcr.io/distroless/static:nonroot
 WORKDIR /
 COPY --from=builder /workspace/manager .
-USER nonroot:nonroot
+USER 65532:65532
 
 ENTRYPOINT ["/manager"]

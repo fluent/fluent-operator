@@ -133,9 +133,10 @@ Kubernetes v1.16.13+ is necessary for running Fluent Operator.
 Install the latest stable version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/release-3.7/manifests/setup/setup.yaml
+kubectl create namespace fluent
+kubectl apply -f https://github.com/fluent/fluent-operator/releases/latest/download/setup.yaml
 
-# You can change the namespace in manifests/setup/kustomization.yaml in corresponding release branch
+# You can change the namespace in manifests/setup/kustomization.yaml
 # and then use command below to install to another namespace
 # kubectl kustomize manifests/setup/ | kubectl apply -f -
 ```
@@ -143,7 +144,8 @@ kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/releas
 Install the development version
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/fluent/fluentbit-operator/master/manifests/setup/setup.yaml
+kubectl create namespace fluent
+kubectl apply -f https://raw.githubusercontent.com/fluent/fluent-operator/master/manifests/setup/setup.yaml
 
 # You can change the namespace in manifests/setup/kustomization.yaml
 # and then use command below to install to another namespace
@@ -324,18 +326,13 @@ Most files under the folder [manifests/setup](manifests/setup) are automatically
 ## Community
 
 ### About the community
-
-Fluent Operator is sponsored and open-sourced by the [KubeSphere](http://kubesphere.io/) Team and maintained by the Fluent community.
+Fluent Operator was previously sponsored and open-sourced by the [KubeSphere](http://kubesphere.io/) Team and maintained by the Fluent community.
 
 This project was accepted by the Fluent community as a sub-project in 2021 and is currently a vendor-neutral and community-driven project.
 
 ### Contact us
 
-You are welcome to join us in the Fluent community to polish it together:
-
-- Slack: Create an account in the [Fluent Slack workspace](https://launchpass.com/fluent-all) and then search `#fluent-operator` to join or click [#fluent-operator](https://fluent-all.slack.com/archives/C02642TE9HR) to join if you already have an account
-- Wechat: join the KubeSphere Observability SIG by following the `kubesphere` WeChat subscription
-- Bi-weekly Meeting: https://meeting.tencent.com/dm/mZPB9QKdtX0F (You can find the SIG-Observability meeting schedule [here](https://kubesphere.io/contribution/))
+You are welcome to join us in #fluent-operator on the [CNCF Slack](https://communityinviter.com/apps/cloud-native/cncf).
 
 ## Videos and blogs
 
