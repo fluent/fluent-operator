@@ -5,14 +5,14 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   labels:
-    app.kubernetes.io/name: <operator-name>
-    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
   name: allow-metrics-traffic
-  namespace: system
 spec:
   podSelector:
     matchLabels:
-      control-plane: controller-manager
+      app.kubernetes.io/component: operator
+      app.kubernetes.io/name: fluent-operator
   policyTypes:
     - Ingress
   ingress:

@@ -8,11 +8,12 @@ SHELL = /usr/bin/env bash -o pipefail
 
 VERSION ?= $(shell cat version.txt | tr -d " \t\n\r")
 FB_VERSION?=$(shell grep -v '^#' cmd/fluent-watcher/fluentbit/VERSION | tr -d " \t\n\r")
+FD_VERSION?=$(shell grep -v '^#' cmd/fluent-watcher/fluentd/VERSION | tr -d " \t\n\r")
 # Image URL to use all building/pushing image targets
 FB_IMG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}
 FB_IMG_DEBUG ?= ghcr.io/fluent/fluent-operator/fluent-bit:v${FB_VERSION}-debug
-FD_IMG ?= ghcr.io/fluent/fluent-operator/fluentd:v1.19.2
-FO_IMG ?= kubesphere/fluent-operator:$(VERSION)
+FD_IMG ?= ghcr.io/fluent/fluent-operator/fluentd:v${FD_VERSION}
+FO_IMG ?= ghcr.io/fluent/fluent-operator/fluent-operator:$(VERSION)
 
 ARCH ?= arm64
 
@@ -51,16 +52,20 @@ help: ## Display this help.
 shellcheck:
 	@find . -type f -name *.sh -exec docker run --rm -v $(shell pwd):/mnt koalaman/shellcheck:stable {} +
 
+MANIFEST_PATHS := ./apis/fluentbit/...;./apis/fluentd/...;./controllers/...
+
 .PHONY: manifests
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=config/crd/bases
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=config/crd/bases
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=charts/fluent-operator/crds
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=charts/fluent-operator/crds
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentbit/..." output:crd:artifacts:config=charts/fluent-operator-fluent-bit-crds/templates
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./apis/fluentd/..." output:crd:artifacts:config=charts/fluent-operator-fluentd-crds/templates
-	kubectl kustomize config/crd/bases/ | sed -e '/creationTimestamp/d' > manifests/setup/fluent-operator-crd.yaml
-	kubectl kustomize manifests/setup/ | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=fluent-operator webhook \
+		paths="$(MANIFEST_PATHS)" \
+		output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="$(MANIFEST_PATHS)" \
+		output:crd:artifacts:config=charts/fluent-operator/crds
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./apis/fluentbit/...;./controllers/..." \
+		output:crd:artifacts:config=charts/fluent-operator-fluent-bit-crds/templates
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) paths="./apis/fluentd/...;./controllers/..." \
+		output:crd:artifacts:config=charts/fluent-operator-fluentd-crds/templates
+	kubectl kustomize config/default/ | sed -e '/creationTimestamp/d' > manifests/setup/setup.yaml
 	hack/mutate-crds.sh
 
 .PHONY: generate
@@ -135,7 +140,7 @@ build: generate fmt vet ## Build manager binary.
 	go build -o bin/fd-watcher ./cmd/fluent-watcher/fluentd
 
 run: manifests generate fmt vet ## Run a controller from your host.
-	go run cmd/fluent-manager/main.go
+	go run ./cmd/fluent-manager/
 
 # Build amd64/arm64 Fluent Operator container image
 .PHONY: build-op
@@ -200,10 +205,10 @@ push-amd64:
 ##@ Deployment
 
 install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd/bases/ | kubectl create -f -
+	$(KUSTOMIZE) build config/crd/ | kubectl create -f -
 
 uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd/bases/ | kubectl delete -f -
+	$(KUSTOMIZE) build config/crd/ | kubectl delete -f -
 
 deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
 	kubectl create -f manifests/setup/setup.yaml

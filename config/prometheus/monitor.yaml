@@ -1,12 +1,11 @@
-
 # Prometheus Monitor Service (Metrics)
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    control-plane: controller-manager
-  name: controller-manager-metrics-monitor
-  namespace: system
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/name: fluent-operator
+  name: fluent-operator-metrics-monitor
 spec:
   endpoints:
     - path: /metrics
@@ -26,4 +25,5 @@ spec:
         insecureSkipVerify: true
   selector:
     matchLabels:
-      control-plane: controller-manager
+      app.kubernetes.io/component: operator
+      app.kubernetes.io/name: fluent-operator
