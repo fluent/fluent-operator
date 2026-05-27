@@ -4,6 +4,9 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    commit-message:
+      prefix: ci
+      include: scope
 
   - package-ecosystem: "docker"
     directories:
@@ -21,6 +24,9 @@ updates:
   - package-ecosystem: "gomod"
     directories:
       - "/"
+    commit-message:
+      prefix: build
+      include: scope
     groups:
       k8s.io/*:
         patterns:

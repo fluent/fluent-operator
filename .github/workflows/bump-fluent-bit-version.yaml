@@ -75,7 +75,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
-          commit-message: "chore(deps): bump fluent-bit to ${{ github.event.inputs.version }}
+          commit-message: "build(deps): bump fluent-bit to ${{ github.event.inputs.version }}
 
           - Updated VERSION file
           - Updated manifest files

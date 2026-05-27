@@ -17,7 +17,8 @@ module.exports = {
   dryRun: null,
   repositories: ["fluent/fluent-operator"],
   enabledManagers: ["custom.regex"],
-  extends: ["config:recommended"],
+  // Match Dependabot / release-please: build(deps): update …
+  extends: ["config:recommended", ":semanticCommitTypeAll(build)"],
   customManagers: [
     {
       customType: "regex",
