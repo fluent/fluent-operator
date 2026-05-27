@@ -15,6 +15,9 @@ updates:
       - "/cmd/fluent-watcher/fluentd"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: build
+      include: scope
 
   - package-ecosystem: "docker"
     directory: "/docs/best-practice/forwarding-logs-via-http"
