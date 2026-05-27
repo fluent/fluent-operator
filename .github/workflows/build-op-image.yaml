@@ -1,14 +1,17 @@
 name: Build/Push Fluent Operator image
 
 on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag to build (e.g. v3.8.0 or v3.8.0-rc1)'
+        required: true
+        type: string
   push:
     branches:
       - "master"
-    tags:
-      - "v*"
     paths:
       - ".github/workflows/build-op-image.yaml"
-      - ".github/workflows/clone-docker-image-action.yaml"
       - "apis/**"
       - "cmd/fluent-manager/**"
       - "controllers/**"
@@ -19,32 +22,18 @@ on:
       - "pkg/fluentd/utils/**"
       - "Makefile"
 
-  pull_request:
-    branches:
-      - "master"
-    paths:
-      - ".github/workflows/build-op-image.yaml"
-      - ".github/workflows/clone-docker-image-action.yaml"
-      - "apis/**"
-      - "cmd/fluent-manager/**"
-      - "controllers/**"
-      - "hack/**"
-      - "manifests/setup/setup.yaml"
-      - "pkg/fluentd/router/**"
-      - "pkg/fluentd/operator/**"
-      - "pkg/fluentd/utils/**"
-
 env:
   GHCR_REPO: 'ghcr.io/${{ github.repository }}/fluent-operator'
   DOCKERHUB_REPO: 'kubesphere/fluent-operator'
+  HAS_DOCKERHUB: ${{ secrets.REGISTRY_USER != '' }}
 
 permissions:
   contents: read
   packages: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ inputs.tag || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -72,7 +61,46 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 0
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 1
+
+      - name: Set version env for workflow_dispatch
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          tag="${INPUT_TAG}"
+
+          if [ -z "${tag}" ]; then
+            echo "workflow_dispatch input 'tag' must not be empty" >&2
+            exit 1
+          fi
+
+          case "${tag}" in
+            *$'\n'*|*$'\r'*)
+              echo "workflow_dispatch input 'tag' must not contain carriage returns or newlines" >&2
+              exit 1
+              ;;
+          esac
+
+          if [[ ! "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9][a-zA-Z0-9.-]*)?$ ]]; then
+            echo "workflow_dispatch input 'tag' must match format v<major>.<minor>.<patch> or v<major>.<minor>.<patch>-<pre-release> (for example: v3.8.0 or v3.8.0-rc1)" >&2
+            exit 1
+          fi
+
+          version="${tag#v}"
+          base_version="${version%%-*}"  # strip pre-release suffix (e.g. 3.8.0-rc1 -> 3.8.0)
+          major_minor="${base_version%.*}"  # e.g. 3.8.0 -> 3.8
+          prerelease=""
+          if [[ "${version}" != "${base_version}" ]]; then
+            prerelease="true"
+          fi
+          {
+            echo "WD_TAG=${tag}"
+            echo "WD_VERSION=${version}"
+            echo "WD_MAJOR_MINOR=${major_minor}"
+            echo "WD_PRERELEASE=${prerelease}"
+          } >> "$GITHUB_ENV"
 
       - name: Install Go
         id: setup-go
@@ -87,7 +115,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
 
       - name: Login to GHCR
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: ghcr.io
@@ -95,7 +122,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
+        if: env.HAS_DOCKERHUB == 'true'
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: docker.io
@@ -108,34 +135,17 @@ jobs:
         with:
           images: |
             ${{ env.GHCR_REPO }}
-            ${{ github.event_name != 'pull_request' && env.DOCKERHUB_REPO || '' }}
+            ${{ env.HAS_DOCKERHUB == 'true' && env.DOCKERHUB_REPO || '' }}
           flavor: |
             latest=false
           tags: |
-            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
-            type=ref,event=tag
-            type=semver,pattern={{version}},enable=${{ github.ref_type == 'tag' }}
-            type=semver,pattern={{major}}.{{minor}},enable=${{ github.ref_type == 'tag' }}
-            type=sha,format=long,prefix=,priority=1000
-
-      - name: Build image (pull request)
-        if: github.event_name == 'pull_request'
-        id: build-pr
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
-        with:
-          context: .
-          file: cmd/fluent-manager/Dockerfile
-          platforms: ${{ matrix.platform }}
-          labels: ${{ steps.image-metadata.outputs.labels }}
-          provenance: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            GO_VERSION=${{ steps.setup-go.outputs.go-version }}
-          push: false
+            type=raw,value=latest,enable=${{ github.event_name == 'workflow_dispatch' && env.WD_PRERELEASE == '' }}
+            type=raw,value=${{ env.WD_TAG }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=${{ env.WD_VERSION }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=${{ env.WD_MAJOR_MINOR }},enable=${{ github.event_name == 'workflow_dispatch' && env.WD_PRERELEASE == '' }}
+            type=sha,format=long,prefix=,priority=1000,enable=${{ github.event_name != 'workflow_dispatch' }}
 
       - name: Build and push image
-        if: github.event_name != 'pull_request'
         id: build
         uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
@@ -148,10 +158,9 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             GO_VERSION=${{ steps.setup-go.outputs.go-version }}
-          outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,"name=${{ env.GHCR_REPO }}${{ env.HAS_DOCKERHUB == 'true' && format(',{0}', env.DOCKERHUB_REPO) || '' }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests
-        if: github.event_name != 'pull_request'
         id: output-digests
         run: |
           platform="${{ matrix.platform }}"
@@ -161,7 +170,6 @@ jobs:
 
   manifest:
     name: Publish image manifest
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -173,6 +181,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Docker Hub
+        if: env.HAS_DOCKERHUB == 'true'
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: docker.io
