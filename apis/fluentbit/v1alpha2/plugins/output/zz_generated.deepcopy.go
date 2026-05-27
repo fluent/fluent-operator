@@ -337,6 +337,11 @@ func (in *Forward) DeepCopyInto(out *Forward) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.RetainMetadataInForwardMode != nil {
+		in, out := &in.RetainMetadataInForwardMode, &out.RetainMetadataInForwardMode
+		*out = new(bool)
+		**out = **in
+	}
 	if in.Username != nil {
 		in, out := &in.Username, &out.Username
 		*out = new(plugins.Secret)
