@@ -65,10 +65,16 @@ jobs:
             fi
           done
 
-      - name: Update version in values.yaml
+      - name: Update fluent-bit tag in chart values.yaml
         run: |
-          if ! sed -i '/repository: "ghcr.io\/fluent\/fluent-operator\/fluent-bit"/!b;n;s/tag: .*/tag: "${{ github.event.inputs.version }}"/' charts/fluent-operator/values.yaml; then
-            echo "Failed to update values.yaml"
+          file="charts/fluent-operator/values.yaml"
+          # Match fluentbit.image (registry + repository); not the old single-line repository form
+          if ! sed -i '/depName=ghcr.io\/fluent\/fluent-operator\/fluent-bit/,+1 s|tag: .*|tag: "${{ github.event.inputs.version }}"|' "$file"; then
+            echo "Failed to update fluent-bit tag in $file"
+            exit 1
+          fi
+          if ! grep -q "tag: \"${{ github.event.inputs.version }}\"" "$file"; then
+            echo "fluent-bit tag not updated in $file"
             exit 1
           fi
 
@@ -81,7 +87,7 @@ jobs:
           - Updated manifest files
           - Updated values.yaml in Helm chart"
           signoff: true
-          title: "chore(deps): bump fluent-bit to ${{ github.event.inputs.version }}"
+          title: "build(deps): bump fluent-bit to ${{ github.event.inputs.version }}"
           body: |
             This PR updates the version to ${{ github.event.inputs.version }} in the following files:
             - cmd/fluent-watcher/fluentbit/VERSION
