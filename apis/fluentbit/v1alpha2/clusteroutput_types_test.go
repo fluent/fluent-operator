@@ -523,3 +523,52 @@ func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(result).To(Equal(expected))
 }
+
+func TestForwardOutput_RetainMetadataInForwardMode(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	// nil: field should be omitted
+	nilOut := ClusterOutputList{Items: []ClusterOutput{{
+		ObjectMeta: metav1.ObjectMeta{Name: "fwd-nil"},
+		Spec: OutputSpec{
+			Match:   "kube.*",
+			Forward: &output.Forward{Host: "fluentd.svc", Port: utils.ToPtr[int32](24224)},
+		},
+	}}}
+	resultNil, err := nilOut.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(resultNil).NotTo(ContainSubstring("Retain_Metadata_In_Forward_Mode"))
+
+	// false: field should be rendered as false
+	falseOut := ClusterOutputList{Items: []ClusterOutput{{
+		ObjectMeta: metav1.ObjectMeta{Name: "fwd-false"},
+		Spec: OutputSpec{
+			Match: "kube.*",
+			Forward: &output.Forward{
+				Host:                        "fluentd.svc",
+				Port:                        utils.ToPtr[int32](24224),
+				RetainMetadataInForwardMode: utils.ToPtr(false),
+			},
+		},
+	}}}
+	resultFalse, err := falseOut.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(resultFalse).To(ContainSubstring("Retain_Metadata_In_Forward_Mode    false"))
+
+	// true: field should be rendered as true
+	trueOut := ClusterOutputList{Items: []ClusterOutput{{
+		ObjectMeta: metav1.ObjectMeta{Name: "fwd-true"},
+		Spec: OutputSpec{
+			Match: "kube.*",
+			Forward: &output.Forward{
+				Host:                        "fluentd.svc",
+				Port:                        utils.ToPtr[int32](24224),
+				RetainMetadataInForwardMode: utils.ToPtr(true),
+			},
+		},
+	}}}
+	resultTrue, err := trueOut.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(resultTrue).To(ContainSubstring("Retain_Metadata_In_Forward_Mode    true"))
+}
