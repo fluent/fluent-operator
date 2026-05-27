@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.26.2
+ARG GO_VERSION=1.26.3
 
 # Build the manager binary \
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine3.23 AS builder
