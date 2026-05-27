@@ -627,6 +627,9 @@ fluentd:
   forward:
     # -- Forward input port
     port: 24224
+    # -- Retain metadata when forwarding in forward mode.
+    # Set to false for Fluentd compatibility with Fluent Bit v5.0.5+.
+    retainMetadataInForwardMode: ~
   # -- Namespaces to watch for Fluentd resources
   watchedNamespaces:
     - kube-system

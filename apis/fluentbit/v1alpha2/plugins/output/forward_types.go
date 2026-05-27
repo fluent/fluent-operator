@@ -40,7 +40,7 @@ type Forward struct {
 	SelfHostname string `json:"selfHostname,omitempty"`
 	// Retain metadata when forwarding in forward mode.
 	RetainMetadataInForwardMode *bool `json:"retainMetadataInForwardMode,omitempty"`
-	*plugins.TLS `json:"tls,omitempty"`
+	*plugins.TLS                `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
 }
