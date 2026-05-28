@@ -170,9 +170,10 @@ func MakeFluentbitPVC(co fluentbitv1alpha2.Collector) corev1.PersistentVolumeCla
 			Labels:    co.Labels,
 		},
 		Spec: corev1.PersistentVolumeClaimSpec{
-			AccessModes: bufferPvc.AccessModes,
-			Resources:   bufferPvc.Resources,
-			VolumeMode:  bufferPvc.VolumeMode,
+			AccessModes:      bufferPvc.AccessModes,
+			Resources:        bufferPvc.Resources,
+			VolumeMode:       bufferPvc.VolumeMode,
+			StorageClassName: bufferPvc.StorageClassName,
 		},
 	}
 	return pvc
