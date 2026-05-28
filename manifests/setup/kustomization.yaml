@@ -2,16 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- fluent-operator-crd.yaml
-- fluent-operator-clusterRoleBinding.yaml
-- fluent-operator-clusterRole.yaml
-- fluent-operator-configMap-env.yaml
-- fluent-operator-deployment.yaml
-- fluent-operator-serviceAccount.yaml
+- setup.yaml
 
 # Change to the namespace you want such as:
 # namespace: fluent
-
-# patchesStrategicMerge:
-# To do namespaced RBAC uncomment below
-# - scoped/fluent-operator-clusterRole.yaml
