@@ -38,7 +38,9 @@ type Forward struct {
 	Password *plugins.Secret `json:"password,omitempty"`
 	// Default value of the auto-generated certificate common name (CN).
 	SelfHostname string `json:"selfHostname,omitempty"`
-	*plugins.TLS `json:"tls,omitempty"`
+	// Retain metadata when forwarding in forward mode.
+	RetainMetadataInForwardMode *bool `json:"retainMetadataInForwardMode,omitempty"`
+	*plugins.TLS                `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
 }
@@ -82,6 +84,7 @@ func (f *Forward) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVField(kvs, "Time_as_Integer", f.TimeAsInteger)
 	plugins.InsertKVField(kvs, "Send_options", f.SendOptions)
 	plugins.InsertKVField(kvs, "Require_ack_response", f.RequireAckResponse)
+	plugins.InsertKVField(kvs, "Retain_Metadata_In_Forward_Mode", f.RetainMetadataInForwardMode)
 
 	return kvs, nil
 }

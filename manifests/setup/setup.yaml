@@ -5355,6 +5355,9 @@ spec:
                       Enables at-least-once and receiving server can control rate of traffic.
                       (Requires Fluentd v0.14.0+ server)
                     type: boolean
+                  retainMetadataInForwardMode:
+                    description: Retain metadata when forwarding in forward mode.
+                    type: boolean
                   selfHostname:
                     description: Default value of the auto-generated certificate common
                       name (CN).
@@ -35441,6 +35444,9 @@ spec:
                       Send "chunk"-option and wait for "ack" response from server.
                       Enables at-least-once and receiving server can control rate of traffic.
                       (Requires Fluentd v0.14.0+ server)
+                    type: boolean
+                  retainMetadataInForwardMode:
+                    description: Retain metadata when forwarding in forward mode.
                     type: boolean
                   selfHostname:
                     description: Default value of the auto-generated certificate common
