@@ -62,6 +62,7 @@ Version bumps are driven automatically by [Conventional Commits](https://www.con
 | `feat:` | Minor version bump |
 | `fix:` | Patch version bump |
 | `feat!:` or `BREAKING CHANGE:` | Major version bump |
+| `build:` or `build(deps):` | Patch version bump |
 | `chore:`, `docs:`, `ci:`, etc. | No version bump (excluded from changelog) |
 
 ## How to cut a new release

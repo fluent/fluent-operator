@@ -13,6 +13,9 @@ spec:
   forward:
     host: {{ printf "%s.%s.svc.cluster.local" .Values.fluentd.name .Release.Namespace | quote }}
     port: {{ .Values.fluentd.forward.port }}
+    {{- if not (kindIs "invalid" .Values.fluentd.forward.retainMetadataInForwardMode) }}
+    retainMetadataInForwardMode: {{ .Values.fluentd.forward.retainMetadataInForwardMode }}
+    {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

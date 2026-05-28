@@ -65,23 +65,29 @@ jobs:
             fi
           done
 
-      - name: Update version in values.yaml
+      - name: Update fluent-bit tag in chart values.yaml
         run: |
-          if ! sed -i '/repository: "ghcr.io\/fluent\/fluent-operator\/fluent-bit"/!b;n;s/tag: .*/tag: "${{ github.event.inputs.version }}"/' charts/fluent-operator/values.yaml; then
-            echo "Failed to update values.yaml"
+          file="charts/fluent-operator/values.yaml"
+          # Match fluentbit.image (registry + repository); not the old single-line repository form
+          if ! sed -i '/depName=ghcr.io\/fluent\/fluent-operator\/fluent-bit/,+1 s|tag: .*|tag: "${{ github.event.inputs.version }}"|' "$file"; then
+            echo "Failed to update fluent-bit tag in $file"
+            exit 1
+          fi
+          if ! grep -A1 'depName=ghcr.io/fluent/fluent-operator/fluent-bit' "$file" | tail -n1 | grep -q '^ *tag: "${{ github.event.inputs.version }}"$'; then
+            echo "fluent-bit tag not updated in the depName=ghcr.io/fluent/fluent-operator/fluent-bit block of $file"
             exit 1
           fi
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
-          commit-message: "chore(deps): bump fluent-bit to ${{ github.event.inputs.version }}
+          commit-message: "build(deps): bump fluent-bit to ${{ github.event.inputs.version }}
 
           - Updated VERSION file
           - Updated manifest files
           - Updated values.yaml in Helm chart"
           signoff: true
-          title: "chore(deps): bump fluent-bit to ${{ github.event.inputs.version }}"
+          title: "build(deps): bump fluent-bit to ${{ github.event.inputs.version }}"
           body: |
             This PR updates the version to ${{ github.event.inputs.version }} in the following files:
             - cmd/fluent-watcher/fluentbit/VERSION

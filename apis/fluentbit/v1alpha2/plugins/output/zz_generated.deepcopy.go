@@ -347,6 +347,11 @@ func (in *Forward) DeepCopyInto(out *Forward) {
 		*out = new(plugins.Secret)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.RetainMetadataInForwardMode != nil {
+		in, out := &in.RetainMetadataInForwardMode, &out.RetainMetadataInForwardMode
+		*out = new(bool)
+		**out = **in
+	}
 	if in.TLS != nil {
 		in, out := &in.TLS, &out.TLS
 		*out = new(plugins.TLS)
