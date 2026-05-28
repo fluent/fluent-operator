@@ -4,6 +4,9 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    commit-message:
+      prefix: ci
+      include: scope
 
   - package-ecosystem: "docker"
     directories:
@@ -12,6 +15,9 @@ updates:
       - "/cmd/fluent-watcher/fluentd"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: build
+      include: scope
 
   - package-ecosystem: "docker"
     directory: "/docs/best-practice/forwarding-logs-via-http"
@@ -21,6 +27,9 @@ updates:
   - package-ecosystem: "gomod"
     directories:
       - "/"
+    commit-message:
+      prefix: build
+      include: scope
     groups:
       k8s.io/*:
         patterns:
