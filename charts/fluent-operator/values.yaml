@@ -150,6 +150,9 @@ fluentbit:
   enable: true
   # -- Override the namespace for FluentBit resources; defaults to .Release.Namespace
   namespaceOverride: ""
+  metadata:
+    # -- Allow adding custom annotations to the FluentBit resource's metadata
+    annotations: {}
   serviceMonitor:
     # -- Enable Prometheus ServiceMonitor for Fluent Bit
     enable: false

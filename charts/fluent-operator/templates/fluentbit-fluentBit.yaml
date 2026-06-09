@@ -7,6 +7,9 @@ metadata:
   namespace: {{ default .Release.Namespace .Values.fluentbit.namespaceOverride | quote }}
   labels:
     app.kubernetes.io/name: fluent-bit
+  {{- if and .Values.fluentbit.metadata .Values.fluentbit.metadata.annotations }}
+  annotations: {{ .Values.fluentbit.metadata.annotations | toYaml | nindent 4 }}
+  {{- end }}
 spec:
   {{- with .Values.fluentbit.hostNetwork }}
   hostNetwork: {{ . }}
