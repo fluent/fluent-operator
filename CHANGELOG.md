@@ -1,5 +1,32 @@
 # Change Log
 
+## [3.9.0](https://github.com/fluent/fluent-operator/compare/v3.8.0...v3.9.0) (2026-06-09)
+
+
+### Features
+
+* FluentBit annotations via operator chart values ([a473d4a](https://github.com/fluent/fluent-operator/commit/a473d4a0561e7a80e55a323542e23190dc14b4b7))
+* FluentBit annotations via operator chart values ([#1986](https://github.com/fluent/fluent-operator/issues/1986)) ([28ca0fd](https://github.com/fluent/fluent-operator/commit/28ca0fd0d50272552080cb0e576657b8439f0e34))
+* **fluentbit:** add retainMetadataInForwardMode to forward output pl… ([#1973](https://github.com/fluent/fluent-operator/issues/1973)) ([b212a5c](https://github.com/fluent/fluent-operator/commit/b212a5c458325fa666dcfbb2473d3cfaf0ccfe01))
+* **fluentbit:** support more settings for firehose output ([f577907](https://github.com/fluent/fluent-operator/commit/f577907537cbc798185d37d8bd6d3733004548b4))
+
+
+### Bug Fixes
+
+* **collector:** pass storageClassName to generated StatefulSet PVC ([#1963](https://github.com/fluent/fluent-operator/issues/1963)) ([8d0c3ad](https://github.com/fluent/fluent-operator/commit/8d0c3ad84b1af8d0e8ac80d9b764e7203e276792))
+
+
+### Reverts
+
+* undo accidental release 3.9.0 on master ([#1976](https://github.com/fluent/fluent-operator/issues/1976)) ([23e1906](https://github.com/fluent/fluent-operator/commit/23e1906cb26104440a3e6a1c38506d97ecd9a355))
+
+
+### Dependencies
+
+* **deps:** Bump github.com/go-openapi/errors from 0.22.7 to 0.22.8 ([#1989](https://github.com/fluent/fluent-operator/issues/1989)) ([2d6abe8](https://github.com/fluent/fluent-operator/commit/2d6abe84c224522415ec9dc8fcc400e743984b8a))
+* **deps:** bump go to v1.26.3 ([7608a7e](https://github.com/fluent/fluent-operator/commit/7608a7ed70b6ab881312d7abed09de2c95881ea4))
+* **deps:** bump go to v1.26.3 ([8b9f6ec](https://github.com/fluent/fluent-operator/commit/8b9f6ec3d3ded5f274eb7380d401a7b9b1843d95))
+
 ## [3.8.0](https://github.com/fluent/fluent-operator/compare/v3.7.0...v3.8.0) (2026-05-21)
 
 
