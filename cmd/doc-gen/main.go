@@ -33,6 +33,7 @@ var (
 		"plugins.Secret": "../secret.md",
 		"Secret":         "secret.md",
 		"plugins.TLS":    "../tls.md",
+		"plugins.Networking": "../net.md",
 	}
 
 	kubernetes_link_templates = map[string]string{

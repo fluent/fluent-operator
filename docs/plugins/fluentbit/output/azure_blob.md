@@ -18,4 +18,4 @@ Azure Blob is the Azure Blob output plugin, allows to ingest your records into A
 | uploadFileSize | Specifies the size of files to be uploaded in MB. Defaults to 200M. | string |
 | uploadTimeout | Optional. Specify a timeout for uploads. Fluent Bit will start ingesting buffer files which have been created more than x minutes ago and haven't reached upload_file_size limit yet. Defaults to 30m. | string |
 | tls | Enable/Disable TLS Encryption. Azure services require TLS to be enabled. | *[plugins.TLS](../tls.md) |
-| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *[plugins.Networking](../net.md) |

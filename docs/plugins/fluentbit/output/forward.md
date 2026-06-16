@@ -18,4 +18,4 @@ Forward is the protocol used by Fluentd to route messages between peers. <br /> 
 | selfHostname | Default value of the auto-generated certificate common name (CN). | string |
 | retainMetadataInForwardMode | Retain metadata when forwarding in forward mode. | *bool |
 | tls |  | *[plugins.TLS](../tls.md) |
-| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *[plugins.Networking](../net.md) |
