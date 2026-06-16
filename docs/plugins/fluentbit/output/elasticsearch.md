@@ -42,5 +42,5 @@ Elasticsearch is the es output plugin, allows to ingest your records into an Ela
 | logstashPrefixKey | Prefix keys with this string | string |
 | suppressTypeName | When enabled, mapping types is removed and Type option is ignored. Types are deprecated in APIs in v7.0. This options is for v7.0 or later. | string |
 | tls |  | *[plugins.TLS](../tls.md) |
-| networking | Include fluentbit networking options for this output-plugin | *plugins.Networking |
+| networking | Include fluentbit networking options for this output-plugin | *[plugins.Networking](../net.md) |
 | totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |

@@ -6,7 +6,7 @@ import (
 
 // +kubebuilder:object:generate:=true
 
-// Fluent Bit implements a unified networking interface that is exposed to components like plugins. These are the functions from https://docs.fluentbit.io/manual/administration/networking and can be used on various output plugins
+// Fluent Bit implements a unified networking interface that is exposed to components like plugins. These are the functions from https://docs.fluentbit.io/manual/administration/networking and can be used on various output plugins. These options are configured through each plugin's networking field (for example, the S3 output plugin).
 type Networking struct {
 	// Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time.
 	ConnectTimeout *int32 `json:"connectTimeout,omitempty"`

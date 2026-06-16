@@ -1,8 +1,6 @@
 # Networking
 
-Fluent Bit implements a unified networking interface that is exposed to components like plugins. These are the functions from https://docs.fluentbit.io/manual/administration/networking and can be used on various output plugins.
-
-These options are configured through each plugin's `networking` field (for example, the S3 output plugin: ../output/s3.md).
+Fluent Bit implements a unified networking interface that is exposed to components like plugins. These are the functions from https://docs.fluentbit.io/manual/administration/networking and can be used on various output plugins. These options are configured through each plugin's networking field (for example, the S3 output plugin).
 
 
 | Field | Description | Scheme |

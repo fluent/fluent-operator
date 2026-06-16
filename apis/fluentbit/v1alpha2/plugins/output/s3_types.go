@@ -67,6 +67,7 @@ type S3 struct {
 	// Specify number of worker threads to use to output to S3
 	Workers      *int32 `json:"Workers,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
+	// Configure Fluent Bit unified networking options for this output plugin.
 	Networking   *plugins.Networking `json:"networking,omitempty"`
 }
 
