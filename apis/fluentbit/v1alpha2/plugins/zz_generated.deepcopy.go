@@ -60,6 +60,11 @@ func (in *Networking) DeepCopyInto(out *Networking) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.IOTimeout != nil {
+		in, out := &in.IOTimeout, &out.IOTimeout
+		*out = new(int32)
+		**out = **in
+	}
 	if in.DNSMode != nil {
 		in, out := &in.DNSMode, &out.DNSMode
 		*out = new(string)
@@ -67,6 +72,11 @@ func (in *Networking) DeepCopyInto(out *Networking) {
 	}
 	if in.DNSPreferIPv4 != nil {
 		in, out := &in.DNSPreferIPv4, &out.DNSPreferIPv4
+		*out = new(bool)
+		**out = **in
+	}
+	if in.DNSPreferIPv6 != nil {
+		in, out := &in.DNSPreferIPv6, &out.DNSPreferIPv6
 		*out = new(bool)
 		**out = **in
 	}
@@ -92,6 +102,31 @@ func (in *Networking) DeepCopyInto(out *Networking) {
 	}
 	if in.MaxWorkerConnections != nil {
 		in, out := &in.MaxWorkerConnections, &out.MaxWorkerConnections
+		*out = new(int32)
+		**out = **in
+	}
+	if in.ProxyEnvIgnore != nil {
+		in, out := &in.ProxyEnvIgnore, &out.ProxyEnvIgnore
+		*out = new(bool)
+		**out = **in
+	}
+	if in.TCPKeepalive != nil {
+		in, out := &in.TCPKeepalive, &out.TCPKeepalive
+		*out = new(string)
+		**out = **in
+	}
+	if in.TCPKeepaliveTime != nil {
+		in, out := &in.TCPKeepaliveTime, &out.TCPKeepaliveTime
+		*out = new(int32)
+		**out = **in
+	}
+	if in.TCPKeepaliveInterval != nil {
+		in, out := &in.TCPKeepaliveInterval, &out.TCPKeepaliveInterval
+		*out = new(int32)
+		**out = **in
+	}
+	if in.TCPKeepaliveProbes != nil {
+		in, out := &in.TCPKeepaliveProbes, &out.TCPKeepaliveProbes
 		*out = new(int32)
 		**out = **in
 	}

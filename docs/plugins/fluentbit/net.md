@@ -7,11 +7,18 @@ Fluent Bit implements a unified networking interface that is exposed to componen
 | ----- | ----------- | ------ |
 | connectTimeout | Set maximum time expressed in seconds to wait for a TCP connection to be established, this include the TLS handshake time. | *int32 |
 | connectTimeoutLogError | On connection timeout, specify if it should log an error. When disabled, the timeout is logged as a debug message. | *bool |
+| ioTimeout | Set maximum time a connection can stay idle while assigned. | *int32 |
 | DNSMode | Select the primary DNS connection type (TCP or UDP). | *string |
 | DNSPreferIPv4 | Prioritize IPv4 DNS results when trying to establish a connection. | *bool |
+| DNSPreferIPv6 | Prioritize IPv6 DNS results when trying to establish a connection. | *bool |
 | DNSResolver | Select the primary DNS resolver type (LEGACY or ASYNC). | *string |
 | keepalive | Enable or disable connection keepalive support. Accepts a boolean value: on / off. | *string |
 | keepaliveIdleTimeout | Set maximum time expressed in seconds for an idle keepalive connection. | *int32 |
 | keepaliveMaxRecycle | Set maximum number of times a keepalive connection can be used before it is retired. | *int32 |
 | maxWorkerConnections | Set maximum number of TCP connections that can be established per worker. | *int32 |
+| proxyEnvIgnore | Ignore the environment variables HTTP_PROXY, HTTPS_PROXY and NO_PROXY when set. | *bool |
+| tcpKeepalive | Enable or disable Keepalive support. Accepts a boolean value: on / off. | *string |
+| tcpKeepaliveTime | Interval between the last data packet sent and the first TCP keepalive probe. | *int32 |
+| tcpKeepaliveInterval | Interval between TCP keepalive probes when no response is received on a keepidle probe. | *int32 |
+| tcpKeepaliveProbes | Number of unacknowledged probes to consider a connection dead. | *int32 |
 | sourceAddress | Specify network address to bind for data traffic. | *string |
