@@ -30,9 +30,9 @@ This Document documents the types introduced by the %s Operator.
 
 var (
 	links = map[string]string{
-		"plugins.Secret": "../secret.md",
-		"Secret":         "secret.md",
-		"plugins.TLS":    "../tls.md",
+		"plugins.Secret":     "../secret.md",
+		"Secret":             "secret.md",
+		"plugins.TLS":        "../tls.md",
 		"plugins.Networking": "../net.md",
 	}
 

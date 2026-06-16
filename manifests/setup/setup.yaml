@@ -8075,10 +8075,8 @@ spec:
                     format: int32
                     type: integer
                   networking:
-                    description: Fluent Bit implements a unified networking interface
-                      that is exposed to components like plugins. These are the functions
-                      from https://docs.fluentbit.io/manual/administration/networking
-                      and can be used on various output plugins
+                    description: Configure Fluent Bit unified networking options for
+                      this output plugin.
                     properties:
                       DNSMode:
                         description: Select the primary DNS connection type (TCP or
@@ -38743,10 +38741,8 @@ spec:
                     format: int32
                     type: integer
                   networking:
-                    description: Fluent Bit implements a unified networking interface
-                      that is exposed to components like plugins. These are the functions
-                      from https://docs.fluentbit.io/manual/administration/networking
-                      and can be used on various output plugins
+                    description: Configure Fluent Bit unified networking options for
+                      this output plugin.
                     properties:
                       DNSMode:
                         description: Select the primary DNS connection type (TCP or
