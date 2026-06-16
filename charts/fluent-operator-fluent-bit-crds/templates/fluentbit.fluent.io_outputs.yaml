@@ -104,6 +104,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -122,6 +126,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -144,9 +153,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   path:
                     description: Optional path to store the blobs.
@@ -771,6 +806,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -789,6 +828,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -811,9 +855,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   path:
                     description: |-
@@ -1095,6 +1165,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -1113,6 +1187,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -1135,9 +1214,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   password:
                     description: Specify the password corresponding to the username.
@@ -1352,6 +1457,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -1370,6 +1479,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -1392,9 +1506,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   packetSize:
                     description: If transport protocol is udp, it sets the size of
@@ -1631,6 +1771,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -1649,6 +1793,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -1671,9 +1820,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   port:
                     description: TCP port of the target HTTP Server
@@ -1892,6 +2067,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -1910,6 +2089,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -1932,9 +2116,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   org:
                     description: InfluxDB organization name where the bucket is (v2
@@ -2332,6 +2542,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -2350,6 +2564,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -2372,9 +2591,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   port:
                     description: Loki TCP port
@@ -2694,6 +2939,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -2712,6 +2961,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -2734,9 +2988,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   path:
                     description: |-
@@ -2996,6 +3276,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -3014,6 +3298,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -3036,9 +3325,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   port:
                     description: TCP port of the target OpenSearch instance, default
@@ -3265,6 +3580,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -3283,6 +3602,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -3305,9 +3629,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   port:
                     description: TCP port of the target HTTP Serveri, default:80
@@ -3525,6 +3875,102 @@ spec:
                       to S3
                     format: int32
                     type: integer
+                  networking:
+                    description: Fluent Bit implements a unified networking interface
+                      that is exposed to components like plugins. These are the functions
+                      from https://docs.fluentbit.io/manual/administration/networking
+                      and can be used on various output plugins
+                    properties:
+                      DNSMode:
+                        description: Select the primary DNS connection type (TCP or
+                          UDP).
+                        enum:
+                        - TCP
+                        - UDP
+                        type: string
+                      DNSPreferIPv4:
+                        description: Prioritize IPv4 DNS results when trying to establish
+                          a connection.
+                        type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
+                      DNSResolver:
+                        description: Select the primary DNS resolver type (LEGACY
+                          or ASYNC).
+                        enum:
+                        - LEGACY
+                        - ASYNC
+                        type: string
+                      connectTimeout:
+                        description: Set maximum time expressed in seconds to wait
+                          for a TCP connection to be established, this include the
+                          TLS handshake time.
+                        format: int32
+                        type: integer
+                      connectTimeoutLogError:
+                        description: On connection timeout, specify if it should log
+                          an error. When disabled, the timeout is logged as a debug
+                          message.
+                        type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
+                      keepalive:
+                        description: 'Enable or disable connection keepalive support.
+                          Accepts a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      keepaliveIdleTimeout:
+                        description: Set maximum time expressed in seconds for an
+                          idle keepalive connection.
+                        format: int32
+                        type: integer
+                      keepaliveMaxRecycle:
+                        description: Set maximum number of times a keepalive connection
+                          can be used before it is retired.
+                        format: int32
+                        type: integer
+                      maxWorkerConnections:
+                        description: Set maximum number of TCP connections that can
+                          be established per worker.
+                        format: int32
+                        type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
+                      sourceAddress:
+                        description: Specify network address to bind for data traffic.
+                        type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
+                    type: object
                   tls:
                     description: Fluent Bit provides integrated support for Transport
                       Layer Security (TLS) and it predecessor Secure Sockets Layer
@@ -3743,6 +4189,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -3761,6 +4211,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -3783,9 +4238,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   port:
                     description: TCP port of the target Splunk instance, default `8088`
@@ -4104,6 +4585,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -4122,6 +4607,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -4144,9 +4634,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   port:
                     description: TCP or UDP port of the remote Syslog server.
@@ -4318,6 +4834,10 @@ spec:
                         description: Prioritize IPv4 DNS results when trying to establish
                           a connection.
                         type: boolean
+                      DNSPreferIPv6:
+                        description: Prioritize IPv6 DNS results when trying to establish
+                          a connection.
+                        type: boolean
                       DNSResolver:
                         description: Select the primary DNS resolver type (LEGACY
                           or ASYNC).
@@ -4336,6 +4856,11 @@ spec:
                           an error. When disabled, the timeout is logged as a debug
                           message.
                         type: boolean
+                      ioTimeout:
+                        description: Set maximum time a connection can stay idle while
+                          assigned.
+                        format: int32
+                        type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
                           Accepts a boolean value: on / off.'
@@ -4358,9 +4883,35 @@ spec:
                           be established per worker.
                         format: int32
                         type: integer
+                      proxyEnvIgnore:
+                        description: Ignore the environment variables HTTP_PROXY,
+                          HTTPS_PROXY and NO_PROXY when set.
+                        type: boolean
                       sourceAddress:
                         description: Specify network address to bind for data traffic.
                         type: string
+                      tcpKeepalive:
+                        description: 'Enable or disable Keepalive support. Accepts
+                          a boolean value: on / off.'
+                        enum:
+                        - "on"
+                        - "off"
+                        type: string
+                      tcpKeepaliveInterval:
+                        description: Interval between TCP keepalive probes when no
+                          response is received on a keepidle probe.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveProbes:
+                        description: Number of unacknowledged probes to consider a
+                          connection dead.
+                        format: int32
+                        type: integer
+                      tcpKeepaliveTime:
+                        description: Interval between the last data packet sent and
+                          the first TCP keepalive probe.
+                        format: int32
+                        type: integer
                     type: object
                   port:
                     description: TCP Port of the target service.

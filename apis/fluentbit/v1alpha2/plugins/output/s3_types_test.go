@@ -43,6 +43,21 @@ func TestOutput_S3_Params(t *testing.T) {
 		ExternalId:               "external_id",
 		Profile:                  "my-profile",
 		Workers:                  utils.ToPtr[int32](1),
+		Networking: &plugins.Networking{
+			ConnectTimeout:         utils.ToPtr[int32](10),
+			ConnectTimeoutLogError: utils.ToPtr(true),
+			DNSMode:                utils.ToPtr("TCP"),
+			DNSPreferIPv4:          utils.ToPtr(false),
+			DNSPreferIPv6:          utils.ToPtr(false),
+			IoTimeout:              utils.ToPtr[int32](0),
+			KeepaliveMaxRecycle:    utils.ToPtr[int32](2000),
+			MaxWorkerConnections:   utils.ToPtr[int32](0),
+			ProxyEnvIgnore:         utils.ToPtr(false),
+			SourceAddress:          utils.ToPtr("127.0.0.1"),
+			TCPKeepaliveInterval:   utils.ToPtr[int32](-1),
+			TCPKeepaliveProbes:     utils.ToPtr[int32](-1),
+			TCPKeepaliveTime:       utils.ToPtr[int32](-1),
+		},
 	}
 
 	expected := params.NewKVs()
@@ -74,6 +89,19 @@ func TestOutput_S3_Params(t *testing.T) {
 	expected.Insert("external_id", "external_id")
 	expected.Insert("profile", "my-profile")
 	expected.Insert("workers", "1")
+	expected.Insert("net.connect_timeout", "10")
+	expected.Insert("net.connect_timeout_log_error", "true")
+	expected.Insert("net.io_timeout", "0")
+	expected.Insert("net.dns.mode", "TCP")
+	expected.Insert("net.dns.prefer_ipv4", "false")
+	expected.Insert("net.dns.prefer_ipv6", "false")
+	expected.Insert("net.keepalive_max_recycle", "2000")
+	expected.Insert("net.max_worker_connections", "0")
+	expected.Insert("net.proxy_env_ignore", "false")
+	expected.Insert("net.tcp_keepalive_interval", "-1")
+	expected.Insert("net.tcp_keepalive_probes", "-1")
+	expected.Insert("net.tcp_keepalive_time", "-1")
+	expected.Insert("net.source_address", "127.0.0.1")
 
 	kvs, err := s3.Params(sl)
 	g.Expect(err).NotTo(HaveOccurred())

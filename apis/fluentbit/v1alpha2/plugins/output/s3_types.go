@@ -67,6 +67,7 @@ type S3 struct {
 	// Specify number of worker threads to use to output to S3
 	Workers      *int32 `json:"Workers,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
+	Networking   *plugins.Networking `json:"networking,omitempty"`
 }
 
 // Name implement Section() method
@@ -112,6 +113,14 @@ func (o *S3) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 			return nil, err
 		}
 		kvs.Merge(tls)
+	}
+
+	if o.Networking != nil {
+		net, err := o.Networking.Params(sl)
+		if err != nil {
+			return nil, err
+		}
+		kvs.Merge(net)
 	}
 
 	return kvs, nil
