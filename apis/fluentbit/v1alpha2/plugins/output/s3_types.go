@@ -68,7 +68,7 @@ type S3 struct {
 	Workers      *int32 `json:"Workers,omitempty"`
 	*plugins.TLS `json:"tls,omitempty"`
 	// Configure Fluent Bit unified networking options for this output plugin.
-	Networking   *plugins.Networking `json:"networking,omitempty"`
+	Networking *plugins.Networking `json:"networking,omitempty"`
 }
 
 // Name implement Section() method
