@@ -49,7 +49,7 @@ func TestOutput_S3_Params(t *testing.T) {
 			DNSMode:                utils.ToPtr("TCP"),
 			DNSPreferIPv4:          utils.ToPtr(false),
 			DNSPreferIPv6:          utils.ToPtr(false),
-			IoTimeout:              utils.ToPtr[int32](0),
+			IOTimeout:              utils.ToPtr[int32](0),
 			KeepaliveMaxRecycle:    utils.ToPtr[int32](2000),
 			MaxWorkerConnections:   utils.ToPtr[int32](0),
 			ProxyEnvIgnore:         utils.ToPtr(false),

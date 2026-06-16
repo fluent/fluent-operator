@@ -133,7 +133,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -162,7 +162,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -835,7 +835,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -864,7 +864,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -1194,7 +1194,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -1223,7 +1223,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -1486,7 +1486,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -1515,7 +1515,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -1800,7 +1800,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -1829,7 +1829,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -2096,7 +2096,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -2125,7 +2125,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -2571,7 +2571,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -2600,7 +2600,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -2968,7 +2968,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -2997,7 +2997,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -3305,7 +3305,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -3334,7 +3334,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -3609,7 +3609,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -3638,7 +3638,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -3921,7 +3921,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -3950,7 +3950,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -4218,7 +4218,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -4247,7 +4247,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -4614,7 +4614,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -4643,7 +4643,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -4863,7 +4863,7 @@ spec:
                         type: integer
                       keepalive:
                         description: 'Enable or disable connection keepalive support.
-                          Accepts a boolean value: on / off.'
+                          Accepts string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
@@ -4892,7 +4892,7 @@ spec:
                         type: string
                       tcpKeepalive:
                         description: 'Enable or disable Keepalive support. Accepts
-                          a boolean value: on / off.'
+                          string enum values: on / off.'
                         enum:
                         - "on"
                         - "off"
