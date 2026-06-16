@@ -24,7 +24,7 @@ type Networking struct {
 	// Select the primary DNS resolver type (LEGACY or ASYNC).
 	// +kubebuilder:validation:Enum:="LEGACY";"ASYNC"
 	DNSResolver *string `json:"DNSResolver,omitempty"`
-	// Enable or disable connection keepalive support. Accepts a boolean value: on / off.
+	// Enable or disable connection keepalive support. Accepts string enum values: on / off.
 	// +kubebuilder:validation:Enum:="on";"off"
 	Keepalive *string `json:"keepalive,omitempty"`
 	// Set maximum time expressed in seconds for an idle keepalive connection.
@@ -35,7 +35,7 @@ type Networking struct {
 	MaxWorkerConnections *int32 `json:"maxWorkerConnections,omitempty"`
 	// Ignore the environment variables HTTP_PROXY, HTTPS_PROXY and NO_PROXY when set.
 	ProxyEnvIgnore *bool `json:"proxyEnvIgnore,omitempty"`
-	// Enable or disable Keepalive support. Accepts a boolean value: on / off.
+	// Enable or disable Keepalive support. Accepts string enum values: on / off.
 	// +kubebuilder:validation:Enum:="on";"off"
 	TCPKeepalive *string `json:"tcpKeepalive,omitempty"`
 	// Interval between the last data packet sent and the first TCP keepalive probe.

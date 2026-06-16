@@ -1,6 +1,8 @@
 # Networking
 
-Fluent Bit implements a unified networking interface that is exposed to components like plugins. These are the functions from https://docs.fluentbit.io/manual/administration/networking and can be used on various output plugins
+Fluent Bit implements a unified networking interface that is exposed to components like plugins. These are the functions from https://docs.fluentbit.io/manual/administration/networking and can be used on various output plugins.
+
+These options are configured through each plugin's `networking` field (for example, the S3 output plugin: ../output/s3.md).
 
 
 | Field | Description | Scheme |
@@ -12,12 +14,12 @@ Fluent Bit implements a unified networking interface that is exposed to componen
 | DNSPreferIPv4 | Prioritize IPv4 DNS results when trying to establish a connection. | *bool |
 | DNSPreferIPv6 | Prioritize IPv6 DNS results when trying to establish a connection. | *bool |
 | DNSResolver | Select the primary DNS resolver type (LEGACY or ASYNC). | *string |
-| keepalive | Enable or disable connection keepalive support. Accepts a boolean value: on / off. | *string |
+| keepalive | Enable or disable connection keepalive support. Accepts string enum values: on / off. | *string |
 | keepaliveIdleTimeout | Set maximum time expressed in seconds for an idle keepalive connection. | *int32 |
 | keepaliveMaxRecycle | Set maximum number of times a keepalive connection can be used before it is retired. | *int32 |
 | maxWorkerConnections | Set maximum number of TCP connections that can be established per worker. | *int32 |
 | proxyEnvIgnore | Ignore the environment variables HTTP_PROXY, HTTPS_PROXY and NO_PROXY when set. | *bool |
-| tcpKeepalive | Enable or disable Keepalive support. Accepts a boolean value: on / off. | *string |
+| tcpKeepalive | Enable or disable Keepalive support. Accepts string enum values: on / off. | *string |
 | tcpKeepaliveTime | Interval between the last data packet sent and the first TCP keepalive probe. | *int32 |
 | tcpKeepaliveInterval | Interval between TCP keepalive probes when no response is received on a keepidle probe. | *int32 |
 | tcpKeepaliveProbes | Number of unacknowledged probes to consider a connection dead. | *int32 |
