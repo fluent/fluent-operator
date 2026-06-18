@@ -106,6 +106,8 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		role, sa, binding = operator.MakeScopedRBACObjects(
 			fb.Name,
 			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
 			fb.Spec.ServiceAccountAnnotations,
 		)
 	} else {
@@ -197,7 +199,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *rbacv1.Role:
-		expected, _, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
+		expected, _, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
 
 		return func() error {
 			o.Rules = expected.Rules
@@ -218,7 +220,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *corev1.ServiceAccount:
-		_, expected, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
+		_, expected, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
 
 		return func() error {
 			o.Annotations = expected.Annotations
@@ -228,7 +230,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *rbacv1.RoleBinding:
-		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
+		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
 		return func() error {
 			o.Subjects = expected.Subjects
 			o.RoleRef = expected.RoleRef
@@ -268,17 +270,9 @@ func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.
 	}
 
 	if r.Namespaced {
-		roleName, _, roleBindingName := operator.MakeScopedRBACNames(fb.Name)
-		role := rbacv1.Role{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      roleName,
-				Namespace: fb.Namespace,
-			},
-		}
-		if err := r.Delete(ctx, &role); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
-
+		_, _, roleBindingName := operator.MakeScopedRBACNames(fb.Name, "fluent-bit")
+		// Only the RoleBinding is per-instance; the Role is shared across all
+		// FluentBit instances in the namespace, so it must not be deleted here.
 		rolebinding := rbacv1.RoleBinding{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      roleBindingName,
@@ -288,8 +282,19 @@ func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.
 		if err := r.Delete(ctx, &rolebinding); err != nil && !errors.IsNotFound(err) {
 			return err
 		}
+	} else {
+		_, _, crbName := operator.MakeRBACNames(fb.Name, "fluent-bit")
+		// Only the ClusterRoleBinding is per-instance; the ClusterRole is shared
+		// across all FluentBit instances, so it must not be deleted here.
+		crb := rbacv1.ClusterRoleBinding{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: crbName,
+			},
+		}
+		if err := r.Delete(ctx, &crb); err != nil && !errors.IsNotFound(err) {
+			return err
+		}
 	}
-	// TODO: clusterrole, clusterrolebinding
 
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
