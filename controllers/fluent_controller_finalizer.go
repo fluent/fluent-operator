@@ -77,7 +77,9 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 		return err
 	}
 
-	if err := operator.DeletePerInstanceBinding(ctx, r.Client, r.Namespaced, fd.Name, fd.Namespace, "fluentd"); err != nil {
+	if err := operator.DeletePerInstanceBinding(
+		ctx, r.Client, r.Namespaced, fd.Name, fd.Namespace, "fluentd",
+	); err != nil {
 		return err
 	}
 

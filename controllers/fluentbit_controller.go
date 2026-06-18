@@ -189,7 +189,13 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *rbacv1.Role:
-		expected, _, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
+		expected, _, _ := operator.MakeScopedRBACObjects(
+			fb.Name,
+			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.Rules = expected.Rules
@@ -210,7 +216,13 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *corev1.ServiceAccount:
-		_, expected, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
+		_, expected, _ := operator.MakeScopedRBACObjects(
+			fb.Name,
+			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.Annotations = expected.Annotations
@@ -220,7 +232,13 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *rbacv1.RoleBinding:
-		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, "fluent-bit", fb.Spec.RBACRules, fb.Spec.ServiceAccountAnnotations)
+		_, _, expected := operator.MakeScopedRBACObjects(
+			fb.Name,
+			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 		return func() error {
 			o.Subjects = expected.Subjects
 			o.RoleRef = expected.RoleRef
@@ -259,7 +277,9 @@ func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.
 		return err
 	}
 
-	if err := operator.DeletePerInstanceBinding(ctx, r.Client, r.Namespaced, fb.Name, fb.Namespace, "fluent-bit"); err != nil {
+	if err := operator.DeletePerInstanceBinding(
+		ctx, r.Client, r.Namespaced, fb.Name, fb.Namespace, "fluent-bit",
+	); err != nil {
 		return err
 	}
 

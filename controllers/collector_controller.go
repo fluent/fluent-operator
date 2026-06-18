@@ -246,7 +246,9 @@ func (r *CollectorReconciler) delete(ctx context.Context, co *fluentbitv1alpha2.
 		return err
 	}
 
-	if err := operator.DeletePerInstanceBinding(ctx, r.Client, r.Namespaced, co.Name, co.Namespace, "collector"); err != nil {
+	if err := operator.DeletePerInstanceBinding(
+		ctx, r.Client, r.Namespaced, co.Name, co.Namespace, "collector",
+	); err != nil {
 		return err
 	}
 
