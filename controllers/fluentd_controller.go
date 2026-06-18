@@ -101,34 +101,21 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{}, err
 	}
 
-	// Install RBAC resources for the filter plugin kubernetes
-	var role, sa, binding client.Object
-	if r.Namespaced {
-		role, sa, binding = operator.MakeScopedRBACObjects(
-			fd.Name,
-			fd.Namespace,
-			fluentdLowercase,
-			fd.Spec.RBACRules,
-			fd.Spec.ServiceAccountAnnotations,
-		)
-	} else {
-		role, sa, binding = operator.MakeRBACObjects(
-			fd.Name,
-			fd.Namespace,
-			fluentdLowercase,
-			fd.Spec.RBACRules,
-			fd.Spec.ServiceAccountAnnotations,
-		)
-	}
-	// Deploy Fluentd (Cluster)Role
+	// Reconcile the RBAC the agent needs, scoped to a namespace or the cluster.
+	role, sa, binding := operator.MakeRBACObjectsForScope(
+		r.Namespaced,
+		fd.Name,
+		fd.Namespace,
+		fluentdLowercase,
+		fd.Spec.RBACRules,
+		fd.Spec.ServiceAccountAnnotations,
+	)
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
-	// Deploy Fluentd (Cluster)RoleBinding
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, binding, r.mutate(binding, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
-	// Deploy Fluentd ServiceAccount
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
