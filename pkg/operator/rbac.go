@@ -62,10 +62,12 @@ func MakeRBACObjects(
 
 func MakeScopedRBACObjects(
 	name,
-	namespace string,
+	namespace,
+	component string,
+	additionalRules []rbacv1.PolicyRule,
 	saAnnotations map[string]string,
 ) (*rbacv1.Role, *corev1.ServiceAccount, *rbacv1.RoleBinding) {
-	rName, saName, rbName := MakeScopedRBACNames(name)
+	rName, saName, rbName := MakeScopedRBACNames(name, component)
 	r := rbacv1.Role{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      rName,
@@ -78,6 +80,10 @@ func MakeScopedRBACObjects(
 				Resources: []string{"pods"},
 			},
 		},
+	}
+
+	if additionalRules != nil {
+		r.Rules = append(r.Rules, additionalRules...)
 	}
 
 	sa := corev1.ServiceAccount{
@@ -116,8 +122,8 @@ func MakeRBACNames(name, component string) (string, string, string) {
 	return cr, name, crb
 }
 
-func MakeScopedRBACNames(name string) (string, string, string) {
-	r := "fluent:fluent-operator"
-	rb := fmt.Sprintf("fluent-operator-fluent-bit-%s", name)
+func MakeScopedRBACNames(name, component string) (string, string, string) {
+	r := fmt.Sprintf("fluent-operator-%s", component)
+	rb := fmt.Sprintf("fluent-operator-%s-%s", component, name)
 	return r, name, rb
 }

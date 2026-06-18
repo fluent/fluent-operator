@@ -76,7 +76,31 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 	if err := r.Delete(ctx, &sa); err != nil && !errors.IsNotFound(err) {
 		return err
 	}
-	// TODO: clusterrole, clusterrolebinding
+
+	// Only the per-instance (Cluster)RoleBinding is removed here; the (Cluster)Role
+	// is shared across all Fluentd instances and must not be deleted.
+	if r.Namespaced {
+		_, _, rbName := operator.MakeScopedRBACNames(fd.Name, "fluentd")
+		rolebinding := rbacv1.RoleBinding{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      rbName,
+				Namespace: fd.Namespace,
+			},
+		}
+		if err := r.Delete(ctx, &rolebinding); err != nil && !errors.IsNotFound(err) {
+			return err
+		}
+	} else {
+		_, _, crbName := operator.MakeRBACNames(fd.Name, "fluentd")
+		crb := rbacv1.ClusterRoleBinding{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: crbName,
+			},
+		}
+		if err := r.Delete(ctx, &crb); err != nil && !errors.IsNotFound(err) {
+			return err
+		}
+	}
 
 	sts := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
@@ -155,6 +179,38 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 		return func() error {
 			o.RoleRef = expected.RoleRef
 			o.Subjects = expected.Subjects
+			return nil
+		}
+	case *rbacv1.Role:
+		// The Role is shared across all Fluentd instances in the namespace, so
+		// no per-instance controller reference is set on it.
+		expected, _, _ := operator.MakeScopedRBACObjects(
+			fd.Name,
+			fd.Namespace,
+			"fluentd",
+			fd.Spec.RBACRules,
+			fd.Spec.ServiceAccountAnnotations,
+		)
+
+		return func() error {
+			o.Rules = expected.Rules
+			return nil
+		}
+	case *rbacv1.RoleBinding:
+		_, _, expected := operator.MakeScopedRBACObjects(
+			fd.Name,
+			fd.Namespace,
+			"fluentd",
+			fd.Spec.RBACRules,
+			fd.Spec.ServiceAccountAnnotations,
+		)
+
+		return func() error {
+			o.RoleRef = expected.RoleRef
+			o.Subjects = expected.Subjects
+			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
+				return err
+			}
 			return nil
 		}
 	case *appsv1.StatefulSet:
