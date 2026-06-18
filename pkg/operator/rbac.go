@@ -1,11 +1,14 @@
 package operator
 
 import (
+	"context"
 	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 func MakeRBACObjects(
@@ -82,9 +85,7 @@ func MakeScopedRBACObjects(
 		},
 	}
 
-	if additionalRules != nil {
-		r.Rules = append(r.Rules, additionalRules...)
-	}
+	r.Rules = append(r.Rules, additionalRules...)
 
 	sa := corev1.ServiceAccount{
 		ObjectMeta: metav1.ObjectMeta{
@@ -122,8 +123,52 @@ func MakeRBACNames(name, component string) (string, string, string) {
 	return cr, name, crb
 }
 
+// MakeScopedRBACNames returns the namespaced Role/ServiceAccount/RoleBinding
+// names. They follow the same convention as the cluster-scoped names.
 func MakeScopedRBACNames(name, component string) (string, string, string) {
-	r := fmt.Sprintf("fluent-operator-%s", component)
-	rb := fmt.Sprintf("fluent-operator-%s-%s", component, name)
-	return r, name, rb
+	return MakeRBACNames(name, component)
+}
+
+// MakeRBACObjectsForScope builds the RBAC objects an agent needs, returning the
+// namespaced (Role/RoleBinding) variants when namespaced is true and the
+// cluster-scoped (ClusterRole/ClusterRoleBinding) variants otherwise.
+func MakeRBACObjectsForScope(
+	namespaced bool,
+	name, namespace, component string,
+	additionalRules []rbacv1.PolicyRule,
+	saAnnotations map[string]string,
+) (role, sa, binding client.Object) {
+	if namespaced {
+		r, s, rb := MakeScopedRBACObjects(name, namespace, component, additionalRules, saAnnotations)
+		return r, s, rb
+	}
+	cr, s, crb := MakeRBACObjects(name, namespace, component, additionalRules, saAnnotations)
+	return cr, s, crb
+}
+
+// DeletePerInstanceBinding removes the per-instance RoleBinding (namespaced) or
+// ClusterRoleBinding (cluster-scoped) created for an agent. The (Cluster)Role is
+// shared across all instances of a component and is intentionally left in place.
+func DeletePerInstanceBinding(
+	ctx context.Context,
+	c client.Client,
+	namespaced bool,
+	name, namespace, component string,
+) error {
+	var binding client.Object
+	if namespaced {
+		_, _, rbName := MakeScopedRBACNames(name, component)
+		binding = &rbacv1.RoleBinding{
+			ObjectMeta: metav1.ObjectMeta{Name: rbName, Namespace: namespace},
+		}
+	} else {
+		_, _, crbName := MakeRBACNames(name, component)
+		binding = &rbacv1.ClusterRoleBinding{
+			ObjectMeta: metav1.ObjectMeta{Name: crbName},
+		}
+	}
+	if err := c.Delete(ctx, binding); err != nil && !apierrors.IsNotFound(err) {
+		return err
+	}
+	return nil
 }
