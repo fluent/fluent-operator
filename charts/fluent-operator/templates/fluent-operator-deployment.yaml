@@ -56,7 +56,7 @@ spec:
           - --disable-component-controllers={{ . }}
           {{- end }}
           {{- with .Values.operator.watchNamespaces }}
-          - --watch-namespaces={{ . }}
+          - {{ printf "--watch-namespaces=%s" . | quote }}
           {{- end }}
         {{- with .Values.operator.livenessProbe }}
         livenessProbe:
