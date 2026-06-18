@@ -189,6 +189,8 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *rbacv1.Role:
+		// The Role is shared across all FluentBit instances in the namespace, so
+		// no per-instance controller reference is set on it.
 		expected, _, _ := operator.MakeScopedRBACObjects(
 			fb.Name,
 			fb.Namespace,
@@ -199,9 +201,6 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 
 		return func() error {
 			o.Rules = expected.Rules
-			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
-				return err
-			}
 			return nil
 		}
 	case *rbacv1.ClusterRole:
