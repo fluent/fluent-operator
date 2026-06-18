@@ -146,28 +146,25 @@ func MakeRBACObjectsForScope(
 	return cr, s, crb
 }
 
-// DeletePerInstanceBinding removes the per-instance RoleBinding (namespaced) or
-// ClusterRoleBinding (cluster-scoped) created for an agent. The (Cluster)Role is
-// shared across all instances of a component and is intentionally left in place.
+// DeletePerInstanceBinding removes the per-instance RoleBinding created for an
+// agent when running in namespaced mode. In cluster-scoped mode nothing is
+// deleted: the per-instance ClusterRoleBinding references a shared ClusterRole,
+// and the operator is intentionally not granted delete on cluster-scoped RBAC
+// (keeping its footprint minimal), so the binding is left in place.
 func DeletePerInstanceBinding(
 	ctx context.Context,
 	c client.Client,
 	namespaced bool,
 	name, namespace, component string,
 ) error {
-	var binding client.Object
-	if namespaced {
-		_, _, rbName := MakeScopedRBACNames(name, component)
-		binding = &rbacv1.RoleBinding{
-			ObjectMeta: metav1.ObjectMeta{Name: rbName, Namespace: namespace},
-		}
-	} else {
-		_, _, crbName := MakeRBACNames(name, component)
-		binding = &rbacv1.ClusterRoleBinding{
-			ObjectMeta: metav1.ObjectMeta{Name: crbName},
-		}
+	if !namespaced {
+		return nil
 	}
-	if err := c.Delete(ctx, binding); err != nil && !apierrors.IsNotFound(err) {
+	_, _, rbName := MakeScopedRBACNames(name, component)
+	rb := &rbacv1.RoleBinding{
+		ObjectMeta: metav1.ObjectMeta{Name: rbName, Namespace: namespace},
+	}
+	if err := c.Delete(ctx, rb); err != nil && !apierrors.IsNotFound(err) {
 		return err
 	}
 	return nil
