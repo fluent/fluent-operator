@@ -98,34 +98,21 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	// Install RBAC resources for the filter plugin kubernetes
-	var role, sa, binding client.Object
-	if r.Namespaced {
-		role, sa, binding = operator.MakeScopedRBACObjects(
-			co.Name,
-			co.Namespace,
-			"collector",
-			co.Spec.RBACRules,
-			co.Spec.ServiceAccountAnnotations,
-		)
-	} else {
-		role, sa, binding = operator.MakeRBACObjects(
-			co.Name,
-			co.Namespace,
-			"collector",
-			co.Spec.RBACRules,
-			co.Spec.ServiceAccountAnnotations,
-		)
-	}
-	// Deploy Fluent Bit Collector (Cluster)Role
+	// Reconcile the RBAC the agent needs, scoped to a namespace or the cluster.
+	role, sa, binding := operator.MakeRBACObjectsForScope(
+		r.Namespaced,
+		co.Name,
+		co.Namespace,
+		"collector",
+		co.Spec.RBACRules,
+		co.Spec.ServiceAccountAnnotations,
+	)
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
-	// Deploy Fluent Bit Collector (Cluster)RoleBinding
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, binding, r.mutate(binding, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
-	// Deploy Fluent Bit Collector ServiceAccount
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -259,29 +246,8 @@ func (r *CollectorReconciler) delete(ctx context.Context, co *fluentbitv1alpha2.
 		return err
 	}
 
-	// Only the per-instance (Cluster)RoleBinding is removed here; the (Cluster)Role
-	// is shared across all Collector instances and must not be deleted.
-	if r.Namespaced {
-		_, _, rbName := operator.MakeScopedRBACNames(co.Name, "collector")
-		rolebinding := rbacv1.RoleBinding{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      rbName,
-				Namespace: co.Namespace,
-			},
-		}
-		if err := r.Delete(ctx, &rolebinding); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
-	} else {
-		_, _, crbName := operator.MakeRBACNames(co.Name, "collector")
-		crb := rbacv1.ClusterRoleBinding{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: crbName,
-			},
-		}
-		if err := r.Delete(ctx, &crb); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
+	if err := operator.DeletePerInstanceBinding(ctx, r.Client, r.Namespaced, co.Name, co.Namespace, "collector"); err != nil {
+		return err
 	}
 
 	sts := appsv1.StatefulSet{

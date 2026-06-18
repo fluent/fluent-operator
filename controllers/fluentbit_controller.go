@@ -100,25 +100,15 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	// Install RBAC resources for the filter plugin kubernetes
-	var role, sa, binding client.Object
-	if r.Namespaced {
-		role, sa, binding = operator.MakeScopedRBACObjects(
-			fb.Name,
-			fb.Namespace,
-			"fluent-bit",
-			fb.Spec.RBACRules,
-			fb.Spec.ServiceAccountAnnotations,
-		)
-	} else {
-		role, sa, binding = operator.MakeRBACObjects(
-			fb.Name,
-			fb.Namespace,
-			"fluent-bit",
-			fb.Spec.RBACRules,
-			fb.Spec.ServiceAccountAnnotations,
-		)
-	}
+	// Reconcile the RBAC the agent needs, scoped to a namespace or the cluster.
+	role, sa, binding := operator.MakeRBACObjectsForScope(
+		r.Namespaced,
+		fb.Name,
+		fb.Namespace,
+		"fluent-bit",
+		fb.Spec.RBACRules,
+		fb.Spec.ServiceAccountAnnotations,
+	)
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &fb)); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -269,31 +259,8 @@ func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.
 		return err
 	}
 
-	if r.Namespaced {
-		_, _, roleBindingName := operator.MakeScopedRBACNames(fb.Name, "fluent-bit")
-		// Only the RoleBinding is per-instance; the Role is shared across all
-		// FluentBit instances in the namespace, so it must not be deleted here.
-		rolebinding := rbacv1.RoleBinding{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      roleBindingName,
-				Namespace: fb.Namespace,
-			},
-		}
-		if err := r.Delete(ctx, &rolebinding); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
-	} else {
-		_, _, crbName := operator.MakeRBACNames(fb.Name, "fluent-bit")
-		// Only the ClusterRoleBinding is per-instance; the ClusterRole is shared
-		// across all FluentBit instances, so it must not be deleted here.
-		crb := rbacv1.ClusterRoleBinding{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: crbName,
-			},
-		}
-		if err := r.Delete(ctx, &crb); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
+	if err := operator.DeletePerInstanceBinding(ctx, r.Client, r.Namespaced, fb.Name, fb.Namespace, "fluent-bit"); err != nil {
+		return err
 	}
 
 	ds := appsv1.DaemonSet{
