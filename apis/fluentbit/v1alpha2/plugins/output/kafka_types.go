@@ -12,8 +12,10 @@ import (
 // Kafka output plugin allows to ingest your records into an Apache Kafka service. <br />
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/kafka**
 type Kafka struct {
-	// Specify data format, options available: json, msgpack.
+	// Specify data format, options available: json, msgpack, raw.
 	Format string `json:"format,omitempty"`
+	// When using the raw format, the value of raw_log_key in the record is sent to Kafka as the payload.
+	RawLogKey string `json:"rawLogKey,omitempty"`
 	// Optional key to store the message
 	MessageKey string `json:"messageKey,omitempty"`
 	// If set, the value of Message_Key_Field in the record will indicate the message key.
@@ -59,6 +61,9 @@ func (k *Kafka) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 	if k.Format != "" {
 		kvs.Insert("Format", k.Format)
+	}
+	if k.RawLogKey != "" {
+		kvs.Insert("Raw_Log_Key", k.RawLogKey)
 	}
 	if k.MessageKey != "" {
 		kvs.Insert("Message_Key", k.MessageKey)

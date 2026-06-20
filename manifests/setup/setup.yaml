@@ -6457,7 +6457,8 @@ spec:
                       So in Topics only a default topic needs to be configured
                     type: boolean
                   format:
-                    description: 'Specify data format, options available: json, msgpack.'
+                    description: 'Specify data format, options available: json, msgpack,
+                      raw.'
                     type: string
                   messageKey:
                     description: Optional key to store the message
@@ -6476,6 +6477,10 @@ spec:
                       Setting the queue_full_retries value to 0 set's an unlimited number of retries.
                     format: int64
                     type: integer
+                  rawLogKey:
+                    description: When using the raw format, the value of raw_log_key
+                      in the record is sent to Kafka as the payload.
+                    type: string
                   rdkafka:
                     additionalProperties:
                       type: string
@@ -37123,7 +37128,8 @@ spec:
                       So in Topics only a default topic needs to be configured
                     type: boolean
                   format:
-                    description: 'Specify data format, options available: json, msgpack.'
+                    description: 'Specify data format, options available: json, msgpack,
+                      raw.'
                     type: string
                   messageKey:
                     description: Optional key to store the message
@@ -37142,6 +37148,10 @@ spec:
                       Setting the queue_full_retries value to 0 set's an unlimited number of retries.
                     format: int64
                     type: integer
+                  rawLogKey:
+                    description: When using the raw format, the value of raw_log_key
+                      in the record is sent to Kafka as the payload.
+                    type: string
                   rdkafka:
                     additionalProperties:
                       type: string
