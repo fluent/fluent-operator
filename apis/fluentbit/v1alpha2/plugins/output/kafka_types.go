@@ -14,7 +14,7 @@ import (
 type Kafka struct {
 	// Specify data format, options available: json, msgpack, raw.
 	Format string `json:"format,omitempty"`
-	// When using the raw format, the value of raw_log_key in the record is sent to Kafka as the payload.
+	// When using the raw format, the value of the record field specified by RawLogKey is sent to Kafka as the payload.
 	RawLogKey string `json:"rawLogKey,omitempty"`
 	// Optional key to store the message
 	MessageKey string `json:"messageKey,omitempty"`
