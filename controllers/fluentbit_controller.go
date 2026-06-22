@@ -53,7 +53,7 @@ type FluentBitReconciler struct {
 // +kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles,verbs=create;get;list;watch;patch
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterrolebindings,verbs=create;get;list;watch;patch
-// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles,verbs=create;delete;get;list;watch;patch
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles,verbs=create;get;list;watch;patch
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=rolebindings,verbs=create;delete;get;list;watch;patch
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get
 
@@ -100,23 +100,15 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	// Install RBAC resources for the filter plugin kubernetes
-	var role, sa, binding client.Object
-	if r.Namespaced {
-		role, sa, binding = operator.MakeScopedRBACObjects(
-			fb.Name,
-			fb.Namespace,
-			fb.Spec.ServiceAccountAnnotations,
-		)
-	} else {
-		role, sa, binding = operator.MakeRBACObjects(
-			fb.Name,
-			fb.Namespace,
-			"fluent-bit",
-			fb.Spec.RBACRules,
-			fb.Spec.ServiceAccountAnnotations,
-		)
-	}
+	// Reconcile the RBAC the agent needs, scoped to a namespace or the cluster.
+	role, sa, binding := operator.MakeRBACObjectsForScope(
+		r.Namespaced,
+		fb.Name,
+		fb.Namespace,
+		"fluent-bit",
+		fb.Spec.RBACRules,
+		fb.Spec.ServiceAccountAnnotations,
+	)
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &fb)); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -197,13 +189,18 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *rbacv1.Role:
-		expected, _, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
+		// The Role is shared across all FluentBit instances in the namespace, so
+		// no per-instance controller reference is set on it.
+		expected, _, _ := operator.MakeScopedRBACObjects(
+			fb.Name,
+			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.Rules = expected.Rules
-			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
-				return err
-			}
 			return nil
 		}
 	case *rbacv1.ClusterRole:
@@ -218,7 +215,13 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *corev1.ServiceAccount:
-		_, expected, _ := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
+		_, expected, _ := operator.MakeScopedRBACObjects(
+			fb.Name,
+			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 
 		return func() error {
 			o.Annotations = expected.Annotations
@@ -228,7 +231,13 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			return nil
 		}
 	case *rbacv1.RoleBinding:
-		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
+		_, _, expected := operator.MakeScopedRBACObjects(
+			fb.Name,
+			fb.Namespace,
+			"fluent-bit",
+			fb.Spec.RBACRules,
+			fb.Spec.ServiceAccountAnnotations,
+		)
 		return func() error {
 			o.Subjects = expected.Subjects
 			o.RoleRef = expected.RoleRef
@@ -267,29 +276,11 @@ func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.
 		return err
 	}
 
-	if r.Namespaced {
-		roleName, _, roleBindingName := operator.MakeScopedRBACNames(fb.Name)
-		role := rbacv1.Role{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      roleName,
-				Namespace: fb.Namespace,
-			},
-		}
-		if err := r.Delete(ctx, &role); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
-
-		rolebinding := rbacv1.RoleBinding{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      roleBindingName,
-				Namespace: fb.Namespace,
-			},
-		}
-		if err := r.Delete(ctx, &rolebinding); err != nil && !errors.IsNotFound(err) {
-			return err
-		}
+	if err := operator.DeletePerInstanceBinding(
+		ctx, r.Client, r.Namespaced, fb.Name, fb.Namespace, "fluent-bit",
+	); err != nil {
+		return err
 	}
-	// TODO: clusterrole, clusterrolebinding
 
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
