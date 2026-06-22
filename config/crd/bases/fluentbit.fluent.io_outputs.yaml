@@ -2278,8 +2278,8 @@ spec:
                     format: int64
                     type: integer
                   rawLogKey:
-                    description: When using the raw format, the value of raw_log_key
-                      in the record is sent to Kafka as the payload.
+                    description: When using the raw format, the value of the record
+                      field specified by RawLogKey is sent to Kafka as the payload.
                     type: string
                   rdkafka:
                     additionalProperties:
