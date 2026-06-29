@@ -2260,6 +2260,10 @@ spec:
                   format:
                     description: 'Specify data format, options available: json, msgpack,
                       raw.'
+                    enum:
+                    - json
+                    - msgpack
+                    - raw
                     type: string
                   messageKey:
                     description: Optional key to store the message
@@ -2279,8 +2283,9 @@ spec:
                     format: int64
                     type: integer
                   rawLogKey:
-                    description: When using the raw format, the value of the record
-                      field specified by RawLogKey is sent to Kafka as the payload.
+                    description: |-
+                      When using format: raw, the value of the record field specified by rawLogKey
+                      (Fluent Bit option: Raw_Log_Key) is sent to Kafka as the payload.
                     type: string
                   rdkafka:
                     additionalProperties:
