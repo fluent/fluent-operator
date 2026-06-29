@@ -2,6 +2,7 @@ package output
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
@@ -64,6 +65,8 @@ func (k *Kafka) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if k.RawLogKey != "" {
 		kvs.Insert("Raw_Log_Key", k.RawLogKey)
+	} else if strings.EqualFold(k.Format, "raw") {
+		return nil, fmt.Errorf("rawLogKey is required when format is raw")
 	}
 	if k.MessageKey != "" {
 		kvs.Insert("Message_Key", k.MessageKey)
