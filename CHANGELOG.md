@@ -1,5 +1,30 @@
 # Change Log
 
+## [3.10.0](https://github.com/fluent/fluent-operator/compare/v3.9.0...v3.10.0) (2026-06-30)
+
+
+### Features
+
+* **fluentbit:** support networking settings for s3 output ([7c51546](https://github.com/fluent/fluent-operator/commit/7c515469e9a48a64aad249d6a9a3ab3a78b0c5b9))
+
+
+### Bug Fixes
+
+* format go files and regenerate manifests with networking description ([d424f6c](https://github.com/fluent/fluent-operator/commit/d424f6ca9fb276959acf79d287853cc9915fbbbf))
+
+
+### Dependencies
+
+* **deps:** bump fluent-bit to 5.0.7 ([#1991](https://github.com/fluent/fluent-operator/issues/1991)) ([afcefde](https://github.com/fluent/fluent-operator/commit/afcefde5f19e40fcf8813ebd836c169c4055425b))
+* **deps:** bump fluent-bit to 5.0.8 ([#2003](https://github.com/fluent/fluent-operator/issues/2003)) ([a4fe5ae](https://github.com/fluent/fluent-operator/commit/a4fe5aebc3cbae4d79581996d4e581b9c784db3b))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.29.0 to 2.30.0 ([#1994](https://github.com/fluent/fluent-operator/issues/1994)) ([f382e73](https://github.com/fluent/fluent-operator/commit/f382e7373667e7043f407c8570210670e50ae096))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.30.0 to 2.31.0 ([0c2b650](https://github.com/fluent/fluent-operator/commit/0c2b650304eda28ebd3bfc4a60b3e1487087de07))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.31.0 to 2.32.0 ([#2001](https://github.com/fluent/fluent-operator/issues/2001)) ([4659215](https://github.com/fluent/fluent-operator/commit/46592153b96b829b3c2c4fa1c986c70fb7346b4b))
+* **deps:** Bump github.com/onsi/gomega from 1.41.0 to 1.42.0 ([d1db129](https://github.com/fluent/fluent-operator/commit/d1db12917d28306dd77e1f59940148307a060b56))
+* **deps:** Bump github.com/onsi/gomega from 1.42.0 to 1.42.1 ([#2002](https://github.com/fluent/fluent-operator/issues/2002)) ([8706734](https://github.com/fluent/fluent-operator/commit/87067340d27763c2441d9b90fec3a93a06293c3c))
+* **deps:** Bump golang.org/x/sync from 0.20.0 to 0.21.0 ([#1993](https://github.com/fluent/fluent-operator/issues/1993)) ([71933b9](https://github.com/fluent/fluent-operator/commit/71933b99cb79267c258164514ba7e989ce1d59ff))
+* **deps:** Bump the k8s-io group across 1 directory with 3 updates ([5238da7](https://github.com/fluent/fluent-operator/commit/5238da7c6f313fc527b658c587c4871c3cd0b26f))
+
 ## [3.9.0](https://github.com/fluent/fluent-operator/compare/v3.8.0...v3.9.0) (2026-06-09)
 
 
