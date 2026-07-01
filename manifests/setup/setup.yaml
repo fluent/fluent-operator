@@ -6459,10 +6459,6 @@ spec:
                   format:
                     description: 'Specify data format, options available: json, msgpack,
                       raw.'
-                    enum:
-                    - json
-                    - msgpack
-                    - raw
                     type: string
                   messageKey:
                     description: Optional key to store the message
@@ -37135,10 +37131,6 @@ spec:
                   format:
                     description: 'Specify data format, options available: json, msgpack,
                       raw.'
-                    enum:
-                    - json
-                    - msgpack
-                    - raw
                     type: string
                   messageKey:
                     description: Optional key to store the message

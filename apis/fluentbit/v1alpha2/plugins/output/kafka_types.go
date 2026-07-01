@@ -14,7 +14,6 @@ import (
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/kafka**
 type Kafka struct {
 	// Specify data format, options available: json, msgpack, raw.
-	// +kubebuilder:validation:Enum:=json;msgpack;raw
 	Format string `json:"format,omitempty"`
 	// When using format: raw, the value of the record field specified by rawLogKey
 	// (Fluent Bit option: Raw_Log_Key) is sent to Kafka as the payload.
