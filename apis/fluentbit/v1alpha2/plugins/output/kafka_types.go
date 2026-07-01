@@ -2,6 +2,7 @@ package output
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
@@ -12,8 +13,11 @@ import (
 // Kafka output plugin allows to ingest your records into an Apache Kafka service. <br />
 // **For full documentation, refer to https://docs.fluentbit.io/manual/pipeline/outputs/kafka**
 type Kafka struct {
-	// Specify data format, options available: json, msgpack.
+	// Specify data format, options available: json, msgpack, raw.
 	Format string `json:"format,omitempty"`
+	// When using format: raw, the value of the record field specified by rawLogKey
+	// (Fluent Bit option: Raw_Log_Key) is sent to Kafka as the payload.
+	RawLogKey string `json:"rawLogKey,omitempty"`
 	// Optional key to store the message
 	MessageKey string `json:"messageKey,omitempty"`
 	// If set, the value of Message_Key_Field in the record will indicate the message key.
@@ -59,6 +63,11 @@ func (k *Kafka) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 	if k.Format != "" {
 		kvs.Insert("Format", k.Format)
+	}
+	if k.RawLogKey != "" {
+		kvs.Insert("Raw_Log_Key", k.RawLogKey)
+	} else if strings.EqualFold(k.Format, "raw") {
+		return nil, fmt.Errorf("rawLogKey is required when format is raw")
 	}
 	if k.MessageKey != "" {
 		kvs.Insert("Message_Key", k.MessageKey)
