@@ -8,13 +8,8 @@ metadata:
 spec:
   configFileFormat: {{ .Values.fluentbit.configFileFormat | default "classic" | quote }}
   service:
-    parsersFile: parsers.conf
-    {{- with .Values.fluentbit.service.schedulerBase }}
-    schedulerBase: {{ . }}
-    {{- end }}
-    {{- with .Values.fluentbit.service.schedulerCap }}
-    schedulerCap: {{ . }}
-    {{- end }}
+    {{- $defaults := dict "parsersFile" "parsers.conf" }}
+    {{- include "fluent-operator.fluentbitService" (dict "defaults" $defaults "root" $) | nindent 4 }}
   inputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"

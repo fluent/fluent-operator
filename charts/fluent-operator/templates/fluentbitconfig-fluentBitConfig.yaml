@@ -12,21 +12,11 @@ spec:
   {{- end }}
   configFileFormat: {{ .Values.fluentbit.configFileFormat | default "classic" | quote }}
   service:
-    parsersFile: /fluent-bit/etc/parsers.conf
-    httpServer: true
+    {{- $defaults := dict "parsersFile" "/fluent-bit/etc/parsers.conf" "httpServer" true }}
     {{- with .Values.fluentbit.logLevel }}
-    logLevel: {{ . | quote }}
+    {{- $defaults = set $defaults "logLevel" . }}
     {{- end }}
-    {{- with .Values.fluentbit.service.storage }}
-    storage:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- with .Values.fluentbit.service.schedulerBase }}
-    schedulerBase: {{ . }}
-    {{- end }}
-    {{- with .Values.fluentbit.service.schedulerCap }}
-    schedulerCap: {{ . }}
-    {{- end }}
+    {{- include "fluent-operator.fluentbitService" (dict "defaults" $defaults "root" $) | nindent 4 }}
   inputSelector:
     matchLabels:
       fluentbit.fluent.io/enabled: "true"

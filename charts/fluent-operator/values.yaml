@@ -530,16 +530,14 @@ fluentbit:
     # -- Scheduler cap for maximum retry time (seconds)
     # schedulerCap: 2000
     # -- Storage configuration for Fluent Bit buffering
-    storage: {}
-  # Remove the above storage section and uncomment below section if you want to configure file-system as storage for buffer
-  #    storage:
-  #      path: "/host/fluent-bit-buffer/"
-  #      backlogMemLimit: "50MB"
-  #      checksum: "off"
-  #      deleteIrrecoverableChunks: "on"
-  #      maxChunksUp: 128
-  #      metrics: "on"
-  #      sync: normal
+    # storage:
+    #   path: "/host/fluent-bit-buffer/"
+    #   backlogMemLimit: "50MB"
+    #   checksum: "off"
+    #   deleteIrrecoverableChunks: "on"
+    #   maxChunksUp: 128
+    #   metrics: "on"
+    #   sync: normal
 
   # Configure the default filters in FluentBit.
   # The `filter` will filter and parse the collected log information and output the logs into a uniform format. You can choose whether to turn this on or not.
