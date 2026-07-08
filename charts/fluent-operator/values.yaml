@@ -524,6 +524,12 @@ fluentbit:
     # You can configure the stackdriver configuration here
 
   service:
+    # -- Any valid Fluent Bit `[service]` field can be set here. Values are
+    # merged over the chart defaults (`parsersFile`, `httpServer`, and
+    # `logLevel` when `fluentbit.logLevel` is set), with the values below
+    # taking precedence on conflicts. The keys shown below are only common
+    # examples, not an exhaustive list. Note: overriding `parsersFile` or
+    # `httpServer` may break parser loading or the metrics/HTTP endpoint.
     # Scheduler configuration for retry wait times (supported in Fluent Bit >= 1.8.7)
     # -- Scheduler base for exponential backoff (seconds)
     # schedulerBase: 5
