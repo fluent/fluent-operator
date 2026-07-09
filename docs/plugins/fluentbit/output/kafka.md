@@ -5,7 +5,8 @@ Kafka output plugin allows to ingest your records into an Apache Kafka service. 
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| format | Specify data format, options available: json, msgpack. | string |
+| format | Specify data format, options available: json, msgpack, raw. | string |
+| rawLogKey | When using format: raw, the value of the record field specified by rawLogKey (Fluent Bit option: Raw_Log_Key) is sent to Kafka as the payload. | string |
 | messageKey | Optional key to store the message | string |
 | messageKeyField | If set, the value of Message_Key_Field in the record will indicate the message key. If not set nor found in the record, Message_Key will be used (if set). | string |
 | timestampKey | Set the key to store the record timestamp | string |
