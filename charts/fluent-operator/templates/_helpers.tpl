@@ -94,3 +94,15 @@ Determine the container log path based on containerRuntime
 /var/log/containers
 {{- end -}}
 {{- end }}
+
+{{/*
+Render a ClusterFluentBitConfig `service` section, merging the caller-provided
+defaults with the `fluentbit.service` value (which takes precedence on conflicts).
+Expects a dict with:
+  defaults - dict of default service fields
+  root     - the root template context (e.g. `$`)
+*/}}
+{{- define "fluent-operator.fluentbitService" -}}
+{{- $merged := mergeOverwrite (deepCopy .defaults) (.root.Values.fluentbit.service | default dict) -}}
+{{- toYaml $merged -}}
+{{- end }}
