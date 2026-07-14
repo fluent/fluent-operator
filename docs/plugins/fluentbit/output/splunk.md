@@ -26,3 +26,4 @@ Splunk output plugin allows to ingest your records into a Splunk Enterprise serv
 | Workers | Enables dedicated thread(s) for this output. Default value `2` is set since version 1.8.13. For previous versions is 0. | *int32 |
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *[plugins.Networking](../net.md) |
+| totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |
