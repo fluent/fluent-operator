@@ -165,10 +165,33 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 		return func() error {
 			// Preserve the kubectl.kubernetes.io/restartedAt annotation
 			restartedAt := o.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"]
+			// Preserve the existing selector: it is immutable on DaemonSets, so
+			// reapplying a selector derived from a changed fb.Spec.Labels fails with
+			// "field is immutable" and blocks reconciliation indefinitely.
+			existingSelector := o.Spec.Selector
 
 			o.Labels = expected.Labels
 			o.Annotations = expected.Annotations
 			o.Spec = expected.Spec
+
+			if existingSelector != nil {
+				o.Spec.Selector = existingSelector
+
+				// The pod template must still satisfy the preserved selector, even if
+				// the matching labels were removed from the new fb.Spec.Labels. Build a
+				// new map rather than writing into o.Spec.Template.Labels in place, since
+				// MakeDaemonSet reuses fb.Spec.Labels itself as that map.
+				templateLabels := make(map[string]string, len(o.Spec.Template.Labels)+len(existingSelector.MatchLabels))
+				for k, v := range o.Spec.Template.Labels {
+					templateLabels[k] = v
+				}
+				for k, v := range existingSelector.MatchLabels {
+					if _, ok := templateLabels[k]; !ok {
+						templateLabels[k] = v
+					}
+				}
+				o.Spec.Template.Labels = templateLabels
+			}
 
 			// Restore the kubectl.kubernetes.io/restartedAt annotation if it existed
 			if restartedAt != "" {
