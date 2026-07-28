@@ -186,9 +186,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 					templateLabels[k] = v
 				}
 				for k, v := range existingSelector.MatchLabels {
-					if _, ok := templateLabels[k]; !ok {
-						templateLabels[k] = v
-					}
+					templateLabels[k] = v
 				}
 				o.Spec.Template.Labels = templateLabels
 			}
