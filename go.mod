@@ -5,7 +5,7 @@ go 1.26.3
 require (
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/go-kit/log v0.2.1
-	github.com/go-logr/logr v1.4.3
+	github.com/go-logr/logr v1.4.4
 	github.com/go-openapi/errors v0.22.8
 	github.com/joho/godotenv v1.5.1
 	github.com/oklog/run v1.2.0
