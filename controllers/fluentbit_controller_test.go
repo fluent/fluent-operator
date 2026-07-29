@@ -28,6 +28,9 @@ import (
 	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2"
 )
 
+// testAppLabelValue is the "app" label value used throughout these tests.
+const testAppLabelValue = "fluentbit"
+
 // TestFluentBitMutateDaemonSetPreservesImmutableSelector reproduces
 // https://github.com/fluent/fluent-operator/issues/1944: changing
 // spec.labels on a FluentBit CR must not cause the reconciler to try to
@@ -47,9 +50,9 @@ func TestFluentBitMutateDaemonSetPreservesImmutableSelector(t *testing.T) {
 	existing := &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{Name: "fluent-bit", Namespace: "default"},
 		Spec: appsv1.DaemonSetSpec{
-			Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": "fluentbit"}},
+			Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": testAppLabelValue}},
 			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "fluentbit"}},
+				ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": testAppLabelValue}},
 			},
 		},
 	}
@@ -58,7 +61,7 @@ func TestFluentBitMutateDaemonSetPreservesImmutableSelector(t *testing.T) {
 	fb := &fluentbitv1alpha2.FluentBit{
 		ObjectMeta: metav1.ObjectMeta{Name: "fluent-bit", Namespace: "default"},
 		Spec: fluentbitv1alpha2.FluentBitSpec{
-			Labels: map[string]string{"app": "fluentbit", "fluentbit.fluent.io/enabled": "true"},
+			Labels: map[string]string{"app": testAppLabelValue, "fluentbit.fluent.io/enabled": "true"},
 		},
 	}
 
@@ -66,12 +69,12 @@ func TestFluentBitMutateDaemonSetPreservesImmutableSelector(t *testing.T) {
 		t.Fatalf("mutate returned an unexpected error: %v", err)
 	}
 
-	if got := existing.Spec.Selector.MatchLabels; len(got) != 1 || got["app"] != "fluentbit" {
+	if got := existing.Spec.Selector.MatchLabels; len(got) != 1 || got["app"] != testAppLabelValue {
 		t.Fatalf("expected the immutable selector to stay unchanged, got %v", got)
 	}
 
 	// The pod template must still satisfy the preserved selector.
-	if existing.Spec.Template.Labels["app"] != "fluentbit" {
+	if existing.Spec.Template.Labels["app"] != testAppLabelValue {
 		t.Fatalf("expected pod template to retain the selector label, got %v", existing.Spec.Template.Labels)
 	}
 	// The new label should still be applied to the pod template.
@@ -98,15 +101,15 @@ func TestFluentBitMutateDaemonSetRemovedLabelDoesNotMutateSpec(t *testing.T) {
 	existing := &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{Name: "fluent-bit", Namespace: "default"},
 		Spec: appsv1.DaemonSetSpec{
-			Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": "fluentbit", "team": "logging"}},
+			Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": testAppLabelValue, "team": "logging"}},
 			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "fluentbit", "team": "logging"}},
+				ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": testAppLabelValue, "team": "logging"}},
 			},
 		},
 	}
 
 	// The user removes "team" from the FluentBit CR's labels.
-	fbLabels := map[string]string{"app": "fluentbit"}
+	fbLabels := map[string]string{"app": testAppLabelValue}
 	fb := &fluentbitv1alpha2.FluentBit{
 		ObjectMeta: metav1.ObjectMeta{Name: "fluent-bit", Namespace: "default"},
 		Spec:       fluentbitv1alpha2.FluentBitSpec{Labels: fbLabels},
@@ -116,7 +119,8 @@ func TestFluentBitMutateDaemonSetRemovedLabelDoesNotMutateSpec(t *testing.T) {
 		t.Fatalf("mutate returned an unexpected error: %v", err)
 	}
 
-	if got := existing.Spec.Selector.MatchLabels; len(got) != 2 || got["team"] != "logging" || got["app"] != "fluentbit" {
+	got := existing.Spec.Selector.MatchLabels
+	if len(got) != 2 || got["team"] != "logging" || got["app"] != testAppLabelValue {
 		t.Fatalf("expected the immutable selector to stay unchanged, got %v", got)
 	}
 	if existing.Spec.Template.Labels["team"] != "logging" {
