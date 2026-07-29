@@ -116,7 +116,7 @@ func TestFluentBitMutateDaemonSetRemovedLabelDoesNotMutateSpec(t *testing.T) {
 		t.Fatalf("mutate returned an unexpected error: %v", err)
 	}
 
-	if got := existing.Spec.Selector.MatchLabels; len(got) != 2 || got["team"] != "logging" {
+	if got := existing.Spec.Selector.MatchLabels; len(got) != 2 || got["team"] != "logging" || got["app"] != "fluentbit" {
 		t.Fatalf("expected the immutable selector to stay unchanged, got %v", got)
 	}
 	if existing.Spec.Template.Labels["team"] != "logging" {
