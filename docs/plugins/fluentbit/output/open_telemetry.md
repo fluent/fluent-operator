@@ -21,3 +21,4 @@ The OpenTelemetry plugin allows you to take logs, metrics, and traces from Fluen
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *[plugins.Networking](../net.md) |
 | totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |
+| batchSize | Set the maximum number of log records to be flushed at a time. | *int32 |

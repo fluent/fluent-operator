@@ -40,6 +40,7 @@ func TestOpenTelemetry_Params(t *testing.T) {
 		LogsBodyKey:           "expected_logs_body_key",
 		TLS:                   &plugins.TLS{Verify: utils.ToPtr(false)},
 		Networking:            &plugins.Networking{SourceAddress: utils.ToPtr("expected_source_address")},
+		BatchSize:             utils.ToPtr[int32](512),
 	}
 
 	expected := params.NewKVs()
@@ -59,6 +60,7 @@ func TestOpenTelemetry_Params(t *testing.T) {
 	expected.Insert("tls", "On")
 	expected.Insert("tls.verify", "false")
 	expected.Insert("net.source_address", "expected_source_address")
+	expected.Insert("batch_size", "512")
 
 	kvs, err := ot.Params(sl)
 	g.Expect(err).NotTo(HaveOccurred())
