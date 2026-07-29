@@ -46,6 +46,9 @@ type OpenTelemetry struct {
 	*plugins.Networking `json:"networking,omitempty"`
 	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
 	TotalLimitSize string `json:"totalLimitSize,omitempty"`
+	// Set the maximum number of log records to be flushed at a time.
+	// +kubebuilder:validation:Minimum:=0
+	BatchSize *int32 `json:"batchSize,omitempty"`
 }
 
 // Name implement Section() method
@@ -101,6 +104,7 @@ func (o *OpenTelemetry) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 
 	plugins.InsertKVString(kvs, "storage.total_limit_size", o.TotalLimitSize)
+	plugins.InsertKVField(kvs, "batch_size", o.BatchSize)
 
 	return kvs, nil
 }

@@ -7375,6 +7375,12 @@ spec:
                       exposed through the OpenTelemetry exporter. You may have multiple
                       of these fields.
                     type: object
+                  batchSize:
+                    description: Set the maximum number of log records to be flushed
+                      at a time.
+                    format: int32
+                    minimum: 0
+                    type: integer
                   header:
                     additionalProperties:
                       type: string
@@ -38051,6 +38057,12 @@ spec:
                       exposed through the OpenTelemetry exporter. You may have multiple
                       of these fields.
                     type: object
+                  batchSize:
+                    description: Set the maximum number of log records to be flushed
+                      at a time.
+                    format: int32
+                    minimum: 0
+                    type: integer
                   header:
                     additionalProperties:
                       type: string
