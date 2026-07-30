@@ -287,7 +287,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			}
 
 			configFileName := "fluent-bit.conf"
-			if cfg.Spec.ConfigFileFormat != nil && *cfg.Spec.ConfigFileFormat == "yaml" {
+			if cfg.Spec.ConfigFileFormat != nil && *cfg.Spec.ConfigFileFormat == configFileFormatYaml {
 				configFileName = "fluent-bit.yaml"
 			}
 
@@ -515,7 +515,7 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 	}
 
 	sl := plugins.NewSecretLoader(nil, "")
-	if configFileFormat != nil && *configFileFormat == "yaml" {
+	if configFileFormat != nil && *configFileFormat == configFileFormatYaml {
 		return filterList.LoadAsYaml(sl, 1)
 	}
 	return filterList.Load(sl)

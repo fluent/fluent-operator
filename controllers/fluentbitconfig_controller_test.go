@@ -50,7 +50,7 @@ func TestGenerateRewriteTagConfigYaml(t *testing.T) {
 		},
 	}
 
-	yamlFormat := "yaml"
+	yamlFormat := configFileFormatYaml
 	out, err := r.generateRewriteTagConfig(cfg, inputs, &yamlFormat)
 	if err != nil {
 		t.Fatalf("generateRewriteTagConfig returned error: %v", err)
