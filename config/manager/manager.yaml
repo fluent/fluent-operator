@@ -49,7 +49,9 @@ spec:
                 fieldPath: metadata.namespace
           - name: CONTAINER_LOG_PATH
             value: /var/log/containers
-        args: []
+        args:
+          - --metrics-bind-address=:8080
+          - --metrics-secure=false
         livenessProbe:
           httpGet:
             path: /healthz
