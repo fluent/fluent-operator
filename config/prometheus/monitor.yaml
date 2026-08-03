@@ -9,8 +9,8 @@ metadata:
 spec:
   endpoints:
     - path: /metrics
-      port: https
-      scheme: https # Ensure this is the name of the port that exposes HTTPS metrics
+      port: metrics
+      scheme: http # Ensure this is the name of the port that exposes metrics
       bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
       tlsConfig:
         # TODO(user): The option insecureSkipVerify: true is not recommended for production since it disables

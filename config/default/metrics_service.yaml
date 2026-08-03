@@ -7,10 +7,10 @@ metadata:
   name: fluent-operator-metrics
 spec:
   ports:
-  - name: https
-    port: 8443
+  - name: metrics
+    port: 8080
     protocol: TCP
-    targetPort: 8443
+    targetPort: 8080
   selector:
     app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluent-operator

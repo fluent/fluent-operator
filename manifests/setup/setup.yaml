@@ -42984,10 +42984,10 @@ metadata:
   namespace: fluent
 spec:
   ports:
-  - name: https
-    port: 8443
+  - name: metrics
+    port: 8080
     protocol: TCP
-    targetPort: 8443
+    targetPort: 8080
   selector:
     app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluent-operator
@@ -43015,7 +43015,7 @@ spec:
       - args:
         - --leader-elect
         - --health-probe-bind-address=:8081
-        - --metrics-bind-address=:8443
+        - --metrics-bind-address=:8080
         command:
         - /manager
         env:
