@@ -16,57 +16,67 @@ spec:
         app.kubernetes.io/component: operator
         app.kubernetes.io/name: fluent-operator
     spec:
-      securityContext:
-        runAsNonRoot: true
+      volumes:
+      - name: env
+        configMap:
+          name: fluent-operator-env
       containers:
-      - command:
-        - /manager
-        args:
-        - --leader-elect
-        - --health-probe-bind-address=:8081
+      - name: fluent-operator
         image: controller:latest
-        name: manager
-        ports:
-        - containerPort: 8081
-          name: health
-          protocol: TCP
         securityContext:
-          readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
           capabilities:
             drop:
-              - "ALL"
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8081
-          initialDelaySeconds: 15
-          periodSeconds: 20
-        readinessProbe:
-          httpGet:
-            path: /readyz
-            port: 8081
-          initialDelaySeconds: 5
-          periodSeconds: 10
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 65532
+          runAsNonRoot: true
+          runAsUser: 65532
+          seccompProfile:
+            type: RuntimeDefault
+        resources:
+          limits:
+            cpu: 100m
+            memory: 60Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
         env:
           - name: NAMESPACE
             valueFrom:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.namespace
-        resources:
-          limits:
-            cpu: 200m
-            memory: 128Mi
-          requests:
-            cpu: 10m
-            memory: 64Mi
+          - name: CONTAINER_LOG_PATH
+            value: /var/log/containers
+        args: []
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         volumeMounts:
           - name: env
             mountPath: /fluent-operator
-      volumes:
-      - name: env
-        configMap:
-          name: fluent-operator-env
+        ports:
+          - containerPort: 8080
+            name: metrics
       serviceAccountName: fluent-operator
-      terminationGracePeriodSeconds: 10
+      securityContext:
+        fsGroup: 65532
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65532
+        seccompProfile:
+          type: RuntimeDefault
