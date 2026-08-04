@@ -91,7 +91,10 @@ func (i *Input) Params(loader plugins.SecretLoader) (*params.PluginStore, error)
 	}
 
 	if i.CustomPlugin != nil {
-		customPs, _ := i.CustomPlugin.Params(loader)
+		customPs, err := i.CustomPlugin.Params(loader)
+		if err != nil {
+			return nil, err
+		}
 		ps.Content = customPs.Content
 		return ps, nil
 	}

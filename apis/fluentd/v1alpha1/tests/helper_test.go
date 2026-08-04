@@ -185,6 +185,35 @@ func Test_MixedCfgCopy1(t *testing.T) {
 	}
 }
 
+// Test_CustomPluginBreakoutRejected is a regression test for GHSA-9jg5-g9mc-7m7c.
+// A tenant Output whose customPlugin config tries to close its enclosing <label>
+// block and inject a top-level `@type exec` source must be rejected during
+// rendering so the malicious directives never reach the shared aggregator config.
+func Test_CustomPluginBreakoutRejected(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+	psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
+
+	_, err := psr.BuildCfgRouter(&FluentdConfig1)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	cfgResources, errs := psr.PatchAndFilterNamespacedLevelResources(
+		sl,
+		FluentdConfig1.GetCfgId(),
+		[]fluentdv1alpha1.Input{},
+		[]fluentdv1alpha1.Filter{},
+		[]fluentdv1alpha1.Output{FluentdOutputCustomBreakout},
+	)
+
+	// The malicious output must surface a validation error and must not be
+	// rendered into the aggregated output plugins.
+	g.Expect(errs).NotTo(BeEmpty())
+	g.Expect(strings.Join(errs, "\n")).To(ContainSubstring("customPlugin"))
+	g.Expect(cfgResources.OutputPlugins).To(BeEmpty())
+}
+
 func Test_MixedCfgCopy2(t *testing.T) {
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 	testMixedConfigWithCopy(t, sl, Fluentd, &FluentdConfig2, []fluentdv1alpha1.Output{FluentdOutputMixedCopy2}, []fluentdv1alpha1.ClusterOutput{}, "./expected/fluentd-mixed-cfgs-output-copy-2.cfg")

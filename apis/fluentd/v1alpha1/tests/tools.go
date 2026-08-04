@@ -749,6 +749,40 @@ spec:
           logstash_prefix  ks-logstash-log
         </match>
 `
+	// FluentdOutputCustomBreakout reproduces GHSA-9jg5-g9mc-7m7c: a tenant Output
+	// whose customPlugin config closes its enclosing <label> block and injects a
+	// top-level `@type exec` source. It must be rejected during rendering.
+	FluentdOutputCustomBreakout    fluentdv1alpha1.Output
+	FluentdOutputCustomBreakoutRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Output
+metadata:
+  name: fluentd-output-breakout
+  namespace: fluent
+  labels:
+    output.fluentd.fluent.io/enabled: "true"
+spec:
+  outputs:
+  - customPlugin:
+      config: |
+        <match **>
+          @type null
+        </match>
+        </label>
+        <source>
+          @type exec
+          tag pwn.exec
+          command sh -c 'echo pwned'
+          run_interval 5s
+          <parse>
+            @type none
+          </parse>
+        </source>
+        <label @pwnbalance>
+        <match **>
+          @type null
+        </match>
+`
 	FluentdOutputUser1    fluentdv1alpha1.Output
 	FluentdOutputUser1Raw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -1256,6 +1290,7 @@ func init() {
 			MustParseIntoObject(FluentdClusterOutput2LokiRaw, &FluentdClusterOutput2Loki)
 			MustParseIntoObject(FluentdClusterOutput2Loki1Raw, &FluentdClusterOutput2Loki1)
 			MustParseIntoObject(FluentdOutputUser1Raw, &FluentdOutputUser1)
+			MustParseIntoObject(FluentdOutputCustomBreakoutRaw, &FluentdOutputCustomBreakout)
 			MustParseIntoObject(FluentdClusterOutputCustomRaw, &FluentdClusterOutputCustom)
 			MustParseIntoObject(FluentdClusterOutput2CloudWatchRaw, &FluentdClusterOutput2CloudWatch)
 			MustParseIntoObject(FluentdClusterOutput2DatadogRaw, &FluentdClusterOutput2Datadog)

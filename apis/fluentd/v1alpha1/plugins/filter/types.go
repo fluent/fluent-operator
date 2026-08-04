@@ -87,7 +87,7 @@ func (f *Filter) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 		ps.InsertType(string(params.StdoutFilterType))
 		return f.stdoutPlugin(ps, loader), nil
 	}
-	return f.customFilter(ps, loader), nil
+	return f.customFilter(ps, loader)
 
 }
 
@@ -248,13 +248,16 @@ func (f *Filter) stdoutPlugin(parent *params.PluginStore, loader plugins.SecretL
 	return parent
 }
 
-func (f *Filter) customFilter(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+func (f *Filter) customFilter(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
 	if f.CustomPlugin == nil {
-		return parent
+		return parent, nil
 	}
-	customPlugin, _ := f.CustomPlugin.Params(loader)
+	customPlugin, err := f.CustomPlugin.Params(loader)
+	if err != nil {
+		return nil, err
+	}
 	parent.Content = customPlugin.Content
-	return parent
+	return parent, nil
 }
 
 var _ plugins.Plugin = &Filter{}
