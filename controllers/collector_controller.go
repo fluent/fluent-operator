@@ -38,8 +38,9 @@ import (
 // CollectorReconciler reconciles a FluentBit object
 type CollectorReconciler struct {
 	client.Client
-	Log    logr.Logger
-	Scheme *runtime.Scheme
+	Log        logr.Logger
+	Scheme     *runtime.Scheme
+	Namespaced bool
 }
 
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=collectors,verbs=get;list;watch;update
@@ -49,6 +50,8 @@ type CollectorReconciler struct {
 // +kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles,verbs=create;get;list;watch;patch
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterrolebindings,verbs=create;get;list;watch;patch
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles,verbs=create;get;list;watch;patch
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=rolebindings,verbs=create;delete;get;list;watch;patch
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
@@ -95,23 +98,21 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	// Install RBAC resources for the filter plugin kubernetes
-	cr, sa, crb := operator.MakeRBACObjects(
+	// Reconcile the RBAC the agent needs, scoped to a namespace or the cluster.
+	role, sa, binding := operator.MakeRBACObjectsForScope(
+		r.Namespaced,
 		co.Name,
 		co.Namespace,
 		"collector",
 		co.Spec.RBACRules,
 		co.Spec.ServiceAccountAnnotations,
 	)
-	// Deploy Fluent Bit Collector ClusterRole
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, cr, r.mutate(cr, &co)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
-	// Deploy Fluent Bit Collector ClusterRoleBinding
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, crb, r.mutate(crb, &co)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, binding, r.mutate(binding, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
-	// Deploy Fluent Bit Collector ServiceAccount
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -175,6 +176,36 @@ func (r *CollectorReconciler) mutate(obj client.Object, co *fluentbitv1alpha2.Co
 			o.Subjects = expected.Subjects
 			return nil
 		}
+	case *rbacv1.Role:
+		// The Role is shared across all Collector instances in the namespace, so
+		// no per-instance controller reference is set on it.
+		expected, _, _ := operator.MakeScopedRBACObjects(co.Name,
+			co.Namespace,
+			"collector",
+			co.Spec.RBACRules,
+			co.Spec.ServiceAccountAnnotations,
+		)
+
+		return func() error {
+			o.Rules = expected.Rules
+			return nil
+		}
+	case *rbacv1.RoleBinding:
+		_, _, expected := operator.MakeScopedRBACObjects(co.Name,
+			co.Namespace,
+			"collector",
+			co.Spec.RBACRules,
+			co.Spec.ServiceAccountAnnotations,
+		)
+
+		return func() error {
+			o.RoleRef = expected.RoleRef
+			o.Subjects = expected.Subjects
+			if err := ctrl.SetControllerReference(co, o, r.Scheme); err != nil {
+				return err
+			}
+			return nil
+		}
 	case *appsv1.StatefulSet:
 		expected := operator.MakefbStatefulset(*co)
 
@@ -214,7 +245,12 @@ func (r *CollectorReconciler) delete(ctx context.Context, co *fluentbitv1alpha2.
 	if err := r.Delete(ctx, &sa); err != nil && !errors.IsNotFound(err) {
 		return err
 	}
-	// TODO: clusterrole, clusterrolebinding
+
+	if err := operator.DeletePerInstanceBinding(
+		ctx, r.Client, r.Namespaced, co.Name, co.Namespace, "collector",
+	); err != nil {
+		return err
+	}
 
 	sts := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
