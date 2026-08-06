@@ -17,7 +17,6 @@ limitations under the License.
 package controllers
 
 import (
-	"bytes"
 	"context"
 	"crypto/md5"
 	"crypto/sha256"
@@ -26,6 +25,7 @@ import (
 	"sort"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/filter"
 
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
@@ -241,7 +241,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			nsFilterLists, nsOutputLists, nsParserLists,
 				nsClusterParserLists, nsMultilineParserLists, nsClusterMultilineParserLists,
 				rewriteTagConfigs, err := r.processNamespacedFluentBitCfgs(
-				ctx, fb, inputs,
+				ctx, fb, inputs, cfg.Spec.ConfigFileFormat,
 			)
 
 			if err != nil {
@@ -287,7 +287,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			}
 
 			configFileName := "fluent-bit.conf"
-			if cfg.Spec.ConfigFileFormat != nil && *cfg.Spec.ConfigFileFormat == "yaml" {
+			if cfg.Spec.ConfigFileFormat != nil && *cfg.Spec.ConfigFileFormat == configFileFormatYaml {
 				configFileName = "fluent-bit.yaml"
 			}
 
@@ -307,6 +307,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 	ctx context.Context, fb fluentbitv1alpha2.FluentBit, inputs fluentbitv1alpha2.ClusterInputList,
+	configFileFormat *string,
 ) (
 	[]fluentbitv1alpha2.FilterList, []fluentbitv1alpha2.OutputList,
 	[]fluentbitv1alpha2.ParserList, []fluentbitv1alpha2.ClusterParserList,
@@ -359,7 +360,12 @@ func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 		clusterMultilineParsers = append(clusterMultilineParsers, clusterMultilineParsersList)
 
 		if _, ok := storeNamespaces[cfg.Namespace]; !ok {
-			rewriteTagConfig := r.generateRewriteTagConfig(cfg, inputs)
+			rewriteTagConfig, err := r.generateRewriteTagConfig(cfg, inputs, configFileFormat)
+			if err != nil {
+				return filters, outputs, parsers,
+					clusterParsers, multilineParsers, clusterMultilineParsers,
+					nil, err
+			}
 			if rewriteTagConfig != "" {
 				rewriteTagConfigs = append(rewriteTagConfigs, rewriteTagConfig)
 				storeNamespaces[cfg.Namespace] = true
@@ -463,8 +469,8 @@ func (r *FluentBitConfigReconciler) ListFluentBitConfigResources(
 }
 
 func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
-	cfg fluentbitv1alpha2.FluentBitConfig, inputs fluentbitv1alpha2.ClusterInputList,
-) string {
+	cfg fluentbitv1alpha2.FluentBitConfig, inputs fluentbitv1alpha2.ClusterInputList, configFileFormat *string,
+) (string, error) {
 	var tag string
 	for _, input := range inputs.Items {
 		if input.Spec.Tail == nil || !strings.Contains(input.Spec.Tail.Path, "/var/log/containers") {
@@ -479,28 +485,40 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 		}
 	}
 	if tag == "" {
-		return ""
+		return "", nil
 	}
-	var buf bytes.Buffer
-	fmt.Fprintln(&buf, "[Filter]")
-	fmt.Fprintln(&buf, "    Name    rewrite_tag")
-	fmt.Fprintf(&buf, "    Match    %s\n", tag)
-	fmt.Fprintf(&buf, "    Rule    $kubernetes['namespace_name'] ^(%s)$ %x.$TAG false\n", cfg.Namespace,
-		md5.Sum([]byte(cfg.Namespace)))
+
+	rewriteTag := &filter.RewriteTag{
+		Rules: []string{
+			fmt.Sprintf("$kubernetes['namespace_name'] ^(%s)$ %x.$TAG false", cfg.Namespace, md5.Sum([]byte(cfg.Namespace))),
+		},
+	}
 	if cfg.Spec.Service != nil {
 		if cfg.Spec.Service.EmitterName != "" {
-			fmt.Fprintf(&buf, "    Emitter_Name    %s\n", cfg.Spec.Service.EmitterName)
+			rewriteTag.EmitterName = cfg.Spec.Service.EmitterName
 		} else {
-			fmt.Fprintf(&buf, "    Emitter_Name    re_emitted_%x\n", md5.Sum([]byte(cfg.Namespace)))
+			rewriteTag.EmitterName = fmt.Sprintf("re_emitted_%x", md5.Sum([]byte(cfg.Namespace)))
 		}
-		if cfg.Spec.Service.EmitterStorageType != "" {
-			fmt.Fprintf(&buf, "    Emitter_Storage.type    %s\n", cfg.Spec.Service.EmitterStorageType)
-		}
-		if cfg.Spec.Service.EmitterMemBufLimit != "" {
-			fmt.Fprintf(&buf, "    Emitter_Mem_Buf_Limit    %s\n", cfg.Spec.Service.EmitterMemBufLimit)
-		}
+		rewriteTag.EmitterStorageType = cfg.Spec.Service.EmitterStorageType
+		rewriteTag.EmitterMemBufLimit = cfg.Spec.Service.EmitterMemBufLimit
 	}
-	return buf.String()
+
+	filterList := fluentbitv1alpha2.ClusterFilterList{
+		Items: []fluentbitv1alpha2.ClusterFilter{
+			{
+				Spec: fluentbitv1alpha2.FilterSpec{
+					Match:       tag,
+					FilterItems: []fluentbitv1alpha2.FilterItem{{RewriteTag: rewriteTag}},
+				},
+			},
+		},
+	}
+
+	sl := plugins.NewSecretLoader(nil, "")
+	if configFileFormat != nil && *configFileFormat == configFileFormatYaml {
+		return filterList.LoadAsYaml(sl, 1)
+	}
+	return filterList.Load(sl)
 }
 
 func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
