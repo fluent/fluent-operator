@@ -183,7 +183,7 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 		return o.nullPlugin(ps, loader), nil
 	}
 
-	return o.customOutput(ps, loader), nil
+	return o.customOutput(ps, loader)
 }
 
 func (o *Output) forwardPlugin(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
@@ -811,13 +811,16 @@ func (o *Output) stdoutPlugin(parent *params.PluginStore, loader plugins.SecretL
 	return parent
 }
 
-func (o *Output) customOutput(parent *params.PluginStore, loader plugins.SecretLoader) *params.PluginStore {
+func (o *Output) customOutput(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
 	if o.CustomPlugin == nil {
-		return parent
+		return parent, nil
 	}
-	customPlugin, _ := o.CustomPlugin.Params(loader)
+	customPlugin, err := o.CustomPlugin.Params(loader)
+	if err != nil {
+		return nil, err
+	}
 	parent.Content = customPlugin.Content
-	return parent
+	return parent, nil
 }
 
 func (o *Output) datadogPlugin(parent *params.PluginStore, sl plugins.SecretLoader) *params.PluginStore {
