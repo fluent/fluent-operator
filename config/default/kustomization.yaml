@@ -49,6 +49,9 @@ resources:
 #- path: manager_metrics_patch.yaml
 #  target:
 #    kind: Deployment
+#- path: metrics_service_patch.yaml
+#  target:
+#    kind: Service
 #- path: cert_metrics_manager_patch.yaml
 #  target:
 #    kind: Deployment

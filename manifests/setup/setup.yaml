@@ -43012,7 +43012,9 @@ spec:
         app.kubernetes.io/name: fluent-operator
     spec:
       containers:
-      - args: []
+      - args:
+        - --metrics-bind-address=:8080
+        - --metrics-secure=false
         env:
         - name: NAMESPACE
           valueFrom:
