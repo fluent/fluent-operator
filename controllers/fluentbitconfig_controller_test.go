@@ -60,15 +60,25 @@ func TestGenerateRewriteTagConfigYaml(t *testing.T) {
 		t.Fatalf("expected YAML output, got classic TOML snippet:\n%s", out)
 	}
 
-	// The generated snippet must parse as valid YAML on its own, and must be
-	// usable as a "pipeline.filters" fragment (i.e. it starts with a
-	// top-level "filters:" key).
+	// The generated snippet is a headerless "filters:" list item, meant to
+	// be merged into the single "pipeline.filters" section alongside
+	// cluster/namespaced filters by RenderMainConfigInYaml. It must not
+	// carry its own "filters:" header, or the merged config would end up
+	// with a duplicate, invalid "filters:" key (see
+	// https://github.com/fluent/fluent-operator/pull/2019#pullrequestreview-4856326368).
+	if strings.Contains(out, "filters:") {
+		t.Fatalf("expected a headerless filter list item, got a \"filters:\" header:\n%s", out)
+	}
+
+	// Wrapping it in a "filters:" key must still parse as valid YAML and
+	// contain the rewrite_tag entry.
+	wrapped := "filters:\n" + out
 	var parsed map[string]interface{}
-	if err := yaml.Unmarshal([]byte(out), &parsed); err != nil {
-		t.Fatalf("generated rewrite_tag config is not valid YAML: %v\n%s", err, out)
+	if err := yaml.Unmarshal([]byte(wrapped), &parsed); err != nil {
+		t.Fatalf("generated rewrite_tag config is not valid YAML: %v\n%s", err, wrapped)
 	}
 	if _, ok := parsed["filters"]; !ok {
-		t.Fatalf("expected a top-level \"filters\" key, got:\n%s", out)
+		t.Fatalf("expected a top-level \"filters\" key once wrapped, got:\n%s", wrapped)
 	}
 
 	if !strings.Contains(out, "name: rewrite_tag") {

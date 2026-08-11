@@ -26,6 +26,7 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/filter"
+	"github.com/fluent/fluent-operator/v3/pkg/utils"
 
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
@@ -516,7 +517,15 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 
 	sl := plugins.NewSecretLoader(nil, "")
 	if configFileFormat != nil && *configFileFormat == configFileFormatYaml {
-		return filterList.LoadAsYaml(sl, 1)
+		rendered, err := filterList.LoadAsYaml(sl, 1)
+		if err != nil {
+			return "", err
+		}
+		// Strip the "filters:" header so callers can merge this into the
+		// single "filters:" section of the main YAML config instead of
+		// emitting a second, duplicate key (see RenderMainConfigInYaml).
+		header := fmt.Sprintf("%sfilters:\n", utils.YamlIndent(1))
+		return strings.TrimPrefix(rendered, header), nil
 	}
 	return filterList.Load(sl)
 }

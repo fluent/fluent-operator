@@ -351,16 +351,20 @@ func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
 	}
 
 	buf.WriteString(inputSections)
-	for _, rtc := range rewriteTagConfigs {
-		buf.WriteString(rtc)
-	}
-	if filterSections == "" && nsFilterSections != nil {
+	// rewriteTagConfigs entries are headerless "filters:" list items (see
+	// generateRewriteTagConfig), so they must share a single "filters:"
+	// header with filterSections/nsFilterSections rather than writing their
+	// own, which would otherwise produce duplicate "filters:" keys.
+	if filterSections == "" && (nsFilterSections != nil || len(rewriteTagConfigs) > 0) {
 		fmt.Fprintf(&buf, "%sfilters:\n", utils.YamlIndent(1))
 	} else {
-		// 1. filterSections == "" && nsFilterSections == nil
-		// 2. filterSections != "" && nsFilterSections != nil
-		// 3. filterSections != "" && nsFilterSections == nil
+		// 1. filterSections == "" && nsFilterSections == nil && rewriteTagConfigs empty
+		// 2. filterSections != "" && (nsFilterSections != nil || rewriteTagConfigs non-empty)
+		// 3. filterSections != "" && nsFilterSections == nil && rewriteTagConfigs empty
 		buf.WriteString(filterSections)
+	}
+	for _, rtc := range rewriteTagConfigs {
+		buf.WriteString(rtc)
 	}
 	for _, filters := range nsFilterSections {
 		buf.WriteString(filters)
