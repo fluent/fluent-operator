@@ -42,16 +42,16 @@ resources:
 # be able to communicate with the Webhook Server.
 #- ../network-policy
 
-patches:
-# [METRICS] The following patch will enable the metrics endpoint using HTTPS and the port :8443.
-# More info: https://book.kubebuilder.io/reference/metrics
-- path: manager_metrics_patch.yaml
-  target:
-    kind: Deployment
-
-# Uncomment the patches line if you enable Metrics and CertManager
-# [METRICS-WITH-CERTS] To enable metrics protected with certManager, uncomment the following line.
-# This patch will protect the metrics with certManager self-signed certs.
+# [METRICS-WITH-CERTS] To enable HTTPS metrics protected with certManager,
+# uncomment the patches below. These patches enable the endpoint and configure
+# it to use the certificate managed by certManager.
+#patches:
+#- path: manager_metrics_patch.yaml
+#  target:
+#    kind: Deployment
+#- path: metrics_service_patch.yaml
+#  target:
+#    kind: Service
 #- path: cert_metrics_manager_patch.yaml
 #  target:
 #    kind: Deployment
