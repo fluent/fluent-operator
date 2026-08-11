@@ -12,4 +12,6 @@ var (
 	fluentbitApiGVStr = fluentbitv1alpha2.SchemeGroupVersion.String()
 	fluentdApiGVStr   = fluentdv1alpha1.SchemeGroupVersion.String()
 	fluentdAgentMode  = "agent"
+
+	configFileFormatYaml = "yaml"
 )
