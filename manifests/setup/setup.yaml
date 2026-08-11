@@ -42984,10 +42984,10 @@ metadata:
   namespace: fluent
 spec:
   ports:
-  - name: https
-    port: 8443
+  - name: metrics
+    port: 8080
     protocol: TCP
-    targetPort: 8443
+    targetPort: 8080
   selector:
     app.kubernetes.io/component: operator
     app.kubernetes.io/name: fluent-operator
@@ -43013,55 +43013,66 @@ spec:
     spec:
       containers:
       - args:
-        - --leader-elect
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=:8443
-        command:
-        - /manager
+        - --metrics-bind-address=:8080
+        - --metrics-secure=false
         env:
         - name: NAMESPACE
           valueFrom:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
+        - name: CONTAINER_LOG_PATH
+          value: /var/log/containers
         image: ghcr.io/fluent/fluent-operator/fluent-operator:latest
         livenessProbe:
+          failureThreshold: 3
           httpGet:
             path: /healthz
             port: 8081
           initialDelaySeconds: 15
           periodSeconds: 20
-        name: manager
+          timeoutSeconds: 5
+        name: fluent-operator
         ports:
-        - containerPort: 8081
-          name: health
-          protocol: TCP
+        - containerPort: 8080
+          name: metrics
         readinessProbe:
+          failureThreshold: 3
           httpGet:
             path: /readyz
             port: 8081
           initialDelaySeconds: 5
           periodSeconds: 10
+          timeoutSeconds: 5
         resources:
           limits:
-            cpu: 200m
-            memory: 128Mi
+            cpu: 100m
+            memory: 60Mi
           requests:
-            cpu: 10m
-            memory: 64Mi
+            cpu: 100m
+            memory: 20Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             drop:
             - ALL
           readOnlyRootFilesystem: true
+          runAsGroup: 65532
+          runAsNonRoot: true
+          runAsUser: 65532
+          seccompProfile:
+            type: RuntimeDefault
         volumeMounts:
         - mountPath: /fluent-operator
           name: env
       securityContext:
+        fsGroup: 65532
+        runAsGroup: 65532
         runAsNonRoot: true
+        runAsUser: 65532
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: fluent-operator
-      terminationGracePeriodSeconds: 10
       volumes:
       - configMap:
           name: fluent-operator-env

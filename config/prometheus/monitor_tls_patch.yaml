@@ -1,6 +1,11 @@
-# Patch for Prometheus ServiceMonitor to enable secure TLS configuration
-# using certificates managed by cert-manager
+# Patch the ServiceMonitor to use HTTPS and certificates managed by cert-manager.
 - op: replace
+  path: /spec/endpoints/0/scheme
+  value: https
+- op: add
+  path: /spec/endpoints/0/bearerTokenFile
+  value: /var/run/secrets/kubernetes.io/serviceaccount/token
+- op: add
   path: /spec/endpoints/0/tlsConfig
   value:
     # SERVICE_NAME and SERVICE_NAMESPACE will be substituted by kustomize
