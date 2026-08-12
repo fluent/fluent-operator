@@ -2,10 +2,12 @@ package v1alpha2
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/yaml"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/custom"
@@ -1436,4 +1438,86 @@ func TestClusterFluentBitConfig_RenderMultilineParserConfig(t *testing.T) {
 	)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(config).To(Equal(expectedMultilineParsers))
+}
+
+// TestRenderMainConfigInYaml_RewriteTagConfigMergesIntoSingleFiltersSection
+// is a regression test for
+// https://github.com/fluent/fluent-operator/pull/2019#pullrequestreview-4856326368:
+// a rewrite_tag fragment produced for the "yaml" config format must merge
+// into the single "pipeline.filters" list alongside any cluster/namespaced
+// filters, instead of contributing its own "filters:" key, which would
+// otherwise produce a second, duplicate key under "pipeline:".
+func TestRenderMainConfigInYaml_RewriteTagConfigMergesIntoSingleFiltersSection(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	cfg := ClusterFluentBitConfig{}
+
+	inputs := ClusterInputList{
+		Items: []ClusterInput{
+			{
+				ObjectMeta: metav1.ObjectMeta{Name: "input0"},
+				Spec: InputSpec{
+					Tail: &input.Tail{
+						Tag:  "logs.foo.bar",
+						Path: "/logs/containers/apps0",
+					},
+				},
+			},
+		},
+	}
+
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{
+			{
+				ObjectMeta: metav1.ObjectMeta{Name: "filter0"},
+				Spec: FilterSpec{
+					Match: "logs.foo.bar",
+					FilterItems: []FilterItem{
+						{Modify: &filter.Modify{
+							Rules: []filter.Rule{{Set: map[string]string{"k": "v"}}},
+						}},
+					},
+				},
+			},
+		},
+	}
+
+	outputs := ClusterOutputList{}
+
+	// Build the rewrite_tag fragment the same way
+	// generateRewriteTagConfig does: render a synthetic ClusterFilterList as
+	// YAML and strip its "filters:" header before merging it in.
+	rewriteTagFilters := ClusterFilterList{
+		Items: []ClusterFilter{
+			{
+				Spec: FilterSpec{
+					Match: "kube.*",
+					FilterItems: []FilterItem{
+						{RewriteTag: &filter.RewriteTag{
+							Rules: []string{"$kubernetes['namespace_name'] ^(foobar)$ abc123.$TAG false"},
+						}},
+					},
+				},
+			},
+		},
+	}
+	rendered, err := rewriteTagFilters.LoadAsYaml(sl, 1)
+	g.Expect(err).NotTo(HaveOccurred())
+	rtc := strings.TrimPrefix(rendered, fmt.Sprintf("%sfilters:\n", utils.YamlIndent(1)))
+	g.Expect(rtc).NotTo(ContainSubstring("filters:"))
+
+	config, err := cfg.RenderMainConfigInYaml(sl, inputs, filters, outputs, nil, nil, []string{rtc})
+	g.Expect(err).NotTo(HaveOccurred())
+
+	g.Expect(strings.Count(config, "filters:\n")).To(Equal(1))
+
+	var parsed map[string]interface{}
+	g.Expect(yaml.Unmarshal([]byte(config), &parsed)).To(Succeed())
+
+	pipeline, ok := parsed["pipeline"].(map[string]interface{})
+	g.Expect(ok).To(BeTrue())
+	filterEntries, ok := pipeline["filters"].([]interface{})
+	g.Expect(ok).To(BeTrue())
+	g.Expect(filterEntries).To(HaveLen(2))
 }
