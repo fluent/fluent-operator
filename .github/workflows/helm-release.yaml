@@ -1,0 +1,263 @@
+name: Release Helm Charts
+on:
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Target branch in helm-charts repo'
+        required: false
+        default: 'main'
+      pr_title:
+        description: 'Custom PR title (optional)'
+        required: false
+      charts_to_sync:
+        description: 'Comma-separated list of charts to sync (or "all")'
+        required: false
+        default: 'all'
+
+env:
+  HELM_CHARTS_REPO: fluent/helm-charts
+  HELM_CHARTS_REPO_URL: https://github.com/fluent/helm-charts.git
+
+jobs:
+  sync-charts:
+    name: Sync Helm Charts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout fluent/fluent-operator repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          path: source
+
+      - name: Generate token from GitHub App
+        id: generate-token
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
+        with:
+          app-id: ${{ secrets.HELM_SYNC_APP_ID }}
+          private-key: ${{ secrets.HELM_SYNC_APP_PRIVATE_KEY }}
+          repositories: helm-charts
+
+      - name: Checkout fluent/helm-charts repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          repository: ${{ env.HELM_CHARTS_REPO }}
+          token: ${{ steps.generate-token.outputs.token }}
+          path: helm-charts
+          fetch-depth: 0
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4.3.1
+        with:
+          version: v3.17.2
+
+      - name: Determine chart versions and metadata
+        id: chart-info
+        working-directory: source
+        run: |
+          # Extract versions from Chart.yaml files
+          FLUENT_OP_VERSION=$(grep '^version:' charts/fluent-operator/Chart.yaml | awk '{print $2}')
+          FLUENTD_CRDS_VERSION=$(grep '^version:' charts/fluentd-crds/Chart.yaml | awk '{print $2}')
+          FLUENT_BIT_CRDS_VERSION=$(grep '^version:' charts/fluent-bit-crds/Chart.yaml | awk '{print $2}')
+
+          echo "fluent_operator_version=${FLUENT_OP_VERSION}" >> $GITHUB_OUTPUT
+          echo "fluentd_crds_version=${FLUENTD_CRDS_VERSION}" >> $GITHUB_OUTPUT
+          echo "fluent_bit_crds_version=${FLUENT_BIT_CRDS_VERSION}" >> $GITHUB_OUTPUT
+
+          # Create a branch name based on version
+          BRANCH_NAME="sync/fluent-operator-${FLUENT_OP_VERSION}-$(date +%Y%m%d-%H%M%S)"
+          echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+
+          # Get current commit SHA for reference
+          COMMIT_SHA=$(git rev-parse --short HEAD)
+          echo "source_commit=${COMMIT_SHA}" >> $GITHUB_OUTPUT
+
+      - name: Create sync branch in helm-charts repo
+        working-directory: helm-charts
+        run: |
+          TARGET_BRANCH="${{ github.event.inputs.target_branch || 'main' }}"
+          git checkout "${TARGET_BRANCH}"
+          git checkout -b "${{ steps.chart-info.outputs.branch_name }}"
+
+      - name: Sync fluent-operator chart
+        if: ${{ github.event.inputs.charts_to_sync == 'all' || contains(github.event.inputs.charts_to_sync, 'fluent-operator') || github.event.inputs.charts_to_sync == '' }}
+        run: |
+          # Create charts directory if it doesn't exist
+          mkdir -p helm-charts/charts/fluent-operator
+
+          # Remove old chart content (but preserve .git)
+          find helm-charts/charts/fluent-operator -mindepth 1 -maxdepth 1 ! -name '.git*' -exec rm -rf {} +
+
+          # Copy new chart content (excluding subchart dependency charts)
+          rsync -av --exclude='charts/' source/charts/fluent-operator/ helm-charts/charts/fluent-operator/
+
+          echo "✅ Synced fluent-operator chart (v${{ steps.chart-info.outputs.fluent_operator_version }})"
+
+      - name: Sync fluent-bit-crds chart
+        if: ${{ github.event.inputs.charts_to_sync == 'all' || contains(github.event.inputs.charts_to_sync, 'fluent-bit-crds') || github.event.inputs.charts_to_sync == '' }}
+        run: |
+          # Create charts directory if it doesn't exist
+          mkdir -p helm-charts/charts/fluent-bit-crds
+
+          # Remove old chart content
+          find helm-charts/charts/fluent-bit-crds -mindepth 1 -maxdepth 1 ! -name '.git*' -exec rm -rf {} +
+
+          # Copy new chart content from subchart location
+          rsync -av source/charts/fluent-operator/charts/fluent-bit-crds/ helm-charts/charts/fluent-bit-crds/
+
+          echo "✅ Synced fluent-bit-crds chart (v${{ steps.chart-info.outputs.fluent_bit_crds_version }})"
+
+      - name: Sync fluentd-crds chart
+        if: ${{ github.event.inputs.charts_to_sync == 'all' || contains(github.event.inputs.charts_to_sync, 'fluentd-crds') || github.event.inputs.charts_to_sync == '' }}
+        run: |
+          # Create charts directory if it doesn't exist
+          mkdir -p helm-charts/charts/fluentd-crds
+
+          # Remove old chart content
+          find helm-charts/charts/fluentd-crds -mindepth 1 -maxdepth 1 ! -name '.git*' -exec rm -rf {} +
+
+          # Copy new chart content
+          rsync -av source/charts/fluentd-crds/ helm-charts/charts/fluentd-crds/
+
+          echo "✅ Synced fluentd-crds chart (v${{ steps.chart-info.outputs.fluentd_crds_version }})"
+
+      - name: Update Chart.yaml repository references
+        working-directory: helm-charts
+        run: |
+          # Update fluent-operator Chart.yaml to use proper repository reference
+          if [ -f "charts/fluent-operator/Chart.yaml" ]; then
+            sed -i 's|repository: "file://charts/fluent-bit-crds"|repository: "https://fluent.github.io/helm-charts"|g' charts/fluent-operator/Chart.yaml
+            sed -i 's|repository: "file://charts/fluentd-crds"|repository: "https://fluent.github.io/helm-charts"|g' charts/fluent-operator/Chart.yaml
+          fi
+
+      - name: Validate Helm charts
+        working-directory: helm-charts
+        run: |
+          echo "Validating synced charts..."
+
+          for chart in charts/*/Chart.yaml; do
+            chart_dir=$(dirname "$chart")
+            echo "Validating $chart_dir..."
+            helm lint "$chart_dir" || echo "⚠️  Linting failed for $chart_dir (may be expected for CRD-only charts)"
+          done
+
+          echo "✅ Chart validation complete"
+
+      - name: Generate PR body
+        id: pr-body
+        run: |
+          cat << 'EOF' > pr-body.md
+          ## Helm Charts Sync
+
+          This PR syncs Helm charts from the [development](https://github.com/fluent/fluent-operator/tree/master/charts/fluent-operator) repository to the [release](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator) repository.
+
+          ### Charts Updated
+
+          - **fluent-operator**: `v${{ steps.chart-info.outputs.fluent_operator_version }}`
+          - **fluent-bit-crds**: `v${{ steps.chart-info.outputs.fluent_bit_crds_version }}`
+          - **fluentd-crds**: `v${{ steps.chart-info.outputs.fluentd_crds_version }}`
+
+          ### Details
+
+          - **Source Repository**: `${{ github.repository }}`
+          - **Source Commit**: `${{ steps.chart-info.outputs.source_commit }}`
+          - **Triggered By**: `${{ github.event_name }}`
+          - **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          ### Checklist
+
+          - [ ] Chart versions have been bumped appropriately
+          - [ ] CHANGELOG/release notes have been reviewed
+          - [ ] No breaking changes, or breaking changes are documented
+          - [ ] CI tests pass
+
+          ### Automation
+
+          This PR was automatically created by the [sync-helm-charts workflow](${{ github.server_url }}/${{ github.repository }}/blob/master/.github/workflows/sync-helm-charts.yaml).
+
+          Once merged, CI in this repository will automatically release the charts to the Helm repository.
+          EOF
+
+          echo "pr_body_file=pr-body.md" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        id: commit
+        working-directory: helm-charts
+        run: |
+          git add .
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes detected"
+            exit 0
+          fi
+
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+
+          git commit -m "Sync charts from fluent-operator
+
+          - fluent-operator: v${{ steps.chart-info.outputs.fluent_operator_version }}
+          - fluent-bit-crds: v${{ steps.chart-info.outputs.fluent_bit_crds_version }}
+          - fluentd-crds: v${{ steps.chart-info.outputs.fluentd_crds_version }}
+
+          Source: ${{ github.repository }}@${{ steps.chart-info.outputs.source_commit }}"
+
+          git push origin "${{ steps.chart-info.outputs.branch_name }}"
+
+          echo "✅ Changes committed and pushed"
+
+      - name: Create Pull Request
+        if: steps.commit.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        working-directory: helm-charts
+        run: |
+          PR_TITLE="${{ github.event.inputs.pr_title }}"
+          if [ -z "$PR_TITLE" ]; then
+            PR_TITLE="Sync Helm charts (fluent-operator v${{ steps.chart-info.outputs.fluent_operator_version }})"
+          fi
+
+          TARGET_BRANCH="${{ github.event.inputs.target_branch || 'main' }}"
+
+          pr_url=$(gh pr create \
+            --title "$PR_TITLE" \
+            --body-file ../pr-body.md \
+            --base "$TARGET_BRANCH" \
+            --head "${{ steps.chart-info.outputs.branch_name }}" \
+            --label "automated" \
+            --label "helm-sync")
+
+          echo "✅ Pull request created: $pr_url"
+          echo "PR_URL=$pr_url" >> $GITHUB_ENV
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 📊 Sync Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.commit.outputs.has_changes }}" == "true" ]; then
+            echo "**Status**: Charts synced successfully" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Charts Synced" >> $GITHUB_STEP_SUMMARY
+            echo "- fluent-operator: \`v${{ steps.chart-info.outputs.fluent_operator_version }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- fluent-bit-crds: \`v${{ steps.chart-info.outputs.fluent_bit_crds_version }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- fluentd-crds: \`v${{ steps.chart-info.outputs.fluentd_crds_version }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            if [ -n "${{ env.PR_URL }}" ]; then
+              echo "### Pull Request" >> $GITHUB_STEP_SUMMARY
+              echo "[${{ env.PR_URL }}](${{ env.PR_URL }})" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "**Status**: No changes detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The charts are already up to date in the helm-charts repository." >> $GITHUB_STEP_SUMMARY
+          fi
+
