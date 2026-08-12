@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
@@ -30,6 +31,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+	"sigs.k8s.io/controller-runtime/pkg/handler"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2"
 	"github.com/fluent/fluent-operator/v3/pkg/operator"
@@ -42,6 +45,32 @@ type CollectorReconciler struct {
 	Scheme *runtime.Scheme
 }
 
+// collectorSecretRequeueInterval is how long to wait before re-checking for the
+// configuration Secret of a Collector. A Secret watch normally wakes the
+// controller up as soon as the configuration is rendered, this is only a
+// safety net against missed events.
+const collectorSecretRequeueInterval = 30 * time.Second
+
+// collectorsForSecret maps a Secret to the Collectors consuming it, so that the
+// configuration rendered by the FluentBitConfig controller is picked up
+// immediately.
+func (r *CollectorReconciler) collectorsForSecret(ctx context.Context, obj client.Object) []reconcile.Request {
+	var collectors fluentbitv1alpha2.CollectorList
+	if err := r.List(ctx, &collectors, client.InNamespace(obj.GetNamespace())); err != nil {
+		r.Log.Error(err, "failed to list collectors for secret", "secret", client.ObjectKeyFromObject(obj))
+		return nil
+	}
+
+	reqs := make([]reconcile.Request, 0, len(collectors.Items))
+	for _, co := range collectors.Items {
+		if co.Spec.FluentBitConfigName != obj.GetName() {
+			continue
+		}
+		reqs = append(reqs, reconcile.Request{NamespacedName: client.ObjectKeyFromObject(&co)})
+	}
+	return reqs
+}
+
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=collectors,verbs=get;list;watch;update
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=collectors/finalizers,verbs=update
 // +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;watch;create;patch;delete
@@ -50,6 +79,7 @@ type CollectorReconciler struct {
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles,verbs=create;get;list;watch;patch
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterrolebindings,verbs=create;get;list;watch;patch
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get
+// +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -61,7 +91,7 @@ type CollectorReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
 func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = r.Log.WithValues("collector", req.NamespacedName)
+	logger := r.Log.WithValues("collector", req.NamespacedName)
 
 	var co fluentbitv1alpha2.Collector
 	if err := r.Get(ctx, req.NamespacedName, &co); err != nil {
@@ -90,7 +120,16 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	objKey := client.ObjectKey{Namespace: co.Namespace, Name: co.Spec.FluentBitConfigName}
 	if err := r.Get(ctx, objKey, &sec); err != nil {
 		if errors.IsNotFound(err) {
-			return ctrl.Result{Requeue: true}, nil
+			// The FluentBitConfig controller renders the ClusterFluentBitConfig
+			// referenced by spec.fluentBitConfigName into this Secret. Until it shows
+			// up there is nothing to mount, so report why and try again later instead
+			// of failing silently.
+			logger.Info(
+				"Waiting for the Fluent Bit configuration secret to be created, "+
+					"check that spec.fluentBitConfigName refers to an existing ClusterFluentBitConfig",
+				"secret", objKey.Name, "namespace", objKey.Namespace,
+			)
+			return ctrl.Result{RequeueAfter: collectorSecretRequeueInterval}, nil
 		}
 		return ctrl.Result{}, err
 	}
@@ -286,5 +325,6 @@ func (r *CollectorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&corev1.ServiceAccount{}).
 		Owns(&appsv1.StatefulSet{}).
 		Owns(&corev1.Service{}).
+		Watches(&corev1.Secret{}, handler.EnqueueRequestsFromMapFunc(r.collectorsForSecret)).
 		Complete(r)
 }

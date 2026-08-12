@@ -169,6 +169,7 @@ func (r *FluentBitConfigReconciler) updateSecretIfNeeded(
 
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterfluentbitconfigs,verbs=list;watch
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=fluentbitconfigs,verbs=list;watch
+// +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=collectors,verbs=list;watch
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=clusterinputs;clusterfilters;clusteroutputs;clusterparsers;clustermultilineparsers,verbs=list;watch
 // +kubebuilder:rbac:groups=fluentbit.fluent.io,resources=filters;outputs;parsers;multilineparsers,verbs=list;watch
 // +kubebuilder:rbac:groups=core,resources=configmaps,verbs=get
@@ -190,63 +191,65 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	// we will repopulate namespaces that have a FluentBitConfig CR
 	storeNamespaces = make(map[string]bool)
 
-	var fbs fluentbitv1alpha2.FluentBitList
-	if err := r.List(ctx, &fbs); err != nil {
+	var cfgs fluentbitv1alpha2.ClusterFluentBitConfigList
+	if err := r.List(ctx, &cfgs); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
 		}
 		return ctrl.Result{}, err
 	}
 
-	for _, fb := range fbs.Items {
-		var cfgs fluentbitv1alpha2.ClusterFluentBitConfigList
-		if err := r.List(ctx, &cfgs); err != nil {
-			if errors.IsNotFound(err) {
-				return ctrl.Result{}, nil
-			}
-			return ctrl.Result{}, err
-		}
+	// Secrets rendered during this loop, keyed by "<namespace>/<name>". A
+	// ClusterFluentBitConfig referenced by a FluentBit always wins, so that
+	// adding a Collector can never change the configuration a DaemonSet is
+	// already using.
+	rendered := make(map[string]bool)
 
+	if err := r.reconcileFluentBits(ctx, cfgs, rendered); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	if err := r.reconcileCollectors(ctx, cfgs, rendered); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	return ctrl.Result{}, nil
+}
+
+// reconcileFluentBits renders the ClusterFluentBitConfigs referenced by the FluentBit
+// DaemonSets, including the namespace level (multi-tenant) plugins they select.
+func (r *FluentBitConfigReconciler) reconcileFluentBits(
+	ctx context.Context, cfgs fluentbitv1alpha2.ClusterFluentBitConfigList, rendered map[string]bool,
+) error {
+	var fbs fluentbitv1alpha2.FluentBitList
+	if err := r.List(ctx, &fbs); err != nil {
+		if errors.IsNotFound(err) {
+			return nil
+		}
+		return err
+	}
+
+	for _, fb := range fbs.Items {
 		for _, cfg := range cfgs.Items {
 			// List all inputs matching the label selector.
 			if cfg.Name != fb.Spec.FluentBitConfigName {
 				continue
 			}
 
-			var inputs fluentbitv1alpha2.ClusterInputList
-			if err := listClusterResources(ctx, r.Client, &cfg.Spec.InputSelector, &inputs); err != nil {
-				return ctrl.Result{}, err
-			}
-
-			var filters fluentbitv1alpha2.ClusterFilterList
-			if err := listClusterResources(ctx, r.Client, &cfg.Spec.FilterSelector, &filters); err != nil {
-				return ctrl.Result{}, err
-			}
-
-			var outputs fluentbitv1alpha2.ClusterOutputList
-			if err := listClusterResources(ctx, r.Client, &cfg.Spec.OutputSelector, &outputs); err != nil {
-				return ctrl.Result{}, err
-			}
-
-			var parsers fluentbitv1alpha2.ClusterParserList
-			if err := listClusterResources(ctx, r.Client, &cfg.Spec.ParserSelector, &parsers); err != nil {
-				return ctrl.Result{}, err
-			}
-
-			var multilineParsers fluentbitv1alpha2.ClusterMultilineParserList
-			if err := listClusterResources(ctx, r.Client, &cfg.Spec.MultilineParserSelector, &multilineParsers); err != nil {
-				return ctrl.Result{}, err
+			clusterPlugins, err := r.listClusterPlugins(ctx, &cfg)
+			if err != nil {
+				return err
 			}
 
 			// List all the namespace level resources if they exist and generate configs to mutate tags
 			nsFilterLists, nsOutputLists, nsParserLists,
 				nsClusterParserLists, nsMultilineParserLists, nsClusterMultilineParserLists,
 				rewriteTagConfigs, err := r.processNamespacedFluentBitCfgs(
-				ctx, fb, inputs, cfg.Spec.ConfigFileFormat,
+				ctx, fb, clusterPlugins.inputs, cfg.Spec.ConfigFileFormat,
 			)
 
 			if err != nil {
-				return ctrl.Result{}, err
+				return err
 			}
 
 			var ns string
@@ -255,55 +258,190 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			} else {
 				ns = os.Getenv("NAMESPACE")
 			}
-			cl := plugins.NewConfigMapLoader(r.Client, ns)
-			// load scripts for namespaced filters
-			nsScripts, err := cfg.RenderNamespacedLuaScript(cl, nsFilterLists)
-			if err != nil {
-				return ctrl.Result{}, err
-			}
-			// load scripts for cluster filters
-			scripts, err := cfg.RenderLuaScript(cl, filters, ns)
-			if err != nil {
-				return ctrl.Result{}, err
-			}
-			scripts = append(scripts, nsScripts...)
 
-			// Inject config data into Secret
-			sl := plugins.NewSecretLoader(r.Client, ns)
-			mainAppCfg, err := cfg.RenderMainConfigWithTargetFormat(
-				sl, inputs, filters, outputs, nsFilterLists, nsOutputLists, rewriteTagConfigs, cfg.Spec.ConfigFileFormat,
-			)
-			if err != nil {
-				return ctrl.Result{}, err
+			if err := r.renderAndStoreConfig(ctx, &cfg, ns, clusterPlugins, namespacedPlugins{
+				filters:                 nsFilterLists,
+				outputs:                 nsOutputLists,
+				parsers:                 nsParserLists,
+				clusterParsers:          nsClusterParserLists,
+				multilineParsers:        nsMultilineParserLists,
+				clusterMultilineParsers: nsClusterMultilineParserLists,
+				rewriteTagConfigs:       rewriteTagConfigs,
+			}); err != nil {
+				return err
 			}
-			parserCfg, err := cfg.RenderParserConfig(sl, parsers, nsParserLists, nsClusterParserLists)
-			if err != nil {
-				return ctrl.Result{}, err
-			}
-			multilineParserCfg, err := cfg.RenderMultilineParserConfig(
-				sl, multilineParsers, nsMultilineParserLists, nsClusterMultilineParserLists,
-			)
-			if err != nil {
-				return ctrl.Result{}, err
-			}
-
-			configFileName := "fluent-bit.conf"
-			if cfg.Spec.ConfigFileFormat != nil && *cfg.Spec.ConfigFileFormat == configFileFormatYaml {
-				configFileName = "fluent-bit.yaml"
-			}
-
-			if err := r.updateSecretIfNeeded(
-				ctx, cfg.Name, ns, configFileName, mainAppCfg, parserCfg, multilineParserCfg, scripts,
-				func(sec *corev1.Secret) error {
-					return ctrl.SetControllerReference(&cfg, sec, r.Scheme)
-				},
-			); err != nil {
-				return ctrl.Result{}, err
-			}
+			rendered[fmt.Sprintf("%s/%s", ns, cfg.Name)] = true
 		}
 	}
 
-	return ctrl.Result{}, nil
+	return nil
+}
+
+// reconcileCollectors renders the ClusterFluentBitConfigs referenced by the Collector
+// StatefulSets. The Collector controller blocks until a Secret named after
+// spec.fluentBitConfigName shows up in the Collector's own namespace, so without this
+// nothing is ever created for a Collector, see
+// https://github.com/fluent/fluent-operator/issues/1436.
+//
+// Collectors have no namespaced FluentBitConfig selector, hence only cluster scoped
+// plugins are rendered for them.
+func (r *FluentBitConfigReconciler) reconcileCollectors(
+	ctx context.Context, cfgs fluentbitv1alpha2.ClusterFluentBitConfigList, rendered map[string]bool,
+) error {
+	var collectors fluentbitv1alpha2.CollectorList
+	if err := r.List(ctx, &collectors); err != nil {
+		if errors.IsNotFound(err) {
+			return nil
+		}
+		return err
+	}
+
+	for _, co := range collectors.Items {
+		for _, cfg := range cfgs.Items {
+			if cfg.Name != co.Spec.FluentBitConfigName {
+				continue
+			}
+
+			// The Collector expects its configuration next to itself. An explicit
+			// spec.namespace on the ClusterFluentBitConfig still wins, to stay
+			// consistent with the FluentBit code path.
+			ns := co.Namespace
+			if cfg.Spec.Namespace != nil {
+				ns = fmt.Sprint(*cfg.Spec.Namespace)
+				if ns != co.Namespace {
+					r.Log.Info(
+						"ClusterFluentBitConfig pins its Secret to a namespace other than the Collector's, "+
+							"the Collector will keep waiting for its configuration",
+						"clusterfluentbitconfig", cfg.Name, "logging-control-plane", ns,
+						"collector", co.Name, "collector-namespace", co.Namespace,
+					)
+				}
+			}
+
+			if rendered[fmt.Sprintf("%s/%s", ns, cfg.Name)] {
+				r.Log.V(1).Info(
+					"Fluent Bit configuration already rendered in this reconcile, skipping",
+					"logging-control-plane", ns, "fluentbitconfig", cfg.Name, "collector", co.Name,
+				)
+				continue
+			}
+
+			clusterPlugins, err := r.listClusterPlugins(ctx, &cfg)
+			if err != nil {
+				return err
+			}
+
+			if err := r.renderAndStoreConfig(ctx, &cfg, ns, clusterPlugins, namespacedPlugins{}); err != nil {
+				return err
+			}
+			rendered[fmt.Sprintf("%s/%s", ns, cfg.Name)] = true
+		}
+	}
+
+	return nil
+}
+
+// clusterPlugins holds the cluster scoped plugins selected by a ClusterFluentBitConfig.
+type clusterPlugins struct {
+	inputs           fluentbitv1alpha2.ClusterInputList
+	filters          fluentbitv1alpha2.ClusterFilterList
+	outputs          fluentbitv1alpha2.ClusterOutputList
+	parsers          fluentbitv1alpha2.ClusterParserList
+	multilineParsers fluentbitv1alpha2.ClusterMultilineParserList
+}
+
+// namespacedPlugins holds the namespace level (multi-tenant) plugins that are merged
+// into the rendered configuration together with the cluster scoped ones. It is empty
+// for Collectors.
+type namespacedPlugins struct {
+	filters                 []fluentbitv1alpha2.FilterList
+	outputs                 []fluentbitv1alpha2.OutputList
+	parsers                 []fluentbitv1alpha2.ParserList
+	clusterParsers          []fluentbitv1alpha2.ClusterParserList
+	multilineParsers        []fluentbitv1alpha2.MultilineParserList
+	clusterMultilineParsers []fluentbitv1alpha2.ClusterMultilineParserList
+	rewriteTagConfigs       []string
+}
+
+// listClusterPlugins lists every cluster scoped plugin matching the label selectors of
+// the given ClusterFluentBitConfig.
+func (r *FluentBitConfigReconciler) listClusterPlugins(
+	ctx context.Context, cfg *fluentbitv1alpha2.ClusterFluentBitConfig,
+) (clusterPlugins, error) {
+	var cp clusterPlugins
+
+	if err := listClusterResources(ctx, r.Client, &cfg.Spec.InputSelector, &cp.inputs); err != nil {
+		return cp, err
+	}
+	if err := listClusterResources(ctx, r.Client, &cfg.Spec.FilterSelector, &cp.filters); err != nil {
+		return cp, err
+	}
+	if err := listClusterResources(ctx, r.Client, &cfg.Spec.OutputSelector, &cp.outputs); err != nil {
+		return cp, err
+	}
+	if err := listClusterResources(ctx, r.Client, &cfg.Spec.ParserSelector, &cp.parsers); err != nil {
+		return cp, err
+	}
+	if err := listClusterResources(
+		ctx, r.Client, &cfg.Spec.MultilineParserSelector, &cp.multilineParsers,
+	); err != nil {
+		return cp, err
+	}
+
+	return cp, nil
+}
+
+// renderAndStoreConfig renders the main, parser and multiline parser configurations
+// plus the Lua scripts, and stores them in a Secret named after the
+// ClusterFluentBitConfig in the given namespace.
+func (r *FluentBitConfigReconciler) renderAndStoreConfig(
+	ctx context.Context, cfg *fluentbitv1alpha2.ClusterFluentBitConfig, ns string,
+	cluster clusterPlugins, namespaced namespacedPlugins,
+) error {
+	cl := plugins.NewConfigMapLoader(r.Client, ns)
+	// load scripts for namespaced filters
+	nsScripts, err := cfg.RenderNamespacedLuaScript(cl, namespaced.filters)
+	if err != nil {
+		return err
+	}
+	// load scripts for cluster filters
+	scripts, err := cfg.RenderLuaScript(cl, cluster.filters, ns)
+	if err != nil {
+		return err
+	}
+	scripts = append(scripts, nsScripts...)
+
+	// Inject config data into Secret
+	sl := plugins.NewSecretLoader(r.Client, ns)
+	mainAppCfg, err := cfg.RenderMainConfigWithTargetFormat(
+		sl, cluster.inputs, cluster.filters, cluster.outputs, namespaced.filters, namespaced.outputs,
+		namespaced.rewriteTagConfigs, cfg.Spec.ConfigFileFormat,
+	)
+	if err != nil {
+		return err
+	}
+	parserCfg, err := cfg.RenderParserConfig(sl, cluster.parsers, namespaced.parsers, namespaced.clusterParsers)
+	if err != nil {
+		return err
+	}
+	multilineParserCfg, err := cfg.RenderMultilineParserConfig(
+		sl, cluster.multilineParsers, namespaced.multilineParsers, namespaced.clusterMultilineParsers,
+	)
+	if err != nil {
+		return err
+	}
+
+	configFileName := "fluent-bit.conf"
+	if cfg.Spec.ConfigFileFormat != nil && *cfg.Spec.ConfigFileFormat == configFileFormatYaml {
+		configFileName = "fluent-bit.yaml"
+	}
+
+	return r.updateSecretIfNeeded(
+		ctx, cfg.Name, ns, configFileName, mainAppCfg, parserCfg, multilineParserCfg, scripts,
+		func(sec *corev1.Secret) error {
+			return ctrl.SetControllerReference(cfg, sec, r.Scheme)
+		},
+	)
 }
 
 func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
@@ -556,6 +694,7 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&corev1.Secret{}).
 		Watches(&fluentbitv1alpha2.ClusterFluentBitConfig{}, &handler.EnqueueRequestForObject{}).
 		Watches(&fluentbitv1alpha2.FluentBitConfig{}, &handler.EnqueueRequestForObject{}).
+		Watches(&fluentbitv1alpha2.Collector{}, &handler.EnqueueRequestForObject{}).
 		Watches(&fluentbitv1alpha2.ClusterInput{}, &handler.EnqueueRequestForObject{}).
 		Watches(&fluentbitv1alpha2.ClusterFilter{}, &handler.EnqueueRequestForObject{}).
 		Watches(&fluentbitv1alpha2.ClusterOutput{}, &handler.EnqueueRequestForObject{}).
