@@ -112,7 +112,7 @@ func (r *FluentBitConfigReconciler) updateSecretIfNeeded(
 			return err
 		}
 	} else {
-		existingHash, ok := existingSecret.Annotations["fluent.io/config-hash"]
+		existingHash, ok := existingSecret.Annotations[fluentBitConfigHashAnnotation]
 		if !ok || existingHash != newConfigHash {
 			needsUpdate = true
 		}
@@ -124,7 +124,7 @@ func (r *FluentBitConfigReconciler) updateSecretIfNeeded(
 				if sec.Annotations == nil {
 					sec.Annotations = make(map[string]string)
 				}
-				sec.Annotations["fluent.io/config-hash"] = newConfigHash
+				sec.Annotations[fluentBitConfigHashAnnotation] = newConfigHash
 
 				sec.Data = map[string][]byte{
 					configFileName:           []byte(mainAppCfg),

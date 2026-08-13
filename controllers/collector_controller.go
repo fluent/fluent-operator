@@ -29,9 +29,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2"
@@ -50,6 +52,25 @@ type CollectorReconciler struct {
 // controller up as soon as the configuration is rendered, this is only a
 // safety net against missed events.
 const collectorSecretRequeueInterval = 30 * time.Second
+
+// fluentBitConfigHashAnnotation is stamped by FluentBitConfigReconciler onto
+// every config Secret it renders. It identifies a Secret as belonging to the
+// Fluent Bit config pipeline.
+const fluentBitConfigHashAnnotation = "fluent.io/config-hash"
+
+// isFluentBitConfigSecret reports whether a Secret was rendered by
+// FluentBitConfigReconciler, which stamps every config Secret it writes with the
+// fluent.io/config-hash annotation. Used to keep unrelated Secret events out of
+// the Collector watch: without it collectorsForSecret runs for every Secret in
+// the cluster, allocating a CollectorList each time only to discard it.
+//
+// A Secret written before that annotation existed is filtered out here, but
+// FluentBitConfigReconciler treats a missing annotation as a change and rewrites
+// the Secret, so the subsequent event carries the annotation and passes.
+func isFluentBitConfigSecret(obj client.Object) bool {
+	_, ok := obj.GetAnnotations()[fluentBitConfigHashAnnotation]
+	return ok
+}
 
 // collectorsForSecret maps a Secret to the Collectors consuming it, so that the
 // configuration rendered by the FluentBitConfig controller is picked up
@@ -325,6 +346,7 @@ func (r *CollectorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&corev1.ServiceAccount{}).
 		Owns(&appsv1.StatefulSet{}).
 		Owns(&corev1.Service{}).
-		Watches(&corev1.Secret{}, handler.EnqueueRequestsFromMapFunc(r.collectorsForSecret)).
+		Watches(&corev1.Secret{}, handler.EnqueueRequestsFromMapFunc(r.collectorsForSecret),
+			builder.WithPredicates(predicate.NewPredicateFuncs(isFluentBitConfigSecret))).
 		Complete(r)
 }

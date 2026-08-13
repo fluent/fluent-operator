@@ -340,3 +340,77 @@ func TestFluentBitNamespacedConfigStillRendered(t *testing.T) {
 		}
 	}
 }
+
+// TestIsFluentBitConfigSecret guards the predicate that filters the Collector's
+// Secret watch. Unrelated Secrets must be dropped before collectorsForSecret
+// runs, while Secrets rendered by FluentBitConfigReconciler must pass.
+func TestIsFluentBitConfigSecret(t *testing.T) {
+	tests := []struct {
+		name        string
+		annotations map[string]string
+		want        bool
+	}{
+		{
+			name:        "config secret rendered by the operator",
+			annotations: map[string]string{fluentBitConfigHashAnnotation: "abc123"},
+			want:        true,
+		},
+		{
+			name:        "unrelated secret with no annotations",
+			annotations: nil,
+			want:        false,
+		},
+		{
+			name:        "unrelated secret with other annotations",
+			annotations: map[string]string{"helm.sh/release": "foo"},
+			want:        false,
+		},
+		{
+			// A Secret written before the config-hash annotation existed is
+			// filtered out, but FluentBitConfigReconciler treats a missing
+			// annotation as a change and rewrites it, so the next event passes.
+			name:        "legacy config secret without the annotation",
+			annotations: nil,
+			want:        false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sec := &corev1.Secret{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:        testConfigName,
+					Namespace:   testCollectorNamespace,
+					Annotations: tt.annotations,
+				},
+			}
+			if got := isFluentBitConfigSecret(sec); got != tt.want {
+				t.Errorf("isFluentBitConfigSecret() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestConfigSecretCarriesHashAnnotation asserts the contract the predicate relies
+// on: every Secret rendered for a Collector is stamped with the annotation, so
+// the watch is never silently starved.
+func TestConfigSecretCarriesHashAnnotation(t *testing.T) {
+	s := newConfigTestScheme(t)
+	cl := fake.NewClientBuilder().WithScheme(s).WithObjects(newCollectorTestObjects()...).Build()
+	r := &FluentBitConfigReconciler{Client: cl, Log: logf.Log, Scheme: s}
+
+	if _, err := r.Reconcile(context.Background(), ctrl.Request{}); err != nil {
+		t.Fatalf("reconcile: %v", err)
+	}
+
+	var sec corev1.Secret
+	if err := cl.Get(context.Background(),
+		client.ObjectKey{Name: testConfigName, Namespace: testCollectorNamespace}, &sec); err != nil {
+		t.Fatalf("expected rendered secret: %v", err)
+	}
+
+	if !isFluentBitConfigSecret(&sec) {
+		t.Fatalf("rendered config secret lacks %s; the Collector Secret watch would ignore it",
+			fluentBitConfigHashAnnotation)
+	}
+}
