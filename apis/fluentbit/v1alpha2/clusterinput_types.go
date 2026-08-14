@@ -124,6 +124,13 @@ func (list ClusterInputList) Load(sl plugins.SecretLoader) (string, error) {
 				return nil
 			}
 
+			if err := validateNoNewlines(map[string]string{
+				"alias":     item.Spec.Alias,
+				"log_level": item.Spec.LogLevel,
+			}); err != nil {
+				return err
+			}
+
 			buf.WriteString("[Input]\n")
 			if p.Name() != "" {
 				fmt.Fprintf(&buf, "    Name    %s\n", p.Name())
@@ -138,7 +145,11 @@ func (list ClusterInputList) Load(sl plugins.SecretLoader) (string, error) {
 			if err != nil {
 				return err
 			}
-			buf.WriteString(kvs.String())
+			str, err := kvs.String()
+			if err != nil {
+				return err
+			}
+			buf.WriteString(str)
 			return nil
 		}
 
@@ -166,6 +177,13 @@ func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (str
 				return nil
 			}
 
+			if err := validateNoNewlines(map[string]string{
+				"alias":     item.Spec.Alias,
+				"log_level": item.Spec.LogLevel,
+			}); err != nil {
+				return err
+			}
+
 			if p.Name() != "" {
 				fmt.Fprintf(&buf, "%s- name: %s\n", utils.YamlIndent(depth+1), p.Name())
 			}
@@ -187,7 +205,11 @@ func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (str
 			if err != nil {
 				return err
 			}
-			buf.WriteString(kvs.YamlString(depth + 2))
+			str, err := kvs.YamlString(depth + 2)
+			if err != nil {
+				return err
+			}
+			buf.WriteString(str)
 			return nil
 		}
 

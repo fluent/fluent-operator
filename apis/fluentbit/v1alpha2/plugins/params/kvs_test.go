@@ -47,9 +47,52 @@ func TestKVs_YamlString(t *testing.T) {
 				values:  tt.fields.values,
 				Content: tt.fields.Content,
 			}
-			if got := kvs.YamlString(tt.args.depth); got != tt.want {
+			got, err := kvs.YamlString(tt.args.depth)
+			if err != nil {
+				t.Fatalf("YamlString() unexpected error: %v", err)
+			}
+			if got != tt.want {
 				t.Errorf("YamlString() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+// TestKVs_String_RejectsNewlineInjection reproduces GHSA-2j8x-46rv-qmpq for Fluent
+// Bit's classic renderer: a newline embedded in a value would let the value break
+// onto a new line and inject a top-level [OUTPUT] section. The classic format has
+// no escaping, so such values must be rejected.
+func TestKVs_String_RejectsNewlineInjection(t *testing.T) {
+	kvs := NewKVs()
+	kvs.Insert("Name", "http")
+	kvs.Insert("Host", "http://legit.com\n\n[OUTPUT]\n    Name    file\n    Path    /tmp/exfil")
+
+	if _, err := kvs.String(); err == nil {
+		t.Fatal("expected String() to reject a value containing a newline, got nil error")
+	}
+}
+
+func TestKVs_YamlString_RejectsNewlineInjection(t *testing.T) {
+	kvs := NewKVs()
+	kvs.Insert("Name", "http")
+	kvs.Insert("Host", "http://legit.com\ninjected: true")
+
+	if _, err := kvs.YamlString(1); err == nil {
+		t.Fatal("expected YamlString() to reject a value containing a newline, got nil error")
+	}
+}
+
+// TestKVs_String_AllowsMultilineContent ensures the raw Content passthrough (used
+// for CustomPlugin bodies, which are legitimately multi-line) is not rejected.
+func TestKVs_String_AllowsMultilineContent(t *testing.T) {
+	kvs := NewKVs()
+	kvs.Content = "    Name    cpu\n    Tag    my_cpu\n"
+
+	got, err := kvs.String()
+	if err != nil {
+		t.Fatalf("String() unexpected error for Content passthrough: %v", err)
+	}
+	if got != kvs.Content {
+		t.Errorf("String() = %q, want %q", got, kvs.Content)
 	}
 }

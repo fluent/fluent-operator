@@ -76,9 +76,19 @@ func (list ParserList) Load(sl plugins.SecretLoader) (string, error) {
 			if err != nil {
 				return err
 			}
-			buf.WriteString(kvs.String())
+			str, err := kvs.String()
+			if err != nil {
+				return err
+			}
+			buf.WriteString(str)
 
 			for _, decorder := range item.Spec.Decoders {
+				if err := validateNoNewlines(map[string]string{
+					"decode_field":    decorder.DecodeField,
+					"decode_field_as": decorder.DecodeFieldAs,
+				}); err != nil {
+					return err
+				}
 				if decorder.DecodeField != "" {
 					fmt.Fprintf(&buf, "    Decode_Field    %s\n", decorder.DecodeField)
 				}

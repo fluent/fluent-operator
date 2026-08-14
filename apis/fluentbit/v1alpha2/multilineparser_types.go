@@ -93,7 +93,11 @@ func load[T multilineParserInterface](items []T, sl plugins.SecretLoader) (strin
 			if err != nil {
 				return err
 			}
-			buf.WriteString(kvs.String())
+			str, err := kvs.String()
+			if err != nil {
+				return err
+			}
+			buf.WriteString(str)
 
 			return nil
 		}

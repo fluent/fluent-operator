@@ -31,6 +31,9 @@ func (c *CustomPlugin) Name() string {
 func (c *CustomPlugin) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 	if c.Config != "" {
+		if err := validateClassicConfig(c.Config); err != nil {
+			return nil, err
+		}
 		kvs.Content = indentation(c.Config)
 	} else if c.YamlConfig != nil {
 		yamlConfig, err := yaml.Marshal(c.YamlConfig)
@@ -55,6 +58,25 @@ func (c *CustomPlugin) MakeNamespaced(ns string) {
 			c.YamlConfig.Data["match_regex"] = utils.GenerateNamespacedMatchExpr(ns, matchRegex.(string))
 		}
 	}
+}
+
+// validateClassicConfig keeps a customPlugin config confined to the section the
+// operator renders it into. The body is indented but the classic parser ignores
+// leading whitespace, so a line opening a new [SECTION] or a Fluent Bit command
+// (@INCLUDE/@SET) could inject an arbitrary plugin into the shared config
+// (GHSA-2j8x-46rv-qmpq). A legitimate body holds only key-value properties, so
+// reject any line starting with '[' or '@'.
+func validateClassicConfig(config string) error {
+	for i, raw := range strings.Split(config, "\n") {
+		line := strings.TrimSpace(raw)
+		if strings.HasPrefix(line, "[") {
+			return fmt.Errorf("invalid customPlugin config: line %d %q opens a new config section; customPlugin config may only contain the key-value properties of the enclosing section", i+1, line)
+		}
+		if strings.HasPrefix(line, "@") {
+			return fmt.Errorf("invalid customPlugin config: line %d %q is a Fluent Bit command, which is not permitted in customPlugin config", i+1, line)
+		}
+	}
+	return nil
 }
 
 func indentation(str string) string {

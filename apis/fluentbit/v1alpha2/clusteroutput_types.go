@@ -152,6 +152,16 @@ func (list ClusterOutputList) Load(sl plugins.SecretLoader) (string, error) {
 				return nil
 			}
 
+			if err := validateNoNewlines(map[string]string{
+				"match":       item.Spec.Match,
+				"match_regex": item.Spec.MatchRegex,
+				"alias":       item.Spec.Alias,
+				"retry_limit": item.Spec.RetryLimit,
+				"log_level":   item.Spec.LogLevel,
+			}); err != nil {
+				return err
+			}
+
 			buf.WriteString("[Output]\n")
 			if p.Name() != "" {
 				fmt.Fprintf(&buf, "    Name    %s\n", p.Name())
@@ -175,7 +185,11 @@ func (list ClusterOutputList) Load(sl plugins.SecretLoader) (string, error) {
 			if err != nil {
 				return err
 			}
-			buf.WriteString(kvs.String())
+			str, err := kvs.String()
+			if err != nil {
+				return err
+			}
+			buf.WriteString(str)
 			return nil
 		}
 
@@ -200,6 +214,16 @@ func (list ClusterOutputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (st
 		merge := func(p plugins.Plugin) error {
 			if p == nil || reflect.ValueOf(p).IsNil() {
 				return nil
+			}
+
+			if err := validateNoNewlines(map[string]string{
+				"match":       item.Spec.Match,
+				"match_regex": item.Spec.MatchRegex,
+				"alias":       item.Spec.Alias,
+				"retry_limit": item.Spec.RetryLimit,
+				"log_level":   item.Spec.LogLevel,
+			}); err != nil {
+				return err
 			}
 
 			if p.Name() != "" {
@@ -232,7 +256,11 @@ func (list ClusterOutputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (st
 			if err != nil {
 				return err
 			}
-			buf.WriteString(kvs.YamlString(depth + 2))
+			str, err := kvs.YamlString(depth + 2)
+			if err != nil {
+				return err
+			}
+			buf.WriteString(str)
 			return nil
 		}
 

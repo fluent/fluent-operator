@@ -224,7 +224,7 @@ func (ps *PluginStore) processBody(buf *bytes.Buffer) {
 	sort.Strings(keys)
 
 	for _, k := range keys {
-		body += fmt.Sprintf("%s%s  %s\n", ps.PrefixWhitespaces, k, ps.Store[k])
+		body += fmt.Sprintf("%s%s  %s\n", ps.PrefixWhitespaces, k, escapeValue(ps.Store[k]))
 	}
 
 	buf.WriteString(body)
@@ -238,10 +238,39 @@ func (ps *PluginStore) processTail(buf *bytes.Buffer) {
 // decide to return the head directive with our without a filter - <match> or <match xx>
 func (ps *PluginStore) headFmtSprintf(value string) string {
 	if value != "" {
-		return fmt.Sprintf("%s<%s %s>\n", ps.PrefixWhitespaces, ps.Name, value)
+		return fmt.Sprintf("%s<%s %s>\n", ps.PrefixWhitespaces, ps.Name, escapeValue(value))
 	}
 	return fmt.Sprintf("%s<%s>\n", ps.PrefixWhitespaces, ps.Name)
 }
+
+// escapeValue quotes and escapes a dangerous tenant value so its content is
+// treated verbatim (GHSA-2j8x-46rv-qmpq); the '#' escape blocks '#{...}'
+// interpolation. Safe values are returned unchanged.
+func escapeValue(value string) string {
+	if !needsQuoting(value) {
+		return value
+	}
+	return `"` + valueEscaper.Replace(value) + `"`
+}
+
+// needsQuoting reports whether value could alter the config: a newline injects a
+// directive, and a leading '"' makes Fluentd parse it as a double-quoted literal
+// that evaluates '#{...}' as Ruby (RCE, no newline needed).
+func needsQuoting(value string) bool {
+	if strings.ContainsAny(value, "\r\n") {
+		return true
+	}
+	return strings.HasPrefix(strings.TrimLeft(value, " \t"), `"`)
+}
+
+var valueEscaper = strings.NewReplacer(
+	`\`, `\\`,
+	`"`, `\"`,
+	"\n", `\n`,
+	"\r", `\r`,
+	"\t", `\t`,
+	"#", `\#`,
+)
 
 // +kubebuilder:object:generate=false
 type PluginStoreByName []*PluginStore

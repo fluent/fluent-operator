@@ -286,7 +286,11 @@ func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
 	// The Service defines the global behaviour of the Fluent Bit engine.
 	if cfg.Spec.Service != nil {
 		buf.WriteString("service:\n")
-		buf.WriteString(cfg.Spec.Service.Params().YamlString(1))
+		serviceStr, err := cfg.Spec.Service.Params().YamlString(1)
+		if err != nil {
+			return "", fmt.Errorf("failed to load service: %w", err)
+		}
+		buf.WriteString(serviceStr)
 	}
 	buf.WriteString("pipeline:\n")
 	inputSections, err := inputs.LoadAsYaml(sl, 1)
@@ -393,7 +397,11 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(
 	// The Service defines the global behaviour of the Fluent Bit engine.
 	if cfg.Spec.Service != nil {
 		buf.WriteString("[Service]\n")
-		buf.WriteString(cfg.Spec.Service.Params().String())
+		serviceStr, err := cfg.Spec.Service.Params().String()
+		if err != nil {
+			return "", fmt.Errorf("failed to load service: %w", err)
+		}
+		buf.WriteString(serviceStr)
 	}
 
 	inputSections, err := inputs.Load(sl)
