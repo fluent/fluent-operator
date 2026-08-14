@@ -1,5 +1,47 @@
 # Change Log
 
+## [3.10.0](https://github.com/fluent/fluent-operator/compare/v3.9.0...v3.10.0) (2026-08-14)
+
+
+### Features
+
+* add raw format and rawLogKey support for Fluent Bit Kafka ([#2000](https://github.com/fluent/fluent-operator/issues/2000)) ([2d05c28](https://github.com/fluent/fluent-operator/commit/2d05c28428d1ddccb0ed4294465c21828a9a150c))
+* add storage.total_limit_size support to splunk output ([#2009](https://github.com/fluent/fluent-operator/issues/2009)) ([84d88ab](https://github.com/fluent/fluent-operator/commit/84d88abca4e8b209be339bfefed4aede1533af28))
+* adjust fluentbit `service` helm value to allow specifying all possible service fields ([25506ac](https://github.com/fluent/fluent-operator/commit/25506ac8e52a16844b191e237ebb955dd1d5584d))
+* **fluentbit:** add batch_size support to opentelemetry output plugin ([#2015](https://github.com/fluent/fluent-operator/issues/2015)) ([136eb72](https://github.com/fluent/fluent-operator/commit/136eb7265d5f2c969c5fc48ddde7aef4b14d0d15))
+* **fluentbit:** support networking settings for s3 output ([7c51546](https://github.com/fluent/fluent-operator/commit/7c515469e9a48a64aad249d6a9a3ab3a78b0c5b9))
+
+
+### Bug Fixes
+
+* **collector:** render ClusterFluentBitConfig referenced by Collectors ([#2028](https://github.com/fluent/fluent-operator/issues/2028)) ([807e216](https://github.com/fluent/fluent-operator/commit/807e2160659a786408c57dcfd77d3cfbbe560eb5))
+* correct the fluent-operator deployment to match the setup.yaml with helm template ([#2025](https://github.com/fluent/fluent-operator/issues/2025)) ([2a40511](https://github.com/fluent/fluent-operator/commit/2a405114f9d1ff613c5b7f3d30abeefe2c4e3243))
+* **fluentbit:** preserve immutable DaemonSet selector on FluentBit label changes ([#2017](https://github.com/fluent/fluent-operator/issues/2017)) ([381e932](https://github.com/fluent/fluent-operator/commit/381e932e9302d6f26f643c116f984578d8d304be))
+* **fluentbit:** render namespaced rewrite_tag filter as YAML when configFileFormat=yaml ([#2019](https://github.com/fluent/fluent-operator/issues/2019)) ([9d8baa5](https://github.com/fluent/fluent-operator/commit/9d8baa55fbeb0a795572dc57bc2cfd07bb225e22))
+* **fluentd:** reject customPlugin config that breaks out of its routing block (GHSA-9jg5-g9mc-7m7c) ([7ec179f](https://github.com/fluent/fluent-operator/commit/7ec179f10a39b2a4dd5a5e066913f539414f6a0e))
+* format go files and regenerate manifests with networking description ([d424f6c](https://github.com/fluent/fluent-operator/commit/d424f6ca9fb276959acf79d287853cc9915fbbbf))
+* neutralize newlines in tenant CR values to prevent Fluentd/Fluent Bit config injection (GHSA-2j8x-46rv-qmpq) ([e352335](https://github.com/fluent/fluent-operator/commit/e352335bddbde61dcedc5d939211387fdb274d35))
+
+
+### Dependencies
+
+* **deps:** bump fluent-bit to 5.0.7 ([#1991](https://github.com/fluent/fluent-operator/issues/1991)) ([afcefde](https://github.com/fluent/fluent-operator/commit/afcefde5f19e40fcf8813ebd836c169c4055425b))
+* **deps:** bump fluent-bit to 5.0.8 ([#2003](https://github.com/fluent/fluent-operator/issues/2003)) ([a4fe5ae](https://github.com/fluent/fluent-operator/commit/a4fe5aebc3cbae4d79581996d4e581b9c784db3b))
+* **deps:** bump fluent-bit to 5.0.9 ([#2011](https://github.com/fluent/fluent-operator/issues/2011)) ([14398c2](https://github.com/fluent/fluent-operator/commit/14398c2b5b89667265cd3d32db521d2b4b2a5c52))
+* **deps:** bump fluent-bit to 5.1.0 ([#2027](https://github.com/fluent/fluent-operator/issues/2027)) ([541175e](https://github.com/fluent/fluent-operator/commit/541175e439e6aacbaba686db604528e40e402c4f))
+* **deps:** Bump github.com/go-logr/logr from 1.4.3 to 1.4.4 ([#2014](https://github.com/fluent/fluent-operator/issues/2014)) ([45869a4](https://github.com/fluent/fluent-operator/commit/45869a46ed351e65d9e498c7e9543d1887c89c76))
+* **deps:** Bump github.com/google/cel-go from 0.26.0 to 0.29.0 ([#2018](https://github.com/fluent/fluent-operator/issues/2018)) ([e0f6b3e](https://github.com/fluent/fluent-operator/commit/e0f6b3ebf8ffc426b07ac6a30d45056fea55e844))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.29.0 to 2.30.0 ([#1994](https://github.com/fluent/fluent-operator/issues/1994)) ([f382e73](https://github.com/fluent/fluent-operator/commit/f382e7373667e7043f407c8570210670e50ae096))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.30.0 to 2.31.0 ([0c2b650](https://github.com/fluent/fluent-operator/commit/0c2b650304eda28ebd3bfc4a60b3e1487087de07))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.31.0 to 2.32.0 ([#2001](https://github.com/fluent/fluent-operator/issues/2001)) ([4659215](https://github.com/fluent/fluent-operator/commit/46592153b96b829b3c2c4fa1c986c70fb7346b4b))
+* **deps:** Bump github.com/onsi/gomega from 1.41.0 to 1.42.0 ([d1db129](https://github.com/fluent/fluent-operator/commit/d1db12917d28306dd77e1f59940148307a060b56))
+* **deps:** Bump github.com/onsi/gomega from 1.42.0 to 1.42.1 ([#2002](https://github.com/fluent/fluent-operator/issues/2002)) ([8706734](https://github.com/fluent/fluent-operator/commit/87067340d27763c2441d9b90fec3a93a06293c3c))
+* **deps:** Bump golang.org/x/sync from 0.20.0 to 0.21.0 ([#1993](https://github.com/fluent/fluent-operator/issues/1993)) ([71933b9](https://github.com/fluent/fluent-operator/commit/71933b99cb79267c258164514ba7e989ce1d59ff))
+* **deps:** Bump golang.org/x/sync from 0.21.0 to 0.22.0 ([#2012](https://github.com/fluent/fluent-operator/issues/2012)) ([2903381](https://github.com/fluent/fluent-operator/commit/2903381d7829852e84128fbbb16eec89a18bb2ed))
+* **deps:** Bump google.golang.org/grpc from 1.79.3 to 1.82.1 ([#2016](https://github.com/fluent/fluent-operator/issues/2016)) ([77dcbbd](https://github.com/fluent/fluent-operator/commit/77dcbbd406bd4fe8e6868659f9fb5ae70bb98115))
+* **deps:** Bump the k8s-io group across 1 directory with 3 updates ([5238da7](https://github.com/fluent/fluent-operator/commit/5238da7c6f313fc527b658c587c4871c3cd0b26f))
+* **deps:** Bump the k8s-io group across 1 directory with 3 updates ([#2013](https://github.com/fluent/fluent-operator/issues/2013)) ([a1ab717](https://github.com/fluent/fluent-operator/commit/a1ab71707ac5a74d14e59e3fe0fbceb6f7333080))
+
 ## [3.9.0](https://github.com/fluent/fluent-operator/compare/v3.8.0...v3.9.0) (2026-06-09)
 
 
