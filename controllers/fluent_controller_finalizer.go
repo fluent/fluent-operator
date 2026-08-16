@@ -76,7 +76,12 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 	if err := r.Delete(ctx, &sa); err != nil && !errors.IsNotFound(err) {
 		return err
 	}
-	// TODO: clusterrole, clusterrolebinding
+
+	if err := operator.DeletePerInstanceBinding(
+		ctx, r.Client, r.Namespaced, fd.Name, fd.Namespace, "fluentd",
+	); err != nil {
+		return err
+	}
 
 	sts := appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
@@ -155,6 +160,38 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 		return func() error {
 			o.RoleRef = expected.RoleRef
 			o.Subjects = expected.Subjects
+			return nil
+		}
+	case *rbacv1.Role:
+		// The Role is shared across all Fluentd instances in the namespace, so
+		// no per-instance controller reference is set on it.
+		expected, _, _ := operator.MakeScopedRBACObjects(
+			fd.Name,
+			fd.Namespace,
+			"fluentd",
+			fd.Spec.RBACRules,
+			fd.Spec.ServiceAccountAnnotations,
+		)
+
+		return func() error {
+			o.Rules = expected.Rules
+			return nil
+		}
+	case *rbacv1.RoleBinding:
+		_, _, expected := operator.MakeScopedRBACObjects(
+			fd.Name,
+			fd.Namespace,
+			"fluentd",
+			fd.Spec.RBACRules,
+			fd.Spec.ServiceAccountAnnotations,
+		)
+
+		return func() error {
+			o.RoleRef = expected.RoleRef
+			o.Subjects = expected.Subjects
+			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
+				return err
+			}
 			return nil
 		}
 	case *appsv1.StatefulSet:
