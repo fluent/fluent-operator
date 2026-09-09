@@ -125,8 +125,8 @@ func plugins(docsLocations []DocumentsLocation) {
 			}
 
 			src_name := strings.TrimPrefix(src, dl.path)
-			if strings.HasSuffix(src_name, "_types.go") {
-				src_name = strings.TrimSuffix(src_name, "_types.go")
+			if before, ok := strings.CutSuffix(src_name, "_types.go"); ok {
+				src_name = before
 			} else {
 				src_name = strings.TrimSuffix(src_name, ".go")
 			}
@@ -171,7 +171,7 @@ func crds(docsLocations []DocumentsLocation) {
 		}
 
 		sort.Slice(types, func(i, j int) bool {
-			return interface{}(types[i]).(KubeTypes)[0].Name < interface{}(types[j]).(KubeTypes)[0].Name
+			return any(types[i]).(KubeTypes)[0].Name < any(types[j]).(KubeTypes)[0].Name
 		})
 
 		buffer = printTOC(types)
@@ -313,8 +313,8 @@ func fmtRawDoc(rawDoc string) string {
 
 func tryKubernetesLink(typeName string) (string, bool) {
 	for prefix, link_template := range kubernetes_link_templates {
-		if strings.HasPrefix(typeName, prefix) {
-			typeName = strings.ToLower(strings.TrimPrefix(typeName, prefix))
+		if after, ok := strings.CutPrefix(typeName, prefix); ok {
+			typeName = strings.ToLower(after)
 			return fmt.Sprintf(link_template, typeName), true
 		}
 	}

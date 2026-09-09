@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"maps"
 
 	rbacv1 "k8s.io/api/rbac/v1"
 
@@ -182,12 +183,8 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 				// new map rather than writing into o.Spec.Template.Labels in place, since
 				// MakeDaemonSet reuses fb.Spec.Labels itself as that map.
 				templateLabels := make(map[string]string, len(o.Spec.Template.Labels)+len(existingSelector.MatchLabels))
-				for k, v := range o.Spec.Template.Labels {
-					templateLabels[k] = v
-				}
-				for k, v := range existingSelector.MatchLabels {
-					templateLabels[k] = v
-				}
+				maps.Copy(templateLabels, o.Spec.Template.Labels)
+				maps.Copy(templateLabels, existingSelector.MatchLabels)
 				o.Spec.Template.Labels = templateLabels
 			}
 

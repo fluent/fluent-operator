@@ -22,7 +22,7 @@ type FilterCommon struct {
 // Filter defines all available filter plugins and their parameters.
 type Filter struct {
 	// The common fields
-	FilterCommon `json:",inline,omitempty"`
+	FilterCommon `json:",inline"`
 
 	// The filter_grep filter plugin
 	Grep *Grep `json:"grep,omitempty"`

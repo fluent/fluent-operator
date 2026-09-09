@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	"github.com/onsi/gomega"
 )
 
@@ -23,7 +22,7 @@ func TestOutput_Kinesis_Params(t *testing.T) {
 		RoleARN:           "arn:aws:iam:test",
 		Endpoint:          "test_endpoint",
 		STSEndpoint:       "test_sts_endpoint",
-		AutoRetryRequests: utils.ToPtr(true),
+		AutoRetryRequests: new(true),
 		ExternalID:        "test_external_id",
 	}
 

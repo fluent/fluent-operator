@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/output"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -152,10 +151,10 @@ func TestClusterOutputList_Load(t *testing.T) {
 			Match: "logs.foo.bar",
 			Syslog: &output.Syslog{
 				Host: "example.com",
-				Port: utils.ToPtr[int32](3300),
+				Port: new(int32(3300)),
 				Mode: "tls",
 				TLS: &plugins.TLS{
-					Verify: utils.ToPtr(true),
+					Verify: new(true),
 				},
 				SyslogMessageKey:  "log",
 				SyslogHostnameKey: "do_app_name",
@@ -185,14 +184,14 @@ func TestClusterOutputList_Load(t *testing.T) {
 			Match: "logs.foo.bar",
 			HTTP: &output.HTTP{
 				Host:           "https://example2.com",
-				Port:           utils.ToPtr[int32](433),
+				Port:           new(int32(433)),
 				Uri:            "/logs",
 				Headers:        headers,
 				Format:         "json_lines",
 				JsonDateKey:    "timestamp",
 				JsonDateFormat: "iso8601",
 				TLS: &plugins.TLS{
-					Verify: utils.ToPtr(true),
+					Verify: new(true),
 				},
 			},
 		},
@@ -212,7 +211,7 @@ func TestClusterOutputList_Load(t *testing.T) {
 			Match: "*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "https://example2.com",
-				Port:  utils.ToPtr[int32](9200),
+				Port:  new(int32(9200)),
 				Index: "my_index",
 				Type:  "my_type",
 			},
@@ -237,15 +236,15 @@ func TestClusterOutputList_Load(t *testing.T) {
 			Match: "logs.foo.bar",
 			PrometheusRemoteWrite: &output.PrometheusRemoteWrite{
 				Host:               "https://example3.com",
-				Port:               utils.ToPtr[int32](433),
+				Port:               new(int32(433)),
 				URI:                "/prometheus/v1/write?prometheus_server=YOUR_DATA_SOURCE_NAME",
 				Proxy:              "https://proxy:533",
 				Headers:            headers,
-				LogResponsePayload: utils.ToPtr(true),
+				LogResponsePayload: new(true),
 				AddLabels:          addLabels,
-				Workers:            utils.ToPtr[int32](3),
+				Workers:            new(int32(3)),
 				TLS: &plugins.TLS{
-					Verify: utils.ToPtr(true),
+					Verify: new(true),
 				},
 			},
 		},
@@ -292,10 +291,10 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			Syslog: &output.Syslog{
 				Host: "example.com",
-				Port: utils.ToPtr[int32](3300),
+				Port: new(int32(3300)),
 				Mode: "tls",
 				TLS: &plugins.TLS{
-					Verify: utils.ToPtr(true),
+					Verify: new(true),
 				},
 				SyslogMessageKey:  "log",
 				SyslogHostnameKey: "do_app_name",
@@ -325,14 +324,14 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			HTTP: &output.HTTP{
 				Host:           "https://example2.com",
-				Port:           utils.ToPtr[int32](433),
+				Port:           new(int32(433)),
 				Uri:            "/logs",
 				Headers:        headers,
 				Format:         "json_lines",
 				JsonDateKey:    "timestamp",
 				JsonDateFormat: "iso8601",
 				TLS: &plugins.TLS{
-					Verify: utils.ToPtr(true),
+					Verify: new(true),
 				},
 			},
 		},
@@ -352,7 +351,7 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 			Match: "*",
 			OpenSearch: &output.OpenSearch{
 				Host:  "https://example2.com",
-				Port:  utils.ToPtr[int32](9200),
+				Port:  new(int32(9200)),
 				Index: "my_index",
 				Type:  "my_type",
 			},
@@ -377,15 +376,15 @@ func TestClusterOutputList_Load_As_Yaml(t *testing.T) {
 			Match: "logs.foo.bar",
 			PrometheusRemoteWrite: &output.PrometheusRemoteWrite{
 				Host:               "https://example3.com",
-				Port:               utils.ToPtr[int32](433),
+				Port:               new(int32(433)),
 				URI:                "/prometheus/v1/write?prometheus_server=YOUR_DATA_SOURCE_NAME",
 				Proxy:              "https://proxy:533",
 				Headers:            headers,
-				LogResponsePayload: utils.ToPtr(true),
+				LogResponsePayload: new(true),
 				AddLabels:          addLabels,
-				Workers:            utils.ToPtr[int32](3),
+				Workers:            new(int32(3)),
 				TLS: &plugins.TLS{
-					Verify: utils.ToPtr(true),
+					Verify: new(true),
 				},
 			},
 		},
@@ -434,7 +433,7 @@ func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
 			Match: "kube.*",
 			Loki: &output.Loki{
 				Host: "loki-gateway",
-				Port: utils.ToPtr[int32](3100),
+				Port: new(int32(3100)),
 				Labels: []string{
 					"job=fluentbit",
 					"environment=production",
@@ -487,7 +486,7 @@ func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
 			Match: "kube.*",
 			Loki: &output.Loki{
 				Host: "loki-gateway",
-				Port: utils.ToPtr[int32](3100),
+				Port: new(int32(3100)),
 				Labels: []string{
 					"job=fluentbit",
 					"environment=production",
@@ -533,7 +532,7 @@ func TestForwardOutput_RetainMetadataInForwardMode(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{Name: "fwd-nil"},
 		Spec: OutputSpec{
 			Match:   "kube.*",
-			Forward: &output.Forward{Host: "fluentd.svc", Port: utils.ToPtr[int32](24224)},
+			Forward: &output.Forward{Host: "fluentd.svc", Port: new(int32(24224))},
 		},
 	}}}
 	resultNil, err := nilOut.Load(sl)
@@ -547,8 +546,8 @@ func TestForwardOutput_RetainMetadataInForwardMode(t *testing.T) {
 			Match: "kube.*",
 			Forward: &output.Forward{
 				Host:                        "fluentd.svc",
-				Port:                        utils.ToPtr[int32](24224),
-				RetainMetadataInForwardMode: utils.ToPtr(false),
+				Port:                        new(int32(24224)),
+				RetainMetadataInForwardMode: new(false),
 			},
 		},
 	}}}
@@ -563,8 +562,8 @@ func TestForwardOutput_RetainMetadataInForwardMode(t *testing.T) {
 			Match: "kube.*",
 			Forward: &output.Forward{
 				Host:                        "fluentd.svc",
-				Port:                        utils.ToPtr[int32](24224),
-				RetainMetadataInForwardMode: utils.ToPtr(true),
+				Port:                        new(int32(24224)),
+				RetainMetadataInForwardMode: new(true),
 			},
 		},
 	}}}

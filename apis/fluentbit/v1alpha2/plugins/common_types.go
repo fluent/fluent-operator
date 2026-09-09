@@ -32,7 +32,7 @@ func (c *CommonParams) AddCommonParams(kvs *params.KVs) error {
 // +kubebuilder:validation:Type=object
 type Config struct {
 	// Data holds the configuration keys and values.
-	Data map[string]interface{} `json:"-"`
+	Data map[string]any `json:"-"`
 }
 
 // MarshalJSON implements the Marshaler interface.
@@ -42,7 +42,7 @@ func (c *Config) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements the Unmarshaler interface.
 func (c *Config) UnmarshalJSON(data []byte) error {
-	var out map[string]interface{}
+	var out map[string]any
 	err := json.Unmarshal(data, &out)
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func (c *Config) UnmarshalJSON(data []byte) error {
 }
 
 // MarshalYAML implements the yaml.Marshaler interface.
-func (c *Config) MarshalYAML() (interface{}, error) {
+func (c *Config) MarshalYAML() (any, error) {
 	return c.Data, nil
 }
 
@@ -65,7 +65,7 @@ func (c *Config) DeepCopyInto(out *Config) {
 		// created in the API server
 		panic(err)
 	}
-	var clone map[string]interface{}
+	var clone map[string]any
 	err = json.Unmarshal(bytes, &clone)
 	if err != nil {
 		// we assume again optimistically because we just marshalled that the round trip works as well

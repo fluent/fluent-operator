@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,7 +24,7 @@ func TestSplunk_Params(t *testing.T) {
 	sl := plugins.NewSecretLoader(fc, "test_namespace")
 	s := Splunk{
 		Host:           "splunk.example.com",
-		Port:           utils.ToPtr[int32](8088),
+		Port:           new(int32(8088)),
 		SplunkToken:    &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "splunk_secret"}, Key: "splunk_token"}}},
 		TotalLimitSize: "512M",
 	}

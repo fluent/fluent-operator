@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -26,15 +25,15 @@ func TestHTTP_Params(t *testing.T) {
 	sl := plugins.NewSecretLoader(fc, "test_namespace")
 	h := HTTP{
 		Host:               "example.com",
-		Port:               utils.ToPtr[int32](443),
+		Port:               new(int32(443)),
 		HTTPUser:           &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_user"}}},
 		HTTPPasswd:         &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "http_secret"}, Key: "http_passwd"}}},
 		Uri:                "/logs",
 		Format:             "json",
-		LogResponsePayload: utils.ToPtr(false),
+		LogResponsePayload: new(false),
 		Headers:            map[string]string{"X-Custom": "value"},
-		TLS:                &plugins.TLS{Verify: utils.ToPtr(false)},
-		Networking:         &plugins.Networking{SourceAddress: utils.ToPtr("expected_source_address")},
+		TLS:                &plugins.TLS{Verify: new(false)},
+		Networking:         &plugins.Networking{SourceAddress: new("expected_source_address")},
 		TotalLimitSize:     "512M",
 	}
 

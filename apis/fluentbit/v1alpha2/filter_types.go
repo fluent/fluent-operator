@@ -94,7 +94,7 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 				fmt.Fprintf(&buf, "    Match_Regex    %s\n", utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex))
 			}
 
-			var iface interface{} = p
+			var iface any = p
 			if f, ok := iface.(plugins.Namespaceable); ok {
 				f.MakeNamespaced(item.Namespace)
 			}
@@ -112,8 +112,8 @@ func (list FilterList) Load(sl plugins.SecretLoader) (string, error) {
 		}
 
 		for _, elem := range item.Spec.FilterItems {
-			for i := 0; i < reflect.ValueOf(elem).NumField(); i++ {
-				p, _ := reflect.ValueOf(elem).Field(i).Interface().(plugins.Plugin)
+			for _, field := range reflect.ValueOf(elem).Fields() {
+				p, _ := field.Interface().(plugins.Plugin)
 				if err := merge(p); err != nil {
 					return "", err
 				}
@@ -152,7 +152,7 @@ func (list FilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, e
 				fmt.Fprintf(&buf, "%smatch_regex: %s\n", padding, utils.GenerateNamespacedMatchRegExpr(item.Namespace, item.Spec.MatchRegex))
 			}
 
-			var iface interface{} = p
+			var iface any = p
 			if f, ok := iface.(plugins.Namespaceable); ok {
 				f.MakeNamespaced(item.Namespace)
 			}
@@ -170,8 +170,8 @@ func (list FilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, e
 		}
 
 		for _, elem := range item.Spec.FilterItems {
-			for i := 0; i < reflect.ValueOf(elem).NumField(); i++ {
-				p, _ := reflect.ValueOf(elem).Field(i).Interface().(plugins.Plugin)
+			for _, field := range reflect.ValueOf(elem).Fields() {
+				p, _ := field.Interface().(plugins.Plugin)
 				if err := merge(p); err != nil {
 					return "", err
 				}

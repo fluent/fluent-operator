@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 )
 
@@ -16,10 +15,10 @@ func TestOutput_Syslog_Params(t *testing.T) {
 
 	syslog := Syslog{
 		Host:               "127.0.0.1",
-		Port:               utils.ToPtr[int32](514),
+		Port:               new(int32(514)),
 		Mode:               "tcp",
 		SyslogFormat:       "rfc5424",
-		SyslogMaxSize:      utils.ToPtr[int32](2048),
+		SyslogMaxSize:      new(int32(2048)),
 		SyslogSeverityKey:  "severity",
 		SyslogFacilityKey:  "facility",
 		SyslogHostnameKey:  "hostname",
@@ -29,7 +28,7 @@ func TestOutput_Syslog_Params(t *testing.T) {
 		SyslogSDKey:        "structured_data",
 		SyslogMessageKey:   "message",
 		TotalLimitSize:     "1G",
-		Workers:            utils.ToPtr[int32](2),
+		Workers:            new(int32(2)),
 	}
 
 	expected := params.NewKVs()

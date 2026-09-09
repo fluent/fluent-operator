@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 )
 
@@ -22,9 +21,9 @@ func TestSyslog_Params(t *testing.T) {
 	syslog := Syslog{
 		Mode:              "tcp",
 		Listen:            "0.0.0.0",
-		Port:              utils.ToPtr[int32](514),
+		Port:              new(int32(514)),
 		Path:              "/tmp/syslog.sock",
-		UnixPerm:          utils.ToPtr[int32](644),
+		UnixPerm:          new(int32(644)),
 		Parser:            "syslog-rfc5424",
 		BufferChunkSize:   "32KB",
 		BufferMaxSize:     "256KB",

@@ -6,10 +6,6 @@ import (
 	"strings"
 )
 
-func ToPtr[T any](v T) *T {
-	return &v
-}
-
 func HashCode(msg string) string {
 	var h = md5.New()
 	h.Write([]byte(msg))

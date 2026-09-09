@@ -1309,14 +1309,14 @@ func init() {
 	)
 }
 
-func MustParseIntoObject(data string, obj interface{}) {
+func MustParseIntoObject(data string, obj any) {
 	err := ParseIntoObject(data, obj)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func ParseIntoObject(data string, obj interface{}) error {
+func ParseIntoObject(data string, obj any) error {
 	body, err := yaml.YAMLToJSON([]byte(data))
 	if err != nil {
 		return err

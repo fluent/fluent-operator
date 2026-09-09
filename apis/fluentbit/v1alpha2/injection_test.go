@@ -7,7 +7,6 @@ import (
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/custom"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/output"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -62,7 +61,7 @@ func TestClusterOutput_Load_AllowsBenignConfig(t *testing.T) {
 		Spec: OutputSpec{
 			Match: "logs.foo.bar",
 			Alias: "my_alias",
-			HTTP:  &output.HTTP{Host: "https://example.com", Port: utils.ToPtr[int32](443)},
+			HTTP:  &output.HTTP{Host: "https://example.com", Port: new(int32(443))},
 		},
 	}}}
 
