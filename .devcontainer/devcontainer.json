@@ -1,13 +1,11 @@
 {
   "name": "Kubebuilder DevContainer",
-  "image": "docker.io/golang:1.26.3",
+  "image": "docker.io/golang:1.26.6",
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/git:1": {}
   },
-
   "runArgs": ["--network=host"],
-
   "customizations": {
     "vscode": {
       "settings": {
@@ -19,7 +17,5 @@
       ]
     }
   },
-
   "onCreateCommand": "bash .devcontainer/post-install.sh"
 }
-
