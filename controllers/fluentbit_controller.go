@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"maps"
+	"time"
 
 	rbacv1 "k8s.io/api/rbac/v1"
 
@@ -96,7 +97,7 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	var sec corev1.Secret
 	if err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Spec.FluentBitConfigName}, &sec); err != nil {
 		if errors.IsNotFound(err) {
-			return ctrl.Result{Requeue: true}, nil
+			return ctrl.Result{RequeueAfter: time.Second}, nil
 		}
 		return ctrl.Result{}, err
 	}

@@ -19,8 +19,8 @@ func MakeFluentdPVC(fd fluentdv1alpha1.Fluentd) *corev1.PersistentVolumeClaim {
 
 	labels := map[string]string{
 		"app.kubernetes.io/name":      fd.Name,
-		"app.kubernetes.io/instance":  "fluentd",
-		"app.kubernetes.io/component": "fluentd",
+		"app.kubernetes.io/instance":  fluentdLabelValue,
+		"app.kubernetes.io/component": fluentdLabelValue,
 	}
 
 	pvc := corev1.PersistentVolumeClaim{
@@ -42,8 +42,8 @@ func MakeFluentdPVC(fd fluentdv1alpha1.Fluentd) *corev1.PersistentVolumeClaim {
 func makeDefaultFluentdPVC(fd fluentdv1alpha1.Fluentd) *corev1.PersistentVolumeClaim {
 	labels := map[string]string{
 		"app.kubernetes.io/name":      fd.Name,
-		"app.kubernetes.io/instance":  "fluentd",
-		"app.kubernetes.io/component": "fluentd",
+		"app.kubernetes.io/instance":  fluentdLabelValue,
+		"app.kubernetes.io/component": fluentdLabelValue,
 	}
 
 	r := corev1.VolumeResourceRequirements{

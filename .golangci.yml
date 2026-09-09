@@ -24,6 +24,8 @@ linters:
     - unused
 
   settings:
+    goconst:
+      min-occurrences: 10
     revive:
       rules:
         - name: comment-spacings
@@ -42,6 +44,9 @@ linters:
           - dupl
           - lll
         path: internal/*
+      - linters:
+          - goconst
+        path: _test\.go
       - linters:
           - misspell
         path: apis/fluentbit/v1alpha2/plugins/common_types.go

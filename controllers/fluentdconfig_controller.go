@@ -106,7 +106,7 @@ func (r *FluentdConfigReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	if err := r.List(ctx, &fluentdList); err != nil {
 		if apierrors.IsNotFound(err) {
 			r.Log.Info("can not find fluentd CR definition.")
-			return ctrl.Result{Requeue: true, RequeueAfter: time.Duration(1)}, nil
+			return ctrl.Result{RequeueAfter: time.Nanosecond}, nil
 		}
 		return ctrl.Result{}, err
 	}

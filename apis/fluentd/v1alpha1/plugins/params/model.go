@@ -224,7 +224,7 @@ func (ps *PluginStore) processBody(buf *bytes.Buffer) {
 	sort.Strings(keys)
 
 	for _, k := range keys {
-		body.WriteString(fmt.Sprintf("%s%s  %s\n", ps.PrefixWhitespaces, k, escapeValue(ps.Store[k])))
+		fmt.Fprintf(&body, "%s%s  %s\n", ps.PrefixWhitespaces, k, escapeValue(ps.Store[k]))
 	}
 
 	buf.WriteString(body.String())

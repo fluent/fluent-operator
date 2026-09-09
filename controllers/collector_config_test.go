@@ -92,9 +92,6 @@ func newCollectorTestObjects() []client.Object {
 	}
 }
 
-//go:fix inline
-func ptrInt32(i int32) *int32 { return new(i) }
-
 // TestCollectorClusterFluentBitConfigIsRendered reproduces
 // https://github.com/fluent/fluent-operator/issues/1436: a Collector referencing a
 // ClusterFluentBitConfig used to be ignored by the FluentBitConfig controller, which
