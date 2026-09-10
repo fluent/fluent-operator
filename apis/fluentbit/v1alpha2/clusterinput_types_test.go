@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/input"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -87,18 +86,18 @@ func TestClusterInputList_Load(t *testing.T) {
 		Spec: InputSpec{
 			Alias: "input0_alias",
 			Tail: &input.Tail{
-				DisableInotifyWatcher:  utils.ToPtr(true),
+				DisableInotifyWatcher:  new(true),
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          utils.ToPtr(true),
+				SkipLongLines:          new(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: utils.ToPtr[int64](10),
+				RefreshIntervalSeconds: new(int64(10)),
 				DB:                     "/fluent-bit/tail/pos.db",
 				Parser:                 "docker",
-				DockerMode:             utils.ToPtr(true),
-				DockerModeFlushSeconds: utils.ToPtr[int64](4),
+				DockerMode:             new(true),
+				DockerModeFlushSeconds: new(int64(4)),
 				DockerModeParser:       "docker-mode-parser",
 			},
 		},
@@ -116,8 +115,8 @@ func TestClusterInputList_Load(t *testing.T) {
 			Alias: "input2_alias",
 			Dummy: &input.Dummy{
 				Tag:     "logs.foo.bar",
-				Rate:    utils.ToPtr[int32](3),
-				Samples: utils.ToPtr[int32](5),
+				Rate:    new(int32(3)),
+				Samples: new(int32(5)),
 			},
 		},
 	}
@@ -135,7 +134,7 @@ func TestClusterInputList_Load(t *testing.T) {
 			PrometheusScrapeMetrics: &input.PrometheusScrapeMetrics{
 				Tag:            "logs.foo.bar",
 				Host:           "https://example3.com",
-				Port:           utils.ToPtr[int32](433),
+				Port:           new(int32(433)),
 				ScrapeInterval: "10s",
 				MetricsPath:    "/metrics",
 			},
@@ -200,7 +199,7 @@ func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
 			FluentBitMetrics: &input.FluentbitMetrics{
 				Tag:            "logs.foo.bar",
 				ScrapeInterval: "2",
-				ScrapeOnStart:  utils.ToPtr(true),
+				ScrapeOnStart:  new(true),
 			},
 		},
 	}
@@ -216,7 +215,7 @@ func TestFluentbitMetricClusterInputList_Load(t *testing.T) {
 		Spec: InputSpec{
 			Alias: "input1_alias",
 			Forward: &input.Forward{
-				Port:            utils.ToPtr[int32](433),
+				Port:            new(int32(433)),
 				Listen:          "0.0.0.0",
 				BufferChunkSize: "1M",
 				BufferMaxSize:   "6M",
@@ -263,18 +262,18 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 		Spec: InputSpec{
 			Alias: "input0_alias",
 			Tail: &input.Tail{
-				DisableInotifyWatcher:  utils.ToPtr(true),
+				DisableInotifyWatcher:  new(true),
 				Tag:                    "logs.foo.bar",
 				Path:                   "/logs/containers/apps0",
 				ExcludePath:            "/logs/containers/exclude_path",
-				SkipLongLines:          utils.ToPtr(true),
+				SkipLongLines:          new(true),
 				IgnoreOlder:            "5m",
 				MemBufLimit:            "5MB",
-				RefreshIntervalSeconds: utils.ToPtr[int64](10),
+				RefreshIntervalSeconds: new(int64(10)),
 				DB:                     "/fluent-bit/tail/pos.db",
 				Parser:                 "docker",
-				DockerMode:             utils.ToPtr(true),
-				DockerModeFlushSeconds: utils.ToPtr[int64](4),
+				DockerMode:             new(true),
+				DockerModeFlushSeconds: new(int64(4)),
 				DockerModeParser:       "docker-mode-parser",
 			},
 		},
@@ -292,8 +291,8 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 			Alias: "input2_alias",
 			Dummy: &input.Dummy{
 				Tag:     "logs.foo.bar",
-				Rate:    utils.ToPtr[int32](3),
-				Samples: utils.ToPtr[int32](5),
+				Rate:    new(int32(3)),
+				Samples: new(int32(5)),
 			},
 		},
 	}
@@ -311,7 +310,7 @@ func TestClusterInputList_Load_As_Yaml(t *testing.T) {
 			PrometheusScrapeMetrics: &input.PrometheusScrapeMetrics{
 				Tag:            "logs.foo.bar",
 				Host:           "https://example3.com",
-				Port:           utils.ToPtr[int32](433),
+				Port:           new(int32(433)),
 				ScrapeInterval: "10s",
 				MetricsPath:    "/metrics",
 			},
@@ -380,10 +379,10 @@ func TestClusterInputListProcessors_Load_As_Yaml(t *testing.T) {
 				Tag:   "logs.foo.bar",
 				Dummy: "{\"key\":\"value\"}",
 			},
-			Processors: &plugins.Config{Data: map[string]interface{}{
-				"logs": []interface{}{
-					map[string]interface{}{"add": "hostname test", "name": "modify"},
-					map[string]interface{}{"name": "lua", "call": "append_tag", "code": `function append_tag(tag, timestamp, record)
+			Processors: &plugins.Config{Data: map[string]any{
+				"logs": []any{
+					map[string]any{"add": "hostname test", "name": "modify"},
+					map[string]any{"name": "lua", "call": "append_tag", "code": `function append_tag(tag, timestamp, record)
     new_record = record
     new_record["tag"] = tag
     return 1, timestamp, new_record

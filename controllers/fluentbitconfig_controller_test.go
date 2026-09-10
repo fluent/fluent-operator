@@ -73,7 +73,7 @@ func TestGenerateRewriteTagConfigYaml(t *testing.T) {
 	// Wrapping it in a "filters:" key must still parse as valid YAML and
 	// contain the rewrite_tag entry.
 	wrapped := "filters:\n" + out
-	var parsed map[string]interface{}
+	var parsed map[string]any
 	if err := yaml.Unmarshal([]byte(wrapped), &parsed); err != nil {
 		t.Fatalf("generated rewrite_tag config is not valid YAML: %v\n%s", err, wrapped)
 	}

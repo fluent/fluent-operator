@@ -14,7 +14,6 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	fluentdv1alpha1 "github.com/fluent/fluent-operator/v3/apis/fluentd/v1alpha1"
@@ -77,12 +76,12 @@ var _ = Describe("Fluentd E2E Deployment Test", func() {
 					},
 				},
 				Spec: fluentdv1alpha1.FluentdSpec{
-					Replicas: ptr.To(int32(1)),
+					Replicas: new(int32(1)),
 					GlobalInputs: []input.Input{
 						{
 							Forward: &input.Forward{
-								Bind: ptr.To("0.0.0.0"),
-								Port: ptr.To(int32(24224)),
+								Bind: new("0.0.0.0"),
+								Port: new(int32(24224)),
 							},
 						},
 					},

@@ -11,6 +11,7 @@ import (
 const (
 	FluentdForwardPortName = "forward"
 	FluentdHttpPortName    = "http"
+	fluentdLabelValue      = "fluentd"
 )
 
 func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
@@ -28,8 +29,8 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 	} else {
 		labels = map[string]string{
 			"app.kubernetes.io/name":      name,
-			"app.kubernetes.io/instance":  "fluentd",
-			"app.kubernetes.io/component": "fluentd",
+			"app.kubernetes.io/instance":  fluentdLabelValue,
+			"app.kubernetes.io/component": fluentdLabelValue,
 		}
 	}
 

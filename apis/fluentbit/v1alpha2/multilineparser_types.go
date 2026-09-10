@@ -102,8 +102,8 @@ func load[T multilineParserInterface](items []T, sl plugins.SecretLoader) (strin
 			return nil
 		}
 
-		for i := 0; i < reflect.ValueOf(item.spec()).NumField(); i++ {
-			p, _ := reflect.ValueOf(item.spec()).Field(i).Interface().(plugins.Plugin)
+		for _, field := range reflect.ValueOf(item.spec()).Fields() {
+			p, _ := field.Interface().(plugins.Plugin)
 			if err := merge(p); err != nil {
 				return "", err
 			}

@@ -163,8 +163,8 @@ func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 		}
 
 		for _, elem := range item.Spec.FilterItems {
-			for i := 0; i < reflect.ValueOf(elem).NumField(); i++ {
-				p, _ := reflect.ValueOf(elem).Field(i).Interface().(plugins.Plugin)
+			for _, field := range reflect.ValueOf(elem).Fields() {
+				p, _ := field.Interface().(plugins.Plugin)
 				if err := merge(p); err != nil {
 					return "", err
 				}
@@ -224,8 +224,8 @@ func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (st
 		}
 
 		for _, elem := range item.Spec.FilterItems {
-			for i := 0; i < reflect.ValueOf(elem).NumField(); i++ {
-				p, _ := reflect.ValueOf(elem).Field(i).Interface().(plugins.Plugin)
+			for _, field := range reflect.ValueOf(elem).Fields() {
+				p, _ := field.Interface().(plugins.Plugin)
 				if err := merge(p); err != nil {
 					return "", err
 				}

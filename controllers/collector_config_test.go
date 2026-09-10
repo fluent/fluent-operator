@@ -72,7 +72,7 @@ func newCollectorTestObjects() []client.Object {
 				Labels: map[string]string{"fluentbit.fluent.io/enabled": "true"},
 			},
 			Spec: fluentbitv1alpha2.InputSpec{
-				Forward: &input.Forward{Port: ptrInt32(24224)},
+				Forward: &input.Forward{Port: new(int32(24224))},
 			},
 		},
 		&fluentbitv1alpha2.ClusterOutput{
@@ -91,8 +91,6 @@ func newCollectorTestObjects() []client.Object {
 		},
 	}
 }
-
-func ptrInt32(i int32) *int32 { return &i }
 
 // TestCollectorClusterFluentBitConfigIsRendered reproduces
 // https://github.com/fluent/fluent-operator/issues/1436: a Collector referencing a

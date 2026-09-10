@@ -85,7 +85,7 @@ func TestPluginStoreString_NoInjectionViaBody(t *testing.T) {
 	// injected </match> would appear on its own line; escaped, it stays inside the
 	// quoted value on the parameter line.
 	closingLines := 0
-	for _, line := range strings.Split(got, "\n") {
+	for line := range strings.SplitSeq(got, "\n") {
 		trimmed := strings.TrimSpace(line)
 		if strings.HasPrefix(trimmed, "</match>") {
 			closingLines++
@@ -112,7 +112,7 @@ func TestPluginStoreString_NoInjectionViaHead(t *testing.T) {
 	// Only line-leading directives change block nesting; the escaped value keeps
 	// everything on one physical line, so at most one line may open a <match.
 	directiveLines := 0
-	for _, line := range strings.Split(got, "\n") {
+	for line := range strings.SplitSeq(got, "\n") {
 		if strings.HasPrefix(strings.TrimSpace(line), "<match") {
 			directiveLines++
 		}

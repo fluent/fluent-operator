@@ -94,7 +94,7 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	secName := fmt.Sprintf("%s-config", fd.Name)
 	if err := r.Get(ctx, client.ObjectKey{Namespace: fd.Namespace, Name: secName}, &sec); err != nil {
 		if errors.IsNotFound(err) {
-			return ctrl.Result{Requeue: true, RequeueAfter: time.Second}, nil
+			return ctrl.Result{RequeueAfter: time.Second}, nil
 		}
 		return ctrl.Result{}, err
 	}

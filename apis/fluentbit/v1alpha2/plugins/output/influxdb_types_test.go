@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 )
 
@@ -16,14 +15,14 @@ func TestOutput_InfluxDB_Params(t *testing.T) {
 
 	dd := InfluxDB{
 		Host:            "127.0.0.1",
-		Port:            utils.ToPtr[int32](8086),
+		Port:            new(int32(8086)),
 		Database:        "fluentbit",
 		Bucket:          "buck",
 		Org:             "orgnis",
 		SequenceTag:     "_inc",
 		TagKeys:         []string{"foo", "bar", "foo:bar"},
-		AutoTags:        utils.ToPtr(false),
-		TagsListEnabled: utils.ToPtr(true),
+		AutoTags:        new(false),
+		TagsListEnabled: new(true),
 		TagsListKey:     "taglist_key",
 	}
 

@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	"github.com/onsi/gomega"
 )
 
@@ -17,19 +16,19 @@ func TestOutput_Firehose_Params(t *testing.T) {
 	fh := Firehose{
 		Region:            "us-east-1",
 		DeliveryStream:    "test_stream",
-		TimeKey:           utils.ToPtr("test_time_key"),
-		TimeKeyFormat:     utils.ToPtr("%Y-%m-%dT%H:%M:%S.%3N"),
-		DataKeys:          utils.ToPtr("test_data_keys"),
-		LogKey:            utils.ToPtr("test_time_key"),
-		RoleARN:           utils.ToPtr("arn:aws:iam:test"),
-		Endpoint:          utils.ToPtr("test_endpoint"),
-		STSEndpoint:       utils.ToPtr("test_sts_endpoint"),
-		AutoRetryRequests: utils.ToPtr(true),
-		ExternalID:        utils.ToPtr("test_external_id"),
-		Compression:       utils.ToPtr("gzip"),
-		SimpleAggregation: utils.ToPtr(true),
-		Profile:           utils.ToPtr("my-profile"),
-		Workers:           utils.ToPtr[int32](1),
+		TimeKey:           new("test_time_key"),
+		TimeKeyFormat:     new("%Y-%m-%dT%H:%M:%S.%3N"),
+		DataKeys:          new("test_data_keys"),
+		LogKey:            new("test_time_key"),
+		RoleARN:           new("arn:aws:iam:test"),
+		Endpoint:          new("test_endpoint"),
+		STSEndpoint:       new("test_sts_endpoint"),
+		AutoRetryRequests: new(true),
+		ExternalID:        new("test_external_id"),
+		Compression:       new("gzip"),
+		SimpleAggregation: new(true),
+		Profile:           new("my-profile"),
+		Workers:           new(int32(1)),
 	}
 
 	expected := params.NewKVs()

@@ -5,7 +5,6 @@ import (
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/filter"
-	"github.com/fluent/fluent-operator/v3/pkg/utils"
 	. "github.com/onsi/gomega"
 )
 
@@ -84,14 +83,14 @@ func TestFilterList_Load(t *testing.T) {
 								Parser: &filter.Parser{
 									KeyName:     "msg",
 									Parser:      "second-parser",
-									ReserveData: utils.ToPtr(true),
+									ReserveData: new(true),
 								},
 							},
 							{
 								Parser: &filter.Parser{
 									KeyName:     "msg",
 									Parser:      "third-parser",
-									ReserveData: utils.ToPtr(true),
+									ReserveData: new(true),
 								},
 							},
 						},
@@ -256,14 +255,14 @@ func TestFilterList_LoadAsYaml(t *testing.T) {
 							Parser: &filter.Parser{
 								KeyName:     "msg",
 								Parser:      "second-parser",
-								ReserveData: utils.ToPtr(true),
+								ReserveData: new(true),
 							},
 						},
 						{
 							Parser: &filter.Parser{
 								KeyName:     "msg",
 								Parser:      "third-parser",
-								ReserveData: utils.ToPtr(true),
+								ReserveData: new(true),
 							},
 						},
 					},

@@ -208,7 +208,7 @@ func (ps *PluginStore) processHead(buf *bytes.Buffer) {
 
 // processes the key-value pair body
 func (ps *PluginStore) processBody(buf *bytes.Buffer) {
-	var body string
+	var body strings.Builder
 
 	keys := make([]string, 0, len(ps.Store))
 	for k := range ps.Store {
@@ -224,10 +224,10 @@ func (ps *PluginStore) processBody(buf *bytes.Buffer) {
 	sort.Strings(keys)
 
 	for _, k := range keys {
-		body += fmt.Sprintf("%s%s  %s\n", ps.PrefixWhitespaces, k, escapeValue(ps.Store[k]))
+		fmt.Fprintf(&body, "%s%s  %s\n", ps.PrefixWhitespaces, k, escapeValue(ps.Store[k]))
 	}
 
-	buf.WriteString(body)
+	buf.WriteString(body.String())
 }
 
 // write the tail directive to the buffer, i.e.: </match>

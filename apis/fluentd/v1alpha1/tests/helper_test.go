@@ -127,7 +127,7 @@ func Test_ClusterCfgOutput2Loki(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
@@ -177,7 +177,7 @@ func Test_MixedCfgCopy1(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
@@ -248,7 +248,7 @@ func Test_MixedCfgCopy4(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-mixed-cfgs-output-copy-4.cfg"))).To(Equal(config))
@@ -273,7 +273,7 @@ func Test_ClusterCfgOutput2StdoutAndLoki(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
@@ -311,7 +311,7 @@ func Test_MixedCfgs2MultiTenant(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResourcesForUser1)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
@@ -524,7 +524,7 @@ func Test_DuplicateRemovalCRSpecs(t *testing.T) {
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		// fmt.Println(config)
 		g.Expect(errs).NotTo(HaveOccurred())
@@ -550,7 +550,7 @@ func Test_ClusterCfgOutputOrderByIndex(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-output-order-by-index.cfg"))).To(Equal(config))
@@ -573,7 +573,7 @@ func Test_ClusterCfgFilterOrderByIndex(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-filter-order-by-index.cfg"))).To(Equal(config))
@@ -599,7 +599,7 @@ func Test_ClusterCfgInputOrderByIndex(t *testing.T) {
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg("./expected/fluentd-cluster-cfg-input-order-by-index.cfg"))).To(Equal(config))
@@ -631,7 +631,7 @@ func testNamespacedConfig(
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg(expectedCfgPath))).To(Equal(config))
@@ -660,7 +660,7 @@ func testClusterConfigWithFiltersAndOutputs(
 	err = psr.WithCfgResources(*clustercfgRouter.Label, clustercfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		expectedCfg := string(getExpectedCfg(expectedCfgPath))
@@ -699,7 +699,7 @@ func testMixedConfigs(
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg(expectedCfgPath))).To(Equal(config))
@@ -734,7 +734,7 @@ func testMixedConfigWithCopy(
 	err = psr.WithCfgResources(*cfgRouter.Label, cfgResources)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	for i := 0; i < maxRuntimes; i++ {
+	for range maxRuntimes {
 		config, errs := psr.RenderMainConfig(false)
 		g.Expect(errs).NotTo(HaveOccurred())
 		g.Expect(string(getExpectedCfg(expectedCfgPath))).To(Equal(config))

@@ -19,6 +19,8 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"maps"
+	"time"
 
 	rbacv1 "k8s.io/api/rbac/v1"
 
@@ -95,7 +97,7 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	var sec corev1.Secret
 	if err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Spec.FluentBitConfigName}, &sec); err != nil {
 		if errors.IsNotFound(err) {
-			return ctrl.Result{Requeue: true}, nil
+			return ctrl.Result{RequeueAfter: time.Second}, nil
 		}
 		return ctrl.Result{}, err
 	}
@@ -182,12 +184,8 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 				// new map rather than writing into o.Spec.Template.Labels in place, since
 				// MakeDaemonSet reuses fb.Spec.Labels itself as that map.
 				templateLabels := make(map[string]string, len(o.Spec.Template.Labels)+len(existingSelector.MatchLabels))
-				for k, v := range o.Spec.Template.Labels {
-					templateLabels[k] = v
-				}
-				for k, v := range existingSelector.MatchLabels {
-					templateLabels[k] = v
-				}
+				maps.Copy(templateLabels, o.Spec.Template.Labels)
+				maps.Copy(templateLabels, existingSelector.MatchLabels)
 				o.Spec.Template.Labels = templateLabels
 			}
 

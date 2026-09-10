@@ -153,8 +153,8 @@ func (list ClusterInputList) Load(sl plugins.SecretLoader) (string, error) {
 			return nil
 		}
 
-		for i := 0; i < reflect.ValueOf(item.Spec).NumField(); i++ {
-			p, _ := reflect.ValueOf(item.Spec).Field(i).Interface().(plugins.Plugin)
+		for _, field := range reflect.ValueOf(item.Spec).Fields() {
+			p, _ := field.Interface().(plugins.Plugin)
 			if err := merge(p); err != nil {
 				return "", err
 			}
@@ -213,8 +213,8 @@ func (list ClusterInputList) LoadAsYaml(sl plugins.SecretLoader, depth int) (str
 			return nil
 		}
 
-		for i := 0; i < reflect.ValueOf(item.Spec).NumField(); i++ {
-			p, _ := reflect.ValueOf(item.Spec).Field(i).Interface().(plugins.Plugin)
+		for _, field := range reflect.ValueOf(item.Spec).Fields() {
+			p, _ := field.Interface().(plugins.Plugin)
 			if err := merge(p); err != nil {
 				return "", err
 			}

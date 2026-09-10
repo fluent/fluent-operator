@@ -41,8 +41,8 @@ func MakeStatefulSet(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 
 	labels := map[string]string{
 		"app.kubernetes.io/name":      fd.Name,
-		"app.kubernetes.io/instance":  "fluentd",
-		"app.kubernetes.io/component": "fluentd",
+		"app.kubernetes.io/instance":  fluentdLabelValue,
+		"app.kubernetes.io/component": fluentdLabelValue,
 	}
 
 	if len(fd.Labels) > 0 {
@@ -89,7 +89,7 @@ func MakeStatefulSet(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 					},
 					Containers: []corev1.Container{
 						{
-							Name:            "fluentd",
+							Name:            fluentdLabelValue,
 							Image:           fd.Spec.Image,
 							Args:            fd.Spec.Args,
 							ImagePullPolicy: fd.Spec.ImagePullPolicy,
