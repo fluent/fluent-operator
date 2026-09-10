@@ -43,8 +43,9 @@ const (
 // FluentdReconciler reconciles a Fluentd object
 type FluentdReconciler struct {
 	client.Client
-	Log    logr.Logger
-	Scheme *runtime.Scheme
+	Log        logr.Logger
+	Scheme     *runtime.Scheme
+	Namespaced bool
 }
 
 // +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds,verbs=get;list;watch;update
@@ -54,6 +55,8 @@ type FluentdReconciler struct {
 // +kubebuilder:rbac:groups=core,resources=secrets,verbs=get
 // +kubebuilder:rbac:groups=core,resources=serviceaccounts;services,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles;clusterrolebindings,verbs=create;get;list;watch;patch
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles,verbs=create;get;list;watch;patch
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=rolebindings,verbs=create;delete;get;list;watch;patch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -99,23 +102,21 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{}, err
 	}
 
-	// Install RBAC resources for the filter plugin kubernetes
-	cr, sa, crb := operator.MakeRBACObjects(
+	// Reconcile the RBAC the agent needs, scoped to a namespace or the cluster.
+	role, sa, binding := operator.MakeRBACObjectsForScope(
+		r.Namespaced,
 		fd.Name,
 		fd.Namespace,
 		fluentdLowercase,
 		fd.Spec.RBACRules,
 		fd.Spec.ServiceAccountAnnotations,
 	)
-	// Deploy Fluentd ClusterRole
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, cr, r.mutate(cr, &fd)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
-	// Deploy Fluentd ClusterRoleBinding
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, crb, r.mutate(crb, &fd)); err != nil {
+	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, binding, r.mutate(binding, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
-	// Deploy Fluentd ServiceAccount
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &fd)); err != nil {
 		return ctrl.Result{}, err
 	}
