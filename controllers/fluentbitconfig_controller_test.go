@@ -94,3 +94,44 @@ func TestGenerateRewriteTagConfigYaml(t *testing.T) {
 		t.Fatalf("expected classic TOML output, got:\n%s", classicOut)
 	}
 }
+
+// TestGenerateRewriteTagConfigAlias verifies that the auto-generated rewrite_tag
+// filter includes a meaningful Alias derived from the FluentBitConfig namespace,
+// in both classic and YAML output formats.
+func TestGenerateRewriteTagConfigAlias(t *testing.T) {
+	r := &FluentBitConfigReconciler{}
+	cfg := fluentbitv1alpha2.FluentBitConfig{
+		ObjectMeta: metav1.ObjectMeta{Namespace: "my-app"},
+	}
+	inputs := fluentbitv1alpha2.ClusterInputList{
+		Items: []fluentbitv1alpha2.ClusterInput{
+			{
+				Spec: fluentbitv1alpha2.InputSpec{
+					Tail: &input.Tail{
+						Tag:  "kube.*",
+						Path: "/var/log/containers/*.log",
+					},
+				},
+			},
+		},
+	}
+
+	// Classic (INI) format must contain the alias.
+	classicOut, err := r.generateRewriteTagConfig(cfg, inputs, nil)
+	if err != nil {
+		t.Fatalf("generateRewriteTagConfig (classic) returned error: %v", err)
+	}
+	if !strings.Contains(classicOut, "Alias    namespace-routing-my-app") {
+		t.Fatalf("expected Alias in classic output, got:\n%s", classicOut)
+	}
+
+	// YAML format must contain the alias.
+	yamlFormat := configFileFormatYaml
+	yamlOut, err := r.generateRewriteTagConfig(cfg, inputs, &yamlFormat)
+	if err != nil {
+		t.Fatalf("generateRewriteTagConfig (yaml) returned error: %v", err)
+	}
+	if !strings.Contains(yamlOut, "alias: namespace-routing-my-app") {
+		t.Fatalf("expected alias in YAML output, got:\n%s", yamlOut)
+	}
+}
