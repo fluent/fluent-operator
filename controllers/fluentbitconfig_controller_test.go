@@ -85,6 +85,10 @@ func TestGenerateRewriteTagConfigYaml(t *testing.T) {
 		t.Fatalf("expected a rewrite_tag filter entry, got:\n%s", out)
 	}
 
+	if !strings.Contains(out, "alias: namespace-routing-foobar") {
+		t.Fatalf("expected alias for namespace foobar, got:\n%s", out)
+	}
+
 	// classic (default) format must remain unchanged (TOML).
 	classicOut, err := r.generateRewriteTagConfig(cfg, inputs, nil)
 	if err != nil {

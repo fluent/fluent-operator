@@ -628,11 +628,13 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 	}
 
 	rewriteTag := &filter.RewriteTag{
+		CommonParams: plugins.CommonParams{
+			Alias: fmt.Sprintf("namespace-routing-%s", cfg.Namespace),
+		},
 		Rules: []string{
 			fmt.Sprintf("$kubernetes['namespace_name'] ^(%s)$ %x.$TAG false", cfg.Namespace, md5.Sum([]byte(cfg.Namespace))),
 		},
 	}
-	rewriteTag.Alias = fmt.Sprintf("namespace-routing-%s", cfg.Namespace)
 	if cfg.Spec.Service != nil {
 		if cfg.Spec.Service.EmitterName != "" {
 			rewriteTag.EmitterName = cfg.Spec.Service.EmitterName
