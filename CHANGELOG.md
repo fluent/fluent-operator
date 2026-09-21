@@ -1,5 +1,29 @@
 # Change Log
 
+## [3.10.1](https://github.com/fluent/fluent-operator/compare/v3.10.0...v3.10.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* **deps:** bump Go toolchain to 1.26.6 for stdlib CVE fixes ([#2047](https://github.com/fluent/fluent-operator/issues/2047)) ([eccf5a4](https://github.com/fluent/fluent-operator/commit/eccf5a47f0054e8bfa647aea64e4b1acffe415fe))
+
+
+### Dependencies
+
+* **deps:** bump fluent-bit to 5.1.1 ([#2030](https://github.com/fluent/fluent-operator/issues/2030)) ([00625bf](https://github.com/fluent/fluent-operator/commit/00625bfdaf4eefc64b787ad035245e8eaa8f3a80))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.32.0 to 2.32.1 ([#2032](https://github.com/fluent/fluent-operator/issues/2032)) ([e85d646](https://github.com/fluent/fluent-operator/commit/e85d6465b59d9fd7a3082ed6121d6be85ab4d7e8))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.32.1 to 2.32.2 ([fb3d38d](https://github.com/fluent/fluent-operator/commit/fb3d38d3e39eb71648c69acecf3149d09824e93c))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.32.2 to 2.33.0 ([cc766b9](https://github.com/fluent/fluent-operator/commit/cc766b95b98aea2b10cc7c603be3b83c964995e2))
+* **deps:** Bump github.com/onsi/gomega from 1.42.1 to 1.43.0 ([9185128](https://github.com/fluent/fluent-operator/commit/9185128bf7fd217493fadef0d1454dc6d4ec6027))
+* **deps:** Bump github.com/onsi/gomega from 1.43.0 to 1.43.1 ([fd1abc7](https://github.com/fluent/fluent-operator/commit/fd1abc7074ece06003a3ecfdb72ec02f04e19a4c))
+* **deps:** Bump go.opentelemetry.io/otel/exporters/otlp/otlptrace ([0819ce9](https://github.com/fluent/fluent-operator/commit/0819ce98a4202fb50062a7a41620bd11a7f8ba3c))
+* **deps:** Bump go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc ([9a6e15a](https://github.com/fluent/fluent-operator/commit/9a6e15a6ee6e7c0f69ad8d55070a2a1b9065c770))
+* **deps:** Bump golang.org/x/sync from 0.22.0 to 0.23.0 ([be8d72d](https://github.com/fluent/fluent-operator/commit/be8d72d022f0903349c54288574ead234c2385de))
+* **deps:** Bump google.golang.org/grpc from 1.82.1 to 1.83.1 ([921cb09](https://github.com/fluent/fluent-operator/commit/921cb09b31a306c8c5328b645c202792d94bb7ff))
+* **deps:** Bump google.golang.org/grpc from 1.83.1 to 1.83.2 ([63e0eab](https://github.com/fluent/fluent-operator/commit/63e0eab271bc40c26eb47fab82261160d170bdbd))
+* **deps:** Bump sigs.k8s.io/controller-runtime from 0.24.1 to 0.25.1 ([055acff](https://github.com/fluent/fluent-operator/commit/055acff1a6f15f062edc8ccf1a962654bf4fbc42))
+* **deps:** Bump the k8s-io group across 1 directory with 2 updates ([#2041](https://github.com/fluent/fluent-operator/issues/2041)) ([61ea567](https://github.com/fluent/fluent-operator/commit/61ea567fd79a6eaee01bf9c842cfc2905114a66a))
+
 ## [3.10.0](https://github.com/fluent/fluent-operator/compare/v3.9.0...v3.10.0) (2026-08-14)
 
 
