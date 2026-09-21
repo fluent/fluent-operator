@@ -1,5 +1,12 @@
 # Change Log
 
+## [3.10.2](https://github.com/fluent/fluent-operator/compare/v3.10.1...v3.10.2) (2026-09-21)
+
+
+### Dependencies
+
+* **deps:** bump fluent-bit to 5.1.2 ([#2061](https://github.com/fluent/fluent-operator/issues/2061)) ([2d8ae1c](https://github.com/fluent/fluent-operator/commit/2d8ae1c7266541fa5fd005801b5214f7910c3a99))
+
 ## [3.10.1](https://github.com/fluent/fluent-operator/compare/v3.10.0...v3.10.1) (2026-09-21)
 
 
