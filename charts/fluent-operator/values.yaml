@@ -340,7 +340,7 @@ fluentbit:
       bufferChunkSize: ""
       # -- Path to container logs
       path: "/var/log/containers/*.log"
-      # -- Commas separted, paths to exclude,
+      # -- Commas separated, paths to exclude,
       # ie "/var/log/containers/fluent*,*.zip"
       # excludePath: ""
       # -- Skip long lines in logs
