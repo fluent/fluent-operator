@@ -55,6 +55,9 @@ spec:
           {{- with .Values.operator.disableComponentControllers }}
           - --disable-component-controllers={{ . }}
           {{- end }}
+          {{- with .Values.operator.watchNamespaces }}
+          - {{ printf "--watch-namespaces=%s" . | quote }}
+          {{- end }}
         {{- with .Values.operator.livenessProbe }}
         livenessProbe:
           {{- toYaml . | nindent 10 }}

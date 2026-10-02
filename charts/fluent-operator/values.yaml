@@ -103,6 +103,10 @@ operator:
   #  myExampleLabel: someValue
   # -- Disable specific component controllers. Value can be "fluent-bit" or "fluentd" to disable that controller
   disableComponentControllers: ""
+  # -- Comma separated list of namespaces the operator should watch and manage resources in. When set, the
+  # operator scopes its cache and creates namespaced Roles/RoleBindings (instead of cluster-wide) for the
+  # agents it manages, allowing the operator's own RBAC to be reduced. Defaults to cluster scope when empty.
+  watchNamespaces: ""
   # -- Extra arguments for the Fluent Operator controller
   extraArgs:
     []
