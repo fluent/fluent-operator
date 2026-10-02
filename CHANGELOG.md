@@ -1,5 +1,21 @@
 # Change Log
 
+## [3.11.0](https://github.com/fluent/fluent-operator/compare/v3.10.1...v3.11.0) (2026-10-02)
+
+
+### Features
+
+* **fluentbit:** add autoExtractTimestamp to splunk output ([#2063](https://github.com/fluent/fluent-operator/issues/2063)) ([4cc7e86](https://github.com/fluent/fluent-operator/commit/4cc7e86f66f2454cd47547afa57d08798e6dc257))
+* **fluentbit:** set Alias on auto-generated namespace-routing rewrite_tag filters ([#2052](https://github.com/fluent/fluent-operator/issues/2052)) ([6bf5e67](https://github.com/fluent/fluent-operator/commit/6bf5e67b4a72802d16cb4f851c0ff30b7626853f))
+
+
+### Dependencies
+
+* **deps:** bump fluent-bit to 5.1.2 ([#2061](https://github.com/fluent/fluent-operator/issues/2061)) ([2d8ae1c](https://github.com/fluent/fluent-operator/commit/2d8ae1c7266541fa5fd005801b5214f7910c3a99))
+* **deps:** Bump github.com/go-openapi/errors from 0.22.8 to 0.22.9 ([#2064](https://github.com/fluent/fluent-operator/issues/2064)) ([8966e14](https://github.com/fluent/fluent-operator/commit/8966e14eeecc3c7dace3d7767d351550c99c988a))
+* **deps:** Bump github.com/onsi/gomega from 1.43.1 to 1.44.0 ([b36a884](https://github.com/fluent/fluent-operator/commit/b36a884c3cd9dd7f9227123ae9b668658ca20d38))
+* **deps:** Bump the k8s-io group across 1 directory with 3 updates ([afaa360](https://github.com/fluent/fluent-operator/commit/afaa36030ec46f16308c2a86d4eed61be3dbce61))
+
 ## [3.10.1](https://github.com/fluent/fluent-operator/compare/v3.10.0...v3.10.1) (2026-09-21)
 
 
