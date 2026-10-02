@@ -8265,6 +8265,11 @@ spec:
                       is 0.
                     format: int32
                     type: integer
+                  autoExtractTimestamp:
+                    description: |-
+                      Ask Splunk to extract the timestamp from the event data by setting auto_extract_timestamp=true
+                      in the HTTP Event Collector URL and omitting the time field from the event envelope.
+                    type: boolean
                   channel:
                     description: Specify X-Splunk-Request-Channel Header for the HTTP
                       Event Collector interface.
@@ -39747,6 +39752,11 @@ spec:
                       is 0.
                     format: int32
                     type: integer
+                  autoExtractTimestamp:
+                    description: |-
+                      Ask Splunk to extract the timestamp from the event data by setting auto_extract_timestamp=true
+                      in the HTTP Event Collector URL and omitting the time field from the event envelope.
+                    type: boolean
                   channel:
                     description: Specify X-Splunk-Request-Channel Header for the HTTP
                       Event Collector interface.

@@ -23,16 +23,18 @@ func TestSplunk_Params(t *testing.T) {
 
 	sl := plugins.NewSecretLoader(fc, "test_namespace")
 	s := Splunk{
-		Host:           "splunk.example.com",
-		Port:           new(int32(8088)),
-		SplunkToken:    &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "splunk_secret"}, Key: "splunk_token"}}},
-		TotalLimitSize: "512M",
+		Host:                 "splunk.example.com",
+		Port:                 new(int32(8088)),
+		SplunkToken:          &plugins.Secret{ValueFrom: plugins.ValueSource{SecretKeyRef: v1.SecretKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: "splunk_secret"}, Key: "splunk_token"}}},
+		AutoExtractTimestamp: new(true),
+		TotalLimitSize:       "512M",
 	}
 
 	expected := params.NewKVs()
 	expected.Insert("splunk_token", "expected_splunk_token")
 	expected.Insert("host", "splunk.example.com")
 	expected.Insert("port", "8088")
+	expected.Insert("auto_extract_timestamp", "true")
 	expected.Insert("storage.total_limit_size", "512M")
 
 	kvs, err := s.Params(sl)

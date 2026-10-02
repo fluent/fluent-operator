@@ -15,6 +15,7 @@ Splunk output plugin allows to ingest your records into a Splunk Enterprise serv
 | httpPassword | Password for user defined in HTTP_User | *[plugins.Secret](../secret.md) |
 | httpDebugBadRequest | If the HTTP server response code is 400 (bad request) and this flag is enabled, it will print the full HTTP request and response to the stdout interface. This feature is available for debugging purposes. | *bool |
 | splunkSendRaw | When enabled, the record keys and values are set in the top level of the map instead of under the event key. Refer to the Sending Raw Events section from the docs more details to make this option work properly. | *bool |
+| autoExtractTimestamp | Ask Splunk to extract the timestamp from the event data by setting auto_extract_timestamp=true in the HTTP Event Collector URL and omitting the time field from the event envelope. | *bool |
 | eventKey | Specify the key name that will be used to send a single value as part of the record. | string |
 | eventHost | Specify the key name that contains the host value. This option allows a record accessors pattern. | string |
 | eventSource | Set the source value to assign to the event data. | string |

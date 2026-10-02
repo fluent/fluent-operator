@@ -36,6 +36,9 @@ type Splunk struct {
 	// When enabled, the record keys and values are set in the top level of the map instead of under the event key. Refer to
 	// the Sending Raw Events section from the docs more details to make this option work properly.
 	SplunkSendRaw *bool `json:"splunkSendRaw,omitempty"`
+	// Ask Splunk to extract the timestamp from the event data by setting auto_extract_timestamp=true
+	// in the HTTP Event Collector URL and omitting the time field from the event envelope.
+	AutoExtractTimestamp *bool `json:"autoExtractTimestamp,omitempty"`
 	// Specify the key name that will be used to send a single value as part of the record.
 	EventKey string `json:"eventKey,omitempty"`
 	// Specify the key name that contains the host value. This option allows a record accessors pattern.
@@ -113,6 +116,7 @@ func (o *Splunk) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVField(kvs, "port", o.Port)
 	plugins.InsertKVField(kvs, "http_debug_bad_request", o.HTTPDebugBadRequest)
 	plugins.InsertKVField(kvs, "splunk_send_raw", o.SplunkSendRaw)
+	plugins.InsertKVField(kvs, "auto_extract_timestamp", o.AutoExtractTimestamp)
 	plugins.InsertKVField(kvs, "workers", o.Workers)
 
 	if len(o.EventFields) > 0 {
