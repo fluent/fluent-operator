@@ -571,3 +571,68 @@ func TestForwardOutput_RetainMetadataInForwardMode(t *testing.T) {
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(resultTrue).To(ContainSubstring("Retain_Metadata_In_Forward_Mode    true"))
 }
+
+func httpOutputWithWorkers() ClusterOutputList {
+	return ClusterOutputList{
+		Items: []ClusterOutput{{
+			TypeMeta: metav1.TypeMeta{
+				APIVersion: "fluentbit.fluent.io/v1alpha2",
+				Kind:       "ClusterOutput",
+			},
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "http_output_with_workers",
+			},
+			Spec: OutputSpec{
+				MatchRegex: "app.*",
+				RetryLimit: "8",
+				HTTP: &output.HTTP{
+					Host:    "example.com",
+					Port:    new(int32(9481)),
+					Uri:     "/insert/jsonline",
+					Format:  "json_lines",
+					Workers: new(int32(4)),
+				},
+			},
+		}},
+	}
+}
+
+func TestHTTPOutputWithWorkers_Load(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	expected := `[Output]
+    Name    http
+    Match_Regex    app.*
+    Retry_Limit    8
+    host    example.com
+    port    9481
+    uri    /insert/jsonline
+    format    json_lines
+    workers    4
+`
+
+	result, err := httpOutputWithWorkers().Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(result).To(Equal(expected))
+}
+
+func TestHTTPOutputWithWorkers_LoadAsYaml(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	expected := `outputs:
+  - name: http
+    match_regex: app.*
+    retry_limit: 8
+    host: example.com
+    port: 9481
+    uri: /insert/jsonline
+    format: json_lines
+    workers: 4
+`
+
+	result, err := httpOutputWithWorkers().LoadAsYaml(sl, 0)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(result).To(Equal(expected))
+}

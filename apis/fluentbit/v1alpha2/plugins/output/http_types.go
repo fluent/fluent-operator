@@ -67,6 +67,8 @@ type HTTP struct {
 	*plugins.Networking `json:"networking,omitempty"`
 	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
 	TotalLimitSize string `json:"totalLimitSize,omitempty"`
+	// Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0.
+	Workers *int32 `json:"workers,omitempty"`
 }
 
 // implement Name method
@@ -125,6 +127,7 @@ func (h *HTTP) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 
 	plugins.InsertKVString(kvs, "storage.total_limit_size", h.TotalLimitSize)
+	plugins.InsertKVField(kvs, "workers", h.Workers)
 
 	return kvs, nil
 }
