@@ -35,6 +35,7 @@ func TestHTTP_Params(t *testing.T) {
 		TLS:                &plugins.TLS{Verify: new(false)},
 		Networking:         &plugins.Networking{SourceAddress: new("expected_source_address")},
 		TotalLimitSize:     "512M",
+		Workers:            new(int32(4)),
 	}
 
 	expected := params.NewKVs()
@@ -50,6 +51,7 @@ func TestHTTP_Params(t *testing.T) {
 	expected.Insert("tls.verify", "false")
 	expected.Insert("net.source_address", "expected_source_address")
 	expected.Insert("storage.total_limit_size", "512M")
+	expected.Insert("workers", "4")
 
 	kvs, err := h.Params(sl)
 	g.Expect(err).NotTo(HaveOccurred())
