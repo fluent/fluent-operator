@@ -18,6 +18,8 @@ type Logfmt struct {
 	TimeFormat string `json:"timeFormat,omitempty"`
 	// Time_Keep
 	TimeKeep *bool `json:"timeKeep,omitempty"`
+	// Time_Strict
+	TimeStrict *bool `json:"timeStrict,omitempty"`
 }
 
 func (*Logfmt) Name() string {
@@ -34,6 +36,9 @@ func (l *Logfmt) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if l.TimeKeep != nil {
 		kvs.Insert("Time_Keep", fmt.Sprint(*l.TimeKeep))
+	}
+	if l.TimeStrict != nil {
+		kvs.Insert("Time_Strict", fmt.Sprint(*l.TimeStrict))
 	}
 	return kvs, nil
 }
