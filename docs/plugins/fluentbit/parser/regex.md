@@ -10,4 +10,5 @@ The regex parser allows to define a custom Ruby Regular Expression that will use
 | timeFormat | Time_Format, eg. %Y-%m-%dT%H:%M:%S %z | string |
 | timeKeep | Time_Keep | *bool |
 | timeOffset | Time_Offset, eg. +0200 | string |
+| timeStrict | Time_Strict | *bool |
 | types |  | string |

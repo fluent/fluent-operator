@@ -8,4 +8,5 @@ The LSTV parser allows to parse LTSV formatted texts. <br /> **For full document
 | timeKey | Time_Key | string |
 | timeFormat | Time_Format, eg. %Y-%m-%dT%H:%M:%S %z | string |
 | timeKeep | Time_Keep | *bool |
+| timeStrict | Time_Strict | *bool |
 | types |  | string |

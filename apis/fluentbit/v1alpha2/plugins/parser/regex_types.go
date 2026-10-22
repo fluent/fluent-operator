@@ -19,6 +19,8 @@ type Regex struct {
 	TimeFormat string `json:"timeFormat,omitempty"`
 	// Time_Keep
 	TimeKeep *bool `json:"timeKeep,omitempty"`
+	// Time_Strict
+	TimeStrict *bool `json:"timeStrict,omitempty"`
 	// Time_Offset, eg. +0200
 	TimeOffset string `json:"timeOffset,omitempty"`
 	Types      string `json:"types,omitempty"`
@@ -41,6 +43,9 @@ func (re *Regex) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if re.TimeKeep != nil {
 		kvs.Insert("Time_Keep", fmt.Sprint(*re.TimeKeep))
+	}
+	if re.TimeStrict != nil {
+		kvs.Insert("Time_Strict", fmt.Sprint(*re.TimeStrict))
 	}
 	if re.TimeOffset != "" {
 		kvs.Insert("Time_Offset", re.TimeOffset)

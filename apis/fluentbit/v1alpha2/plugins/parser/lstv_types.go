@@ -17,8 +17,10 @@ type LSTV struct {
 	// Time_Format, eg. %Y-%m-%dT%H:%M:%S %z
 	TimeFormat string `json:"timeFormat,omitempty"`
 	// Time_Keep
-	TimeKeep *bool  `json:"timeKeep,omitempty"`
-	Types    string `json:"types,omitempty"`
+	TimeKeep *bool `json:"timeKeep,omitempty"`
+	// Time_Strict
+	TimeStrict *bool  `json:"timeStrict,omitempty"`
+	Types      string `json:"types,omitempty"`
 }
 
 func (*LSTV) Name() string {
@@ -35,6 +37,9 @@ func (l *LSTV) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if l.TimeKeep != nil {
 		kvs.Insert("Time_Format", fmt.Sprint(*l.TimeKeep))
+	}
+	if l.TimeStrict != nil {
+		kvs.Insert("Time_Strict", fmt.Sprint(*l.TimeStrict))
 	}
 	if l.Types != "" {
 		kvs.Insert("Types", l.Types)
