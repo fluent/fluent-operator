@@ -86,7 +86,7 @@ var _ = Describe("Fluentd E2E Deployment Test", func() {
 						},
 					},
 					// Explicitly set image as operator doesn't provide a default yet
-					Image: "ghcr.io/fluent/fluent-operator/fluentd:v1.19.2",
+					Image: "ghcr.io/fluent/fluent-operator/fluentd:v1.19.4",
 					// Use EmptyDir for buffers to avoid PVC provisioning issues in CI
 					BufferVolume: &fluentdv1alpha1.BufferVolume{
 						EmptyDir: &corev1.EmptyDirVolumeSource{},
