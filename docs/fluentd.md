@@ -35,6 +35,7 @@ This Document documents the types introduced by the fluentd Operator.
 * [Output](#output)
 * [OutputList](#outputlist)
 * [OutputSpec](#outputspec)
+* [PodDisruptionBudget](#poddisruptionbudget)
 # BufferVolume
 
 
@@ -337,6 +338,7 @@ FluentdSpec defines the desired state of Fluentd
 | defaultOutputSelector | Select cluster output plugins used to send all logs that did not match any route to the matching outputs | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta) |
 | disableService | By default will build the related service according to the globalinputs definition. | bool |
 | replicas | Numbers of the Fluentd instance Applicable when the mode is \"collector\", and will be ignored when the mode is \"agent\" | *int32 |
+| podDisruptionBudget | PodDisruptionBudget for the Fluentd pods, created and kept in sync by the operator. Applicable when the mode is \"collector\", and will be ignored when the mode is \"agent\" | *[PodDisruptionBudget](#poddisruptionbudget) |
 | workers | Numbers of the workers in Fluentd instance | *int32 |
 | logLevel | Global logging verbosity | string |
 | image | Fluentd image. | string |
@@ -445,5 +447,16 @@ OutputSpec defines the desired state of Output
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | outputs |  | [][output.Output](plugins/fluentd/output/output.md) |
+
+[Back to TOC](#table-of-contents)
+# PodDisruptionBudget
+
+PodDisruptionBudget limits the number of Fluentd pods that are down at the same time during a voluntary disruption, such as a node drain. Set exactly one of minAvailable and maxUnavailable.
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| minAvailable | Number or percentage of Fluentd pods that must stay available. | *intstr.IntOrString |
+| maxUnavailable | Number or percentage of Fluentd pods that can be unavailable. | *intstr.IntOrString |
 
 [Back to TOC](#table-of-contents)
