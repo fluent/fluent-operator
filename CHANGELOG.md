@@ -1,5 +1,29 @@
 # Change Log
 
+## [3.11.0](https://github.com/fluent/fluent-operator/compare/v3.10.1...v3.11.0) (2026-10-28)
+
+
+### Features
+
+* **fluentbit:** add autoExtractTimestamp to splunk output ([#2063](https://github.com/fluent/fluent-operator/issues/2063)) ([4cc7e86](https://github.com/fluent/fluent-operator/commit/4cc7e86f66f2454cd47547afa57d08798e6dc257))
+* **fluentbit:** add timeStrict option to parsers ([#2081](https://github.com/fluent/fluent-operator/issues/2081)) ([2ca899b](https://github.com/fluent/fluent-operator/commit/2ca899b63cc74890c51e564b39cd090a69386a24))
+* **fluentbit:** add workers option to http output ([#2076](https://github.com/fluent/fluent-operator/issues/2076)) ([5a5823e](https://github.com/fluent/fluent-operator/commit/5a5823ed915bb204218e119b2f0461e8e043d081))
+* **fluentbit:** set Alias on auto-generated namespace-routing rewrite_tag filters ([#2052](https://github.com/fluent/fluent-operator/issues/2052)) ([6bf5e67](https://github.com/fluent/fluent-operator/commit/6bf5e67b4a72802d16cb4f851c0ff30b7626853f))
+* **helm:** add excludePath to fluentbit tail input ([#2074](https://github.com/fluent/fluent-operator/issues/2074)) ([7a4e3b7](https://github.com/fluent/fluent-operator/commit/7a4e3b767eeb5498149f693818069b802e86629e))
+
+
+### Dependencies
+
+* **deps:** bump fluent-bit to 5.1.2 ([#2061](https://github.com/fluent/fluent-operator/issues/2061)) ([2d8ae1c](https://github.com/fluent/fluent-operator/commit/2d8ae1c7266541fa5fd005801b5214f7910c3a99))
+* **deps:** bump fluent-bit to 5.1.5 ([#2079](https://github.com/fluent/fluent-operator/issues/2079)) ([fa3d487](https://github.com/fluent/fluent-operator/commit/fa3d48750f63b96dd1fbb4eabec1d9ddbf04a751))
+* **deps:** bump fluentd to v1.19.4 ([#2080](https://github.com/fluent/fluent-operator/issues/2080)) ([cedf2e8](https://github.com/fluent/fluent-operator/commit/cedf2e838e6c363396ad093aed2fe691108df02e))
+* **deps:** Bump github.com/go-openapi/errors from 0.22.8 to 0.22.9 ([#2064](https://github.com/fluent/fluent-operator/issues/2064)) ([8966e14](https://github.com/fluent/fluent-operator/commit/8966e14eeecc3c7dace3d7767d351550c99c988a))
+* **deps:** Bump github.com/onsi/ginkgo/v2 from 2.33.0 to 2.33.1 ([#2077](https://github.com/fluent/fluent-operator/issues/2077)) ([9dde1a8](https://github.com/fluent/fluent-operator/commit/9dde1a89d81e47f66a6becfc5b6c8b4c7a322e30))
+* **deps:** Bump github.com/onsi/gomega from 1.43.1 to 1.44.0 ([b36a884](https://github.com/fluent/fluent-operator/commit/b36a884c3cd9dd7f9227123ae9b668658ca20d38))
+* **deps:** Bump golang.org/x/sync from 0.23.0 to 0.24.0 ([#2078](https://github.com/fluent/fluent-operator/issues/2078)) ([f3ae58e](https://github.com/fluent/fluent-operator/commit/f3ae58eebb30c4b331c7ec7c1ceb1aee8a618381))
+* **deps:** Bump sigs.k8s.io/controller-runtime from 0.25.1 to 0.25.2 ([#2075](https://github.com/fluent/fluent-operator/issues/2075)) ([a77818a](https://github.com/fluent/fluent-operator/commit/a77818a902240bd496fa11a114e4b50afb8d3214))
+* **deps:** Bump the k8s-io group across 1 directory with 3 updates ([afaa360](https://github.com/fluent/fluent-operator/commit/afaa36030ec46f16308c2a86d4eed61be3dbce61))
+
 ## [3.10.1](https://github.com/fluent/fluent-operator/compare/v3.10.0...v3.10.1) (2026-09-21)
 
 
