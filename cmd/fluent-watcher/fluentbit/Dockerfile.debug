@@ -1,5 +1,5 @@
 ARG FLUENT_BIT_BASE_VERSION=3.2.4 \
-    GO_VERSION=1.26.6
+    GO_VERSION=1.27.2
 
 FROM golang:${GO_VERSION}-alpine3.23 AS buildergo
 RUN mkdir -p /fluent-bit
