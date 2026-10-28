@@ -8,3 +8,4 @@ The logfmt parser allows to parse the logfmt format described in https://brandur
 | timeKey | Time_Key | string |
 | timeFormat | Time_Format, eg. %Y-%m-%dT%H:%M:%S %z | string |
 | timeKeep | Time_Keep | *bool |
+| timeStrict | Time_Strict | *bool |

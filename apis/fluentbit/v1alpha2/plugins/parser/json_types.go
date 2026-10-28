@@ -18,6 +18,8 @@ type JSON struct {
 	TimeFormat string `json:"timeFormat,omitempty"`
 	// Time_Keep
 	TimeKeep *bool `json:"timeKeep,omitempty"`
+	// Time_Strict
+	TimeStrict *bool `json:"timeStrict,omitempty"`
 }
 
 func (*JSON) Name() string {
@@ -34,6 +36,9 @@ func (j *JSON) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if j.TimeKeep != nil {
 		kvs.Insert("Time_Keep", fmt.Sprint(*j.TimeKeep))
+	}
+	if j.TimeStrict != nil {
+		kvs.Insert("Time_Strict", fmt.Sprint(*j.TimeStrict))
 	}
 	return kvs, nil
 }
