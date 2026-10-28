@@ -24,6 +24,7 @@ import (
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	policyv1 "k8s.io/api/policy/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -52,6 +53,7 @@ type FluentdReconciler struct {
 // +kubebuilder:rbac:groups=fluentd.fluent.io,resources=fluentds/finalizers,verbs=update
 // +kubebuilder:rbac:groups=apps,resources=daemonsets;statefulsets,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=core,resources=secrets,verbs=get
+// +kubebuilder:rbac:groups=policy,resources=poddisruptionbudgets,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=core,resources=serviceaccounts;services,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles;clusterrolebindings,verbs=create;get;list;watch;patch
 
@@ -137,6 +139,9 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		if err = r.Delete(ctx, &sts); err != nil && !errors.IsNotFound(err) {
 			return ctrl.Result{}, err
 		}
+		if err = r.deletePodDisruptionBudget(ctx, &fd); err != nil {
+			return ctrl.Result{}, err
+		}
 	} else {
 		// Deploy Fluentd StatefulSet
 		sts := operator.MakeStatefulSet(fd)
@@ -151,6 +156,14 @@ func (r *FluentdReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 			},
 		}
 		if err = r.Delete(ctx, &ds); err != nil && !errors.IsNotFound(err) {
+			return ctrl.Result{}, err
+		}
+		// Deploy or remove the Fluentd PodDisruptionBudget
+		if pdb := operator.MakeFluentdPodDisruptionBudget(fd); pdb != nil {
+			if _, err = controllerutil.CreateOrPatch(ctx, r.Client, pdb, r.mutate(pdb, &fd)); err != nil {
+				return ctrl.Result{}, err
+			}
+		} else if err = r.deletePodDisruptionBudget(ctx, &fd); err != nil {
 			return ctrl.Result{}, err
 		}
 	}
@@ -248,5 +261,6 @@ func (r *FluentdReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&appsv1.DaemonSet{}).
 		Owns(&appsv1.StatefulSet{}).
 		Owns(&corev1.Service{}).
+		Owns(&policyv1.PodDisruptionBudget{}).
 		Complete(r)
 }

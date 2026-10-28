@@ -7,6 +7,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	policyv1 "k8s.io/api/policy/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -111,6 +112,20 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 	return nil
 }
 
+// deletePodDisruptionBudget removes the Fluentd PodDisruptionBudget, if there is one.
+func (r *FluentdReconciler) deletePodDisruptionBudget(ctx context.Context, fd *fluentdv1alpha1.Fluentd) error {
+	pdb := policyv1.PodDisruptionBudget{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fd.Name,
+			Namespace: fd.Namespace,
+		},
+	}
+	if err := r.Delete(ctx, &pdb); err != nil && !errors.IsNotFound(err) {
+		return err
+	}
+	return nil
+}
+
 func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluentd) controllerutil.MutateFn {
 	switch o := obj.(type) {
 	case *rbacv1.ClusterRole:
@@ -197,6 +212,20 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 				o.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = restartedAt
 			}
 
+			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
+				return err
+			}
+			return nil
+		}
+	case *policyv1.PodDisruptionBudget:
+		expected := operator.MakeFluentdPodDisruptionBudget(*fd)
+
+		return func() error {
+			if expected == nil {
+				return nil
+			}
+			o.Labels = expected.Labels
+			o.Spec = expected.Spec
 			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
 				return err
 			}
