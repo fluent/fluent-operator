@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.26.6
+ARG GO_VERSION=1.27.2
 # Build the manager binary
 FROM golang:${GO_VERSION} AS builder
 

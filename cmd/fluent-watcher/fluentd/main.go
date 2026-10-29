@@ -149,8 +149,8 @@ func main() {
 						reloadOrStop()
 						resetTimer()
 						_ = level.Info(logger).Log("msg", "Config file changed, gracefully reloaded configuration")
-					case <-watcher.Errors():
-						_ = level.Error(logger).Log("msg", "Watcher stopped")
+					case err := <-watcher.Errors():
+						_ = level.Error(logger).Log("msg", "Watcher stopped", "err", err)
 						return nil
 					}
 				}
