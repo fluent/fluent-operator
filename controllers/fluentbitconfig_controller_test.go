@@ -129,3 +129,55 @@ func TestGenerateRewriteTagConfigAliasClassic(t *testing.T) {
 		t.Fatalf("expected Alias in classic output, got:\n%s", classicOut)
 	}
 }
+
+// TestGenerateRewriteTagConfigRuleKey verifies that service.emitterRuleKey
+// replaces the record accessor the namespace routing rule matches against.
+func TestGenerateRewriteTagConfigRuleKey(t *testing.T) {
+	r := &FluentBitConfigReconciler{}
+	inputs := fluentbitv1alpha2.ClusterInputList{
+		Items: []fluentbitv1alpha2.ClusterInput{
+			{
+				Spec: fluentbitv1alpha2.InputSpec{
+					Tail: &input.Tail{
+						Tag:  "kube.*",
+						Path: "/var/log/containers/*.log",
+					},
+				},
+			},
+		},
+	}
+
+	for _, tc := range []struct {
+		name    string
+		service *fluentbitv1alpha2.Service
+		wantKey string
+	}{
+		{name: "default", wantKey: "$kubernetes['namespace_name']"},
+		{name: "service without a key", service: &fluentbitv1alpha2.Service{}, wantKey: "$kubernetes['namespace_name']"},
+		{
+			name:    "flattened key",
+			service: &fluentbitv1alpha2.Service{EmitterRuleKey: "$kubernetes_namespace_name"},
+			wantKey: "$kubernetes_namespace_name",
+		},
+		{
+			name:    "key without the leading $",
+			service: &fluentbitv1alpha2.Service{EmitterRuleKey: "kubernetes_namespace_name"},
+			wantKey: "$kubernetes_namespace_name",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg := fluentbitv1alpha2.FluentBitConfig{
+				ObjectMeta: metav1.ObjectMeta{Namespace: "test"},
+				Spec:       fluentbitv1alpha2.NamespacedFluentBitCfgSpec{Service: tc.service},
+			}
+			out, err := r.generateRewriteTagConfig(cfg, inputs, nil)
+			if err != nil {
+				t.Fatalf("generateRewriteTagConfig returned error: %v", err)
+			}
+			want := "Rule    " + tc.wantKey + " ^(test)$ 098f6bcd4621d373cade4e832627b4f6.$TAG false"
+			if !strings.Contains(out, want) {
+				t.Fatalf("expected %q, got:\n%s", want, out)
+			}
+		})
+	}
+}
