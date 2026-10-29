@@ -29603,6 +29603,52 @@ spec:
                 x-kubernetes-validations:
                 - message: set exactly one of minAvailable and maxUnavailable
                   rule: has(self.minAvailable) != has(self.maxUnavailable)
+              ports:
+                description: |-
+                  Ports represents additional ports of the fluentd container, also exposed by the fluentd service.
+                  Use it for inputs whose ports the operator doesn't know about, such as customPlugin sources.
+                  Every port needs a name, because a service with several ports requires named ports. Don't
+                  repeat the port and protocol of a forward or http input, which the service already exposes.
+                items:
+                  description: ContainerPort represents a network port in a single
+                    container.
+                  properties:
+                    containerPort:
+                      description: |-
+                        Number of port to expose on the pod's IP address.
+                        This must be a valid port number, 0 < x < 65536.
+                      format: int32
+                      type: integer
+                    hostIP:
+                      description: What host IP to bind the external port to.
+                      type: string
+                    hostPort:
+                      description: |-
+                        Number of port to expose on the host.
+                        If specified, this must be a valid port number, 0 < x < 65536.
+                        If HostNetwork is specified, this must match ContainerPort.
+                        Most containers do not need this.
+                      format: int32
+                      type: integer
+                    name:
+                      description: |-
+                        If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
+                        named port in a pod must have a unique name. Name for the port that can be
+                        referred to by services.
+                      type: string
+                    protocol:
+                      default: TCP
+                      description: |-
+                        Protocol for port. Must be UDP, TCP, or SCTP.
+                        Defaults to "TCP".
+                      type: string
+                  required:
+                  - containerPort
+                  type: object
+                type: array
+                x-kubernetes-validations:
+                - message: every port needs a name
+                  rule: self.all(p, has(p.name) && p.name != '')
               positionDB:
                 description: |-
                   Storage for position db. You will use it if tail input is enabled.

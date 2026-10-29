@@ -218,5 +218,7 @@ func makeFluentdPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 		}
 	}
 
+	ports = append(ports, fd.Spec.Ports...)
+
 	return ports
 }
