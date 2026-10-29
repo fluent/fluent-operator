@@ -56,9 +56,9 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 	for _, input := range globalInputs {
 
 		if input.Forward != nil {
-			forwardPort := *input.Forward.Port
-			if forwardPort == 0 {
-				forwardPort = DefaultForwardPort
+			forwardPort := DefaultForwardPort
+			if input.Forward.Port != nil {
+				forwardPort = *input.Forward.Port
 			}
 
 			forwardContainerPort := corev1.ServicePort{
@@ -72,9 +72,9 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 		}
 
 		if input.Http != nil {
-			httpPort := *input.Http.Port
-			if httpPort == 0 {
-				httpPort = DefaultHttpPort
+			httpPort := DefaultHttpPort
+			if input.Http.Port != nil {
+				httpPort = *input.Http.Port
 			}
 			httpContainerPort := corev1.ServicePort{
 				Name:       DefaultHttpName,
