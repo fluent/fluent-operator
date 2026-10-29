@@ -49,6 +49,15 @@ type LogToMetrics struct {
 	// Flag that defines if logs should be discarded after processing. This applies
 	// for all logs, no matter if they have emitted metrics or not.
 	DiscardLogs *bool `json:"discardLogs,omitempty"`
+	// The interval for metrics emission, in seconds. If flushIntervalSec and flushIntervalNsec are both
+	// unset or 0, metrics are emitted right after each filter match. Otherwise they are emitted at
+	// this interval, which lowers resource usage under high load.
+	// +kubebuilder:validation:Minimum:=0
+	FlushIntervalSec *int32 `json:"flushIntervalSec,omitempty"`
+	// The interval for metrics emission, in nanoseconds. Works together with flushIntervalSec.
+	// +kubebuilder:validation:Minimum:=0
+	// +kubebuilder:validation:Maximum:=999999999
+	FlushIntervalNsec *int32 `json:"flushIntervalNsec,omitempty"`
 }
 
 func (*LogToMetrics) Name() string {
@@ -108,6 +117,12 @@ func (l *LogToMetrics) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 	if l.DiscardLogs != nil {
 		kvs.Insert("Discard_logs", fmt.Sprintf("%t", *l.DiscardLogs))
+	}
+	if l.FlushIntervalSec != nil {
+		kvs.Insert("Flush_Interval_Sec", fmt.Sprintf("%d", *l.FlushIntervalSec))
+	}
+	if l.FlushIntervalNsec != nil {
+		kvs.Insert("Flush_Interval_Nsec", fmt.Sprintf("%d", *l.FlushIntervalNsec))
 	}
 	return kvs, nil
 }

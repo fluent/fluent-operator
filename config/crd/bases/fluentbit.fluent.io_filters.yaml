@@ -366,6 +366,21 @@ spec:
                           items:
                             type: string
                           type: array
+                        flushIntervalNsec:
+                          description: The interval for metrics emission, in nanoseconds.
+                            Works together with flushIntervalSec.
+                          format: int32
+                          maximum: 999999999
+                          minimum: 0
+                          type: integer
+                        flushIntervalSec:
+                          description: |-
+                            The interval for metrics emission, in seconds. If flushIntervalSec and flushIntervalNsec are both
+                            unset or 0, metrics are emitted right after each filter match. Otherwise they are emitted at
+                            this interval, which lowers resource usage under high load.
+                          format: int32
+                          minimum: 0
+                          type: integer
                         kubernetesMode:
                           description: |-
                             If enabled, it will automatically put pod_id, pod_name, namespace_name, docker_id and container_name

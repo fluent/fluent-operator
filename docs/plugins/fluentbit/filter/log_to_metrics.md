@@ -21,3 +21,5 @@ The Log To Metrics Filter plugin allows you to generate log-derived metrics. <br
 | emitterName | Name of the emitter (advanced users) | string |
 | emitterMemBufLimit | set a buffer limit to restrict memory usage of metrics emitter | string |
 | discardLogs | Flag that defines if logs should be discarded after processing. This applies for all logs, no matter if they have emitted metrics or not. | *bool |
+| flushIntervalSec | The interval for metrics emission, in seconds. If flushIntervalSec and flushIntervalNsec are both unset or 0, metrics are emitted right after each filter match. Otherwise they are emitted at this interval, which lowers resource usage under high load. | *int32 |
+| flushIntervalNsec | The interval for metrics emission, in nanoseconds. Works together with flushIntervalSec. | *int32 |
