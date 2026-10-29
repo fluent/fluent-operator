@@ -1141,6 +1141,13 @@ spec:
               forward:
                 description: Forward defines Forward Output configuration.
                 properties:
+                  compress:
+                    description: |-
+                      Set to gzip to enable gzip compression. Incompatible with timeAsInteger set to true and with tags
+                      set dynamically using the Rewrite Tag filter. Requires Fluentd server v0.14.7 or later.
+                    enum:
+                    - gzip
+                    type: string
                   emptySharedKey:
                     description: Use this option to connect to Fluentd with a zero-length
                       secret.
