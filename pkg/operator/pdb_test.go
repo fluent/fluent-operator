@@ -22,13 +22,13 @@ func newCollectorFluentd(pdb *fluentdv1alpha1.PodDisruptionBudget) fluentdv1alph
 }
 
 func TestMakeFluentdPodDisruptionBudget(t *testing.T) {
-	g := NewGomegaWithT(t)
-
 	t.Run("no budget requested", func(t *testing.T) {
+		g := NewGomegaWithT(t)
 		g.Expect(MakeFluentdPodDisruptionBudget(newCollectorFluentd(nil))).To(BeNil())
 	})
 
 	t.Run("minAvailable selects the statefulset pods", func(t *testing.T) {
+		g := NewGomegaWithT(t)
 		minAvailable := intstr.FromInt32(2)
 		fd := newCollectorFluentd(&fluentdv1alpha1.PodDisruptionBudget{MinAvailable: &minAvailable})
 
@@ -43,6 +43,7 @@ func TestMakeFluentdPodDisruptionBudget(t *testing.T) {
 	})
 
 	t.Run("maxUnavailable as a percentage", func(t *testing.T) {
+		g := NewGomegaWithT(t)
 		maxUnavailable := intstr.FromString("50%")
 		fd := newCollectorFluentd(&fluentdv1alpha1.PodDisruptionBudget{MaxUnavailable: &maxUnavailable})
 

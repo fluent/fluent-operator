@@ -113,12 +113,16 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 }
 
 // deletePodDisruptionBudget removes the Fluentd PodDisruptionBudget, if there is one.
+// deletePodDisruptionBudget removes the PodDisruptionBudget the operator created for fd. A PodDisruptionBudget
+// with the same name that the operator doesn't control, such as one written by hand before the operator could
+// manage it, is left alone. PodDisruptionBudgets are watched, so the Get is served from the cache.
 func (r *FluentdReconciler) deletePodDisruptionBudget(ctx context.Context, fd *fluentdv1alpha1.Fluentd) error {
-	pdb := policyv1.PodDisruptionBudget{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      fd.Name,
-			Namespace: fd.Namespace,
-		},
+	var pdb policyv1.PodDisruptionBudget
+	if err := r.Get(ctx, client.ObjectKey{Namespace: fd.Namespace, Name: fd.Name}, &pdb); err != nil {
+		return client.IgnoreNotFound(err)
+	}
+	if !metav1.IsControlledBy(&pdb, fd) {
+		return nil
 	}
 	if err := r.Delete(ctx, &pdb); err != nil && !errors.IsNotFound(err) {
 		return err
