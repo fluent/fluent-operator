@@ -112,7 +112,6 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 	return nil
 }
 
-// deletePodDisruptionBudget removes the Fluentd PodDisruptionBudget, if there is one.
 // deletePodDisruptionBudget removes the PodDisruptionBudget the operator created for fd. A PodDisruptionBudget
 // with the same name that the operator doesn't control, such as one written by hand before the operator could
 // manage it, is left alone. PodDisruptionBudgets are watched, so the Get is served from the cache.
