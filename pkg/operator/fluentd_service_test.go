@@ -28,14 +28,19 @@ func TestFluentdInputPorts(t *testing.T) {
 		},
 		{
 			name:     "forward with a port",
-			input:    input.Input{Forward: &input.Forward{Port: int32Ptr(24225)}},
+			input:    input.Input{Forward: &input.Forward{Port: new(int32(24225))}},
 			portName: DefaultForwardName,
 			want:     24225,
 		},
-		{name: "http without a port", input: input.Input{Http: &input.Http{}}, portName: DefaultHttpName, want: 9880},
+		{
+			name:     "http without a port",
+			input:    input.Input{Http: &input.Http{}},
+			portName: DefaultHttpName,
+			want:     9880,
+		},
 		{
 			name:     "http with a port",
-			input:    input.Input{Http: &input.Http{Port: int32Ptr(9881)}},
+			input:    input.Input{Http: &input.Http{Port: new(int32(9881))}},
 			portName: DefaultHttpName,
 			want:     9881,
 		},
@@ -66,5 +71,3 @@ func TestFluentdInputPorts(t *testing.T) {
 		})
 	}
 }
-
-func int32Ptr(v int32) *int32 { return &v }
