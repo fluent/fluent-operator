@@ -330,6 +330,15 @@ spec:
                   emitterName:
                     description: Per-namespace re-emitter configuration
                     type: string
+                  emitterRuleKey:
+                    description: |-
+                      Record accessor the per-namespace rewrite_tag rule matches the namespace name against.
+                      Set it when the kubernetes metadata is not nested under the "kubernetes" key, for example
+                      "$kubernetes_namespace_name". The leading "$" is optional. A FluentBitConfig's value wins over the
+                      ClusterFluentBitConfig's, which wins over the default "$kubernetes['namespace_name']".
+                      The key must exist before namespaced filters run, so flatten the record in a ClusterFilter.
+                    pattern: ^\S+$
+                    type: string
                   emitterStorageType:
                     type: string
                   enableChunkTrace:
