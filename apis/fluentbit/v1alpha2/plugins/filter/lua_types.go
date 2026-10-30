@@ -50,6 +50,36 @@ func (l *Lua) Name() string {
 	return "lua"
 }
 
+// stripLuaLineComment cuts a "--" comment off the end of a line. The inline code
+// is joined into a single line, where a comment would swallow everything after
+// it. A "--" inside a quoted string is kept, and a line with a long bracket
+// ("[[" or "[=[", a block comment or a long string) is left as it is.
+func stripLuaLineComment(line string) string {
+	if strings.Contains(line, "[[") || strings.Contains(line, "[=") {
+		return line
+	}
+	var quote rune
+	escaped := false
+	for i, r := range line {
+		switch {
+		case escaped:
+			escaped = false
+		case quote != 0:
+			switch r {
+			case '\\':
+				escaped = true
+			case quote:
+				quote = 0
+			}
+		case r == '"' || r == '\'':
+			quote = r
+		case strings.HasPrefix(line[i:], "--"):
+			return line[:i]
+		}
+	}
+	return line
+}
+
 func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 	err := l.AddCommonParams(kvs)
@@ -62,7 +92,7 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		lineTrim := ""
 		re := regexp.MustCompile(`^function |^if |^for |^else|^elseif |^end|--[[]+`)
 		for line := range strings.SplitSeq(strings.TrimSuffix(l.Code, "\n"), "\n") {
-			lineTrim = strings.TrimSpace(line)
+			lineTrim = strings.TrimSpace(stripLuaLineComment(line))
 			if lineTrim != "" {
 				operator := re.MatchString(lineTrim)
 				if operator {
