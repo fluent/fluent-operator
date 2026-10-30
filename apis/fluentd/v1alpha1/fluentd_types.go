@@ -23,6 +23,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 const (
@@ -48,6 +49,9 @@ type FluentdSpec struct {
 	// Numbers of the Fluentd instance
 	// Applicable when the mode is "collector", and will be ignored when the mode is "agent"
 	Replicas *int32 `json:"replicas,omitempty"`
+	// PodDisruptionBudget for the Fluentd pods, created and kept in sync by the operator.
+	// Applicable when the mode is "collector", and will be ignored when the mode is "agent"
+	PodDisruptionBudget *PodDisruptionBudget `json:"podDisruptionBudget,omitempty"`
 	// Numbers of the workers in Fluentd instance
 	Workers *int32 `json:"workers,omitempty"`
 	// Global logging verbosity
@@ -200,4 +204,16 @@ type FluentdList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Fluentd `json:"items"`
+}
+
+// PodDisruptionBudget limits the number of Fluentd pods that are down at the same time during a voluntary
+// disruption, such as a node drain. Set exactly one of minAvailable and maxUnavailable.
+// +kubebuilder:validation:XValidation:rule="has(self.minAvailable) != has(self.maxUnavailable)",message="set exactly one of minAvailable and maxUnavailable"
+type PodDisruptionBudget struct {
+	// Number or percentage of Fluentd pods that must stay available.
+	// +kubebuilder:validation:XIntOrString
+	MinAvailable *intstr.IntOrString `json:"minAvailable,omitempty"`
+	// Number or percentage of Fluentd pods that can be unavailable.
+	// +kubebuilder:validation:XIntOrString
+	MaxUnavailable *intstr.IntOrString `json:"maxUnavailable,omitempty"`
 }

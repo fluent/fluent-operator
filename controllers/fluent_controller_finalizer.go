@@ -7,6 +7,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	policyv1 "k8s.io/api/policy/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -111,6 +112,23 @@ func (r *FluentdReconciler) delete(ctx context.Context, fd *fluentdv1alpha1.Flue
 	return nil
 }
 
+// deletePodDisruptionBudget removes the PodDisruptionBudget the operator created for fd. A PodDisruptionBudget
+// with the same name that the operator doesn't control, such as one written by hand before the operator could
+// manage it, is left alone. PodDisruptionBudgets are watched, so the Get is served from the cache.
+func (r *FluentdReconciler) deletePodDisruptionBudget(ctx context.Context, fd *fluentdv1alpha1.Fluentd) error {
+	var pdb policyv1.PodDisruptionBudget
+	if err := r.Get(ctx, client.ObjectKey{Namespace: fd.Namespace, Name: fd.Name}, &pdb); err != nil {
+		return client.IgnoreNotFound(err)
+	}
+	if !metav1.IsControlledBy(&pdb, fd) {
+		return nil
+	}
+	if err := r.Delete(ctx, &pdb); err != nil && !errors.IsNotFound(err) {
+		return err
+	}
+	return nil
+}
+
 func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluentd) controllerutil.MutateFn {
 	switch o := obj.(type) {
 	case *rbacv1.ClusterRole:
@@ -197,6 +215,20 @@ func (r *FluentdReconciler) mutate(obj client.Object, fd *fluentdv1alpha1.Fluent
 				o.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = restartedAt
 			}
 
+			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
+				return err
+			}
+			return nil
+		}
+	case *policyv1.PodDisruptionBudget:
+		expected := operator.MakeFluentdPodDisruptionBudget(*fd)
+
+		return func() error {
+			if expected == nil {
+				return nil
+			}
+			o.Labels = expected.Labels
+			o.Spec = expected.Spec
 			if err := ctrl.SetControllerReference(fd, o, r.Scheme); err != nil {
 				return err
 			}
