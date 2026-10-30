@@ -20,7 +20,12 @@ func TestFluentdInputPorts(t *testing.T) {
 		portName string
 		want     int32
 	}{
-		{name: "forward without a port", input: input.Input{Forward: &input.Forward{}}, portName: DefaultForwardName, want: 24224},
+		{
+			name:     "forward without a port",
+			input:    input.Input{Forward: &input.Forward{}},
+			portName: DefaultForwardName,
+			want:     24224,
+		},
 		{
 			name:     "forward with a port",
 			input:    input.Input{Forward: &input.Forward{Port: int32Ptr(24225)}},
