@@ -98,7 +98,7 @@ func (r *CollectorReconciler) collectorsForSecret(ctx context.Context, obj clien
 // +kubebuilder:rbac:groups=core,resources=serviceaccounts,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles,verbs=create;get;list;watch;patch
-// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterrolebindings,verbs=create;get;list;watch;patch
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterrolebindings,verbs=create;delete;get;list;watch;patch
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get
 // +kubebuilder:rbac:groups=core,resources=secrets,verbs=get;list;watch
 
@@ -168,6 +168,9 @@ func (r *CollectorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 	// Deploy Fluent Bit Collector ClusterRoleBinding
+	if err := replaceStaleClusterRoleBinding(ctx, r.Client, crb); err != nil {
+		return ctrl.Result{}, err
+	}
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, crb, r.mutate(crb, &co)); err != nil {
 		return ctrl.Result{}, err
 	}
