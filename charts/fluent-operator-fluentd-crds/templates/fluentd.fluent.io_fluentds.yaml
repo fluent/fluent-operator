@@ -3171,6 +3171,29 @@ spec:
                   type: string
                 description: NodeSelector
                 type: object
+              podDisruptionBudget:
+                description: |-
+                  PodDisruptionBudget for the Fluentd pods, created and kept in sync by the operator.
+                  Applicable when the mode is "collector", and will be ignored when the mode is "agent"
+                properties:
+                  maxUnavailable:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Number or percentage of Fluentd pods that can be
+                      unavailable.
+                    x-kubernetes-int-or-string: true
+                  minAvailable:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Number or percentage of Fluentd pods that must stay
+                      available.
+                    x-kubernetes-int-or-string: true
+                type: object
+                x-kubernetes-validations:
+                - message: set exactly one of minAvailable and maxUnavailable
+                  rule: has(self.minAvailable) != has(self.maxUnavailable)
               positionDB:
                 description: |-
                   Storage for position db. You will use it if tail input is enabled.

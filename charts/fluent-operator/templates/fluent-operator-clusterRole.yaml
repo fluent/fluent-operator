@@ -8,6 +8,17 @@ metadata:
   name: {{ .Values.operator.rbac.clusterRole.name }}
 rules:
   - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - watch
+  - apiGroups:
       - apps
     resources:
       - daemonsets

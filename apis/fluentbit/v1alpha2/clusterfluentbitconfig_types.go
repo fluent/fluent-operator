@@ -120,6 +120,13 @@ type Service struct {
 	EmitterName        string `json:"emitterName,omitempty"`
 	EmitterMemBufLimit string `json:"emitterMemBufLimit,omitempty"`
 	EmitterStorageType string `json:"emitterStorageType,omitempty"`
+	// Record accessor the per-namespace rewrite_tag rule matches the namespace name against.
+	// Set it when the kubernetes metadata is not nested under the "kubernetes" key, for example
+	// "$kubernetes_namespace_name". The leading "$" is optional. A FluentBitConfig's value wins over the
+	// ClusterFluentBitConfig's, which wins over the default "$kubernetes['namespace_name']".
+	// The key must exist before namespaced filters run, so flatten the record in a ClusterFilter.
+	// +kubebuilder:validation:Pattern:="^\\S+$"
+	EmitterRuleKey string `json:"emitterRuleKey,omitempty"`
 	// If true enable reloading via HTTP
 	HotReload *bool `json:"hotReload,omitempty"`
 	// If true, preserve thread safety during hot reload by waiting for in-flight work to drain before reloading; this wait can be bounded by hotReloadTimeout.
