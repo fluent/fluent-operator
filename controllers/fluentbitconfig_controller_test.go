@@ -51,7 +51,7 @@ func TestGenerateRewriteTagConfigYaml(t *testing.T) {
 	}
 
 	yamlFormat := configFileFormatYaml
-	out, err := r.generateRewriteTagConfig(cfg, inputs, &yamlFormat)
+	out, err := r.generateRewriteTagConfig(cfg, inputs, &yamlFormat, nil)
 	if err != nil {
 		t.Fatalf("generateRewriteTagConfig returned error: %v", err)
 	}
@@ -90,7 +90,7 @@ func TestGenerateRewriteTagConfigYaml(t *testing.T) {
 	}
 
 	// classic (default) format must remain unchanged (TOML).
-	classicOut, err := r.generateRewriteTagConfig(cfg, inputs, nil)
+	classicOut, err := r.generateRewriteTagConfig(cfg, inputs, nil, nil)
 	if err != nil {
 		t.Fatalf("generateRewriteTagConfig returned error: %v", err)
 	}
@@ -121,7 +121,7 @@ func TestGenerateRewriteTagConfigAliasClassic(t *testing.T) {
 		},
 	}
 
-	classicOut, err := r.generateRewriteTagConfig(cfg, inputs, nil)
+	classicOut, err := r.generateRewriteTagConfig(cfg, inputs, nil, nil)
 	if err != nil {
 		t.Fatalf("generateRewriteTagConfig (classic) returned error: %v", err)
 	}
@@ -130,8 +130,9 @@ func TestGenerateRewriteTagConfigAliasClassic(t *testing.T) {
 	}
 }
 
-// TestGenerateRewriteTagConfigRuleKey verifies that service.emitterRuleKey
-// replaces the record accessor the namespace routing rule matches against.
+// TestGenerateRewriteTagConfigRuleKey verifies that service.emitterRuleKey, from
+// the FluentBitConfig or else the ClusterFluentBitConfig, replaces the record
+// accessor the namespace routing rule matches against.
 func TestGenerateRewriteTagConfigRuleKey(t *testing.T) {
 	r := &FluentBitConfigReconciler{}
 	inputs := fluentbitv1alpha2.ClusterInputList{
@@ -148,9 +149,10 @@ func TestGenerateRewriteTagConfigRuleKey(t *testing.T) {
 	}
 
 	for _, tc := range []struct {
-		name    string
-		service *fluentbitv1alpha2.Service
-		wantKey string
+		name           string
+		service        *fluentbitv1alpha2.Service
+		clusterService *fluentbitv1alpha2.Service
+		wantKey        string
 	}{
 		{name: "default", wantKey: "$kubernetes['namespace_name']"},
 		{name: "service without a key", service: &fluentbitv1alpha2.Service{}, wantKey: "$kubernetes['namespace_name']"},
@@ -164,13 +166,25 @@ func TestGenerateRewriteTagConfigRuleKey(t *testing.T) {
 			service: &fluentbitv1alpha2.Service{EmitterRuleKey: "kubernetes_namespace_name"},
 			wantKey: "$kubernetes_namespace_name",
 		},
+		{
+			name:           "falls back to the cluster config",
+			service:        &fluentbitv1alpha2.Service{},
+			clusterService: &fluentbitv1alpha2.Service{EmitterRuleKey: "$kubernetes_namespace_name"},
+			wantKey:        "$kubernetes_namespace_name",
+		},
+		{
+			name:           "namespaced config wins over the cluster config",
+			service:        &fluentbitv1alpha2.Service{EmitterRuleKey: "$k8s_ns"},
+			clusterService: &fluentbitv1alpha2.Service{EmitterRuleKey: "$kubernetes_namespace_name"},
+			wantKey:        "$k8s_ns",
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			cfg := fluentbitv1alpha2.FluentBitConfig{
 				ObjectMeta: metav1.ObjectMeta{Namespace: "test"},
 				Spec:       fluentbitv1alpha2.NamespacedFluentBitCfgSpec{Service: tc.service},
 			}
-			out, err := r.generateRewriteTagConfig(cfg, inputs, nil)
+			out, err := r.generateRewriteTagConfig(cfg, inputs, nil, tc.clusterService)
 			if err != nil {
 				t.Fatalf("generateRewriteTagConfig returned error: %v", err)
 			}

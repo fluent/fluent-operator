@@ -643,7 +643,7 @@ ParserSpec defines the desired state of ClusterParser
 | emitterName | Per-namespace re-emitter configuration | string |
 | emitterMemBufLimit |  | string |
 | emitterStorageType |  | string |
-| emitterRuleKey | Record accessor the per-namespace rewrite_tag rule matches the namespace name against. Set it when the kubernetes metadata is not nested under the \"kubernetes\" key, for example \"$kubernetes_namespace_name\". The leading \"$\" is optional. Defaults to \"$kubernetes['namespace_name']\". | string |
+| emitterRuleKey | Record accessor the per-namespace rewrite_tag rule matches the namespace name against. Set it when the kubernetes metadata is not nested under the \"kubernetes\" key, for example \"$kubernetes_namespace_name\". The leading \"$\" is optional. A FluentBitConfig's value wins over the ClusterFluentBitConfig's, which wins over the default \"$kubernetes['namespace_name']\". The key must exist before namespaced filters run, so flatten the record in a ClusterFilter. | string |
 | hotReload | If true enable reloading via HTTP | *bool |
 | hotReloadEnsureThreadSafety | If true, preserve thread safety during hot reload by waiting for in-flight work to drain before reloading; this wait can be bounded by hotReloadTimeout. | *bool |
 | hotReloadTimeout | Maximum time in seconds to wait for a hot reload to complete before aborting. | *int32 |

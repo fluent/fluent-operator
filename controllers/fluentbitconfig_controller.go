@@ -245,7 +245,7 @@ func (r *FluentBitConfigReconciler) reconcileFluentBits(
 			nsFilterLists, nsOutputLists, nsParserLists,
 				nsClusterParserLists, nsMultilineParserLists, nsClusterMultilineParserLists,
 				rewriteTagConfigs, err := r.processNamespacedFluentBitCfgs(
-				ctx, fb, clusterPlugins.inputs, cfg.Spec.ConfigFileFormat,
+				ctx, fb, clusterPlugins.inputs, cfg.Spec.ConfigFileFormat, cfg.Spec.Service,
 			)
 
 			if err != nil {
@@ -446,7 +446,7 @@ func (r *FluentBitConfigReconciler) renderAndStoreConfig(
 
 func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 	ctx context.Context, fb fluentbitv1alpha2.FluentBit, inputs fluentbitv1alpha2.ClusterInputList,
-	configFileFormat *string,
+	configFileFormat *string, clusterService *fluentbitv1alpha2.Service,
 ) (
 	[]fluentbitv1alpha2.FilterList, []fluentbitv1alpha2.OutputList,
 	[]fluentbitv1alpha2.ParserList, []fluentbitv1alpha2.ClusterParserList,
@@ -499,7 +499,7 @@ func (r *FluentBitConfigReconciler) processNamespacedFluentBitCfgs(
 		clusterMultilineParsers = append(clusterMultilineParsers, clusterMultilineParsersList)
 
 		if _, ok := storeNamespaces[cfg.Namespace]; !ok {
-			rewriteTagConfig, err := r.generateRewriteTagConfig(cfg, inputs, configFileFormat)
+			rewriteTagConfig, err := r.generateRewriteTagConfig(cfg, inputs, configFileFormat, clusterService)
 			if err != nil {
 				return filters, outputs, parsers,
 					clusterParsers, multilineParsers, clusterMultilineParsers,
@@ -609,6 +609,7 @@ func (r *FluentBitConfigReconciler) ListFluentBitConfigResources(
 
 func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 	cfg fluentbitv1alpha2.FluentBitConfig, inputs fluentbitv1alpha2.ClusterInputList, configFileFormat *string,
+	clusterService *fluentbitv1alpha2.Service,
 ) (string, error) {
 	var tag string
 	for _, input := range inputs.Items {
@@ -627,14 +628,7 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 		return "", nil
 	}
 
-	ruleKey := "$kubernetes['namespace_name']"
-	if cfg.Spec.Service != nil && cfg.Spec.Service.EmitterRuleKey != "" {
-		ruleKey = cfg.Spec.Service.EmitterRuleKey
-		if !strings.HasPrefix(ruleKey, "$") {
-			ruleKey = "$" + ruleKey
-		}
-	}
-
+	ruleKey := namespaceRoutingRuleKey(cfg.Spec.Service, clusterService)
 	rewriteTag := &filter.RewriteTag{
 		CommonParams: plugins.CommonParams{
 			Alias: fmt.Sprintf("namespace-routing-%s", cfg.Namespace),
@@ -677,6 +671,22 @@ func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
 		return strings.TrimPrefix(rendered, header), nil
 	}
 	return filterList.Load(sl)
+}
+
+// namespaceRoutingRuleKey returns the record accessor the per-namespace rewrite_tag rule matches against:
+// the FluentBitConfig's emitterRuleKey, else the ClusterFluentBitConfig's, else $kubernetes['namespace_name'].
+func namespaceRoutingRuleKey(nsService, clusterService *fluentbitv1alpha2.Service) string {
+	ruleKey := "$kubernetes['namespace_name']"
+	for _, svc := range []*fluentbitv1alpha2.Service{nsService, clusterService} {
+		if svc != nil && svc.EmitterRuleKey != "" {
+			ruleKey = svc.EmitterRuleKey
+			break
+		}
+	}
+	if !strings.HasPrefix(ruleKey, "$") {
+		ruleKey = "$" + ruleKey
+	}
+	return ruleKey
 }
 
 func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
