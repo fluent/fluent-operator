@@ -477,13 +477,12 @@ fluentbit:
       host: 127.0.0.1
       # -- Loki port
       port: 3100
+      # By default no basic auth and no tenant ID are sent. They are left unset here on purpose:
+      # a default string would make Helm warn when you give a secret reference below instead.
       # Either, give http{User,Password},tenantID string values specifying them directly
-      # -- HTTP basic auth username for Loki
-      httpUser: myuser
-      # -- HTTP basic auth password for Loki
-      httpPassword: mypass
-      # -- Tenant ID for Loki
-      tenantID: ""
+      # httpUser: myuser
+      # httpPassword: mypass
+      # tenantID: mytenant
       # Or give {http{User,Password},tenantID} as reference to secrets that you have manually installed into your kubernetes cluster
       # httpUser:
       #   valueFrom:
