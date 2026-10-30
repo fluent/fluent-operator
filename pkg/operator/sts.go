@@ -19,7 +19,8 @@ const (
 
 	MetricsPort int32 = 2021
 
-	DefaultForwardPort int32 = 24424
+	// Fluentd's own defaults, used when an input leaves its port unset.
+	DefaultForwardPort int32 = 24224
 	DefaultHttpPort    int32 = 9880
 	// 101 is the fsGroup that fluentd runs as in the kubesphere image
 	DefaultFsGroup int64 = 101
