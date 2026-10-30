@@ -46,6 +46,12 @@ type FluentdSpec struct {
 	DefaultOutputSelector *metav1.LabelSelector `json:"defaultOutputSelector,omitempty"`
 	// By default will build the related service according to the globalinputs definition.
 	DisableService bool `json:"disableService,omitempty"`
+	// Ports represents additional ports of the fluentd container, also exposed by the fluentd service.
+	// Use it for inputs whose ports the operator doesn't know about, such as customPlugin sources.
+	// Every port needs a name, because a service with several ports requires named ports. Don't
+	// repeat the port and protocol of a forward or http input, which the service already exposes.
+	// +kubebuilder:validation:XValidation:rule="self.all(p, has(p.name) && p.name != '')",message="every port needs a name"
+	Ports []corev1.ContainerPort `json:"ports,omitempty"`
 	// Numbers of the Fluentd instance
 	// Applicable when the mode is "collector", and will be ignored when the mode is "agent"
 	Replicas *int32 `json:"replicas,omitempty"`

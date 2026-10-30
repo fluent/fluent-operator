@@ -825,6 +825,11 @@ func (in *FluentdSpec) DeepCopyInto(out *FluentdSpec) {
 		*out = new(v1.LabelSelector)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Ports != nil {
+		in, out := &in.Ports, &out.Ports
+		*out = make([]corev1.ContainerPort, len(*in))
+		copy(*out, *in)
+	}
 	if in.Replicas != nil {
 		in, out := &in.Replicas, &out.Replicas
 		*out = new(int32)

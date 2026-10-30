@@ -86,6 +86,15 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 		}
 	}
 
+	for _, port := range fd.Spec.Ports {
+		svc.Spec.Ports = append(svc.Spec.Ports, corev1.ServicePort{
+			Name:       port.Name,
+			Port:       port.ContainerPort,
+			Protocol:   port.Protocol,
+			TargetPort: intstr.FromInt32(port.ContainerPort),
+		})
+	}
+
 	if len(fd.Spec.Service.Annotations) != 0 {
 		svc.Annotations = fd.Spec.Service.Annotations
 	}
