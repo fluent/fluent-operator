@@ -1,5 +1,22 @@
 # Change Log
 
+## [3.12.0](https://github.com/fluent/fluent-operator/compare/v3.11.0...v3.12.0) (2026-10-30)
+
+
+### Features
+
+* **fluentbit:** add compress option to the forward output ([#2083](https://github.com/fluent/fluent-operator/issues/2083)) ([43c9b16](https://github.com/fluent/fluent-operator/commit/43c9b168aed53caaaa85aa2c093d8af96bccf6b6))
+* **fluentbit:** add flush interval options to the log_to_metrics filter ([#2084](https://github.com/fluent/fluent-operator/issues/2084)) ([3b19291](https://github.com/fluent/fluent-operator/commit/3b192917fb38c4eaa2b7c4fd999716706ff69b2c))
+* **fluentbit:** make the namespace routing rewrite_tag key configurable ([#2088](https://github.com/fluent/fluent-operator/issues/2088)) ([41269cc](https://github.com/fluent/fluent-operator/commit/41269cc4cceb1d17b91e5ad58a17b6281c43aa3c))
+* **fluentd:** add ports to expose inputs the operator can't derive ports for ([#2090](https://github.com/fluent/fluent-operator/issues/2090)) ([4f6e07e](https://github.com/fluent/fluent-operator/commit/4f6e07e8ec57fb1d76f7e466a88116e761e1510e))
+* **fluentd:** support a PodDisruptionBudget for the Fluentd StatefulSet ([#2085](https://github.com/fluent/fluent-operator/issues/2085)) ([6e48b86](https://github.com/fluent/fluent-operator/commit/6e48b8604d87080a603c3b1b217f17484a570772))
+
+
+### Bug Fixes
+
+* **fluentd:** use Fluentd's default ports for inputs without a port ([#2089](https://github.com/fluent/fluent-operator/issues/2089)) ([26abfc3](https://github.com/fluent/fluent-operator/commit/26abfc38d79d4b9201d356a7f768b264348a7061))
+* **helm:** do not default Loki credentials so secret references stop warning ([#2091](https://github.com/fluent/fluent-operator/issues/2091)) ([57a4824](https://github.com/fluent/fluent-operator/commit/57a48249a430c7f992c845f47f59a124a1014176))
+
 ## [3.11.0](https://github.com/fluent/fluent-operator/compare/v3.10.1...v3.11.0) (2026-10-28)
 
 
