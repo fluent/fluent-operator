@@ -571,6 +571,13 @@ func (in *Kafka) DeepCopyInto(out *Kafka) {
 			(*out)[key] = val
 		}
 	}
+	if in.RdkafkaSecrets != nil {
+		in, out := &in.RdkafkaSecrets, &out.RdkafkaSecrets
+		*out = make(map[string]plugins.Secret, len(*in))
+		for key, val := range *in {
+			(*out)[key] = *val.DeepCopy()
+		}
+	}
 	if in.DynamicTopic != nil {
 		in, out := &in.DynamicTopic, &out.DynamicTopic
 		*out = new(bool)

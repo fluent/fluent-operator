@@ -40,6 +40,9 @@ type Kafka struct {
 	TopicKey string `json:"topicKey,omitempty"`
 	// {property} can be any librdkafka properties
 	Rdkafka map[string]string `json:"rdkafka,omitempty"`
+	// Librdkafka properties whose values are read from a Secret, for example sasl.username or sasl.password.
+	// A property set in both rdkafka and rdkafkaSecrets takes its value from rdkafkaSecrets.
+	RdkafkaSecrets map[string]plugins.Secret `json:"rdkafkaSecrets,omitempty"`
 	// Adds unknown topics (found in Topic_Key) to Topics. So in Topics only a default topic needs to be configured
 	DynamicTopic *bool `json:"dynamicTopic,omitempty"`
 	// Fluent Bit queues data into rdkafka library,
@@ -59,7 +62,7 @@ func (*Kafka) Name() string {
 }
 
 // implement Section() method
-func (k *Kafka) Params(_ plugins.SecretLoader) (*params.KVs, error) {
+func (k *Kafka) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	kvs := params.NewKVs()
 	if k.Format != "" {
 		kvs.Insert("Format", k.Format)
@@ -97,7 +100,21 @@ func (k *Kafka) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("queue_full_retries", fmt.Sprint(*k.QueueFullRetries))
 	}
 
-	kvs.InsertStringMap(k.Rdkafka, func(k, v string) (string, string) {
+	rdkafka := k.Rdkafka
+	if len(k.RdkafkaSecrets) > 0 {
+		rdkafka = make(map[string]string, len(k.Rdkafka)+len(k.RdkafkaSecrets))
+		for name, value := range k.Rdkafka {
+			rdkafka[name] = value
+		}
+		for name, secret := range k.RdkafkaSecrets {
+			value, err := sl.LoadSecret(secret)
+			if err != nil {
+				return nil, fmt.Errorf("failed to load rdkafka property %q from secret: %w", name, err)
+			}
+			rdkafka[name] = value
+		}
+	}
+	kvs.InsertStringMap(rdkafka, func(k, v string) (string, string) {
 		return fmt.Sprintf("rdkafka.%s", k), v
 	})
 
