@@ -1044,6 +1044,10 @@ spec:
                     description: The character to separate each pair. Applicable only
                       if format is ltsv.
                     type: string
+                  mkdir:
+                    description: Recursively create the output directory if it does
+                      not exist. The directories are created with permissions 0755.
+                    type: boolean
                   path:
                     description: Absolute directory path to store files. If not set,
                       Fluent Bit will write the files on it's own positioned directory.

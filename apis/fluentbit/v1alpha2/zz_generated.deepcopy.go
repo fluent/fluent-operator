@@ -1491,7 +1491,7 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 	if in.File != nil {
 		in, out := &in.File, &out.File
 		*out = new(output.File)
-		**out = **in
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Forward != nil {
 		in, out := &in.Forward, &out.Forward

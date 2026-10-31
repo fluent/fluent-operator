@@ -11,3 +11,4 @@ The file output plugin allows to write the data received through the input plugi
 | delimiter | The character to separate each pair. Applicable only if format is csv or ltsv. | string |
 | labelDelimiter | The character to separate each pair. Applicable only if format is ltsv. | string |
 | template | The format string. Applicable only if format is template. | string |
+| mkdir | Recursively create the output directory if it does not exist. The directories are created with permissions 0755. | *bool |
