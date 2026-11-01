@@ -565,6 +565,7 @@ func (r *FluentBitConfigReconciler) ListFluentBitConfigResources(
 	if err := listNamespacedResources(ctx, r.Client, &outputs, cfg.Namespace, &cfg.Spec.OutputSelector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
+	outputs.Items = r.withoutUnrenderableOutputs(cfg.Namespace, outputs.Items)
 	if err := listNamespacedResources(ctx, r.Client, &parsers, cfg.Namespace, &cfg.Spec.ParserSelector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
@@ -605,6 +606,28 @@ func (r *FluentBitConfigReconciler) ListFluentBitConfigResources(
 	}
 
 	return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, nil
+}
+
+// withoutUnrenderableOutputs drops the namespaced Outputs whose configuration
+// cannot be rendered, e.g. because a Secret they reference is missing in their
+// namespace, and logs each of them. Otherwise one broken Output fails the whole
+// config, and no namespace gets its config updated until it is fixed.
+func (r *FluentBitConfigReconciler) withoutUnrenderableOutputs(
+	namespace string, items []fluentbitv1alpha2.Output,
+) []fluentbitv1alpha2.Output {
+	sl := plugins.NewSecretLoader(r.Client, namespace)
+	kept := make([]fluentbitv1alpha2.Output, 0, len(items))
+	for _, item := range items {
+		// Load changes custom plugin configs in place, so render a copy.
+		list := fluentbitv1alpha2.OutputList{Items: []fluentbitv1alpha2.Output{*item.DeepCopy()}}
+		if _, err := list.Load(sl); err != nil {
+			r.Log.Error(err, "Skipping Output, its configuration cannot be rendered",
+				"namespace", namespace, "output", item.Name)
+			continue
+		}
+		kept = append(kept, item)
+	}
+	return kept
 }
 
 func (r *FluentBitConfigReconciler) generateRewriteTagConfig(
