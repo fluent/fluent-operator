@@ -101,7 +101,7 @@ func TestNamespacedOutputWithMissingSecretIsSkipped(t *testing.T) {
 		t.Fatalf("ListFluentBitConfigResources returned error: %v", err)
 	}
 
-	var names []string
+	names := make([]string, 0, len(outputs.Items))
 	for _, item := range outputs.Items {
 		names = append(names, item.Name)
 	}
