@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"slices"
 	"testing"
 
@@ -25,6 +26,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
+	"sigs.k8s.io/controller-runtime/pkg/client/interceptor"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
 	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2"
@@ -121,5 +123,112 @@ func TestNamespacedOutputWithMissingSecretIsSkipped(t *testing.T) {
 	}
 	if rendered == "" {
 		t.Fatal("expected the kept Outputs to be rendered")
+	}
+}
+
+func newOutputTestConfig(namespace string) *fluentbitv1alpha2.FluentBitConfig {
+	return &fluentbitv1alpha2.FluentBitConfig{
+		ObjectMeta: metav1.ObjectMeta{Name: "fluentbit-config", Namespace: namespace},
+		Spec: fluentbitv1alpha2.NamespacedFluentBitCfgSpec{
+			OutputSelector: metav1.LabelSelector{MatchLabels: map[string]string{"fluentbit.fluent.io/enabled": "true"}},
+		},
+	}
+}
+
+func outputNames(outputs fluentbitv1alpha2.OutputList) []string {
+	names := make([]string, 0, len(outputs.Items))
+	for _, item := range outputs.Items {
+		names = append(names, item.Name)
+	}
+	return names
+}
+
+// An Output that was left out comes back once its Secret exists. The Secrets of Outputs are not watched, so the
+// reconcile has to ask to be run again while an Output is left out.
+func TestSkippedOutputComesBackWhenTheSecretIsCreated(t *testing.T) {
+	const namespace = "team-a"
+	cfg := newOutputTestConfig(namespace)
+	s := newConfigTestScheme(t)
+	cli := fake.NewClientBuilder().WithScheme(s).WithObjects(cfg, httpOutputWithPassword(namespace, "later", "created-later")).Build()
+	r := &FluentBitConfigReconciler{Client: cli, Log: logf.Log, Scheme: s}
+
+	_, outputs, _, _, _, _, err := r.ListFluentBitConfigResources(context.Background(), *cfg)
+	if err != nil {
+		t.Fatalf("ListFluentBitConfigResources returned error: %v", err)
+	}
+	if len(outputs.Items) != 0 {
+		t.Fatalf("expected the Output to be left out, got %v", outputNames(outputs))
+	}
+	if r.skippedOutputs.Load() != 1 {
+		t.Fatalf("expected 1 skipped Output, got %d", r.skippedOutputs.Load())
+	}
+
+	secret := &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{Name: "created-later", Namespace: namespace},
+		Data:       map[string][]byte{"password": []byte("s3cret")},
+	}
+	if err := cli.Create(context.Background(), secret); err != nil {
+		t.Fatal(err)
+	}
+	r.skippedOutputs.Store(0)
+	_, outputs, _, _, _, _, err = r.ListFluentBitConfigResources(context.Background(), *cfg)
+	if err != nil {
+		t.Fatalf("ListFluentBitConfigResources returned error: %v", err)
+	}
+	if names := outputNames(outputs); len(names) != 1 || names[0] != "later" {
+		t.Fatalf("expected the Output to be back, got %v", names)
+	}
+	if r.skippedOutputs.Load() != 0 {
+		t.Fatalf("expected no skipped Output, got %d", r.skippedOutputs.Load())
+	}
+}
+
+// Only a missing Secret or key and an invalid value are left to the owner of the Output. Any other error fails the
+// reconcile, as it did before, so that the last good config is kept.
+func TestOutputIsNotSkippedOnOtherErrors(t *testing.T) {
+	const namespace = "team-a"
+	cfg := newOutputTestConfig(namespace)
+	s := newConfigTestScheme(t)
+	apiErr := errors.New("the server is not available")
+	cli := fake.NewClientBuilder().WithScheme(s).
+		WithObjects(cfg, httpOutputWithPassword(namespace, "with-secret", "present")).
+		WithInterceptorFuncs(interceptor.Funcs{
+			Get: func(ctx context.Context, c client.WithWatch, key client.ObjectKey, obj client.Object, opts ...client.GetOption) error {
+				if _, ok := obj.(*corev1.Secret); ok {
+					return apiErr
+				}
+				return c.Get(ctx, key, obj, opts...)
+			},
+		}).Build()
+	r := &FluentBitConfigReconciler{Client: cli, Log: logf.Log, Scheme: s}
+
+	_, _, _, _, _, _, err := r.ListFluentBitConfigResources(context.Background(), *cfg)
+	if !errors.Is(err, apiErr) {
+		t.Fatalf("expected the error of the Secret lookup, got %v", err)
+	}
+	if r.skippedOutputs.Load() != 0 {
+		t.Fatalf("expected no skipped Output, got %d", r.skippedOutputs.Load())
+	}
+}
+
+func TestOutputWithInvalidValueIsSkipped(t *testing.T) {
+	const namespace = "team-a"
+	cfg := newOutputTestConfig(namespace)
+	invalid := httpOutputWithPassword(namespace, "invalid", "present")
+	invalid.Spec.Alias = "first\n[OUTPUT]"
+	s := newConfigTestScheme(t)
+	cli := fake.NewClientBuilder().WithScheme(s).WithObjects(cfg, invalid, httpOutputWithPassword(namespace, "valid", "present"),
+		&corev1.Secret{
+			ObjectMeta: metav1.ObjectMeta{Name: "present", Namespace: namespace},
+			Data:       map[string][]byte{"password": []byte("s3cret")},
+		}).Build()
+	r := &FluentBitConfigReconciler{Client: cli, Log: logf.Log, Scheme: s}
+
+	_, outputs, _, _, _, _, err := r.ListFluentBitConfigResources(context.Background(), *cfg)
+	if err != nil {
+		t.Fatalf("ListFluentBitConfigResources returned error: %v", err)
+	}
+	if names := outputNames(outputs); len(names) != 1 || names[0] != "valid" {
+		t.Fatalf("expected only the valid Output, got %v", names)
 	}
 }

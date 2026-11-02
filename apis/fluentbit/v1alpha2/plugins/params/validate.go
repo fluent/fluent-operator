@@ -11,7 +11,17 @@ import (
 // (GHSA-2j8x-46rv-qmpq). field is used only for the error message.
 func ValidateNoNewline(field, value string) error {
 	if strings.ContainsAny(value, "\r\n") {
-		return fmt.Errorf("invalid value for %q: must not contain carriage-return or line-feed characters (would allow Fluent Bit config injection)", field)
+		return &InvalidValueError{Field: field}
 	}
 	return nil
+}
+
+// InvalidValueError is returned for a value that is not allowed in the config, as opposed to a failure to read
+// something the config needs. The user has to change the value for the config to render.
+type InvalidValueError struct {
+	Field string
+}
+
+func (e *InvalidValueError) Error() string {
+	return fmt.Sprintf("invalid value for %q: must not contain carriage-return or line-feed characters (would allow Fluent Bit config injection)", e.Field)
 }
