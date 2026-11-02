@@ -107,7 +107,7 @@ jobs:
           cache-dependency-path: go.sum
 
       - name: Setup kubectl
-        uses: marcofranssen/setup-kubectl@11b768eace1f464315174a915ce07be5e2b67820 # v3.0.1
+        uses: marcofranssen/setup-kubectl@592846f501f8cc24720a6d4538bbd7389ae1bae7 # v3.1.0
         with:
           kubectlVersion: ${{ env.KUBECTL_VERSION }}
 
