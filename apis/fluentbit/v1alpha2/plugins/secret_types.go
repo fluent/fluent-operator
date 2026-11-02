@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/go-openapi/errors"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -44,8 +43,17 @@ func (sl SecretLoader) LoadSecret(s Secret) (string, error) {
 	}
 
 	if v, ok := secret.Data[s.ValueFrom.SecretKeyRef.Key]; !ok {
-		return "", errors.NotFound(fmt.Sprintf("The key %s is not found.", s.ValueFrom.SecretKeyRef.Key))
+		return "", &KeyNotFoundError{Key: s.ValueFrom.SecretKeyRef.Key}
 	} else {
 		return strings.TrimSuffix(string(v), "\n"), nil
 	}
+}
+
+// KeyNotFoundError is returned when the Secret exists but does not have the key that is referenced.
+type KeyNotFoundError struct {
+	Key string
+}
+
+func (e *KeyNotFoundError) Error() string {
+	return fmt.Sprintf("The key %s is not found.", e.Key)
 }

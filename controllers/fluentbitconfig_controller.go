@@ -20,12 +20,16 @@ import (
 	"context"
 	"crypto/md5"
 	"crypto/sha256"
+	stderrors "errors"
 	"fmt"
 	"os"
 	"sort"
+	"sync/atomic"
+	"time"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/filter"
+	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 	"github.com/fluent/fluent-operator/v3/pkg/utils"
 
 	"github.com/go-logr/logr"
@@ -49,7 +53,15 @@ type FluentBitConfigReconciler struct {
 	client.Client
 	Log    logr.Logger
 	Scheme *runtime.Scheme
+
+	// skippedOutputs counts the Outputs left out of the config by the current reconcile. Like storeNamespaces, it
+	// assumes the reconciles do not run concurrently.
+	skippedOutputs atomic.Int32
 }
+
+// skippedOutputsRetryInterval is how long to wait before trying the Outputs that were left out again. The
+// Secrets they need are not watched, so this is how a Secret that is created later is picked up.
+const skippedOutputsRetryInterval = time.Minute
 
 var storeNamespaces map[string]bool
 
@@ -190,6 +202,7 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	// Re-initialize during each reconcile loop to clear namespace names
 	// we will repopulate namespaces that have a FluentBitConfig CR
 	storeNamespaces = make(map[string]bool)
+	r.skippedOutputs.Store(0)
 
 	var cfgs fluentbitv1alpha2.ClusterFluentBitConfigList
 	if err := r.List(ctx, &cfgs); err != nil {
@@ -213,6 +226,9 @@ func (r *FluentBitConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		return ctrl.Result{}, err
 	}
 
+	if r.skippedOutputs.Load() > 0 {
+		return ctrl.Result{RequeueAfter: skippedOutputsRetryInterval}, nil
+	}
 	return ctrl.Result{}, nil
 }
 
@@ -565,6 +581,10 @@ func (r *FluentBitConfigReconciler) ListFluentBitConfigResources(
 	if err := listNamespacedResources(ctx, r.Client, &outputs, cfg.Namespace, &cfg.Spec.OutputSelector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
+	var err error
+	if outputs.Items, err = r.withoutUnrenderableOutputs(cfg.Namespace, outputs.Items); err != nil {
+		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
+	}
 	if err := listNamespacedResources(ctx, r.Client, &parsers, cfg.Namespace, &cfg.Spec.ParserSelector); err != nil {
 		return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, err
 	}
@@ -605,6 +625,45 @@ func (r *FluentBitConfigReconciler) ListFluentBitConfigResources(
 	}
 
 	return filters, outputs, parsers, clusterParsers, multipleParsers, clusterMultipleParsers, nil
+}
+
+// withoutUnrenderableOutputs drops the namespaced Outputs whose configuration
+// cannot be rendered because of something the owner of the Output has to fix, i.e.
+// a Secret or Secret key they reference that is missing in their namespace, or a
+// value that is not allowed, and logs each of them. Otherwise one broken Output
+// fails the whole config, and no namespace gets its config updated until it is
+// fixed. Any other error, such as a timeout or a missing permission, is returned,
+// so that the reconcile fails and the last good config is kept.
+func (r *FluentBitConfigReconciler) withoutUnrenderableOutputs(
+	namespace string, items []fluentbitv1alpha2.Output,
+) ([]fluentbitv1alpha2.Output, error) {
+	sl := plugins.NewSecretLoader(r.Client, namespace)
+	kept := make([]fluentbitv1alpha2.Output, 0, len(items))
+	for _, item := range items {
+		// Load changes custom plugin configs in place, so render a copy.
+		// The classic format is checked here. Outputs in the YAML format are rendered with LoadAsYaml, which
+		// fails in the same way because both build the values with the same Params and validation.
+		list := fluentbitv1alpha2.OutputList{Items: []fluentbitv1alpha2.Output{*item.DeepCopy()}}
+		if _, err := list.Load(sl); err != nil {
+			if !fixableByOutputOwner(err) {
+				return nil, err
+			}
+			r.Log.Error(err, "Skipping Output, its configuration cannot be rendered",
+				"namespace", namespace, "output", item.Name)
+			r.skippedOutputs.Add(1)
+			continue
+		}
+		kept = append(kept, item)
+	}
+	return kept, nil
+}
+
+// fixableByOutputOwner reports whether err is caused by the Output or the Secrets in its namespace, which the
+// owner of the Output can change, and not by a failure to reach the API server or a missing permission.
+func fixableByOutputOwner(err error) bool {
+	var invalid *params.InvalidValueError
+	var keyNotFound *plugins.KeyNotFoundError
+	return errors.IsNotFound(err) || stderrors.As(err, &keyNotFound) || stderrors.As(err, &invalid)
 }
 
 func (r *FluentBitConfigReconciler) generateRewriteTagConfig(

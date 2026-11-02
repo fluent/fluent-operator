@@ -22,3 +22,11 @@ ValueSource defines how to find a value's key.
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | Client |  | client.Client |
+# KeyNotFoundError
+
+KeyNotFoundError is returned when the Secret exists but does not have the key that is referenced.
+
+
+| Field | Description | Scheme |
+| ----- | ----------- | ------ |
+| Key |  | string |
