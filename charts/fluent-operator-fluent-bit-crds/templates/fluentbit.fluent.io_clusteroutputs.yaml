@@ -2301,6 +2301,44 @@ spec:
                       type: string
                     description: '{property} can be any librdkafka properties'
                     type: object
+                  rdkafkaSecrets:
+                    additionalProperties:
+                      description: Secret defines the key of a value.
+                      properties:
+                        valueFrom:
+                          description: ValueSource defines how to find a value's key.
+                          properties:
+                            secretKeyRef:
+                              description: Selects a key of a secret in the pod's
+                                namespace
+                              properties:
+                                key:
+                                  description: The key of the secret to select from.  Must
+                                    be a valid secret key.
+                                  type: string
+                                name:
+                                  default: ""
+                                  description: |-
+                                    Name of the referent.
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  type: string
+                                optional:
+                                  description: Specify whether the Secret or its key
+                                    must be defined
+                                  type: boolean
+                              required:
+                              - key
+                              type: object
+                              x-kubernetes-map-type: atomic
+                          type: object
+                      type: object
+                    description: |-
+                      Librdkafka properties whose values are read from a Secret, for example sasl.username or sasl.password.
+                      A property set in both rdkafka and rdkafkaSecrets takes its value from rdkafkaSecrets.
+                    type: object
                   timestampFormat:
                     description: iso8601 or double
                     type: string
