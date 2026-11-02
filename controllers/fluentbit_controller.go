@@ -54,7 +54,7 @@ type FluentBitReconciler struct {
 // +kubebuilder:rbac:groups=core,resources=serviceaccounts,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;patch;delete
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles,verbs=create;get;list;watch;patch
-// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterrolebindings,verbs=create;get;list;watch;patch
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterrolebindings,verbs=create;delete;get;list;watch;patch
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles,verbs=create;delete;get;list;watch;patch
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=rolebindings,verbs=create;delete;get;list;watch;patch
 // +kubebuilder:rbac:groups=core,resources=pods,verbs=get
@@ -124,6 +124,11 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &fb)); err != nil {
 		return ctrl.Result{}, err
+	}
+	if crb, ok := binding.(*rbacv1.ClusterRoleBinding); ok {
+		if err := replaceStaleClusterRoleBinding(ctx, r.Client, crb); err != nil {
+			return ctrl.Result{}, err
+		}
 	}
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, binding, r.mutate(binding, &fb)); err != nil {
 		return ctrl.Result{}, err

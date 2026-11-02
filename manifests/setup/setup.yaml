@@ -43925,9 +43925,11 @@ rules:
   - rbac.authorization.k8s.io
   resources:
   - clusterrolebindings
-  - clusterroles
+  - rolebindings
+  - roles
   verbs:
   - create
+  - delete
   - get
   - list
   - patch
@@ -43935,11 +43937,9 @@ rules:
 - apiGroups:
   - rbac.authorization.k8s.io
   resources:
-  - rolebindings
-  - roles
+  - clusterroles
   verbs:
   - create
-  - delete
   - get
   - list
   - patch
