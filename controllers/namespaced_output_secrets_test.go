@@ -35,11 +35,14 @@ import (
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/output"
 )
 
-func httpOutputWithPassword(namespace, name, secretName string) *fluentbitv1alpha2.Output {
+// outputTestNamespace is the namespace of the Outputs the tests create.
+const outputTestNamespace = "team-a"
+
+func httpOutputWithPassword(name, secretName string) *fluentbitv1alpha2.Output {
 	return &fluentbitv1alpha2.Output{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
-			Namespace: namespace,
+			Namespace: outputTestNamespace,
 			Labels:    map[string]string{"fluentbit.fluent.io/enabled": "true"},
 		},
 		Spec: fluentbitv1alpha2.OutputSpec{
@@ -84,9 +87,9 @@ func TestNamespacedOutputWithMissingSecretIsSkipped(t *testing.T) {
 			ObjectMeta: metav1.ObjectMeta{Name: "present", Namespace: namespace},
 			Data:       map[string][]byte{"password": []byte("s3cret")},
 		},
-		httpOutputWithPassword(namespace, "with-secret", "present"),
-		httpOutputWithPassword(namespace, "missing-secret", "absent"),
-		httpOutputWithPassword(namespace, "missing-key", "present-without-key"),
+		httpOutputWithPassword("with-secret", "present"),
+		httpOutputWithPassword("missing-secret", "absent"),
+		httpOutputWithPassword("missing-key", "present-without-key"),
 		&corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{Name: "present-without-key", Namespace: namespace},
 			Data:       map[string][]byte{"user": []byte("admin")},
@@ -149,7 +152,8 @@ func TestSkippedOutputComesBackWhenTheSecretIsCreated(t *testing.T) {
 	const namespace = "team-a"
 	cfg := newOutputTestConfig(namespace)
 	s := newConfigTestScheme(t)
-	cli := fake.NewClientBuilder().WithScheme(s).WithObjects(cfg, httpOutputWithPassword(namespace, "later", "created-later")).Build()
+	cli := fake.NewClientBuilder().WithScheme(s).
+		WithObjects(cfg, httpOutputWithPassword("later", "created-later")).Build()
 	r := &FluentBitConfigReconciler{Client: cli, Log: logf.Log, Scheme: s}
 
 	_, outputs, _, _, _, _, err := r.ListFluentBitConfigResources(context.Background(), *cfg)
@@ -191,9 +195,11 @@ func TestOutputIsNotSkippedOnOtherErrors(t *testing.T) {
 	s := newConfigTestScheme(t)
 	apiErr := errors.New("the server is not available")
 	cli := fake.NewClientBuilder().WithScheme(s).
-		WithObjects(cfg, httpOutputWithPassword(namespace, "with-secret", "present")).
+		WithObjects(cfg, httpOutputWithPassword("with-secret", "present")).
 		WithInterceptorFuncs(interceptor.Funcs{
-			Get: func(ctx context.Context, c client.WithWatch, key client.ObjectKey, obj client.Object, opts ...client.GetOption) error {
+			Get: func(
+				ctx context.Context, c client.WithWatch, key client.ObjectKey, obj client.Object, opts ...client.GetOption,
+			) error {
 				if _, ok := obj.(*corev1.Secret); ok {
 					return apiErr
 				}
@@ -214,10 +220,11 @@ func TestOutputIsNotSkippedOnOtherErrors(t *testing.T) {
 func TestOutputWithInvalidValueIsSkipped(t *testing.T) {
 	const namespace = "team-a"
 	cfg := newOutputTestConfig(namespace)
-	invalid := httpOutputWithPassword(namespace, "invalid", "present")
+	invalid := httpOutputWithPassword("invalid", "present")
 	invalid.Spec.Alias = "first\n[OUTPUT]"
 	s := newConfigTestScheme(t)
-	cli := fake.NewClientBuilder().WithScheme(s).WithObjects(cfg, invalid, httpOutputWithPassword(namespace, "valid", "present"),
+	cli := fake.NewClientBuilder().WithScheme(s).WithObjects(
+		cfg, invalid, httpOutputWithPassword("valid", "present"),
 		&corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{Name: "present", Namespace: namespace},
 			Data:       map[string][]byte{"password": []byte("s3cret")},
