@@ -23,7 +23,7 @@ Output defines all available output plugins and their parameters
 | s3 | out_s3 plugin | *[S3](#s3) |
 | stdout | out_stdout plugin | *[Stdout](#stdout) |
 | loki | out_loki plugin | *[Loki](#loki) |
-| customPlugin | Custom plugin type | *[custom.CustomPlugin](plugins/fluentd/custom/custom_plugin.md) |
+| customPlugin | Custom plugin type | *[custom.CustomPlugin](../custom/custom.md) |
 | cloudWatch | out_cloudwatch plugin | *[CloudWatch](#cloudwatch) |
 | datadog | datadog plugin | *[Datadog](#datadog) |
 | copy | copy plugin | *[Copy](#copy) |

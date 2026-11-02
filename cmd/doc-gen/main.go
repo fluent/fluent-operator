@@ -42,6 +42,12 @@ var (
 		"rbacv1.": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#%s-v1-rbac-authorization-k8s-io",
 	}
 
+	// pluginDocs maps a plugin type such as "input.StatsD" to the doc file
+	// generated for it, relative to docs/plugins/<location name>/, e.g.
+	// "input/statsd.md". Doc files are named after the source file, so the
+	// type name alone is not enough to build a working link.
+	pluginDocs = map[string]map[string]string{}
+
 	unincludedKeyWords = []string{
 		"deepcopy.go",
 		"params",
@@ -104,10 +110,12 @@ func plugins(docsLocations []DocumentsLocation) {
 			panic(err)
 		}
 
+		indexPluginDocs(dl, srcs)
+
 		for _, src := range srcs {
 			var buffer bytes.Buffer
 
-			types := ParseDocumentationFrom(src, dl.name, true)
+			types := ParseDocumentationFrom(src, dl.name, true, true)
 
 			for _, t := range types {
 				strukt := t[0]
@@ -124,14 +132,7 @@ func plugins(docsLocations []DocumentsLocation) {
 				}
 			}
 
-			src_name := strings.TrimPrefix(src, dl.path)
-			if before, ok := strings.CutSuffix(src_name, "_types.go"); ok {
-				src_name = before
-			} else {
-				src_name = strings.TrimSuffix(src_name, ".go")
-			}
-
-			dst := fmt.Sprintf("./docs/plugins/%s/%s.md", dl.name, src_name)
+			dst := fmt.Sprintf("./docs/plugins/%s/%s", dl.name, pluginDocFile(src, dl.path))
 
 			if err := genDocDirs(dst); err != nil {
 				fmt.Printf("Error while generating documentation directories: %s\n", err.Error())
@@ -145,6 +146,46 @@ func plugins(docsLocations []DocumentsLocation) {
 			_, _ = f.WriteString(buffer.String())
 		}
 	}
+}
+
+// pluginDocFile returns the doc file generated for a plugin source file,
+// relative to docs/plugins/<location name>/, e.g. "input/statsd.md".
+func pluginDocFile(src, pluginPath string) string {
+	srcName := strings.TrimPrefix(src, pluginPath)
+	if before, ok := strings.CutSuffix(srcName, "_types.go"); ok {
+		srcName = before
+	} else {
+		srcName = strings.TrimSuffix(srcName, ".go")
+	}
+	return srcName + ".md"
+}
+
+// indexPluginDocs records which doc file documents each struct type declared
+// in the given plugin sources, so that links to plugin types point at the
+// file that is actually generated.
+func indexPluginDocs(dl DocumentsLocation, srcs []string) {
+	index := map[string]string{}
+	for _, src := range srcs {
+		f, err := parser.ParseFile(token.NewFileSet(), src, nil, 0)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		docFile := pluginDocFile(src, dl.path)
+		for _, decl := range f.Decls {
+			genDecl, ok := decl.(*ast.GenDecl)
+			if !ok || genDecl.Tok != token.TYPE {
+				continue
+			}
+			for _, spec := range genDecl.Specs {
+				typeSpec := spec.(*ast.TypeSpec)
+				if _, ok := typeSpec.Type.(*ast.StructType); ok {
+					index[f.Name.Name+"."+typeSpec.Name.Name] = docFile
+				}
+			}
+		}
+	}
+	pluginDocs[dl.name] = index
 }
 
 func crds(docsLocations []DocumentsLocation) {
@@ -167,7 +208,7 @@ func crds(docsLocations []DocumentsLocation) {
 
 		types := make([]KubeTypes, 0, 10)
 		for _, src := range srcs {
-			types = append(types, ParseDocumentationFrom(src, dl.name, false)...)
+			types = append(types, ParseDocumentationFrom(src, dl.name, false, false)...)
 		}
 
 		sort.Slice(types, func(i, j int) bool {
@@ -231,7 +272,10 @@ type Pair struct {
 // KubeTypes is an array to represent all available types in a parsed file. [0] is for the type itself
 type KubeTypes []Pair
 
-func ParseDocumentationFrom(src string, dl_name string, shouldSort bool) []KubeTypes {
+// ParseDocumentationFrom parses the documented struct types in src. inPluginDoc
+// reports whether the result is written to a plugin doc under docs/plugins/
+// rather than to a top-level CRD doc, which changes how relative links are built.
+func ParseDocumentationFrom(src string, dl_name string, shouldSort bool, inPluginDoc bool) []KubeTypes {
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, src, nil, parser.ParseComments)
 	if err != nil {
@@ -267,7 +311,7 @@ func ParseDocumentationFrom(src string, dl_name string, shouldSort bool) []KubeT
 		ks = append(ks, Pair{kubType.Name, fmtRawDoc(kubType.Doc), ""})
 
 		for _, field := range structType.Fields.List {
-			typeString := fieldType(field.Type, dl_name)
+			typeString := fieldType(field.Type, dl_name, inPluginDoc)
 			if n := fieldName(field); n != "-" {
 				fieldDoc := fmtRawDoc(field.Doc.Text())
 				ks = append(ks, Pair{n, fieldDoc, typeString})
@@ -332,7 +376,7 @@ func ToSnakeCase(str string) string {
 	return strings.ToLower(snake)
 }
 
-func toLink(typeName string, documentLocationName string) string {
+func toLink(typeName string, documentLocationName string, inPluginDoc bool) string {
 	primitiveTypes := map[string]bool{
 		"string":            true,
 		"bool":              true,
@@ -355,10 +399,17 @@ func toLink(typeName string, documentLocationName string) string {
 		strings.Contains(typeName, "filter.") ||
 		strings.Contains(typeName, "parser.") ||
 		strings.Contains(typeName, "custom.") {
-		// Eg. *output.Elasticsearch => ../plugins/output/elasticsearch.md
-		pluginType, pluginName, _ := strings.Cut(typeName, ".")
-		link := fmt.Sprintf("plugins/%s/%s/%s.md", documentLocationName, pluginType, ToSnakeCase(pluginName))
-		return wrapInLink(typeName, link)
+		// Eg. output.InfluxDB => plugins/fluentbit/output/influxdb.md from a CRD doc,
+		// or ../output/influxdb.md from another plugin doc.
+		docFile, ok := pluginDocs[documentLocationName][typeName]
+		if !ok {
+			pluginType, pluginName, _ := strings.Cut(typeName, ".")
+			docFile = fmt.Sprintf("%s/%s.md", pluginType, ToSnakeCase(pluginName))
+		}
+		if inPluginDoc {
+			return wrapInLink(typeName, "../"+docFile)
+		}
+		return wrapInLink(typeName, fmt.Sprintf("plugins/%s/%s", documentLocationName, docFile))
 	}
 
 	k8sLink, hasK8sLink := tryKubernetesLink(typeName)
@@ -399,20 +450,22 @@ func fieldName(field *ast.Field) string {
 	return jsonTag
 }
 
-func fieldType(typ ast.Expr, dl_name string) string {
+func fieldType(typ ast.Expr, dl_name string, inPluginDoc bool) string {
 	switch typ := typ.(type) {
 	case *ast.Ident:
-		return toLink(typ.Name, dl_name)
+		return toLink(typ.Name, dl_name, inPluginDoc)
 	case *ast.StarExpr:
-		return "*" + fieldType(typ.X, dl_name)
+		return "*" + fieldType(typ.X, dl_name, inPluginDoc)
 	case *ast.SelectorExpr:
 		pkg := typ.X.(*ast.Ident)
 		t := typ.Sel
-		return toLink(pkg.Name+"."+t.Name, dl_name)
+		return toLink(pkg.Name+"."+t.Name, dl_name, inPluginDoc)
 	case *ast.ArrayType:
-		return "[]" + fieldType(typ.Elt, dl_name)
+		return "[]" + fieldType(typ.Elt, dl_name, inPluginDoc)
 	case *ast.MapType:
-		return "map[" + toLink(fieldType(typ.Key, dl_name), dl_name) + "]" + toLink(fieldType(typ.Value, dl_name), dl_name)
+		key := toLink(fieldType(typ.Key, dl_name, inPluginDoc), dl_name, inPluginDoc)
+		value := toLink(fieldType(typ.Value, dl_name, inPluginDoc), dl_name, inPluginDoc)
+		return "map[" + key + "]" + value
 	default:
 		return ""
 	}

@@ -19,5 +19,5 @@ Input defines all available input plugins and their parameters
 | http | in_http plugin | *[Http](#http) |
 | tail | in_tail plugin | *[Tail](#tail) |
 | sample | in_sample plugin | *[Sample](#sample) |
-| customPlugin | Custom plugin type | *[custom.CustomPlugin](plugins/fluentd/custom/custom_plugin.md) |
+| customPlugin | Custom plugin type | *[custom.CustomPlugin](../custom/custom.md) |
 | monitorAgent | monitor_agent plugin | *[MonitorAgent](#monitoragent) |
