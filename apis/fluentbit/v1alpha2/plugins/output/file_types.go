@@ -1,8 +1,6 @@
 package output
 
 import (
-	"fmt"
-
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/params"
 )
@@ -42,9 +40,7 @@ func (f *File) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVString(kvs, "Delimiter", f.Delimiter)
 	plugins.InsertKVString(kvs, "Label_Delimiter", f.LabelDelimiter)
 	plugins.InsertKVString(kvs, "Template", f.Template)
-	if f.Mkdir != nil {
-		kvs.Insert("Mkdir", fmt.Sprint(*f.Mkdir))
-	}
+	plugins.InsertKVField(kvs, "Mkdir", f.Mkdir)
 
 	return kvs, nil
 }
