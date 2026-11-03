@@ -525,6 +525,17 @@ func (cfg ClusterFluentBitConfig) RenderMultilineParserConfig(
 ) (string, error) {
 	var buf bytes.Buffer
 
+	// A ClusterMultilineParser is cluster scoped but selected per FluentBitConfig, and
+	// ListFluentBitConfigResources renames each copy to "<name>-<md5(namespace)>". Two
+	// FluentBitConfigs in one namespace selecting the same parser therefore arrive here
+	// in separate lists under one rendered name, and emitting both would hand Fluent Bit
+	// two [MULTILINE_PARSER] sections with the same Name. RenderParserConfig already
+	// collapses that case through existingParsers; keep the two renderers in step.
+	existingParsers := make(map[string]bool)
+	for _, item := range multilineParsers.Items {
+		existingParsers[item.Name] = true
+	}
+
 	multilineParserSection, err := multilineParsers.Load(sl)
 	if err != nil {
 		return "", err
@@ -548,7 +559,18 @@ func (cfg ClusterFluentBitConfig) RenderMultilineParserConfig(
 	}
 
 	for _, nscmp := range nsClusterMultilineParserLists {
-		nscmpSection, err := nscmp.Load(sl)
+		remaining := ClusterMultilineParserList{}
+		for _, item := range nscmp.Items {
+			if existingParsers[item.Name] {
+				continue
+			}
+			existingParsers[item.Name] = true
+			remaining.Items = append(remaining.Items, item)
+		}
+		if len(remaining.Items) == 0 {
+			continue
+		}
+		nscmpSection, err := remaining.Load(sl)
 		if err != nil {
 			return "", err
 		}

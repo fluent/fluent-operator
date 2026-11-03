@@ -1521,3 +1521,83 @@ func TestRenderMainConfigInYaml_RewriteTagConfigMergesIntoSingleFiltersSection(t
 	g.Expect(ok).To(BeTrue())
 	g.Expect(filterEntries).To(HaveLen(2))
 }
+
+// TestRenderMultilineParserConfigDeduplicatesClusterMultilineParsers covers a
+// ClusterMultilineParser selected by more than one FluentBitConfig in the same
+// namespace. ListFluentBitConfigResources renames every cluster-level copy to
+// "<name>-<md5(namespace)>", so two FluentBitConfigs in one namespace that both
+// select the same ClusterMultilineParser hand RenderMultilineParserConfig two
+// lists holding the same rendered name. RenderParserConfig already collapses
+// that case through its existingParsers set; the multiline renderer must do the
+// same, or Fluent Bit is handed two [MULTILINE_PARSER] sections with one name.
+func TestRenderMultilineParserConfigDeduplicatesClusterMultilineParsers(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	shared := ClusterMultilineParser{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterMultilineParser",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "shared-5d41402abc4b2a76b9719d911017c592",
+			Labels: labels,
+		},
+		Spec: MultilineParserSpec{
+			MultilineParser: &multilineparser.MultilineParser{
+				Type:       "regex",
+				Parser:     "go",
+				KeyContent: "log",
+			},
+		},
+	}
+
+	// Two FluentBitConfigs in one namespace, both selecting the same parser.
+	nsClusterMultilineParsers := []ClusterMultilineParserList{
+		{Items: []ClusterMultilineParser{shared}},
+		{Items: []ClusterMultilineParser{shared}},
+	}
+
+	config, err := cfg.RenderMultilineParserConfig(
+		sl, ClusterMultilineParserList{}, nil, nsClusterMultilineParsers,
+	)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	occurrences := strings.Count(config, "Name    shared-5d41402abc4b2a76b9719d911017c592")
+	t.Logf("SENTINEL rendered config:\n%s", config)
+	t.Logf("SENTINEL occurrences=%d", occurrences)
+	g.Expect(occurrences).To(Equal(1), "the same ClusterMultilineParser was rendered more than once")
+}
+
+// TestRenderParserConfigDeduplicatesClusterParsers is the positive control for
+// the test above: the parser renderer already collapses the identical shape.
+func TestRenderParserConfigDeduplicatesClusterParsers(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	shared := ClusterParser{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "fluentbit.fluent.io/v1alpha2",
+			Kind:       "ClusterParser",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   "shared-5d41402abc4b2a76b9719d911017c592",
+			Labels: labels,
+		},
+		Spec: ParserSpec{
+			JSON: &parser.JSON{TimeKey: "time", TimeFormat: "%Y-%m-%dT%H:%M:%S %z"},
+		},
+	}
+
+	nsClusterParsers := []ClusterParserList{
+		{Items: []ClusterParser{shared}},
+		{Items: []ClusterParser{shared}},
+	}
+
+	config, err := cfg.RenderParserConfig(sl, ClusterParserList{}, nil, nsClusterParsers)
+	g.Expect(err).NotTo(HaveOccurred())
+
+	occurrences := strings.Count(config, "Name    shared-5d41402abc4b2a76b9719d911017c592")
+	t.Logf("SENTINEL control occurrences=%d", occurrences)
+	g.Expect(occurrences).To(Equal(1), "control: parser renderer should already deduplicate")
+}
