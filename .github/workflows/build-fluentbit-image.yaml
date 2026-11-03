@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - cmd/fluent-watcher/fluentbit/VERSION
+      - cmd/fluent-watcher/fluentbit/BASE_VERSION
   workflow_dispatch:
 
 env:
@@ -23,6 +24,8 @@ jobs:
 
     outputs:
       version: ${{ steps.determine-tags.outputs.version }}
+      base-version: ${{ steps.determine-tags.outputs.base-version }}
+      debug-base-version: ${{ steps.determine-tags.outputs.debug-base-version }}
       image-base-tag: ${{ steps.determine-tags.outputs.image-base-tag }}
       image-major-minor: ${{ steps.determine-tags.outputs.image-major-minor }}
 
@@ -39,6 +42,14 @@ jobs:
           VERSION_WITHOUT_V=${VERSION#v}
           MAJOR_MINOR=$(echo "$VERSION_WITHOUT_V" | cut -d. -f1-2)
 
+          # Upstream base image tag; may differ from VERSION when upstream ships a rebuild (e.g. 5.1.5-2)
+          BASE_VERSION=$(cat cmd/fluent-watcher/fluentbit/BASE_VERSION 2>/dev/null || echo "$VERSION")
+          DEBUG_BASE_VERSION="$BASE_VERSION"
+          if ! skopeo inspect --raw "docker://docker.io/fluent/fluent-bit:${BASE_VERSION}-debug" > /dev/null; then
+            echo "fluent/fluent-bit:${BASE_VERSION}-debug not found, using ${VERSION}-debug for the debug image"
+            DEBUG_BASE_VERSION="$VERSION"
+          fi
+
           if skopeo inspect "docker://${{ env.GHCR_REPO }}:${VERSION}"; then
             echo "${VERSION} tag already exists, assuming we're building a patch release!"
             LATEST_PATCH_VERSION=$(skopeo list-tags docker://${{ env.GHCR_REPO }} | grep -E "${VERSION}-[0-9]+" | sort | uniq | tail -1 | tr -d \" | cut -d'-' -f2 | tr -d ',')
@@ -52,6 +63,8 @@ jobs:
 
           {
             echo "version=$VERSION"
+            echo "base-version=$BASE_VERSION"
+            echo "debug-base-version=$DEBUG_BASE_VERSION"
             echo "image-base-tag=$IMAGE_BASE_TAG"
             echo "image-major-minor=$MAJOR_MINOR"
           } >> "$GITHUB_OUTPUT"
@@ -150,7 +163,7 @@ jobs:
           labels: ${{ needs.build-tags.outputs.labels }}
           provenance: false
           build-args:
-            FLUENT_BIT_BASE_VERSION=${{ needs.build-info.outputs.version }}
+            FLUENT_BIT_BASE_VERSION=${{ needs.build-info.outputs.base-version }}
           outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests
@@ -212,7 +225,7 @@ jobs:
           labels: ${{ needs.build-tags.outputs.labels }}
           provenance: false
           build-args:
-            FLUENT_BIT_BASE_VERSION=${{ needs.build-info.outputs.version }}
+            FLUENT_BIT_BASE_VERSION=${{ needs.build-info.outputs.debug-base-version }}
           outputs: type=image,"name=${{ env.GHCR_REPO }},${{ env.DOCKERHUB_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Output image digests
