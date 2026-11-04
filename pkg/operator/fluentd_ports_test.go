@@ -127,7 +127,9 @@ func TestFluentdMultipleInputsOfOneKind(t *testing.T) {
 	}
 	for i, svcPort := range servicePorts {
 		containerPort := containerPorts[i+1]
-		if svcPort.Name != containerPort.Name || svcPort.TargetPort != intstr.FromString(containerPort.Name) || svcPort.Port != containerPort.ContainerPort {
+		if svcPort.Name != containerPort.Name ||
+			svcPort.TargetPort != intstr.FromString(containerPort.Name) ||
+			svcPort.Port != containerPort.ContainerPort {
 			t.Fatalf("service port %d = %+v does not match container port %+v", i, svcPort, containerPort)
 		}
 	}
