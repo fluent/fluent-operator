@@ -52,6 +52,8 @@ type OutputSpec struct {
 	AzureBlob *output.AzureBlob `json:"azureBlob,omitempty"`
 	// AzureLogAnalytics defines AzureLogAnalytics Output Configuration
 	AzureLogAnalytics *output.AzureLogAnalytics `json:"azureLogAnalytics,omitempty"`
+	// AzureLogsIngestion defines AzureLogsIngestion Output Configuration
+	AzureLogsIngestion *output.AzureLogsIngestion `json:"azureLogsIngestion,omitempty"`
 	// CloudWatch defines CloudWatch Output Configuration
 	CloudWatch *output.CloudWatch `json:"cloudWatch,omitempty"`
 	// RetryLimit represents configuration for the scheduler which can be set independently on each output section.

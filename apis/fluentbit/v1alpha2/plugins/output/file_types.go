@@ -23,6 +23,8 @@ type File struct {
 	LabelDelimiter string `json:"labelDelimiter,omitempty"`
 	// The format string. Applicable only if format is template.
 	Template string `json:"template,omitempty"`
+	// Recursively create the output directory if it does not exist. The directories are created with permissions 0755.
+	Mkdir *bool `json:"mkdir,omitempty"`
 }
 
 func (*File) Name() string {
@@ -38,6 +40,7 @@ func (f *File) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVString(kvs, "Delimiter", f.Delimiter)
 	plugins.InsertKVString(kvs, "Label_Delimiter", f.LabelDelimiter)
 	plugins.InsertKVString(kvs, "Template", f.Template)
+	plugins.InsertKVField(kvs, "Mkdir", f.Mkdir)
 
 	return kvs, nil
 }

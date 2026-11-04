@@ -4617,6 +4617,77 @@ spec:
                 - customerID
                 - sharedKey
                 type: object
+              azureLogsIngestion:
+                description: AzureLogsIngestion defines AzureLogsIngestion Output
+                  Configuration
+                properties:
+                  clientID:
+                    description: Azure Active Directory application (client) ID
+                    type: string
+                  clientSecret:
+                    description: Azure Active Directory application client secret
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                default: ""
+                                description: |-
+                                  Name of the referent.
+                                  This field is effectively required, but due to backwards compatibility is
+                                  allowed to be empty. Instances of this type with an empty value here are
+                                  almost certainly wrong.
+                                  More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  compress:
+                    description: Enable gzip compression of the request body.
+                    type: boolean
+                  dceURL:
+                    description: Data Collection Endpoint (DCE) URL
+                    type: string
+                  dcrID:
+                    description: Data Collection Rule (DCR) immutable ID
+                    type: string
+                  tableName:
+                    description: Name of the destination table the records are ingested
+                      into
+                    type: string
+                  tenantID:
+                    description: Azure Active Directory tenant ID
+                    type: string
+                  timeGenerated:
+                    description: If set, overrides the timeKey value with the `time-generated-field`
+                      HTTP header value.
+                    type: boolean
+                  timeKey:
+                    description: Specify the name of the key where the timestamp is
+                      stored.
+                    type: string
+                required:
+                - clientID
+                - clientSecret
+                - dceURL
+                - dcrID
+                - tableName
+                - tenantID
+                type: object
               cloudWatch:
                 description: CloudWatch defines CloudWatch Output Configuration
                 properties:
@@ -5270,6 +5341,10 @@ spec:
                     description: The character to separate each pair. Applicable only
                       if format is ltsv.
                     type: string
+                  mkdir:
+                    description: Recursively create the output directory if it does
+                      not exist. The directories are created with permissions 0755.
+                    type: boolean
                   path:
                     description: Absolute directory path to store files. If not set,
                       Fluent Bit will write the files on it's own positioned directory.
@@ -36260,6 +36335,77 @@ spec:
                 - customerID
                 - sharedKey
                 type: object
+              azureLogsIngestion:
+                description: AzureLogsIngestion defines AzureLogsIngestion Output
+                  Configuration
+                properties:
+                  clientID:
+                    description: Azure Active Directory application (client) ID
+                    type: string
+                  clientSecret:
+                    description: Azure Active Directory application client secret
+                    properties:
+                      valueFrom:
+                        description: ValueSource defines how to find a value's key.
+                        properties:
+                          secretKeyRef:
+                            description: Selects a key of a secret in the pod's namespace
+                            properties:
+                              key:
+                                description: The key of the secret to select from.  Must
+                                  be a valid secret key.
+                                type: string
+                              name:
+                                default: ""
+                                description: |-
+                                  Name of the referent.
+                                  This field is effectively required, but due to backwards compatibility is
+                                  allowed to be empty. Instances of this type with an empty value here are
+                                  almost certainly wrong.
+                                  More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                type: string
+                              optional:
+                                description: Specify whether the Secret or its key
+                                  must be defined
+                                type: boolean
+                            required:
+                            - key
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        type: object
+                    type: object
+                  compress:
+                    description: Enable gzip compression of the request body.
+                    type: boolean
+                  dceURL:
+                    description: Data Collection Endpoint (DCE) URL
+                    type: string
+                  dcrID:
+                    description: Data Collection Rule (DCR) immutable ID
+                    type: string
+                  tableName:
+                    description: Name of the destination table the records are ingested
+                      into
+                    type: string
+                  tenantID:
+                    description: Azure Active Directory tenant ID
+                    type: string
+                  timeGenerated:
+                    description: If set, overrides the timeKey value with the `time-generated-field`
+                      HTTP header value.
+                    type: boolean
+                  timeKey:
+                    description: Specify the name of the key where the timestamp is
+                      stored.
+                    type: string
+                required:
+                - clientID
+                - clientSecret
+                - dceURL
+                - dcrID
+                - tableName
+                - tenantID
+                type: object
               cloudWatch:
                 description: CloudWatch defines CloudWatch Output Configuration
                 properties:
@@ -36913,6 +37059,10 @@ spec:
                     description: The character to separate each pair. Applicable only
                       if format is ltsv.
                     type: string
+                  mkdir:
+                    description: Recursively create the output directory if it does
+                      not exist. The directories are created with permissions 0755.
+                    type: boolean
                   path:
                     description: Absolute directory path to store files. If not set,
                       Fluent Bit will write the files on it's own positioned directory.
