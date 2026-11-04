@@ -53,6 +53,7 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 
 	// read inputs definition from globalInputs
 	globalInputs := fd.Spec.GlobalInputs
+	forwards, https := 0, 0
 	for _, input := range globalInputs {
 
 		if input.Forward != nil {
@@ -62,12 +63,13 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 			}
 
 			forwardContainerPort := corev1.ServicePort{
-				Name:       DefaultForwardName,
+				Name:       inputPortName(DefaultForwardName, forwards),
 				Port:       forwardPort,
-				TargetPort: intstr.FromString(FluentdForwardPortName),
+				TargetPort: intstr.FromString(inputPortName(FluentdForwardPortName, forwards)),
 				Protocol:   corev1.ProtocolTCP,
 			}
 			svc.Spec.Ports = append(svc.Spec.Ports, forwardContainerPort)
+			forwards++
 			continue
 		}
 
@@ -77,12 +79,13 @@ func MakeFluentdService(fd fluentdv1alpha1.Fluentd) *corev1.Service {
 				httpPort = *input.Http.Port
 			}
 			httpContainerPort := corev1.ServicePort{
-				Name:       DefaultHttpName,
+				Name:       inputPortName(DefaultHttpName, https),
 				Port:       httpPort,
-				TargetPort: intstr.FromString(FluentdHttpPortName),
+				TargetPort: intstr.FromString(inputPortName(FluentdHttpPortName, https)),
 				Protocol:   corev1.ProtocolTCP,
 			}
 			svc.Spec.Ports = append(svc.Spec.Ports, httpContainerPort)
+			https++
 		}
 	}
 

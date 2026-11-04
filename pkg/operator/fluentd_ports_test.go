@@ -95,3 +95,40 @@ func TestFluentdAdditionalPorts(t *testing.T) {
 		})
 	}
 }
+
+// Several inputs of one kind each get their own port; the names have to be
+// unique or the StatefulSet and the Service are rejected.
+func TestFluentdMultipleInputsOfOneKind(t *testing.T) {
+	fd := fluentdv1alpha1.Fluentd{
+		ObjectMeta: metav1.ObjectMeta{Name: "fluentd", Namespace: "logging"},
+		Spec: fluentdv1alpha1.FluentdSpec{GlobalInputs: []input.Input{
+			{Forward: &input.Forward{Port: new(int32(24224))}},
+			{Forward: &input.Forward{Port: new(int32(25224))}},
+			{Http: &input.Http{Port: new(int32(9880))}},
+			{Http: &input.Http{Port: new(int32(9881))}},
+			{Forward: &input.Forward{Port: new(int32(26224))}},
+		}},
+	}
+
+	wantNames := []string{MetricsName, "forward", "forward-2", "http", "http-2", "forward-3"}
+	containerPorts := makeFluentdPorts(fd)
+	if len(containerPorts) != len(wantNames) {
+		t.Fatalf("container ports = %+v, want names %v", containerPorts, wantNames)
+	}
+	for i, name := range wantNames {
+		if containerPorts[i].Name != name {
+			t.Fatalf("container port %d = %+v, want name %q", i, containerPorts[i], name)
+		}
+	}
+
+	servicePorts := MakeFluentdService(fd).Spec.Ports
+	if len(servicePorts) != len(wantNames)-1 {
+		t.Fatalf("service ports = %+v, want %d", servicePorts, len(wantNames)-1)
+	}
+	for i, svcPort := range servicePorts {
+		containerPort := containerPorts[i+1]
+		if svcPort.Name != containerPort.Name || svcPort.TargetPort != intstr.FromString(containerPort.Name) || svcPort.Port != containerPort.ContainerPort {
+			t.Fatalf("service port %d = %+v does not match container port %+v", i, svcPort, containerPort)
+		}
+	}
+}
