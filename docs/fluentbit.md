@@ -542,6 +542,7 @@ OutputSpec defines the desired state of ClusterOutput
 | logLevel | Set the plugin's logging verbosity level. Allowed values are: off, error, warn, info, debug and trace, Defaults to the SERVICE section's Log_Level | string |
 | azureBlob | AzureBlob defines AzureBlob Output Configuration | *[output.AzureBlob](plugins/fluentbit/output/azure_blob.md) |
 | azureLogAnalytics | AzureLogAnalytics defines AzureLogAnalytics Output Configuration | *[output.AzureLogAnalytics](plugins/fluentbit/output/azure_log_analytics.md) |
+| azureLogsIngestion | AzureLogsIngestion defines AzureLogsIngestion Output Configuration | *[output.AzureLogsIngestion](plugins/fluentbit/output/azure_logs_ingestion.md) |
 | cloudWatch | CloudWatch defines CloudWatch Output Configuration | *[output.CloudWatch](plugins/fluentbit/output/cloud_watch.md) |
 | retry_limit | RetryLimit represents configuration for the scheduler which can be set independently on each output section. This option allows to disable retries or impose a limit to try N times and then discard the data after reaching that limit. | string |
 | es | Elasticsearch defines Elasticsearch Output configuration. | *[output.Elasticsearch](plugins/fluentbit/output/elasticsearch.md) |
