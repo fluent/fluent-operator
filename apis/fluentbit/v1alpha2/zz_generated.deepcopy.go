@@ -1478,6 +1478,11 @@ func (in *OutputSpec) DeepCopyInto(out *OutputSpec) {
 		*out = new(output.AzureLogAnalytics)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.AzureLogsIngestion != nil {
+		in, out := &in.AzureLogsIngestion, &out.AzureLogsIngestion
+		*out = new(output.AzureLogsIngestion)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.CloudWatch != nil {
 		in, out := &in.CloudWatch, &out.CloudWatch
 		*out = new(output.CloudWatch)
