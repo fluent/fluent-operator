@@ -2,6 +2,7 @@ package operator
 
 import (
 	"fmt"
+	"maps"
 
 	fluentbitv1alpha2 "github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2"
 
@@ -28,12 +29,21 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 	fbVolumeMounts := makeVolumeMounts(fb, logPath)
 	fbVolumes := makeVolumes(fb, logPath)
 
+	// The DaemonSet carries the annotations of the FluentBit resource and, like
+	// the labels, the ones set for the pods; the pod annotations win on conflict.
+	var dsAnnotations map[string]string
+	if len(fb.Annotations) > 0 || len(fb.Spec.Annotations) > 0 {
+		dsAnnotations = make(map[string]string, len(fb.Annotations)+len(fb.Spec.Annotations))
+		maps.Copy(dsAnnotations, fb.Annotations)
+		maps.Copy(dsAnnotations, fb.Spec.Annotations)
+	}
+
 	ds := appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        fb.Name,
 			Namespace:   fb.Namespace,
 			Labels:      labels,
-			Annotations: fb.Annotations,
+			Annotations: dsAnnotations,
 		},
 		Spec: appsv1.DaemonSetSpec{
 			Selector: &metav1.LabelSelector{
