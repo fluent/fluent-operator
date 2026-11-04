@@ -91,13 +91,26 @@ For a patch release against an older minor line (e.g. `v3.7.1`):
 
 ### Publish updated Helm chart
 
-The `appVersion` fields in the three chart `Chart.yaml` files in this repo are bumped automatically by the Release PR. After merging the Release PR, the chart still needs to be manually synced to [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/) where users install from:
+The charts in this repo are development copies. Users install from [fluent/helm-charts](https://github.com/fluent/helm-charts/tree/main/charts/fluent-operator/), and the CHANGELOG for each chart lives there.
 
-- Copy the updated `charts/fluent-operator/` directory to a branch in `fluent/helm-charts`
-- Bump the chart `version` field (separate from `appVersion`) per the helm-charts versioning convention
-- Open a PR in `fluent/helm-charts`
+When a release is created, the [`release`](.github/workflows/release-please.yaml) workflow dispatches [`sync-helm-charts`](.github/workflows/sync-helm-charts.yaml), which runs [`hack/sync-helm-charts.sh`](hack/sync-helm-charts.sh) and opens a PR in `fluent/helm-charts` for the `fluent-operator`, `fluent-operator-fluent-bit-crds` and `fluent-operator-fluentd-crds` charts. The script:
 
-Do the same for the `fluent-operator-fluentd-crds` and `fluent-operator-fluent-bit-crds` charts.
+- Copies the charts from the release tag, keeping the helm-charts `Chart.yaml`, `CHANGELOG.md`, `README.md` and `_description.md`
+- Sets `appVersion` and bumps each chart `version` by the same level as the operator release (major, minor or patch)
+- Adds CHANGELOG entries from the conventional commits that touched each chart since the last published `appVersion`
+- Regenerates the chart READMEs with helm-docs
+
+Review the PR, tidy up the generated CHANGELOG entries if needed, and merge it. Merging publishes the charts.
+
+To re-run a sync, dispatch the [Sync Helm charts](https://github.com/fluent/fluent-operator/actions/workflows/sync-helm-charts.yaml) workflow with the release tag. The sync fails if the tag is not newer than the published `appVersion`, so patch releases on older minor lines need a manual chart release.
+
+To preview a sync locally, run the script against a `fluent/helm-charts` checkout and inspect the diff:
+
+```shell
+hack/sync-helm-charts.sh v3.11.0 ../helm-charts
+```
+
+The workflow authenticates to `fluent/helm-charts` with a GitHub App installed on that repo with `contents: write` and `pull-requests: write`. Its client ID is stored in the `HELM_CHARTS_APP_CLIENT_ID` variable and its private key in the `HELM_CHARTS_APP_PRIVATE_KEY` secret.
 
 ## Fluentd/Fluent-bit Images
 
