@@ -29,6 +29,9 @@ func TestFilter_Modify_Params(t *testing.T) {
 					"kdn2": "kdnv2",
 				},
 			},
+			{
+				KeyNotExists: "kne",
+			},
 		},
 		Rules: []Rule{
 			{
@@ -59,6 +62,7 @@ func TestFilter_Modify_Params(t *testing.T) {
 	expected.Insert("Condition", "Key_does_not_exist    kdn0    kdnv0")
 	expected.Insert("Condition", "Key_does_not_exist    kdn1    kdnv1")
 	expected.Insert("Condition", "Key_does_not_exist    kdn2    kdnv2")
+	expected.Insert("Condition", "Key_does_not_exist    kne")
 	expected.Insert("Set", "app    foo")
 	expected.Insert("Set", "customer    cus1")
 	expected.Insert("Set", "sk0    skv0")
