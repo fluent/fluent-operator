@@ -79,7 +79,7 @@ ClusterFilterSpec defines the desired state of ClusterFilter
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| filters |  | [][filter.Filter](plugins/fluentd/filter/filter.md) |
+| filters |  | [][filter.Filter](plugins/fluentd/filter/types.md) |
 
 [Back to TOC](#table-of-contents)
 # ClusterFluentdConfig
@@ -165,7 +165,7 @@ ClusterInputSpec defines the desired state of ClusterInput
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| inputs |  | [][input.Input](plugins/fluentd/input/input.md) |
+| inputs |  | [][input.Input](plugins/fluentd/input/types.md) |
 
 [Back to TOC](#table-of-contents)
 # ClusterOutput
@@ -198,7 +198,7 @@ ClusterOutputSpec defines the desired state of ClusterOutput
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| outputs |  | [][output.Output](plugins/fluentd/output/output.md) |
+| outputs |  | [][output.Output](plugins/fluentd/output/types.md) |
 
 [Back to TOC](#table-of-contents)
 # Filter
@@ -231,7 +231,7 @@ FilterSpec defines the desired state of Filter
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| filters |  | [][filter.Filter](plugins/fluentd/filter/filter.md) |
+| filters |  | [][filter.Filter](plugins/fluentd/filter/types.md) |
 
 [Back to TOC](#table-of-contents)
 # FluentDService
@@ -332,7 +332,7 @@ FluentdSpec defines the desired state of Fluentd
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| globalInputs | Fluentd global inputs. | [][input.Input](plugins/fluentd/input/input.md) |
+| globalInputs | Fluentd global inputs. | [][input.Input](plugins/fluentd/input/types.md) |
 | defaultInputSelector | Select cluster input plugins used to gather the default cluster output | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta) |
 | defaultFilterSelector | Select cluster filter plugins used to filter for the default cluster output | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta) |
 | defaultOutputSelector | Select cluster output plugins used to send all logs that did not match any route to the matching outputs | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta) |
@@ -414,7 +414,7 @@ InputSpec defines the desired state of Input
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| inputs |  | [][input.Input](plugins/fluentd/input/input.md) |
+| inputs |  | [][input.Input](plugins/fluentd/input/types.md) |
 
 [Back to TOC](#table-of-contents)
 # Output
@@ -447,7 +447,7 @@ OutputSpec defines the desired state of Output
 
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
-| outputs |  | [][output.Output](plugins/fluentd/output/output.md) |
+| outputs |  | [][output.Output](plugins/fluentd/output/types.md) |
 
 [Back to TOC](#table-of-contents)
 # PodDisruptionBudget

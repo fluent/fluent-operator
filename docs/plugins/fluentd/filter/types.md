@@ -18,4 +18,4 @@ Filter defines all available filter plugins and their parameters.
 | recordTransformer | The filter_record_transformer filter plugin | *[RecordTransformer](#recordtransformer) |
 | parser | The filter_parser filter plugin | *[Parser](#parser) |
 | stdout | The filter_stdout filter plugin | *[Stdout](#stdout) |
-| customPlugin | Custom plugin type | *[custom.CustomPlugin](plugins/fluentd/custom/custom_plugin.md) |
+| customPlugin | Custom plugin type | *[custom.CustomPlugin](../custom/custom.md) |

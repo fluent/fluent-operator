@@ -459,7 +459,7 @@ InputSpec defines the desired state of ClusterInput
 | http | HTTP defines the HTTP input plugin configuration | *[input.HTTP](plugins/fluentbit/input/http.md) |
 | mqtt | MQTT defines the MQTT input plugin configuration | *[input.MQTT](plugins/fluentbit/input/mqtt.md) |
 | collectd | Collectd defines the Collectd input plugin configuration | *[input.Collectd](plugins/fluentbit/input/collectd.md) |
-| statsd | StatsD defines the StatsD input plugin configuration | *[input.StatsD](plugins/fluentbit/input/stats_d.md) |
+| statsd | StatsD defines the StatsD input plugin configuration | *[input.StatsD](plugins/fluentbit/input/statsd.md) |
 | nginx | Nginx defines the Nginx input plugin configuration | *[input.Nginx](plugins/fluentbit/input/nginx.md) |
 | syslog | Syslog defines the Syslog input plugin configuration | *[input.Syslog](plugins/fluentbit/input/syslog.md) |
 | tcp | TCP defines the TCP input plugin configuration | *[input.TCP](plugins/fluentbit/input/tcp.md) |
@@ -554,7 +554,7 @@ OutputSpec defines the desired state of ClusterOutput
 | tcp | TCP defines TCP Output configuration. | *[output.TCP](plugins/fluentbit/output/tcp.md) |
 | loki | Loki defines Loki Output configuration. | *[output.Loki](plugins/fluentbit/output/loki.md) |
 | syslog | Syslog defines Syslog Output configuration. | *[output.Syslog](plugins/fluentbit/output/syslog.md) |
-| influxDB | InfluxDB defines InfluxDB Output configuration. | *[output.InfluxDB](plugins/fluentbit/output/influx_db.md) |
+| influxDB | InfluxDB defines InfluxDB Output configuration. | *[output.InfluxDB](plugins/fluentbit/output/influxdb.md) |
 | datadog | DataDog defines DataDog Output configuration. | *[output.DataDog](plugins/fluentbit/output/data_dog.md) |
 | firehose | Firehose defines Firehose Output configuration. | *[output.Firehose](plugins/fluentbit/output/firehose.md) |
 | kinesis | Kinesis defines Kinesis Output configuration. | *[output.Kinesis](plugins/fluentbit/output/kinesis.md) |

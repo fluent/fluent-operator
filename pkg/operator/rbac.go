@@ -110,10 +110,11 @@ func MakeScopedRBACObjects(
 	return &r, &sa, &rb
 }
 
+// MakeRBACNames returns the ClusterRole, ServiceAccount and ClusterRoleBinding names of an instance. The
+// ClusterRole is named per instance like its binding, because each instance writes its own rbacRules into it.
 func MakeRBACNames(name, component string) (string, string, string) {
-	cr := fmt.Sprintf("fluent-operator-%s", component)
-	crb := fmt.Sprintf("fluent-operator-%s-%s", component, name)
-	return cr, name, crb
+	clusterName := fmt.Sprintf("fluent-operator-%s-%s", component, name)
+	return clusterName, name, clusterName
 }
 
 func MakeScopedRBACNames(name string) (string, string, string) {
