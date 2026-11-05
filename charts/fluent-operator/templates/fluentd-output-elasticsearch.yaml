@@ -13,7 +13,7 @@ spec:
     - elasticsearch:
         host: {{ .host | quote }}
         port: {{ .port }}
-        logstashFormat: true
+        logstashFormat: {{ dig "logstashFormat" true . }}
         logstashPrefix: {{ .logstashPrefix }}
       {{- with .buffer }}
       buffer:
