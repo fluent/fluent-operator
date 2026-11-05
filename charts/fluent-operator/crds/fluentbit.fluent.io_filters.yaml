@@ -536,10 +536,17 @@ spec:
                               keyDoesNotExist:
                                 additionalProperties:
                                   type: string
-                                description: Is true if KEY does not exist
+                                description: |-
+                                  Is true if KEY does not exist.
+                                  Deprecated: Fluent Bit only reads the key, so the value of each entry is
+                                  ignored. Use KeyNotExists instead.
                                 type: object
                               keyExists:
                                 description: Is true if KEY exists
+                                type: string
+                              keyNotExists:
+                                description: Is true if KEY does not exist. Same as
+                                  KeyDoesNotExist, but takes only the key.
                                 type: string
                               keyValueDoesNotEqual:
                                 additionalProperties:
