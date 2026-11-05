@@ -14,7 +14,7 @@ spec:
         host: {{ .host | quote }}
         port: {{ .port }}
         scheme: {{ .scheme | quote }}
-        logstashFormat: true
+        logstashFormat: {{ dig "logstashFormat" true . }}
         logstashPrefix: {{ .logstashPrefix | quote }}
       {{- with .buffer }}
       buffer:
