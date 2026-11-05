@@ -492,6 +492,13 @@ spec:
                           - key
                           type: object
                           x-kubernetes-map-type: atomic
+                        scriptNamespace:
+                          description: |-
+                            Namespace of the ConfigMap that holds the script. Only used by a ClusterFilter,
+                            where it defaults to the namespace of the ClusterFluentBitConfig. A namespaced
+                            Filter always reads the ConfigMap from its own namespace and ignores this field.
+                            When the operator only watches some namespaces, this must be one of them.
+                          type: string
                         timeAsTable:
                           description: |-
                             By default when the Lua script is invoked, the record timestamp is passed as a

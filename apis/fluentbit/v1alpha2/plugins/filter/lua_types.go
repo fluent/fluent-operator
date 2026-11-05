@@ -20,6 +20,11 @@ type Lua struct {
 	plugins.CommonParams `json:",inline"`
 	// Path to the Lua script that will be used.
 	Script v1.ConfigMapKeySelector `json:"script,omitempty"`
+	// Namespace of the ConfigMap that holds the script. Only used by a ClusterFilter,
+	// where it defaults to the namespace of the ClusterFluentBitConfig. A namespaced
+	// Filter always reads the ConfigMap from its own namespace and ignores this field.
+	// When the operator only watches some namespaces, this must be one of them.
+	ScriptNamespace string `json:"scriptNamespace,omitempty"`
 	// Lua function name that will be triggered to do filtering.
 	// It's assumed that the function is declared inside the Script defined above.
 	Call string `json:"call"`
@@ -106,7 +111,7 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 	}
 
 	if l.Script.Key != "" {
-		kvs.Insert("script", "/fluent-bit/config/"+l.Script.Key)
+		kvs.Insert("script", "/fluent-bit/config/"+l.ScriptFileName())
 	}
 
 	kvs.Insert("call", l.Call)
@@ -136,4 +141,17 @@ func (l *Lua) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 
 func (l *Lua) MakeNamespaced(ns string) {
 	l.Script.Key = fmt.Sprintf("%x-%s", md5.Sum([]byte(ns)), l.Script.Key)
+	// A namespaced Filter always reads its script from its own namespace, which the key now carries
+	l.ScriptNamespace = ""
+}
+
+// ScriptFileName returns the name the script is stored under in the Fluent Bit config directory.
+// A ClusterFilter script read from another namespace is prefixed with a hash of that namespace and
+// the ConfigMap name. The "cluster/" part keeps it distinct from the names of namespaced Filter
+// scripts, which only hash the namespace, so a tenant's script can never replace a ClusterFilter's.
+func (l *Lua) ScriptFileName() string {
+	if l.ScriptNamespace == "" {
+		return l.Script.Key
+	}
+	return fmt.Sprintf("%x-%s", md5.Sum([]byte("cluster/"+l.ScriptNamespace+"/"+l.Script.Name)), l.Script.Key)
 }
