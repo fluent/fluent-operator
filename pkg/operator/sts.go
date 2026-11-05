@@ -180,6 +180,16 @@ func MakeStatefulSet(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 	return &sts
 }
 
+// inputPortName names the n-th (zero based) input of a kind. The first one keeps
+// the plain name, later ones get a numeric suffix, so that every input gets a
+// port name that is unique in the pod and the Service.
+func inputPortName(base string, n int) string {
+	if n == 0 {
+		return base
+	}
+	return fmt.Sprintf("%s-%d", base, n+1)
+}
+
 func makeFluentdPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 	ports := []corev1.ContainerPort{
 		{
@@ -191,6 +201,7 @@ func makeFluentdPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 
 	// read inputs definition from globalInputs
 	globalInputs := fd.Spec.GlobalInputs
+	forwards, https := 0, 0
 	for _, input := range globalInputs {
 		if input.Forward != nil {
 			forwardPort := DefaultForwardPort
@@ -199,10 +210,11 @@ func makeFluentdPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 			}
 
 			ports = append(ports, corev1.ContainerPort{
-				Name:          DefaultForwardName,
+				Name:          inputPortName(DefaultForwardName, forwards),
 				ContainerPort: forwardPort,
 				Protocol:      corev1.ProtocolTCP,
 			})
+			forwards++
 			continue
 		}
 		if input.Http != nil {
@@ -212,10 +224,11 @@ func makeFluentdPorts(fd fluentdv1alpha1.Fluentd) []corev1.ContainerPort {
 			}
 
 			ports = append(ports, corev1.ContainerPort{
-				Name:          DefaultHttpName,
+				Name:          inputPortName(DefaultHttpName, https),
 				ContainerPort: httpPort,
 				Protocol:      corev1.ProtocolTCP,
 			})
+			https++
 		}
 	}
 

@@ -26,8 +26,12 @@ type Modify struct {
 type Condition struct {
 	// Is true if KEY exists
 	KeyExists string `json:"keyExists,omitempty"`
-	// Is true if KEY does not exist
+	// Is true if KEY does not exist.
+	// Deprecated: Fluent Bit only reads the key, so the value of each entry is
+	// ignored. Use KeyNotExists instead.
 	KeyDoesNotExist map[string]string `json:"keyDoesNotExist,omitempty"`
+	// Is true if KEY does not exist. Same as KeyDoesNotExist, but takes only the key.
+	KeyNotExists string `json:"keyNotExists,omitempty"`
 	// Is true if a key matches regex KEY
 	AKeyMatches string `json:"aKeyMatches,omitempty"`
 	// Is true if no key matches regex KEY
@@ -90,6 +94,9 @@ func (mo *Modify) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.InsertStringMap(c.KeyDoesNotExist, func(k, v string) (string, string) {
 			return condition, fmt.Sprintf("Key_does_not_exist    %s    %s", k, v)
 		})
+		if c.KeyNotExists != "" {
+			kvs.Insert(condition, fmt.Sprintf("Key_does_not_exist    %s", c.KeyNotExists))
+		}
 		if c.AKeyMatches != "" {
 			kvs.Insert(condition, fmt.Sprintf("A_key_matches    %s", c.AKeyMatches))
 		}

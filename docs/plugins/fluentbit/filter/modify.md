@@ -15,7 +15,8 @@ The plugin supports the following conditions
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | keyExists | Is true if KEY exists | string |
-| keyDoesNotExist | Is true if KEY does not exist | map[string]string |
+| keyDoesNotExist | Is true if KEY does not exist. Deprecated: Fluent Bit only reads the key, so the value of each entry is ignored. Use KeyNotExists instead. | map[string]string |
+| keyNotExists | Is true if KEY does not exist. Same as KeyDoesNotExist, but takes only the key. | string |
 | aKeyMatches | Is true if a key matches regex KEY | string |
 | noKeyMatches | Is true if no key matches regex KEY | string |
 | keyValueEquals | Is true if KEY exists and its value is VALUE | map[string]string |
