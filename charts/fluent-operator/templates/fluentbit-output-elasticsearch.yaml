@@ -31,7 +31,7 @@ spec:
     httpPassword: 
       {{- toYaml . | nindent 6 }}
     {{- end }}
-    logstashFormat: {{ .Values.fluentbit.output.es.logstashFormat | default true }}
+    logstashFormat: {{ dig "logstashFormat" true .Values.fluentbit.output.es }}
     {{- with .Values.fluentbit.output.es.logstashPrefix }}
     logstashPrefix: {{ . | quote }}
     {{- end }}
