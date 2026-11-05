@@ -72,7 +72,7 @@ type FluentBitSpec struct {
 	VolumesMounts []corev1.VolumeMount `json:"volumesMounts,omitempty"`
 	// DisableLogVolumes removes the hostPath mounts for varlibcontainers, varlogs and systemd.
 	DisableLogVolumes bool `json:"disableLogVolumes,omitempty"`
-	// Annotations to add to each Fluentbit pod.
+	// Annotations to add to the DaemonSet and its pods.
 	Annotations map[string]string `json:"annotations,omitempty"`
 	// Annotations to add to the Fluentbit service account
 	ServiceAccountAnnotations map[string]string `json:"serviceAccountAnnotations,omitempty"`
