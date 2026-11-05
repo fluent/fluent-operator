@@ -956,7 +956,7 @@ spec:
               annotations:
                 additionalProperties:
                   type: string
-                description: Annotations to add to each Fluentbit pod.
+                description: Annotations to add to the DaemonSet and its pods.
                 type: object
               args:
                 description: Fluent Bit Watcher command line arguments.

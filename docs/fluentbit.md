@@ -418,7 +418,7 @@ FluentBitSpec defines the desired state of FluentBit
 | volumes | List of volumes that can be mounted by containers belonging to the pod. | [][corev1.Volume](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#volume-v1-core) |
 | volumesMounts | Pod volumes to mount into the container's filesystem. | [][corev1.VolumeMount](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#volumemount-v1-core) |
 | disableLogVolumes | DisableLogVolumes removes the hostPath mounts for varlibcontainers, varlogs and systemd. | bool |
-| annotations | Annotations to add to each Fluentbit pod. | map[string]string |
+| annotations | Annotations to add to the DaemonSet and its pods. | map[string]string |
 | serviceAccountAnnotations | Annotations to add to the Fluentbit service account | map[string]string |
 | labels | Labels to add to each FluentBit pod | map[string]string |
 | securityContext | SecurityContext holds pod-level security attributes and common container settings. | *[corev1.PodSecurityContext](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podsecuritycontext-v1-core) |
