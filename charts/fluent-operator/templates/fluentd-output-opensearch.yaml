@@ -16,10 +16,12 @@ spec:
         scheme: {{ .scheme | quote }}
         logstashFormat: true
         logstashPrefix: {{ .logstashPrefix | quote }}
+      {{- if and .buffer .buffer.enable }}
       {{- with .buffer }}
       buffer:
         type: {{ .buffer.type | quote }}
         path: {{ .buffer.path | quote }}
+      {{- end }}
       {{- end }}
 {{- end }}
 {{- end }}
