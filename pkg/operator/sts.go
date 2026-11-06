@@ -2,6 +2,7 @@ package operator
 
 import (
 	"fmt"
+	"maps"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -61,7 +62,7 @@ func MakeStatefulSet(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 			Name:        fd.Name,
 			Namespace:   fd.Namespace,
 			Labels:      labels,
-			Annotations: fd.Annotations,
+			Annotations: makeFluentdWorkloadAnnotations(fd),
 		},
 		Spec: appsv1.StatefulSetSpec{
 			Replicas: &replicas,
@@ -183,6 +184,19 @@ func MakeStatefulSet(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 // inputPortName names the n-th (zero based) input of a kind. The first one keeps
 // the plain name, later ones get a numeric suffix, so that every input gets a
 // port name that is unique in the pod and the Service.
+// makeFluentdWorkloadAnnotations returns the annotations of the Fluentd
+// StatefulSet or DaemonSet: the ones of the Fluentd resource and, like the
+// labels, the ones set for the pods; the pod annotations win on conflict.
+func makeFluentdWorkloadAnnotations(fd fluentdv1alpha1.Fluentd) map[string]string {
+	if len(fd.Annotations) == 0 && len(fd.Spec.Annotations) == 0 {
+		return nil
+	}
+	annotations := make(map[string]string, len(fd.Annotations)+len(fd.Spec.Annotations))
+	maps.Copy(annotations, fd.Annotations)
+	maps.Copy(annotations, fd.Spec.Annotations)
+	return annotations
+}
+
 func inputPortName(base string, n int) string {
 	if n == 0 {
 		return base
