@@ -24010,6 +24010,12 @@ spec:
                   type: string
                 description: Annotations to add to the Fluentbit service account
                 type: object
+              serviceAccountName:
+                description: |-
+                  ServiceAccountName is the name of an existing ServiceAccount for the Fluent Bit pods.
+                  When set, the operator doesn't create a ServiceAccount, binds its RBAC rules to this one,
+                  and serviceAccountAnnotations is ignored.
+                type: string
               terminationGracePeriodSeconds:
                 description: Optional duration in seconds the pod needs to terminate
                   gracefully. Value must be non-negative integer.

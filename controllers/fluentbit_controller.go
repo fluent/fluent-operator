@@ -122,8 +122,18 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &fb)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &fb)); err != nil {
-		return ctrl.Result{}, err
+	// With spec.serviceAccountName the pods run as an existing ServiceAccount, which the operator doesn't manage.
+	if fb.Spec.ServiceAccountName == "" {
+		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &fb)); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+	saName := operator.FluentBitServiceAccountName(fb)
+	switch b := binding.(type) {
+	case *rbacv1.RoleBinding:
+		b.Subjects = withServiceAccount(b.Subjects, saName)
+	case *rbacv1.ClusterRoleBinding:
+		b.Subjects = withServiceAccount(b.Subjects, saName)
 	}
 	if crb, ok := binding.(*rbacv1.ClusterRoleBinding); ok {
 		if err := replaceStaleClusterRoleBinding(ctx, r.Client, crb); err != nil {
@@ -254,7 +264,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 	case *rbacv1.RoleBinding:
 		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 		return func() error {
-			o.Subjects = expected.Subjects
+			o.Subjects = withServiceAccount(expected.Subjects, operator.FluentBitServiceAccountName(*fb))
 			o.RoleRef = expected.RoleRef
 			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
 				return err
@@ -270,7 +280,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			fb.Spec.ServiceAccountAnnotations,
 		)
 		return func() error {
-			o.Subjects = expected.Subjects
+			o.Subjects = withServiceAccount(expected.Subjects, operator.FluentBitServiceAccountName(*fb))
 			o.RoleRef = expected.RoleRef
 			return nil
 		}
@@ -278,6 +288,16 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 	}
 
 	return nil
+}
+
+// withServiceAccount points the ServiceAccount subjects of a binding at the given ServiceAccount.
+func withServiceAccount(subjects []rbacv1.Subject, name string) []rbacv1.Subject {
+	for i := range subjects {
+		if subjects[i].Kind == rbacv1.ServiceAccountKind {
+			subjects[i].Name = name
+		}
+	}
+	return subjects
 }
 
 func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.FluentBit) error {

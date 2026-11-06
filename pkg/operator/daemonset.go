@@ -57,7 +57,7 @@ func MakeDaemonSet(fb fluentbitv1alpha2.FluentBit, logPath string) *appsv1.Daemo
 					Annotations: fb.Spec.Annotations,
 				},
 				Spec: corev1.PodSpec{
-					ServiceAccountName: fb.Name,
+					ServiceAccountName: FluentBitServiceAccountName(fb),
 					ImagePullSecrets:   fb.Spec.ImagePullSecrets,
 					InitContainers:     fb.Spec.InitContainers,
 					Volumes:            fbVolumes,
@@ -266,4 +266,13 @@ func makeVolumes(fb fluentbitv1alpha2.FluentBit, logPath string) []corev1.Volume
 		volumes = append(volumes, fb.Spec.Volumes...)
 	}
 	return volumes
+}
+
+// FluentBitServiceAccountName returns the ServiceAccount the Fluent Bit pods run as: the one set in
+// spec.serviceAccountName, or the one the operator creates, named after the FluentBit resource.
+func FluentBitServiceAccountName(fb fluentbitv1alpha2.FluentBit) string {
+	if fb.Spec.ServiceAccountName != "" {
+		return fb.Spec.ServiceAccountName
+	}
+	return fb.Name
 }
