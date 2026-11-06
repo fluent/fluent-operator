@@ -420,6 +420,7 @@ FluentBitSpec defines the desired state of FluentBit
 | disableLogVolumes | DisableLogVolumes removes the hostPath mounts for varlibcontainers, varlogs and systemd. | bool |
 | annotations | Annotations to add to the DaemonSet and its pods. | map[string]string |
 | serviceAccountAnnotations | Annotations to add to the Fluentbit service account | map[string]string |
+| serviceAccountName | ServiceAccountName is the name of an existing ServiceAccount for the Fluent Bit pods. When set, the operator doesn't create a ServiceAccount, binds its RBAC rules to this one, and serviceAccountAnnotations is ignored. | string |
 | labels | Labels to add to each FluentBit pod | map[string]string |
 | securityContext | SecurityContext holds pod-level security attributes and common container settings. | *[corev1.PodSecurityContext](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podsecuritycontext-v1-core) |
 | containerSecurityContext | ContainerSecurityContext holds container-level security attributes. | *[corev1.SecurityContext](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#securitycontext-v1-core) |
