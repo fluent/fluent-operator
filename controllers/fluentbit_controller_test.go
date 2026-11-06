@@ -171,7 +171,7 @@ func TestFluentBitMutateBindingsUseServiceAccountName(t *testing.T) {
 				t.Errorf("ClusterRoleBinding subjects = %+v, want ServiceAccount logging/%s", crb.Subjects, tc.want)
 			}
 
-			rb := &rbacv1.RoleBinding{}
+			rb := &rbacv1.RoleBinding{ObjectMeta: metav1.ObjectMeta{Namespace: "logging"}}
 			if err := r.mutate(rb, fb)(); err != nil {
 				t.Fatalf("mutate RoleBinding: %v", err)
 			}
