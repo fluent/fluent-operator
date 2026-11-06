@@ -68,3 +68,13 @@ func TestMakeDaemonSetAnnotations(t *testing.T) {
 		g.Expect(ds.Annotations).To(BeNil())
 	})
 }
+
+func TestMakeDaemonSetServiceAccountName(t *testing.T) {
+	g := NewGomegaWithT(t)
+	fb := fluentbitv1alpha2.FluentBit{ObjectMeta: metav1.ObjectMeta{Name: "fluent-bit", Namespace: "logging"}}
+
+	g.Expect(MakeDaemonSet(fb, "/var/log").Spec.Template.Spec.ServiceAccountName).To(Equal("fluent-bit"))
+
+	fb.Spec.ServiceAccountName = "fluent-bit-irsa"
+	g.Expect(MakeDaemonSet(fb, "/var/log").Spec.Template.Spec.ServiceAccountName).To(Equal("fluent-bit-irsa"))
+}
