@@ -15,10 +15,12 @@ spec:
         port: {{ .port }}
         logstashFormat: true
         logstashPrefix: {{ .logstashPrefix }}
+      {{- if and .buffer .buffer.enable }}
       {{- with .buffer }}
       buffer:
         type: {{ .type | quote }}
         path: {{ .path | quote }}
+      {{- end }}
       {{- end }}
 {{- end }}
 {{- end }}
