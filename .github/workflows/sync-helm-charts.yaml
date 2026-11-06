@@ -1,0 +1,93 @@
+name: Sync Helm charts
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to sync to fluent/helm-charts (e.g. v3.11.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Open fluent/helm-charts PR
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag }}
+    steps:
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.HELM_CHARTS_APP_CLIENT_ID }}
+          private-key: ${{ secrets.HELM_CHARTS_APP_PRIVATE_KEY }}
+          owner: fluent
+          repositories: helm-charts
+
+      # Full history and tags are needed to build the changelog.
+      - name: Checkout fluent-operator
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout fluent/helm-charts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: fluent/helm-charts
+          ref: main
+          path: helm-charts
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
+
+      - name: Install helm-docs
+        run: go install github.com/norwoodj/helm-docs/cmd/helm-docs@v1.14.2
+
+      - name: Sync charts
+        run: hack/sync-helm-charts.sh "$TAG" helm-charts | tee "$RUNNER_TEMP/versions.txt"
+
+      - name: Open pull request
+        working-directory: helm-charts
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: |
+          user_id=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
+
+          version=$(awk '$1 == "version:" { print $2; exit }' charts/fluent-operator/Chart.yaml)
+          branch="chore/fluent-operator-${TAG}"
+          title="chore(fluent-operator): Bump fluent-operator to v${version}"
+
+          git switch -c "$branch"
+          git add charts/fluent-operator charts/fluent-operator-fluent-bit-crds charts/fluent-operator-fluentd-crds
+          git commit -s -m "$title" -m "Syncs charts/* from fluent/fluent-operator@${TAG}."
+          # Force push so re-runs replace the previous attempt.
+          git push --force origin "$branch"
+
+          if [[ -n $(gh pr list --head "$branch" --state open --json number --jq '.[]') ]]; then
+            echo "PR for ${branch} already open; updated branch only"
+            exit 0
+          fi
+
+          {
+            echo "Updates fluent-operator charts to fluent-operator ${TAG}."
+            echo
+            sed 's/^/- /' "$RUNNER_TEMP/versions.txt"
+            echo
+            echo "Opened by the [Sync Helm charts](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) workflow. Review the generated CHANGELOG entries before merging."
+          } > "$RUNNER_TEMP/body.md"
+          gh pr create --base main --head "$branch" --title "$title" --body-file "$RUNNER_TEMP/body.md"
