@@ -19,8 +19,8 @@ spec:
       {{- if and .buffer .buffer.enable }}
       {{- with .buffer }}
       buffer:
-        type: {{ .type | quote }}
-        path: {{ .path | quote }}
+        type: {{ .buffer.type | quote }}
+        path: {{ .buffer.path | quote }}
       {{- end }}
       {{- end }}
 {{- end }}
