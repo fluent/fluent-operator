@@ -956,7 +956,8 @@ spec:
               annotations:
                 additionalProperties:
                   type: string
-                description: Annotations to add to each Fluentd pod.
+                description: Annotations to add to the StatefulSet or DaemonSet and
+                  its pods.
                 type: object
               args:
                 description: Fluentd Watcher command line arguments.

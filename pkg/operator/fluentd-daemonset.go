@@ -33,7 +33,7 @@ func MakeFluentdDaemonSet(fd fluentdv1alpha1.Fluentd) *appsv1.DaemonSet {
 			Name:        fd.Name,
 			Namespace:   fd.Namespace,
 			Labels:      labels,
-			Annotations: fd.Annotations,
+			Annotations: makeFluentdWorkloadAnnotations(fd),
 		},
 		Spec: appsv1.DaemonSetSpec{
 			Selector: &metav1.LabelSelector{
