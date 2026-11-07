@@ -46,6 +46,10 @@ type FilterSpec struct {
 	FilterItems []FilterItem `json:"filters,omitempty"`
 	// An ordinal to influence filter ordering
 	Ordinal int32 `json:"ordinal,omitempty"`
+	// AfterNamespaceFilters places a ClusterFilter after the namespaced Filters in the pipeline,
+	// so it processes records after they have been through them. ClusterFilters run before the
+	// namespaced Filters by default. Only applies to ClusterFilters, namespaced Filters ignore it.
+	AfterNamespaceFilters bool `json:"afterNamespaceFilters,omitempty"`
 }
 
 type FilterItem struct {
@@ -175,14 +179,35 @@ func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 	return buf.String(), nil
 }
 
-func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
-	var buf bytes.Buffer
+// SplitByNamespaceFilters splits the list into the ClusterFilters that run before the namespaced
+// Filters and those that run after them (see FilterSpec.AfterNamespaceFilters).
+func (list ClusterFilterList) SplitByNamespaceFilters() (before, after ClusterFilterList) {
+	for _, item := range list.Items {
+		if item.Spec.AfterNamespaceFilters {
+			after.Items = append(after.Items, item)
+		} else {
+			before.Items = append(before.Items, item)
+		}
+	}
+	return before, after
+}
 
-	sort.Sort(FilterByOrdinalAndName(list.Items))
+func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
 	if len(list.Items) == 0 {
 		return "", nil
 	}
-	fmt.Fprintf(&buf, "%sfilters:\n", utils.YamlIndent(depth))
+	items, err := list.loadYamlItems(sl, depth)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%sfilters:\n", utils.YamlIndent(depth)) + items, nil
+}
+
+// loadYamlItems renders the filters as YAML list items, without the "filters:" header.
+func (list ClusterFilterList) loadYamlItems(sl plugins.SecretLoader, depth int) (string, error) {
+	var buf bytes.Buffer
+
+	sort.Sort(FilterByOrdinalAndName(list.Items))
 	padding := utils.YamlIndent(depth + 2)
 
 	for _, item := range list.Items {
