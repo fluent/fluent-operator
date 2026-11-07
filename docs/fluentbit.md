@@ -314,6 +314,7 @@ FilterSpec defines the desired state of ClusterFilter
 | logLevel |  | string |
 | filters | A set of filter plugins in order. | [][FilterItem](#filteritem) |
 | ordinal | An ordinal to influence filter ordering | int32 |
+| afterNamespaceFilters | AfterNamespaceFilters places a ClusterFilter after the namespaced Filters in the pipeline, so it processes records after they have been through them. ClusterFilters run before the namespaced Filters by default. Only applies to ClusterFilters, namespaced Filters ignore it. | bool |
 
 [Back to TOC](#table-of-contents)
 # FluentBit
