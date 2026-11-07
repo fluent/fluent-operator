@@ -41,6 +41,12 @@ spec:
           spec:
             description: Specification of desired Filter configuration.
             properties:
+              afterNamespaceFilters:
+                description: |-
+                  AfterNamespaceFilters places a ClusterFilter after the namespaced Filters in the pipeline,
+                  so it processes records after they have been through them. ClusterFilters run before the
+                  namespaced Filters by default. Only applies to ClusterFilters, namespaced Filters ignore it.
+                type: boolean
               filters:
                 description: A set of filter plugins in order.
                 items:
