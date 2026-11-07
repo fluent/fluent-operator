@@ -1521,3 +1521,74 @@ func TestRenderMainConfigInYaml_RewriteTagConfigMergesIntoSingleFiltersSection(t
 	g.Expect(ok).To(BeTrue())
 	g.Expect(filterEntries).To(HaveLen(2))
 }
+
+func TestRenderMainConfig_ClusterFilterAfterNamespaceFilters(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+	cfg := ClusterFluentBitConfig{}
+
+	modify := func(value string) []FilterItem {
+		return []FilterItem{{Modify: &filter.Modify{
+			Rules: []filter.Rule{{Set: map[string]string{"stage": value}}},
+		}}}
+	}
+
+	inputs := ClusterInputList{
+		Items: []ClusterInput{{
+			ObjectMeta: metav1.ObjectMeta{Name: "input0"},
+			Spec:       InputSpec{Tail: &input.Tail{Tag: "kube.*", Path: "/var/log/containers/*.log"}},
+		}},
+	}
+	// The ordinal of the "after" filter is lower, it must still be placed after the namespaced filters.
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{
+			{
+				ObjectMeta: metav1.ObjectMeta{Name: "after"},
+				Spec:       FilterSpec{Match: "kube.*", Ordinal: -1, AfterNamespaceFilters: true, FilterItems: modify("cluster-after")},
+			},
+			{
+				ObjectMeta: metav1.ObjectMeta{Name: "before"},
+				Spec:       FilterSpec{Match: "kube.*", FilterItems: modify("cluster-before")},
+			},
+		},
+	}
+	nsFilters := []FilterList{{
+		Items: []Filter{{
+			ObjectMeta: metav1.ObjectMeta{Name: "ns", Namespace: "foo"},
+			Spec:       FilterSpec{Match: "kube.*", FilterItems: modify("namespaced")},
+		}},
+	}}
+
+	expectOrder := func(config string) {
+		before := strings.Index(config, "cluster-before")
+		namespaced := strings.Index(config, "namespaced")
+		after := strings.Index(config, "cluster-after")
+		g.Expect(before).To(BeNumerically(">=", 0))
+		g.Expect(namespaced).To(BeNumerically(">", before))
+		g.Expect(after).To(BeNumerically(">", namespaced))
+	}
+
+	config, err := cfg.RenderMainConfig(sl, inputs, filters, ClusterOutputList{}, nsFilters, nil, nil)
+	g.Expect(err).NotTo(HaveOccurred())
+	expectOrder(config)
+
+	yamlConfig, err := cfg.RenderMainConfigInYaml(sl, inputs, filters, ClusterOutputList{}, nsFilters, nil, nil)
+	g.Expect(err).NotTo(HaveOccurred())
+	expectOrder(yamlConfig)
+	g.Expect(strings.Count(yamlConfig, "filters:\n")).To(Equal(1))
+
+	var parsed map[string]any
+	g.Expect(yaml.Unmarshal([]byte(yamlConfig), &parsed)).To(Succeed())
+	pipeline, ok := parsed["pipeline"].(map[string]any)
+	g.Expect(ok).To(BeTrue())
+	g.Expect(pipeline["filters"]).To(HaveLen(3))
+
+	// With only "after" cluster filters and no namespaced filters, the YAML still has a filters header.
+	_, afterOnly := filters.SplitByNamespaceFilters()
+	yamlConfig, err = cfg.RenderMainConfigInYaml(sl, inputs, afterOnly, ClusterOutputList{}, nil, nil, nil)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(yaml.Unmarshal([]byte(yamlConfig), &parsed)).To(Succeed())
+	pipeline, ok = parsed["pipeline"].(map[string]any)
+	g.Expect(ok).To(BeTrue())
+	g.Expect(pipeline["filters"]).To(HaveLen(1))
+}
