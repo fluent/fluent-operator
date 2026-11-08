@@ -36,7 +36,7 @@ func (l *LSTV) Params(_ plugins.SecretLoader) (*params.KVs, error) {
 		kvs.Insert("Time_Format", l.TimeFormat)
 	}
 	if l.TimeKeep != nil {
-		kvs.Insert("Time_Format", fmt.Sprint(*l.TimeKeep))
+		kvs.Insert("Time_Keep", fmt.Sprint(*l.TimeKeep))
 	}
 	if l.TimeStrict != nil {
 		kvs.Insert("Time_Strict", fmt.Sprint(*l.TimeStrict))
