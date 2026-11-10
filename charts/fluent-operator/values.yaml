@@ -686,6 +686,7 @@ fluentd:
       port: 9200
       # -- Logstash prefix for Elasticsearch indices
       logstashPrefix: ks-logstash-log
+      # logstashFormat: true
       buffer:
         # -- Enable buffer for Elasticsearch output
         enable: false
