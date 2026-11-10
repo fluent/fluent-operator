@@ -6,6 +6,7 @@ The Lua Filter allows you to modify the incoming records using custom Lua Script
 | Field | Description | Scheme |
 | ----- | ----------- | ------ |
 | script | Path to the Lua script that will be used. | v1.ConfigMapKeySelector |
+| scriptNamespace | Namespace of the ConfigMap that holds the script. Only used by a ClusterFilter, where it defaults to the namespace of the ClusterFluentBitConfig. A namespaced Filter always reads the ConfigMap from its own namespace and ignores this field. When the operator only watches some namespaces, this must be one of them. | string |
 | call | Lua function name that will be triggered to do filtering. It's assumed that the function is declared inside the Script defined above. | string |
 | code | Inline LUA code instead of loading from a path via script. | string |
 | typeIntKey | If these keys are matched, the fields are converted to integer. If more than one key, delimit by space. Note that starting from Fluent Bit v1.6 integer data types are preserved and not converted to double as in previous versions. | []string |

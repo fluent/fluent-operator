@@ -415,6 +415,7 @@ func (r *FluentBitConfigReconciler) renderAndStoreConfig(
 	cluster clusterPlugins, namespaced namespacedPlugins,
 ) error {
 	cl := plugins.NewConfigMapLoader(r.Client, ns)
+	warnIgnoredScriptNamespaces(r.Log, namespaced.filters)
 	// load scripts for namespaced filters
 	nsScripts, err := cfg.RenderNamespacedLuaScript(cl, namespaced.filters)
 	if err != nil {
@@ -785,4 +786,19 @@ func (r *FluentBitConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Watches(&fluentbitv1alpha2.Parser{}, &handler.EnqueueRequestForObject{}).
 		Watches(&fluentbitv1alpha2.MultilineParser{}, &handler.EnqueueRequestForObject{}).
 		Complete(r)
+}
+
+// warnIgnoredScriptNamespaces logs the namespaced Filters that set a Lua scriptNamespace. Only a
+// ClusterFilter can read its script from another namespace, so a namespaced Filter ignores it.
+func warnIgnoredScriptNamespaces(log logr.Logger, filterLists []fluentbitv1alpha2.FilterList) {
+	for _, filters := range filterLists {
+		for _, f := range filters.Items {
+			for _, item := range f.Spec.FilterItems {
+				if item.Lua != nil && item.Lua.ScriptNamespace != "" {
+					log.Info("Ignoring the Lua scriptNamespace of a namespaced Filter, it reads its script from its own namespace",
+						"filter", f.Name, "namespace", f.Namespace, "scriptNamespace", item.Lua.ScriptNamespace)
+				}
+			}
+		}
+	}
 }
