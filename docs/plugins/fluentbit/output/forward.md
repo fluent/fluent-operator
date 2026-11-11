@@ -18,5 +18,6 @@ Forward is the protocol used by Fluentd to route messages between peers. <br /> 
 | selfHostname | Default value of the auto-generated certificate common name (CN). | string |
 | retainMetadataInForwardMode | Retain metadata when forwarding in forward mode. | *bool |
 | compress | Set to gzip to enable gzip compression. Incompatible with timeAsInteger set to true and with tags set dynamically using the Rewrite Tag filter. Requires Fluentd server v0.14.7 or later. | string |
+| totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *[plugins.Networking](../net.md) |

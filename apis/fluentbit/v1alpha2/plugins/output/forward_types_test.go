@@ -43,3 +43,22 @@ func TestOutput_Forward_Params_NoCompress(t *testing.T) {
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(kvs).To(Equal(expected))
 }
+
+func TestOutput_Forward_Params_TotalLimitSize(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	sl := plugins.NewSecretLoader(nil, "test namespace")
+
+	fwd := Forward{
+		Host:           "fluentd.logging",
+		TotalLimitSize: "5G",
+	}
+
+	expected := params.NewKVs()
+	expected.Insert("Host", "fluentd.logging")
+	expected.Insert("storage.total_limit_size", "5G")
+
+	kvs, err := fwd.Params(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(kvs).To(Equal(expected))
+}
