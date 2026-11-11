@@ -122,8 +122,11 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, role, r.mutate(role, &fb)); err != nil {
 		return ctrl.Result{}, err
 	}
-	if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &fb)); err != nil {
-		return ctrl.Result{}, err
+	// With spec.serviceAccountName the pods run as an existing ServiceAccount, which the operator doesn't manage.
+	if fb.Spec.ServiceAccountName == "" {
+		if _, err := controllerutil.CreateOrPatch(ctx, r.Client, sa, r.mutate(sa, &fb)); err != nil {
+			return ctrl.Result{}, err
+		}
 	}
 	if crb, ok := binding.(*rbacv1.ClusterRoleBinding); ok {
 		if err := replaceStaleClusterRoleBinding(ctx, r.Client, crb); err != nil {
@@ -254,7 +257,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 	case *rbacv1.RoleBinding:
 		_, _, expected := operator.MakeScopedRBACObjects(fb.Name, fb.Namespace, fb.Spec.ServiceAccountAnnotations)
 		return func() error {
-			o.Subjects = expected.Subjects
+			o.Subjects = withServiceAccount(expected.Subjects, operator.FluentBitServiceAccountName(*fb))
 			o.RoleRef = expected.RoleRef
 			if err := ctrl.SetControllerReference(fb, o, r.Scheme); err != nil {
 				return err
@@ -270,7 +273,7 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 			fb.Spec.ServiceAccountAnnotations,
 		)
 		return func() error {
-			o.Subjects = expected.Subjects
+			o.Subjects = withServiceAccount(expected.Subjects, operator.FluentBitServiceAccountName(*fb))
 			o.RoleRef = expected.RoleRef
 			return nil
 		}
@@ -280,14 +283,35 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 	return nil
 }
 
-func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.FluentBit) error {
-	sa := corev1.ServiceAccount{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      fb.Name,
-			Namespace: fb.Namespace,
-		},
+// deleteServiceAccount removes the ServiceAccount the operator created for fb. A ServiceAccount with the same
+// name that fb doesn't control, such as an unrelated one left in place when spec.serviceAccountName points
+// elsewhere, is left alone. ServiceAccounts are watched, so the Get is served from the cache.
+func (r *FluentBitReconciler) deleteServiceAccount(ctx context.Context, fb *fluentbitv1alpha2.FluentBit) error {
+	var sa corev1.ServiceAccount
+	if err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Name}, &sa); err != nil {
+		return client.IgnoreNotFound(err)
+	}
+	if !metav1.IsControlledBy(&sa, fb) {
+		return nil
 	}
 	if err := r.Delete(ctx, &sa); err != nil && !errors.IsNotFound(err) {
+		return err
+	}
+	return nil
+}
+
+// withServiceAccount points the ServiceAccount subjects of a binding at the given ServiceAccount.
+func withServiceAccount(subjects []rbacv1.Subject, name string) []rbacv1.Subject {
+	for i := range subjects {
+		if subjects[i].Kind == rbacv1.ServiceAccountKind {
+			subjects[i].Name = name
+		}
+	}
+	return subjects
+}
+
+func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.FluentBit) error {
+	if err := r.deleteServiceAccount(ctx, fb); err != nil {
 		return err
 	}
 

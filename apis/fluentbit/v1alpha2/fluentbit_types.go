@@ -76,6 +76,11 @@ type FluentBitSpec struct {
 	Annotations map[string]string `json:"annotations,omitempty"`
 	// Annotations to add to the Fluentbit service account
 	ServiceAccountAnnotations map[string]string `json:"serviceAccountAnnotations,omitempty"`
+	// ServiceAccountName is the name of an existing ServiceAccount for the Fluent Bit pods.
+	// It must be in the namespace of the FluentBit resource.
+	// When set, the operator doesn't create a ServiceAccount, binds its RBAC rules to this one,
+	// and serviceAccountAnnotations is ignored.
+	ServiceAccountName string `json:"serviceAccountName,omitempty"`
 	// Labels to add to each FluentBit pod
 	Labels map[string]string `json:"labels,omitempty"`
 	// SecurityContext holds pod-level security attributes and common container settings.

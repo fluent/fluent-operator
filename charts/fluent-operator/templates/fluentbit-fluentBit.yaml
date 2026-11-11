@@ -110,6 +110,9 @@ spec:
   serviceAccountAnnotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.fluentbit.serviceAccountName }}
+  serviceAccountName: {{ . | quote }}
+  {{- end }}
   rbacRules:
     - apiGroups:
       - ""

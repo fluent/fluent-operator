@@ -21,6 +21,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -134,5 +135,49 @@ func TestFluentBitMutateDaemonSetRemovedLabelDoesNotMutateSpec(t *testing.T) {
 	}
 	if len(fbLabels) != 1 {
 		t.Fatalf("expected fb.Spec.Labels to remain untouched, got %v", fbLabels)
+	}
+}
+
+// With spec.serviceAccountName the bindings point at that ServiceAccount instead of the one the operator creates.
+func TestFluentBitMutateBindingsUseServiceAccountName(t *testing.T) {
+	s := runtime.NewScheme()
+	if err := scheme.AddToScheme(s); err != nil {
+		t.Fatalf("failed to add client-go scheme: %v", err)
+	}
+	if err := fluentbitv1alpha2.AddToScheme(s); err != nil {
+		t.Fatalf("failed to add fluentbit scheme: %v", err)
+	}
+	r := &FluentBitReconciler{Scheme: s}
+
+	for _, tc := range []struct {
+		name           string
+		serviceAccount string
+		want           string
+	}{
+		{name: "default", want: "fluent-bit"},
+		{name: "custom", serviceAccount: "fluent-bit-irsa", want: "fluent-bit-irsa"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fb := &fluentbitv1alpha2.FluentBit{
+				ObjectMeta: metav1.ObjectMeta{Name: "fluent-bit", Namespace: "logging", UID: "uid"},
+				Spec:       fluentbitv1alpha2.FluentBitSpec{ServiceAccountName: tc.serviceAccount},
+			}
+
+			crb := &rbacv1.ClusterRoleBinding{}
+			if err := r.mutate(crb, fb)(); err != nil {
+				t.Fatalf("mutate ClusterRoleBinding: %v", err)
+			}
+			if len(crb.Subjects) != 1 || crb.Subjects[0].Name != tc.want || crb.Subjects[0].Namespace != "logging" {
+				t.Errorf("ClusterRoleBinding subjects = %+v, want ServiceAccount logging/%s", crb.Subjects, tc.want)
+			}
+
+			rb := &rbacv1.RoleBinding{ObjectMeta: metav1.ObjectMeta{Namespace: "logging"}}
+			if err := r.mutate(rb, fb)(); err != nil {
+				t.Fatalf("mutate RoleBinding: %v", err)
+			}
+			if len(rb.Subjects) != 1 || rb.Subjects[0].Name != tc.want {
+				t.Errorf("RoleBinding subjects = %+v, want ServiceAccount %s", rb.Subjects, tc.want)
+			}
+		})
 	}
 }
