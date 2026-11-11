@@ -18,8 +18,8 @@ spec:
         logstashPrefix: {{ .logstashPrefix | quote }}
       {{- with .buffer }}
       buffer:
-        type: {{ .buffer.type | quote }}
-        path: {{ .buffer.path | quote }}
+        type: {{ .type | quote }}
+        path: {{ .path | quote }}
       {{- end }}
 {{- end }}
 {{- end }}
