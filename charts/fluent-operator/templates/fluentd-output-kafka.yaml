@@ -14,10 +14,12 @@ spec:
         brokers: {{ .brokers | quote }}
         useEventTime: true
         topicKey: {{ .topicKey | quote }}
+      {{- if and .buffer .buffer.enable }}
       {{- with .buffer }}
       buffer:
         type: {{ .type | quote }}
         path: {{ .path | quote }}
+      {{- end }}
       {{- end }}
 {{- end }}
 {{- end }}
