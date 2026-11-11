@@ -85,7 +85,7 @@ type FluentdSpec struct {
 	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 	// NodeSelector
 	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
-	// Annotations to add to each Fluentd pod.
+	// Annotations to add to the StatefulSet or DaemonSet and its pods.
 	Annotations map[string]string `json:"annotations,omitempty"`
 	// Annotations to add to the Fluentd service account
 	ServiceAccountAnnotations map[string]string `json:"serviceAccountAnnotations,omitempty"`

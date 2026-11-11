@@ -352,7 +352,7 @@ FluentdSpec defines the desired state of Fluentd
 | imagePullSecrets | Fluentd image pull secret | [][corev1.LocalObjectReference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core) |
 | resources | Compute Resources required by container. | [corev1.ResourceRequirements](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#resourcerequirements-v1-core) |
 | nodeSelector | NodeSelector | map[string]string |
-| annotations | Annotations to add to each Fluentd pod. | map[string]string |
+| annotations | Annotations to add to the StatefulSet or DaemonSet and its pods. | map[string]string |
 | serviceAccountAnnotations | Annotations to add to the Fluentd service account | map[string]string |
 | affinity | Pod's scheduling constraints. | *[corev1.Affinity](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#affinity-v1-core) |
 | tolerations | Tolerations | [][corev1.Toleration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#toleration-v1-core) |
