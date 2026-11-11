@@ -57,6 +57,13 @@ type FluentdConfigSpec struct {
 	// +kubebuilder:validation:Enum:=lexicographic;index
 	// +kubebuilder:default:=lexicographic
 	PluginSortOrder string `json:"pluginSortOrder,omitempty"`
+	// CatchAllFilterOrder controls where filters with the catch-all tag "**" go
+	// within a label section. "last" (default) puts them after the other filters.
+	// "id" orders them by @id like any other filter, so a "**" filter can run
+	// between other filters. Matches with "**" always stay last.
+	// +kubebuilder:validation:Enum:=last;id
+	// +kubebuilder:default:=last
+	CatchAllFilterOrder string `json:"catchAllFilterOrder,omitempty"`
 }
 
 // FluentdConfigStatus defines the observed state of FluentdConfig

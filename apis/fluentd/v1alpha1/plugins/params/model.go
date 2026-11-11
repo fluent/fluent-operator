@@ -26,6 +26,11 @@ type PluginStore struct {
 	// sorting child plugins. When false (default), lexicographic order is used,
 	// preserving the behaviour that existed before this flag was introduced.
 	NumericIdSort bool
+	// CatchAllFiltersById orders filter children by @id only. When false (default),
+	// filters with the catch-all tag "**" are placed after the other filters.
+	// Match children always keep "**" last, since a catch-all match would
+	// consume events meant for the matches after it.
+	CatchAllFiltersById bool
 }
 
 func NewPluginStore(name string) *PluginStore {
@@ -160,13 +165,19 @@ func (ps *PluginStore) String() string {
 	ps.setWhitespaces(parentPrefixWhitespaces + IntervalWhitespaces)
 	ps.processBody(&buf)
 	if len(ps.Childs) > 0 {
-		if ps.NumericIdSort {
+		switch {
+		case ps.CatchAllFiltersById:
+			sort.Slice(ps.Childs, func(i, j int) bool {
+				return lessPlugin(ps.Childs[i], ps.Childs[j], ps.NumericIdSort, true)
+			})
+		case ps.NumericIdSort:
 			sort.Sort(PluginStoreByNameByIdNumeric(ps.Childs))
-		} else {
+		default:
 			sort.Sort(PluginStoreByNameById(ps.Childs))
 		}
 		for _, child := range ps.Childs {
 			child.NumericIdSort = ps.NumericIdSort
+			child.CatchAllFiltersById = ps.CatchAllFiltersById
 			child.setWhitespaces(ps.PrefixWhitespaces)
 			buf.WriteString(child.String())
 		}
@@ -285,17 +296,7 @@ type PluginStoreByNameById []*PluginStore
 func (a PluginStoreByNameById) Len() int      { return len(a) }
 func (a PluginStoreByNameById) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 func (a PluginStoreByNameById) Less(i, j int) bool {
-	if a[i].Name == a[j].Name {
-		if a[i].GetTag() == "**" && a[j].GetTag() != "**" {
-			return false
-		}
-		if a[i].GetTag() != "**" && a[j].GetTag() == "**" {
-			return true
-		}
-		return a[i].GetId() < a[j].GetId()
-	} else {
-		return a[i].Name < a[j].Name
-	}
+	return lessPlugin(a[i], a[j], false, false)
 }
 
 // +kubebuilder:object:generate=false
@@ -304,17 +305,27 @@ type PluginStoreByNameByIdNumeric []*PluginStore
 func (a PluginStoreByNameByIdNumeric) Len() int      { return len(a) }
 func (a PluginStoreByNameByIdNumeric) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 func (a PluginStoreByNameByIdNumeric) Less(i, j int) bool {
-	if a[i].Name == a[j].Name {
-		if a[i].GetTag() == "**" && a[j].GetTag() != "**" {
+	return lessPlugin(a[i], a[j], true, false)
+}
+
+// lessPlugin orders child plugins by directive name, then puts catch-all "**"
+// plugins last unless they are filters and filtersById is set, then compares @id.
+func lessPlugin(a, b *PluginStore, numericId, filtersById bool) bool {
+	if a.Name != b.Name {
+		return a.Name < b.Name
+	}
+	if !filtersById || a.Name != "filter" {
+		if a.GetTag() == "**" && b.GetTag() != "**" {
 			return false
 		}
-		if a[i].GetTag() != "**" && a[j].GetTag() == "**" {
+		if a.GetTag() != "**" && b.GetTag() == "**" {
 			return true
 		}
-		return lessId(a[i].GetId(), a[j].GetId())
-	} else {
-		return a[i].Name < a[j].Name
 	}
+	if numericId {
+		return lessId(a.GetId(), b.GetId())
+	}
+	return a.GetId() < b.GetId()
 }
 
 // lessId orders @id strings so that numeric suffixes compare numerically once

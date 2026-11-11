@@ -8,4 +8,6 @@ However, for filter plugins, if you want a filter chain, the order of filters ma
 
 For Fluentd configs that select more than nine child plugins in one label section, set `.spec.pluginSortOrder: index` on `FluentdConfig` or `ClusterFluentdConfig` to use numeric-aware plugin ordering. The default `lexicographic` order is kept for backward compatibility.
 
+Fluentd filters with the catch-all tag `**` are rendered after the other filters in a label section by default. To run a `**` filter between other filters, set `.spec.catchAllFilterOrder: id` on `FluentdConfig` or `ClusterFluentdConfig`, and filters are then ordered by `@id`, which follows the filter CR name and the position in its `filters` list. Matches with `**` are always rendered last, since a catch-all match would take the events meant for the matches after it.
+
 
