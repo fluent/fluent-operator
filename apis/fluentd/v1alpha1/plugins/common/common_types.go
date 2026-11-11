@@ -403,7 +403,7 @@ func (s *Server) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 		ps.InsertPairs("host", fmt.Sprint(*s.Host))
 	}
 	if s.ServerName != nil {
-		ps.InsertPairs("server", fmt.Sprint(*s.ServerName))
+		ps.InsertPairs("name", fmt.Sprint(*s.ServerName))
 	}
 	if s.Port != nil {
 		ps.InsertPairs("port", fmt.Sprint(*s.Port))
@@ -428,10 +428,10 @@ func (s *Server) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 		ps.InsertPairs("password", pwd)
 	}
 	if s.Standby != nil {
-		ps.InsertPairs("standby", fmt.Sprint(*s.Host))
+		ps.InsertPairs("standby", fmt.Sprint(*s.Standby))
 	}
 	if s.Weight != nil {
-		ps.InsertPairs("weight", fmt.Sprint(*s.Host))
+		ps.InsertPairs("weight", fmt.Sprint(*s.Weight))
 	}
 
 	return ps, nil
