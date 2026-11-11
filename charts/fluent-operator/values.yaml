@@ -220,7 +220,7 @@ fluentbit:
   # -- Additional custom annotations for Fluent Bit ServiceAccount
   serviceAccountAnnotations: {}
 
-  # -- Name of an existing ServiceAccount for the Fluent Bit pods. When set, the operator doesn't create one
+  # -- Name of an existing ServiceAccount, in the FluentBit namespace, for the Fluent Bit pods. When set, the operator doesn't create one
   # and serviceAccountAnnotations is ignored.
   serviceAccountName: ""
 

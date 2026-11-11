@@ -128,13 +128,6 @@ func (r *FluentBitReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 			return ctrl.Result{}, err
 		}
 	}
-	saName := operator.FluentBitServiceAccountName(fb)
-	switch b := binding.(type) {
-	case *rbacv1.RoleBinding:
-		b.Subjects = withServiceAccount(b.Subjects, saName)
-	case *rbacv1.ClusterRoleBinding:
-		b.Subjects = withServiceAccount(b.Subjects, saName)
-	}
 	if crb, ok := binding.(*rbacv1.ClusterRoleBinding); ok {
 		if err := replaceStaleClusterRoleBinding(ctx, r.Client, crb); err != nil {
 			return ctrl.Result{}, err
@@ -290,6 +283,23 @@ func (r *FluentBitReconciler) mutate(obj client.Object, fb *fluentbitv1alpha2.Fl
 	return nil
 }
 
+// deleteServiceAccount removes the ServiceAccount the operator created for fb. A ServiceAccount with the same
+// name that fb doesn't control, such as an unrelated one left in place when spec.serviceAccountName points
+// elsewhere, is left alone. ServiceAccounts are watched, so the Get is served from the cache.
+func (r *FluentBitReconciler) deleteServiceAccount(ctx context.Context, fb *fluentbitv1alpha2.FluentBit) error {
+	var sa corev1.ServiceAccount
+	if err := r.Get(ctx, client.ObjectKey{Namespace: fb.Namespace, Name: fb.Name}, &sa); err != nil {
+		return client.IgnoreNotFound(err)
+	}
+	if !metav1.IsControlledBy(&sa, fb) {
+		return nil
+	}
+	if err := r.Delete(ctx, &sa); err != nil && !errors.IsNotFound(err) {
+		return err
+	}
+	return nil
+}
+
 // withServiceAccount points the ServiceAccount subjects of a binding at the given ServiceAccount.
 func withServiceAccount(subjects []rbacv1.Subject, name string) []rbacv1.Subject {
 	for i := range subjects {
@@ -301,13 +311,7 @@ func withServiceAccount(subjects []rbacv1.Subject, name string) []rbacv1.Subject
 }
 
 func (r *FluentBitReconciler) delete(ctx context.Context, fb *fluentbitv1alpha2.FluentBit) error {
-	sa := corev1.ServiceAccount{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      fb.Name,
-			Namespace: fb.Namespace,
-		},
-	}
-	if err := r.Delete(ctx, &sa); err != nil && !errors.IsNotFound(err) {
+	if err := r.deleteServiceAccount(ctx, fb); err != nil {
 		return err
 	}
 
