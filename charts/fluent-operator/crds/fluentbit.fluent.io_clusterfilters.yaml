@@ -1003,7 +1003,9 @@ spec:
                   Use this option if you want to use the full regex syntax.
                 type: string
               ordinal:
-                description: An ordinal to influence filter ordering. ClusterFilters are ordered within their group, the ones that run before the namespaced Filters and the ones that run after them
+                description: An ordinal to influence filter ordering. ClusterFilters
+                  are ordered within their group, the ones that run before the namespaced
+                  Filters and the ones that run after them
                 format: int32
                 type: integer
             type: object
