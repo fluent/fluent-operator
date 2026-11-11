@@ -44,11 +44,11 @@ type FilterSpec struct {
 	LogLevel string `json:"logLevel,omitempty"`
 	// A set of filter plugins in order.
 	FilterItems []FilterItem `json:"filters,omitempty"`
-	// An ordinal to influence filter ordering
+	// An ordinal to influence filter ordering. ClusterFilters are ordered within their group, the ones that run before the namespaced Filters and the ones that run after them
 	Ordinal int32 `json:"ordinal,omitempty"`
 	// AfterNamespaceFilters places a ClusterFilter after the namespaced Filters in the pipeline,
 	// so it processes records after they have been through them. ClusterFilters run before the
-	// namespaced Filters by default. Only applies to ClusterFilters, namespaced Filters ignore it.
+	// namespaced Filters by default. Only applies to ClusterFilters, a namespaced Filter that sets it is rejected.
 	AfterNamespaceFilters bool `json:"afterNamespaceFilters,omitempty"`
 }
 
@@ -179,9 +179,9 @@ func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 	return buf.String(), nil
 }
 
-// SplitByNamespaceFilters splits the list into the ClusterFilters that run before the namespaced
+// splitByNamespaceFilters splits the list into the ClusterFilters that run before the namespaced
 // Filters and those that run after them (see FilterSpec.AfterNamespaceFilters).
-func (list ClusterFilterList) SplitByNamespaceFilters() (before, after ClusterFilterList) {
+func (list ClusterFilterList) splitByNamespaceFilters() (before, after ClusterFilterList) {
 	for _, item := range list.Items {
 		if item.Spec.AfterNamespaceFilters {
 			after.Items = append(after.Items, item)

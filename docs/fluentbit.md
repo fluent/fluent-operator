@@ -313,8 +313,8 @@ FilterSpec defines the desired state of ClusterFilter
 | matchRegex | A regular expression to match against the tags of incoming records. Use this option if you want to use the full regex syntax. | string |
 | logLevel |  | string |
 | filters | A set of filter plugins in order. | [][FilterItem](#filteritem) |
-| ordinal | An ordinal to influence filter ordering | int32 |
-| afterNamespaceFilters | AfterNamespaceFilters places a ClusterFilter after the namespaced Filters in the pipeline, so it processes records after they have been through them. ClusterFilters run before the namespaced Filters by default. Only applies to ClusterFilters, namespaced Filters ignore it. | bool |
+| ordinal | An ordinal to influence filter ordering. ClusterFilters are ordered within their group, the ones that run before the namespaced Filters and the ones that run after them | int32 |
+| afterNamespaceFilters | AfterNamespaceFilters places a ClusterFilter after the namespaced Filters in the pipeline, so it processes records after they have been through them. ClusterFilters run before the namespaced Filters by default. Only applies to ClusterFilters, a namespaced Filter that sets it is rejected. | bool |
 
 [Back to TOC](#table-of-contents)
 # FluentBit

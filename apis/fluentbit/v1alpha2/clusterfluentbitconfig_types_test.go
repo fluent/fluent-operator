@@ -1544,25 +1544,25 @@ func TestRenderMainConfig_ClusterFilterAfterNamespaceFilters(t *testing.T) {
 		Items: []ClusterFilter{
 			{
 				ObjectMeta: metav1.ObjectMeta{Name: "after"},
-				Spec:       FilterSpec{Match: "kube.*", Ordinal: -1, AfterNamespaceFilters: true, FilterItems: modify("cluster-after")},
+				Spec:       FilterSpec{Match: "kube.*", Ordinal: -1, AfterNamespaceFilters: true, FilterItems: modify("stage-cluster-after")},
 			},
 			{
 				ObjectMeta: metav1.ObjectMeta{Name: "before"},
-				Spec:       FilterSpec{Match: "kube.*", FilterItems: modify("cluster-before")},
+				Spec:       FilterSpec{Match: "kube.*", FilterItems: modify("stage-cluster-before")},
 			},
 		},
 	}
 	nsFilters := []FilterList{{
 		Items: []Filter{{
 			ObjectMeta: metav1.ObjectMeta{Name: "ns", Namespace: "foo"},
-			Spec:       FilterSpec{Match: "kube.*", FilterItems: modify("namespaced")},
+			Spec:       FilterSpec{Match: "kube.*", FilterItems: modify("stage-namespaced")},
 		}},
 	}}
 
 	expectOrder := func(config string) {
-		before := strings.Index(config, "cluster-before")
-		namespaced := strings.Index(config, "namespaced")
-		after := strings.Index(config, "cluster-after")
+		before := strings.Index(config, "stage-cluster-before")
+		namespaced := strings.Index(config, "stage-namespaced")
+		after := strings.Index(config, "stage-cluster-after")
 		g.Expect(before).To(BeNumerically(">=", 0))
 		g.Expect(namespaced).To(BeNumerically(">", before))
 		g.Expect(after).To(BeNumerically(">", namespaced))
@@ -1584,11 +1584,14 @@ func TestRenderMainConfig_ClusterFilterAfterNamespaceFilters(t *testing.T) {
 	g.Expect(pipeline["filters"]).To(HaveLen(3))
 
 	// With only "after" cluster filters and no namespaced filters, the YAML still has a filters header.
-	_, afterOnly := filters.SplitByNamespaceFilters()
+	// afterOnly holds just the "after" ClusterFilter, so the before group and the namespaced Filters are
+	// both empty and nothing else would write the header.
+	_, afterOnly := filters.splitByNamespaceFilters()
 	yamlConfig, err = cfg.RenderMainConfigInYaml(sl, inputs, afterOnly, ClusterOutputList{}, nil, nil, nil)
 	g.Expect(err).NotTo(HaveOccurred())
-	g.Expect(yaml.Unmarshal([]byte(yamlConfig), &parsed)).To(Succeed())
-	pipeline, ok = parsed["pipeline"].(map[string]any)
+	var afterOnlyParsed map[string]any
+	g.Expect(yaml.Unmarshal([]byte(yamlConfig), &afterOnlyParsed)).To(Succeed())
+	pipeline, ok = afterOnlyParsed["pipeline"].(map[string]any)
 	g.Expect(ok).To(BeTrue())
 	g.Expect(pipeline["filters"]).To(HaveLen(1))
 }
