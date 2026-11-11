@@ -38,6 +38,21 @@ func TestFluentdWorkloadAnnotations(t *testing.T) {
 		g.Expect(fd.Annotations).To(Equal(map[string]string{"owner": "resource", "shared": "resource"}))
 	})
 
+	t.Run("only pod annotations", func(t *testing.T) {
+		g := NewGomegaWithT(t)
+		fd := fluentdv1alpha1.Fluentd{
+			ObjectMeta: metav1.ObjectMeta{Name: "fluentd", Namespace: "logging"},
+			Spec: fluentdv1alpha1.FluentdSpec{
+				Replicas:    new(int32(1)),
+				Annotations: map[string]string{"team": "obs"},
+			},
+		}
+		want := map[string]string{"team": "obs"}
+
+		g.Expect(MakeStatefulSet(fd).Annotations).To(Equal(want))
+		g.Expect(MakeFluentdDaemonSet(fd).Annotations).To(Equal(want))
+	})
+
 	t.Run("no annotations", func(t *testing.T) {
 		g := NewGomegaWithT(t)
 		fd := fluentdv1alpha1.Fluentd{

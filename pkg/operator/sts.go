@@ -181,9 +181,6 @@ func MakeStatefulSet(fd fluentdv1alpha1.Fluentd) *appsv1.StatefulSet {
 	return &sts
 }
 
-// inputPortName names the n-th (zero based) input of a kind. The first one keeps
-// the plain name, later ones get a numeric suffix, so that every input gets a
-// port name that is unique in the pod and the Service.
 // makeFluentdWorkloadAnnotations returns the annotations of the Fluentd
 // StatefulSet or DaemonSet: the ones of the Fluentd resource and, like the
 // labels, the ones set for the pods; the pod annotations win on conflict.
@@ -197,6 +194,9 @@ func makeFluentdWorkloadAnnotations(fd fluentdv1alpha1.Fluentd) map[string]strin
 	return annotations
 }
 
+// inputPortName names the n-th (zero based) input of a kind. The first one keeps
+// the plain name, later ones get a numeric suffix, so that every input gets a
+// port name that is unique in the pod and the Service.
 func inputPortName(base string, n int) string {
 	if n == 0 {
 		return base
