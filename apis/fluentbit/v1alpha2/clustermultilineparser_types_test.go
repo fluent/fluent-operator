@@ -83,7 +83,7 @@ func TestClusterMultilineParserList_Load(t *testing.T) {
 		Items: []ClusterMultilineParser{*goMultilineParser, *customMultilineParser},
 	}
 
-	cmp, err := clustermultilineparsers.Load(sl)
+	cmp, err := clustermultilineparsers.Load(sl, map[string]bool{})
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(cmp).To(Equal(clusterMultilineParserExpected))
 }

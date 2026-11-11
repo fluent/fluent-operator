@@ -1522,14 +1522,10 @@ func TestRenderMainConfigInYaml_RewriteTagConfigMergesIntoSingleFiltersSection(t
 	g.Expect(filterEntries).To(HaveLen(2))
 }
 
-// TestRenderMultilineParserConfigDeduplicatesClusterMultilineParsers covers a
-// ClusterMultilineParser selected by more than one FluentBitConfig in the same
-// namespace. ListFluentBitConfigResources renames every cluster-level copy to
-// "<name>-<md5(namespace)>", so two FluentBitConfigs in one namespace that both
-// select the same ClusterMultilineParser hand RenderMultilineParserConfig two
-// lists holding the same rendered name. RenderParserConfig already collapses
-// that case through its existingParsers set; the multiline renderer must do the
-// same, or Fluent Bit is handed two [MULTILINE_PARSER] sections with one name.
+// TestRenderMultilineParserConfigDeduplicatesClusterMultilineParsers covers two
+// FluentBitConfigs in one namespace selecting the same ClusterMultilineParser,
+// which reaches the renderer as separate lists under one rendered name. Only one
+// [MULTILINE_PARSER] section should be emitted, matching RenderParserConfig.
 func TestRenderMultilineParserConfigDeduplicatesClusterMultilineParsers(t *testing.T) {
 	g := NewGomegaWithT(t)
 	sl := plugins.NewSecretLoader(nil, "testnamespace")
@@ -1564,8 +1560,6 @@ func TestRenderMultilineParserConfigDeduplicatesClusterMultilineParsers(t *testi
 	g.Expect(err).NotTo(HaveOccurred())
 
 	occurrences := strings.Count(config, "Name    shared-5d41402abc4b2a76b9719d911017c592")
-	t.Logf("SENTINEL rendered config:\n%s", config)
-	t.Logf("SENTINEL occurrences=%d", occurrences)
 	g.Expect(occurrences).To(Equal(1), "the same ClusterMultilineParser was rendered more than once")
 }
 
@@ -1598,6 +1592,5 @@ func TestRenderParserConfigDeduplicatesClusterParsers(t *testing.T) {
 	g.Expect(err).NotTo(HaveOccurred())
 
 	occurrences := strings.Count(config, "Name    shared-5d41402abc4b2a76b9719d911017c592")
-	t.Logf("SENTINEL control occurrences=%d", occurrences)
 	g.Expect(occurrences).To(Equal(1), "control: parser renderer should already deduplicate")
 }
