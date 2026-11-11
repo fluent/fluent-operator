@@ -305,7 +305,7 @@ func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
 		return "", fmt.Errorf("failed to load inputs: %w", err)
 	}
 
-	beforeFilters, afterFilters := filters.SplitByNamespaceFilters()
+	beforeFilters, afterFilters := filters.splitByNamespaceFilters()
 	filterSections, err := beforeFilters.loadYamlItems(sl, 1)
 	if err != nil {
 		return "", fmt.Errorf("failed to load filters: %w", err)
@@ -418,7 +418,7 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(
 		return "", err
 	}
 
-	beforeFilters, afterFilters := filters.SplitByNamespaceFilters()
+	beforeFilters, afterFilters := filters.splitByNamespaceFilters()
 	filterSections, err := beforeFilters.Load(sl)
 	if err != nil {
 		return "", err
