@@ -12,6 +12,18 @@ import (
 
 const testLogPath = "/var/lib/docker/containers"
 
+func secretVolume(name, secretName string) corev1.Volume {
+	return corev1.Volume{Name: name, VolumeSource: corev1.VolumeSource{
+		Secret: &corev1.SecretVolumeSource{SecretName: secretName},
+	}}
+}
+
+func hostPathVolume(name, path string) corev1.Volume {
+	return corev1.Volume{Name: name, VolumeSource: corev1.VolumeSource{
+		HostPath: &corev1.HostPathVolumeSource{Path: path},
+	}}
+}
+
 func TestMakeDaemonSetDefaultVolumes(t *testing.T) {
 	g := NewWithT(t)
 	fb := fluentbitv1alpha2.FluentBit{
@@ -23,10 +35,10 @@ func TestMakeDaemonSetDefaultVolumes(t *testing.T) {
 	none := corev1.MountPropagationNone
 
 	g.Expect(podSpec.Volumes).To(Equal([]corev1.Volume{
-		{Name: "config", VolumeSource: corev1.VolumeSource{Secret: &corev1.SecretVolumeSource{SecretName: "fb-config"}}},
-		{Name: "varlibcontainers", VolumeSource: corev1.VolumeSource{HostPath: &corev1.HostPathVolumeSource{Path: testLogPath}}},
-		{Name: "varlogs", VolumeSource: corev1.VolumeSource{HostPath: &corev1.HostPathVolumeSource{Path: "/var/log"}}},
-		{Name: "systemd", VolumeSource: corev1.VolumeSource{HostPath: &corev1.HostPathVolumeSource{Path: "/var/log/journal"}}},
+		secretVolume("config", "fb-config"),
+		hostPathVolume("varlibcontainers", testLogPath),
+		hostPathVolume("varlogs", "/var/log"),
+		hostPathVolume("systemd", "/var/log/journal"),
 	}))
 	g.Expect(podSpec.Containers[0].VolumeMounts).To(Equal([]corev1.VolumeMount{
 		{Name: "config", ReadOnly: true, MountPath: "/fluent-bit/config"},
@@ -84,13 +96,12 @@ func TestMakeDaemonSetCustomVolumes(t *testing.T) {
 			mountNames = append(mountNames, m.Name)
 		}
 
+		want := []string{"config", "varlibcontainers", "varlogs", "systemd", "pvc-volume", "emptydir-volume"}
 		if disableLogVolumes {
-			g.Expect(volumeNames).To(Equal([]string{"config", "pvc-volume", "emptydir-volume"}))
-			g.Expect(mountNames).To(Equal([]string{"config", "pvc-volume", "emptydir-volume"}))
-		} else {
-			g.Expect(volumeNames).To(Equal([]string{"config", "varlibcontainers", "varlogs", "systemd", "pvc-volume", "emptydir-volume"}))
-			g.Expect(mountNames).To(Equal([]string{"config", "varlibcontainers", "varlogs", "systemd", "pvc-volume", "emptydir-volume"}))
+			want = []string{"config", "pvc-volume", "emptydir-volume"}
 		}
+		g.Expect(volumeNames).To(Equal(want))
+		g.Expect(mountNames).To(Equal(want))
 	}
 }
 
@@ -109,8 +120,8 @@ func TestMakeDaemonSetPositionDBAndSecrets(t *testing.T) {
 
 	g.Expect(podSpec.Volumes[1:]).To(Equal([]corev1.Volume{
 		{Name: "positions", VolumeSource: positionDB},
-		{Name: "es-credentials", VolumeSource: corev1.VolumeSource{Secret: &corev1.SecretVolumeSource{SecretName: "es-credentials"}}},
-		{Name: "tls", VolumeSource: corev1.VolumeSource{Secret: &corev1.SecretVolumeSource{SecretName: "tls"}}},
+		secretVolume("es-credentials", "es-credentials"),
+		secretVolume("tls", "tls"),
 	}))
 	g.Expect(podSpec.Containers[0].VolumeMounts[1:]).To(Equal([]corev1.VolumeMount{
 		{Name: "positions", MountPath: "/fluent-bit/tail"},
