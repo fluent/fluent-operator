@@ -50,6 +50,10 @@ type CfgResources struct {
 	// the label plugin produced by WithCfgResources. When false (default),
 	// lexicographic order is used, matching the behaviour prior to this flag.
 	NumericIdSort bool
+
+	// CatchAllFiltersById orders filters by @id only inside the label plugin,
+	// instead of putting filters with the "**" tag last.
+	CatchAllFiltersById bool
 }
 
 // NewGlobalPluginResources represents a combined global fluentd resources
@@ -351,6 +355,7 @@ func (pgr *PluginResources) WithCfgResources(cfgRouteLabel string, r *CfgResourc
 	cfgLabelPlugin := params.NewPluginStore("label")
 	cfgLabelPlugin.InsertPairs("tag", cfgRouteLabel)
 	cfgLabelPlugin.NumericIdSort = r.NumericIdSort
+	cfgLabelPlugin.CatchAllFiltersById = r.CatchAllFiltersById
 
 	// insert filter plugins of this fluentd config
 	for _, f := range r.FilterPlugins {
