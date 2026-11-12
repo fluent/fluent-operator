@@ -18,6 +18,8 @@ Path to file in Fluent Bit config should be well regulated. Fluent Bit Operator 
 
 ClusterFilters run before the namespaced Filters, sorted by `ordinal` and then by name. Set `afterNamespaceFilters: true` on a ClusterFilter to run it after the namespaced Filters instead, e.g. to drop a field that the namespaced Filters still need. `ordinal` orders ClusterFilters within their group, so a ClusterFilter that runs after the namespaced Filters always comes after them, whatever its ordinal. Namespaced Filters reject the field.
 
+By the time records leave the namespaced Filters, the operator has re-tagged them to `<md5(namespace)>.<tag>`. So a `match` like `kube.*` on a ClusterFilter with `afterNamespaceFilters: true` is rendered as a `Match_Regex` that also allows that prefix, and a `matchRegex` anchored with `^` gets the same optional prefix. Records from namespaces without namespaced Filters keep their original tag and still match.
+
 ```yaml
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterFilter

@@ -2,6 +2,7 @@ package v1alpha2
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -1568,20 +1569,52 @@ func TestRenderMainConfig_ClusterFilterAfterNamespaceFilters(t *testing.T) {
 		g.Expect(after).To(BeNumerically(">", namespaced))
 	}
 
-	config, err := cfg.RenderMainConfig(sl, inputs, filters, ClusterOutputList{}, nsFilters, nil, nil)
+	// The namespace routing filter re-tags the records of namespace foo to <md5(foo)>.$TAG, so the
+	// "after" filter has to match that form too, not only kube.*.
+	retagged := utils.GenerateNamespacedMatchExpr("foo", "kube.var.log.containers.app.log")
+	rule := fmt.Sprintf("$kubernetes['namespace_name'] ^(foo)$ %s.$TAG false", strings.Split(retagged, ".")[0])
+	rewriteTagFilters := ClusterFilterList{Items: []ClusterFilter{{Spec: FilterSpec{
+		Match:       "kube.*",
+		FilterItems: []FilterItem{{RewriteTag: &filter.RewriteTag{Rules: []string{rule}}}},
+	}}}}
+	rewriteTag, err := rewriteTagFilters.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	rendered, err := rewriteTagFilters.LoadAsYaml(sl, 1)
+	g.Expect(err).NotTo(HaveOccurred())
+	rewriteTagYaml := strings.TrimPrefix(rendered, fmt.Sprintf("%sfilters:\n", utils.YamlIndent(1)))
+
+	// expectAfterMatch checks the Match_Regex of the "after" filter (the last one rendered) against
+	// tags with and without the namespace prefix.
+	expectAfterMatch := func(config, key string) {
+		afterSection := config[strings.Index(config, "stage-namespaced"):]
+		start := strings.Index(afterSection, key)
+		g.Expect(start).To(BeNumerically(">=", 0))
+		line := afterSection[start+len(key):]
+		line = strings.TrimSpace(line[:strings.Index(line, "\n")])
+		re, err := regexp.Compile(line)
+		g.Expect(err).NotTo(HaveOccurred())
+		g.Expect(re.MatchString("kube.var.log.containers.app.log")).To(BeTrue())
+		g.Expect(re.MatchString(retagged)).To(BeTrue())
+		g.Expect(re.MatchString("other.var.log")).To(BeFalse())
+		g.Expect(re.MatchString("0123456789abcdef0123456789abcdef.other.var.log")).To(BeFalse())
+	}
+
+	config, err := cfg.RenderMainConfig(sl, inputs, filters, ClusterOutputList{}, nsFilters, nil, []string{rewriteTag})
 	g.Expect(err).NotTo(HaveOccurred())
 	expectOrder(config)
+	expectAfterMatch(config, "Match_Regex")
 
-	yamlConfig, err := cfg.RenderMainConfigInYaml(sl, inputs, filters, ClusterOutputList{}, nsFilters, nil, nil)
+	yamlConfig, err := cfg.RenderMainConfigInYaml(sl, inputs, filters, ClusterOutputList{}, nsFilters, nil, []string{rewriteTagYaml})
 	g.Expect(err).NotTo(HaveOccurred())
 	expectOrder(yamlConfig)
+	expectAfterMatch(yamlConfig, "match_regex:")
 	g.Expect(strings.Count(yamlConfig, "filters:\n")).To(Equal(1))
 
 	var parsed map[string]any
 	g.Expect(yaml.Unmarshal([]byte(yamlConfig), &parsed)).To(Succeed())
 	pipeline, ok := parsed["pipeline"].(map[string]any)
 	g.Expect(ok).To(BeTrue())
-	g.Expect(pipeline["filters"]).To(HaveLen(3))
+	g.Expect(pipeline["filters"]).To(HaveLen(4))
 
 	// With only "after" cluster filters and no namespaced filters, the YAML still has a filters header.
 	// afterOnly holds just the "after" ClusterFilter, so the before group and the namespaced Filters are

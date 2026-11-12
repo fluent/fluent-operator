@@ -749,3 +749,29 @@ func TestClusterFilter_RecordModifier_Generated_Load_As_Yaml(t *testing.T) {
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(clusterFilters).To(Equal(filtersExpected))
 }
+
+func TestMatchNamespacedTags(t *testing.T) {
+	g := NewGomegaWithT(t)
+	prefix := "^" + namespacedTagPrefix
+
+	for _, tc := range []struct {
+		name, match, matchRegex   string
+		wantMatch, wantMatchRegex string
+	}{
+		{name: "wildcard", match: "kube.*", wantMatchRegex: prefix + `kube\..*$`},
+		{name: "literal tag", match: "app.log", wantMatchRegex: prefix + `app\.log$`},
+		{name: "match all", match: "*", wantMatch: "*"},
+		{name: "anchored regex", matchRegex: `^kube\..*`, wantMatchRegex: prefix + `kube\..*`},
+		{name: "unanchored regex", matchRegex: `kube\..*`, wantMatchRegex: `kube\..*`},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			item := ClusterFilter{Spec: FilterSpec{Match: tc.match, MatchRegex: tc.matchRegex, AfterNamespaceFilters: true}}
+			got := matchNamespacedTags(item)
+			g.Expect(got.Spec.Match).To(Equal(tc.wantMatch))
+			g.Expect(got.Spec.MatchRegex).To(Equal(tc.wantMatchRegex))
+			// The original is left alone.
+			g.Expect(item.Spec.Match).To(Equal(tc.match))
+			g.Expect(item.Spec.MatchRegex).To(Equal(tc.matchRegex))
+		})
+	}
+}
