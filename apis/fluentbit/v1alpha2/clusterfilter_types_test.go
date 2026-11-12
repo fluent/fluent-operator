@@ -797,3 +797,59 @@ func TestClusterFilterList_Load_Sysinfo(t *testing.T) {
     hostname_key: hostname
 `))
 }
+
+func TestClusterFilterList_Load_TypeConverter(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{
+			{
+				TypeMeta: metav1.TypeMeta{
+					APIVersion: "fluentbit.fluent.io/v1alpha2",
+					Kind:       "ClusterFilter",
+				},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: "filter-type-converter",
+				},
+				Spec: FilterSpec{
+					Match: "*",
+					FilterItems: []FilterItem{
+						{
+							TypeConverter: &filter.TypeConverter{
+								UintKeys: []filter.TypeConversion{
+									{FromKey: "Mem.total", ToKey: "Mem.total_str", Type: "string"},
+									{FromKey: "Mem.free", ToKey: "Mem.free_str", Type: "string"},
+								},
+								StrKeys: []filter.TypeConversion{
+									{FromKey: "code", ToKey: "code_int", Type: "int"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	clusterFilters, err := filters.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterFilters).To(Equal(`[Filter]
+    Name    type_converter
+    Match    *
+    Uint_Key    Mem.total Mem.total_str string
+    Uint_Key    Mem.free Mem.free_str string
+    Str_Key    code code_int int
+`))
+
+	clusterFilters, err = filters.LoadAsYaml(sl, 0)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterFilters).To(Equal(`filters:
+  - name: type_converter
+    match: "*"
+    uint_key:
+      - Mem.total Mem.total_str string
+      - Mem.free Mem.free_str string
+    str_key: code code_int int
+`))
+}
