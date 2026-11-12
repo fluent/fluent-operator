@@ -1,5 +1,49 @@
 # Change Log
 
+## [3.12.0](https://github.com/fluent/fluent-operator/compare/v3.11.0...v3.12.0) (2026-11-12)
+
+
+### Features
+
+* **fluentbit:** add compress option to the forward output ([#2083](https://github.com/fluent/fluent-operator/issues/2083)) ([43c9b16](https://github.com/fluent/fluent-operator/commit/43c9b168aed53caaaa85aa2c093d8af96bccf6b6))
+* **fluentbit:** add flush interval options to the log_to_metrics filter ([#2084](https://github.com/fluent/fluent-operator/issues/2084)) ([3b19291](https://github.com/fluent/fluent-operator/commit/3b192917fb38c4eaa2b7c4fd999716706ff69b2c))
+* **fluentbit:** add keyNotExists to the modify filter conditions ([#2111](https://github.com/fluent/fluent-operator/issues/2111)) ([d759f81](https://github.com/fluent/fluent-operator/commit/d759f81b943e212ec01092968a303aff6540b0d6))
+* **fluentbit:** add serviceAccountName to run Fluent Bit as an existing ServiceAccount ([#2120](https://github.com/fluent/fluent-operator/issues/2120)) ([e781bef](https://github.com/fluent/fluent-operator/commit/e781bef7627418f00f05e0c8cfff007a09b586e7))
+* **fluentbit:** add the azure_logs_ingestion output ([#2107](https://github.com/fluent/fluent-operator/issues/2107)) ([f55bf58](https://github.com/fluent/fluent-operator/commit/f55bf581c014341615124e537ab3febc47a32bf1))
+* **fluentbit:** add the mkdir option to the file output ([#2097](https://github.com/fluent/fluent-operator/issues/2097)) ([0ed0bb6](https://github.com/fluent/fluent-operator/commit/0ed0bb690e0694332fdd1bff36c180ba4e39c555))
+* **fluentbit:** add the sysinfo filter ([#2134](https://github.com/fluent/fluent-operator/issues/2134)) ([b3d7acb](https://github.com/fluent/fluent-operator/commit/b3d7acb1abafb3a61f8f89061089661d6a0a9327))
+* **fluentbit:** add totalLimitSize to the forward output ([#2127](https://github.com/fluent/fluent-operator/issues/2127)) ([4b28dc6](https://github.com/fluent/fluent-operator/commit/4b28dc62d8a6221ac57ffbb57568660785430952))
+* **fluentbit:** let a ClusterFilter name the namespace of its Lua script ConfigMap ([#2108](https://github.com/fluent/fluent-operator/issues/2108)) ([28da916](https://github.com/fluent/fluent-operator/commit/28da916bc4a7633191d6bba02f2e91c401756b00))
+* **fluentbit:** make the namespace routing rewrite_tag key configurable ([#2088](https://github.com/fluent/fluent-operator/issues/2088)) ([41269cc](https://github.com/fluent/fluent-operator/commit/41269cc4cceb1d17b91e5ad58a17b6281c43aa3c))
+* **fluentbit:** read Kafka output rdkafka properties from secrets ([#2096](https://github.com/fluent/fluent-operator/issues/2096)) ([6cdce28](https://github.com/fluent/fluent-operator/commit/6cdce28acbf96ae9bd0fc130d2cc3f47f1fbb576))
+* **fluentd:** add ports to expose inputs the operator can't derive ports for ([#2090](https://github.com/fluent/fluent-operator/issues/2090)) ([4f6e07e](https://github.com/fluent/fluent-operator/commit/4f6e07e8ec57fb1d76f7e466a88116e761e1510e))
+* **fluentd:** support a PodDisruptionBudget for the Fluentd StatefulSet ([#2085](https://github.com/fluent/fluent-operator/issues/2085)) ([6e48b86](https://github.com/fluent/fluent-operator/commit/6e48b8604d87080a603c3b1b217f17484a570772))
+
+
+### Bug Fixes
+
+* **fluentbit:** drop Lua comments from inline code so they stop swallowing the rest ([#2095](https://github.com/fluent/fluent-operator/issues/2095)) ([9dd55de](https://github.com/fluent/fluent-operator/commit/9dd55ded892d1334cccdf14ca657cb33d5d2c09f))
+* **fluentbit:** render timeKeep of the LTSV parser as Time_Keep ([#2123](https://github.com/fluent/fluent-operator/issues/2123)) ([3669610](https://github.com/fluent/fluent-operator/commit/366961036827fd01a3abef431c7bac0252e015d8))
+* **fluentbit:** set the pod annotations on the DaemonSet too ([#2112](https://github.com/fluent/fluent-operator/issues/2112)) ([b4c2ad4](https://github.com/fluent/fluent-operator/commit/b4c2ad45ad6df6859507408cebe806074a6320ed))
+* **fluentbit:** skip namespaced Outputs whose config cannot be rendered ([#2098](https://github.com/fluent/fluent-operator/issues/2098)) ([76b8600](https://github.com/fluent/fluent-operator/commit/76b8600732ccd69b31219df5072dc70733a5e1ed))
+* **fluentd:** give every forward and http global input its own port name ([#2106](https://github.com/fluent/fluent-operator/issues/2106)) ([55d750c](https://github.com/fluent/fluent-operator/commit/55d750cb99bc787eaaf62d9b665b449628a81239))
+* **fluentd:** render name, standby and weight of a forward server ([#2122](https://github.com/fluent/fluent-operator/issues/2122)) ([65f5483](https://github.com/fluent/fluent-operator/commit/65f5483a7683dc70218fa082fb77d638d03498e9))
+* **fluentd:** set spec.annotations on the StatefulSet and DaemonSet too ([#2119](https://github.com/fluent/fluent-operator/issues/2119)) ([b57c5ad](https://github.com/fluent/fluent-operator/commit/b57c5adbb4fb39c061a7a8060725665902cadd4b))
+* **fluentd:** use Fluentd's default ports for inputs without a port ([#2089](https://github.com/fluent/fluent-operator/issues/2089)) ([26abfc3](https://github.com/fluent/fluent-operator/commit/26abfc38d79d4b9201d356a7f768b264348a7061))
+* **helm:** do not default Loki credentials so secret references stop warning ([#2091](https://github.com/fluent/fluent-operator/issues/2091)) ([57a4824](https://github.com/fluent/fluent-operator/commit/57a48249a430c7f992c845f47f59a124a1014176))
+* **helm:** honor buffer.enable in the Fluentd outputs ([#2118](https://github.com/fluent/fluent-operator/issues/2118)) ([7aeaf30](https://github.com/fluent/fluent-operator/commit/7aeaf301f90a0ef0b68924bc9997117ac510a2e2))
+* **helm:** honor logstashFormat: false in the Elasticsearch ClusterOutput ([#2113](https://github.com/fluent/fluent-operator/issues/2113)) ([79625bd](https://github.com/fluent/fluent-operator/commit/79625bdcac9b1a16c2581d165b3fe4172fe0e578))
+* **helm:** honor logstashFormat: false in the Fluentd ES and OpenSearch outputs ([#2114](https://github.com/fluent/fluent-operator/issues/2114)) ([2ac5d94](https://github.com/fluent/fluent-operator/commit/2ac5d94084c3bcaa224d44d6f5f675c9972533fb))
+* **helm:** use the buffer scope in the Fluentd OpenSearch output ([#2115](https://github.com/fluent/fluent-operator/issues/2115)) ([b716f05](https://github.com/fluent/fluent-operator/commit/b716f056f58d39448e4628e54b18593335a53441))
+* **rbac:** give each instance its own ClusterRole so rbacRules aren't overwritten ([#2094](https://github.com/fluent/fluent-operator/issues/2094)) ([8a7c634](https://github.com/fluent/fluent-operator/commit/8a7c634e876422db53d3458faf46a34ad48ad0d5))
+
+
+### Dependencies
+
+* **deps:** bump fluent-bit to 5.2.0 ([#2124](https://github.com/fluent/fluent-operator/issues/2124)) ([404b514](https://github.com/fluent/fluent-operator/commit/404b514a9710406ed7459745b861577c90b3951a))
+* **deps:** bump Go to 1.27.3 ([#2086](https://github.com/fluent/fluent-operator/issues/2086)) ([707a54d](https://github.com/fluent/fluent-operator/commit/707a54d7fd9c564307891979830a9140224d63e7))
+* **deps:** Bump the k8s-io group across 1 directory with 3 updates ([#2109](https://github.com/fluent/fluent-operator/issues/2109)) ([0cb990b](https://github.com/fluent/fluent-operator/commit/0cb990b7ac23293ba8856820d9a77a8d79e97e3d))
+
 ## [3.11.0](https://github.com/fluent/fluent-operator/compare/v3.10.1...v3.11.0) (2026-10-28)
 
 
