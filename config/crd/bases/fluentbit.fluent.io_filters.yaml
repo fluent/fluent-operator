@@ -41,6 +41,12 @@ spec:
           spec:
             description: FilterSpec defines the desired state of ClusterFilter
             properties:
+              afterNamespaceFilters:
+                description: |-
+                  AfterNamespaceFilters places a ClusterFilter after the namespaced Filters in the pipeline,
+                  so it processes records after they have been through them. ClusterFilters run before the
+                  namespaced Filters by default. Only applies to ClusterFilters, a namespaced Filter that sets it is rejected.
+                type: boolean
               filters:
                 description: A set of filter plugins in order.
                 items:
@@ -1035,10 +1041,15 @@ spec:
                   Use this option if you want to use the full regex syntax.
                 type: string
               ordinal:
-                description: An ordinal to influence filter ordering
+                description: An ordinal to influence filter ordering. ClusterFilters
+                  are ordered within their group, the ones that run before the namespaced
+                  Filters and the ones that run after them
                 format: int32
                 type: integer
             type: object
+            x-kubernetes-validations:
+            - message: afterNamespaceFilters only applies to ClusterFilters
+              rule: '!has(self.afterNamespaceFilters) || !self.afterNamespaceFilters'
         type: object
     served: true
     storage: true

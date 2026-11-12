@@ -39,6 +39,7 @@ type Filter struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
+	// +kubebuilder:validation:XValidation:rule="!has(self.afterNamespaceFilters) || !self.afterNamespaceFilters",message="afterNamespaceFilters only applies to ClusterFilters"
 	Spec FilterSpec `json:"spec,omitempty"`
 }
 
