@@ -49,6 +49,10 @@ type FluentBitConfigSpec struct {
 	// If namespace is defined, then the configmap and secret for fluent-bit is in this namespace.
 	// If it is not defined, it is in the namespace of the fluentd-operator
 	Namespace *string `json:"namespace,omitempty"`
+	// WatchNamespace restricts the operator to reconcile resources only in the given namespace.
+	// When empty, the operator watches resources across the whole cluster.
+	// +optional
+	WatchNamespace *string `json:"watchNamespace,omitempty"`
 	// ConfigFileFormat defines the format of the config file, default is "classic",
 	// available options are "classic" and "yaml"
 	// +kubebuilder:validation:Enum:=classic;yaml
