@@ -48,11 +48,14 @@ const (
 	DefaultFmtExpr      string = "  %s"
 
 	// Enums the supported input types
-	HttpInputType    InputType = "http"
-	ForwardInputType InputType = "forward"
-	TailInputType    InputType = "tail"
-	SampleInputType  InputType = "sample"
-	MonitorAgentType InputType = "monitor_agent"
+	HttpInputType                    InputType = "http"
+	ForwardInputType                 InputType = "forward"
+	TailInputType                    InputType = "tail"
+	SampleInputType                  InputType = "sample"
+	MonitorAgentType                 InputType = "monitor_agent"
+	PrometheusInputType              InputType = "prometheus"
+	PrometheusMonitorInputType       InputType = "prometheus_monitor"
+	PrometheusOutputMonitorInputType InputType = "prometheus_output_monitor"
 
 	// Enums the supported filter types
 	RecordTransformerFilterType FilterType = "record_transformer"
