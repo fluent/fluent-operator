@@ -40,6 +40,11 @@ func Test_ClusterCfgInputMonitorAgent(t *testing.T) {
 	testNamespacedConfig(t, sl, FluentdInputMonitorAgent, &FluentdConfig1, []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputTag}, "./expected/fluentd-global-cfg-input-monitorAgent.cfg")
 }
 
+func Test_ClusterCfgInputPrometheus(t *testing.T) {
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+	testNamespacedConfig(t, sl, FluentdInputPrometheus, &FluentdConfig1, []fluentdv1alpha1.ClusterOutput{FluentdClusterOutputTag}, "./expected/fluentd-global-cfg-input-prometheus.cfg")
+}
+
 func Test_ClusterCfgOutput2ES(t *testing.T) {
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 	testClusterConfigWithFiltersAndOutputs(t, sl, Fluentd, &FluentdClusterFluentdConfig1, []fluentdv1alpha1.ClusterFilter{}, []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ES}, "./expected/fluentd-cluster-cfg-output-es.cfg", false)

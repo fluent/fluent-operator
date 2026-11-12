@@ -571,6 +571,69 @@ spec:
                             metrics as records.
                           type: string
                       type: object
+                    prometheus:
+                      description: prometheus plugin, serves the metrics endpoint
+                      properties:
+                        aggregatedMetricsPath:
+                          description: The HTTP path of the endpoint that aggregates
+                            the metrics of all workers. Defaults to /aggregated_metrics.
+                          type: string
+                        bind:
+                          description: The bind address to listen to. Defaults to
+                            127.0.0.1, so set it to 0.0.0.0 to scrape from outside
+                            the pod.
+                          type: string
+                        contentEncoding:
+                          description: The encoding of the exposed metrics.
+                          enum:
+                          - identity
+                          - gzip
+                          type: string
+                        metricsPath:
+                          description: The HTTP path of the metrics endpoint. Defaults
+                            to /metrics.
+                          type: string
+                        port:
+                          description: |-
+                            The port to listen to. Defaults to 24231. Use 2021 to serve the metrics on the "metrics" port
+                            that the operator already exposes on the Fluentd pods.
+                          format: int64
+                          type: integer
+                      type: object
+                    prometheusMonitor:
+                      description: prometheus_monitor plugin, collects buffer and
+                        retry metrics
+                      properties:
+                        interval:
+                          description: The interval in seconds between metric updates.
+                            Defaults to 5.
+                          format: int32
+                          type: integer
+                        labels:
+                          additionalProperties:
+                            type: string
+                          description: Additional labels added to the metrics.
+                          type: object
+                      type: object
+                    prometheusOutputMonitor:
+                      description: prometheus_output_monitor plugin, collects output
+                        plugin metrics
+                      properties:
+                        gaugeAll:
+                          description: Whether to expose the counters as gauges. Defaults
+                            to true.
+                          type: boolean
+                        interval:
+                          description: The interval in seconds between metric updates.
+                            Defaults to 5.
+                          format: int32
+                          type: integer
+                        labels:
+                          additionalProperties:
+                            type: string
+                          description: Additional labels added to the metrics.
+                          type: object
+                      type: object
                     sample:
                       description: in_sample plugin
                       properties:
