@@ -50,6 +50,11 @@ func Test_ClusterCfgOutput2ESBulkThreshold(t *testing.T) {
 	testClusterConfigWithFiltersAndOutputs(t, sl, Fluentd, &FluentdClusterFluentdConfig1, []fluentdv1alpha1.ClusterFilter{}, []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ESBulkThreshold}, "./expected/fluentd-cluster-cfg-output-es-bulk-threshold.cfg", false)
 }
 
+func Test_ClusterCfgOutput2ESDynamic(t *testing.T) {
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+	testClusterConfigWithFiltersAndOutputs(t, sl, Fluentd, &FluentdClusterFluentdConfig1, []fluentdv1alpha1.ClusterFilter{}, []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ESDynamic}, "./expected/fluentd-cluster-cfg-output-es-dynamic.cfg", false)
+}
+
 func Test_ClusterCfgOutput2ESDataStream(t *testing.T) {
 	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
 	testClusterConfigWithFiltersAndOutputs(t, sl, Fluentd, &FluentdClusterFluentdConfig1, []fluentdv1alpha1.ClusterFilter{}, []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ESDataStream}, "./expected/fluentd-cluster-cfg-output-es-data-stream.cfg", false)
