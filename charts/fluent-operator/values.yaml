@@ -643,6 +643,9 @@ fluentd:
     # -- Retain metadata when forwarding in forward mode.
     # Set to false for Fluentd compatibility with Fluent Bit v5.0.5+.
     retainMetadataInForwardMode: ~
+    # -- Limit the size of the Fluent Bit filesystem buffer for the forward output, e.g. "5G".
+    # Only applies to inputs that use filesystem storage. Empty means no limit.
+    totalLimitSize: ""
   # -- Namespaces to watch for Fluentd resources
   watchedNamespaces:
     - kube-system
