@@ -20,6 +20,7 @@
   - [nest](filter/nest.md)
   - [parser](filter/parser.md)
   - [record modifier](filter/record_modifier.md)
+  - [sysinfo](filter/sysinfo.md)
   - [throttle](filter/throttle.md)
 - [ClusterOutput](../../fluentbit.md#ClusterOutput)
   - [datadog](output/data_dog.md)
