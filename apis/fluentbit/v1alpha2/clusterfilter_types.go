@@ -81,6 +81,8 @@ type FilterItem struct {
 	LogToMetrics *filter.LogToMetrics `json:"logToMetrics,omitempty"`
 	// Wasm defines a Wasm configuration.
 	Wasm *filter.Wasm `json:"wasm,omitempty"`
+	// Sysinfo defines a Sysinfo Filter configuration.
+	Sysinfo *filter.Sysinfo `json:"sysinfo,omitempty"`
 	// CustomPlugin defines a Custom plugin configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }

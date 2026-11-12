@@ -898,6 +898,43 @@ spec:
                             type: string
                           type: array
                       type: object
+                    sysinfo:
+                      description: Sysinfo defines a Sysinfo Filter configuration.
+                      properties:
+                        alias:
+                          description: Alias for the plugin
+                          type: string
+                        fluentBitVersionKey:
+                          description: Key to append the Fluent Bit version under.
+                          type: string
+                        hostnameKey:
+                          description: |-
+                            Key to append the hostname under. In Kubernetes this is the hostname of the Fluent Bit pod,
+                            which is the pod name unless hostNetwork is enabled, in which case it is the node hostname.
+                          type: string
+                        kernelVersionKey:
+                          description: Key to append the kernel version under. Only
+                            supported on Linux.
+                          type: string
+                        osNameKey:
+                          description: Key to append the operating system name under,
+                            e.g. linux.
+                          type: string
+                        osVersionKey:
+                          description: Key to append the operating system version
+                            under. Only supported on Linux.
+                          type: string
+                        retryLimit:
+                          description: 'RetryLimit describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinitely. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
+                          type: string
+                      type: object
                     throttle:
                       description: Throttle defines a Throttle configuration.
                       properties:

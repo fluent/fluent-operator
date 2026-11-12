@@ -775,3 +775,51 @@ func TestMatchNamespacedTags(t *testing.T) {
 		})
 	}
 }
+
+func TestClusterFilterList_Load_Sysinfo(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{
+			{
+				TypeMeta: metav1.TypeMeta{
+					APIVersion: "fluentbit.fluent.io/v1alpha2",
+					Kind:       "ClusterFilter",
+				},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: "filter-sysinfo",
+				},
+				Spec: FilterSpec{
+					Match: "*",
+					FilterItems: []FilterItem{
+						{
+							Sysinfo: &filter.Sysinfo{
+								FluentBitVersionKey: "flb_version",
+								HostnameKey:         "hostname",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	clusterFilters, err := filters.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterFilters).To(Equal(`[Filter]
+    Name    sysinfo
+    Match    *
+    Fluentbit_Version_Key    flb_version
+    Hostname_Key    hostname
+`))
+
+	clusterFilters, err = filters.LoadAsYaml(sl, 0)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterFilters).To(Equal(`filters:
+  - name: sysinfo
+    match: "*"
+    fluentbit_version_key: flb_version
+    hostname_key: hostname
+`))
+}
