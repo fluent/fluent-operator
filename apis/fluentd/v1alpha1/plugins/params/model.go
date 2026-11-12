@@ -165,16 +165,9 @@ func (ps *PluginStore) String() string {
 	ps.setWhitespaces(parentPrefixWhitespaces + IntervalWhitespaces)
 	ps.processBody(&buf)
 	if len(ps.Childs) > 0 {
-		switch {
-		case ps.CatchAllFiltersById:
-			sort.Slice(ps.Childs, func(i, j int) bool {
-				return lessPlugin(ps.Childs[i], ps.Childs[j], ps.NumericIdSort, true)
-			})
-		case ps.NumericIdSort:
-			sort.Sort(PluginStoreByNameByIdNumeric(ps.Childs))
-		default:
-			sort.Sort(PluginStoreByNameById(ps.Childs))
-		}
+		sort.Slice(ps.Childs, func(i, j int) bool {
+			return lessPlugin(ps.Childs[i], ps.Childs[j], ps.NumericIdSort, ps.CatchAllFiltersById)
+		})
 		for _, child := range ps.Childs {
 			child.NumericIdSort = ps.NumericIdSort
 			child.CatchAllFiltersById = ps.CatchAllFiltersById
@@ -289,24 +282,6 @@ type PluginStoreByName []*PluginStore
 func (a PluginStoreByName) Len() int           { return len(a) }
 func (a PluginStoreByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a PluginStoreByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
-
-// +kubebuilder:object:generate=false
-type PluginStoreByNameById []*PluginStore
-
-func (a PluginStoreByNameById) Len() int      { return len(a) }
-func (a PluginStoreByNameById) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-func (a PluginStoreByNameById) Less(i, j int) bool {
-	return lessPlugin(a[i], a[j], false, false)
-}
-
-// +kubebuilder:object:generate=false
-type PluginStoreByNameByIdNumeric []*PluginStore
-
-func (a PluginStoreByNameByIdNumeric) Len() int      { return len(a) }
-func (a PluginStoreByNameByIdNumeric) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-func (a PluginStoreByNameByIdNumeric) Less(i, j int) bool {
-	return lessPlugin(a[i], a[j], true, false)
-}
 
 // lessPlugin orders child plugins by directive name, then puts catch-all "**"
 // plugins last unless they are filters and filtersById is set, then compares @id.
