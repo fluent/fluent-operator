@@ -77,8 +77,18 @@ func (a ClusterMultilineParserByName) Less(i, j int) bool {
 	return a[i].Name < a[j].Name
 }
 
-func (list ClusterMultilineParserList) Load(sl plugins.SecretLoader) (string, error) {
+func (list ClusterMultilineParserList) Load(sl plugins.SecretLoader, existingParsers map[string]bool) (string, error) {
 	sort.Sort(ClusterMultilineParserByName(list.Items))
 
-	return load(list.Items, sl)
+	// Skip names already rendered so the same parser is not emitted twice.
+	items := make([]ClusterMultilineParser, 0, len(list.Items))
+	for _, item := range list.Items {
+		if existingParsers[item.Name] {
+			continue
+		}
+		existingParsers[item.Name] = true
+		items = append(items, item)
+	}
+
+	return load(items, sl)
 }
