@@ -703,6 +703,11 @@ func (in *FilterItem) DeepCopyInto(out *FilterItem) {
 		*out = new(filter.Wasm)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Sysinfo != nil {
+		in, out := &in.Sysinfo, &out.Sysinfo
+		*out = new(filter.Sysinfo)
+		**out = **in
+	}
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)
