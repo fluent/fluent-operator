@@ -525,9 +525,6 @@ func (cfg ClusterFluentBitConfig) RenderMultilineParserConfig(
 ) (string, error) {
 	var buf bytes.Buffer
 
-	// existingParsers collapses a ClusterMultilineParser selected by two
-	// FluentBitConfigs in one namespace, which reaches here as separate lists
-	// under one rendered name, mirroring RenderParserConfig.
 	existingParsers := make(map[string]bool)
 	multilineParserSection, err := multilineParsers.Load(sl, existingParsers)
 	if err != nil {
@@ -540,15 +537,13 @@ func (cfg ClusterFluentBitConfig) RenderMultilineParserConfig(
 		if len(nsmp.Items) == 0 {
 			continue
 		}
-		if nsmp.Items != nil {
-			ns := nsmp.Items[0].Namespace
-			namespacedSl := plugins.NewSecretLoader(sl.Client, ns)
-			nsmpSection, err := nsmp.Load(namespacedSl)
-			if err != nil {
-				return "", err
-			}
-			buf.WriteString(nsmpSection)
+		ns := nsmp.Items[0].Namespace
+		namespacedSl := plugins.NewSecretLoader(sl.Client, ns)
+		nsmpSection, err := nsmp.Load(namespacedSl)
+		if err != nil {
+			return "", err
 		}
+		buf.WriteString(nsmpSection)
 	}
 
 	for _, nscmp := range nsClusterMultilineParserLists {
