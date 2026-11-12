@@ -43,8 +43,10 @@ type Forward struct {
 	// Set to gzip to enable gzip compression. Incompatible with timeAsInteger set to true and with tags
 	// set dynamically using the Rewrite Tag filter. Requires Fluentd server v0.14.7 or later.
 	// +kubebuilder:validation:Enum:=gzip
-	Compress     string `json:"compress,omitempty"`
-	*plugins.TLS `json:"tls,omitempty"`
+	Compress string `json:"compress,omitempty"`
+	// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+	TotalLimitSize string `json:"totalLimitSize,omitempty"`
+	*plugins.TLS   `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
 	*plugins.Networking `json:"networking,omitempty"`
 }
@@ -83,6 +85,7 @@ func (f *Forward) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	plugins.InsertKVString(kvs, "Shared_Key", f.SharedKey)
 	plugins.InsertKVString(kvs, "Self_Hostname", f.SelfHostname)
 	plugins.InsertKVString(kvs, "Compress", f.Compress)
+	plugins.InsertKVString(kvs, "storage.total_limit_size", f.TotalLimitSize)
 
 	plugins.InsertKVField(kvs, "Port", f.Port)
 	plugins.InsertKVField(kvs, "Empty_Shared_Key", f.EmptySharedKey)
