@@ -78,6 +78,8 @@ type InputSpec struct {
 	KubernetesEvents *input.KubernetesEvents `json:"kubernetesEvents,omitempty"`
 	// ExecWasi defines the exec wasi input plugin configuration
 	ExecWasi *input.ExecWasi `json:"execWasi,omitempty"`
+	// PrometheusRemoteWrite defines the Prometheus Remote Write input plugin configuration
+	PrometheusRemoteWrite *input.PrometheusRemoteWrite `json:"prometheusRemoteWrite,omitempty"`
 	// Processors defines the processors configuration
 	// +kubebuilder:pruning:PreserveUnknownFields
 	Processors *plugins.Config `json:"processors,omitempty"`

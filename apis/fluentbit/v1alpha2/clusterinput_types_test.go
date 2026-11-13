@@ -404,3 +404,48 @@ end`},
 		i++
 	}
 }
+
+func TestClusterInputList_Load_PrometheusRemoteWrite(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	inputs := ClusterInputList{
+		Items: []ClusterInput{
+			{
+				TypeMeta: metav1.TypeMeta{
+					APIVersion: "fluentbit.fluent.io/v1alpha2",
+					Kind:       "ClusterInput",
+				},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: "input-prometheus-remote-write",
+				},
+				Spec: InputSpec{
+					PrometheusRemoteWrite: &input.PrometheusRemoteWrite{
+						Tag:  "prom.rw",
+						Port: new(int32(8080)),
+						URI:  "/api/prom/push",
+					},
+				},
+			},
+		},
+	}
+
+	clusterInputs, err := inputs.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterInputs).To(Equal(`[Input]
+    Name    prometheus_remote_write
+    tag    prom.rw
+    port    8080
+    uri    /api/prom/push
+`))
+
+	clusterInputs, err = inputs.LoadAsYaml(sl, 0)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterInputs).To(Equal(`inputs:
+  - name: prometheus_remote_write
+    tag: prom.rw
+    port: 8080
+    uri: /api/prom/push
+`))
+}
