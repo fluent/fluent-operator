@@ -404,3 +404,56 @@ end`},
 		i++
 	}
 }
+
+func TestClusterInputList_Load_Kafka(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	inputs := ClusterInputList{
+		Items: []ClusterInput{
+			{
+				TypeMeta: metav1.TypeMeta{
+					APIVersion: "fluentbit.fluent.io/v1alpha2",
+					Kind:       "ClusterInput",
+				},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: "input-kafka",
+				},
+				Spec: InputSpec{
+					Kafka: &input.Kafka{
+						Tag:     "kafka.logs",
+						Brokers: "kafka:9092",
+						Topics:  "app-logs",
+						Format:  "json",
+						Rdkafka: map[string]string{
+							"auto.offset.reset": "earliest",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	clusterInputs, err := inputs.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterInputs).To(Equal(`[Input]
+    Name    kafka
+    tag    kafka.logs
+    brokers    kafka:9092
+    topics    app-logs
+    format    json
+    rdkafka.auto.offset.reset    earliest
+`))
+
+	clusterInputs, err = inputs.LoadAsYaml(sl, 0)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterInputs).To(Equal(`inputs:
+  - name: kafka
+    tag: kafka.logs
+    brokers: kafka:9092
+    topics: app-logs
+    format: json
+    rdkafka.auto.offset.reset: earliest
+`))
+}
