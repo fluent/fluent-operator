@@ -1,6 +1,7 @@
 - [ClusterInput](../../fluentbit.md#ClusterInput)
   - [dummy](input/dummy.md)
   - [fluentbit metrics](input/fluentbit_metrics.md)
+  - [kafka](input/kafka.md)
   - [node exporter metrics](input/node_exporter_metrics.md)
   - [prometheus scrape metrics](input/prometheus_scrape_metrics.md)
   - [systemd](input/systemd.md)

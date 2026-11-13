@@ -302,6 +302,113 @@ spec:
                         type: string
                     type: object
                 type: object
+              kafka:
+                description: Kafka defines the Kafka input plugin configuration
+                properties:
+                  brokers:
+                    description: 'Single entry or list of comma-separated Kafka brokers,
+                      e.g: 192.168.1.3:9092,192.168.1.4:9092.'
+                    minLength: 1
+                    type: string
+                  bufferMaxSize:
+                    description: |-
+                      Maximum amount of data fetched from Kafka and ingested in one poll, defaults to 4M.
+                      Set it to 0 for no limit.
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  clientId:
+                    description: Kafka client ID, defaults to fluent-bit.
+                    type: string
+                  enableAutoCommit:
+                    description: Rely on Kafka auto-commit and commit messages in
+                      batches instead of committing each message, defaults to false.
+                    type: boolean
+                  format:
+                    description: |-
+                      Format of the message payload. none stores the payload as a string, json parses it into a map
+                      and falls back to a string if it is not valid JSON. Defaults to none.
+                    enum:
+                    - none
+                    - json
+                    type: string
+                  groupId:
+                    description: Kafka consumer group ID, defaults to fluent-bit.
+                    type: string
+                  pollMs:
+                    description: Time in milliseconds between checks for new messages,
+                      defaults to 500.
+                    format: int32
+                    minimum: 1
+                    type: integer
+                  pollTimeoutMs:
+                    description: |-
+                      Timeout in milliseconds for each Kafka consumer poll, defaults to 1.
+                      Only takes effect when threaded is enabled. A higher value, such as 1.5x to 2x rdkafka.fetch.wait.max.ms,
+                      lets the consumer benefit from Kafka's batching.
+                    format: int32
+                    minimum: 0
+                    type: integer
+                  rdkafka:
+                    additionalProperties:
+                      type: string
+                    description: Librdkafka properties of the consumer, for example
+                      auto.offset.reset or security.protocol.
+                    type: object
+                  rdkafkaSecrets:
+                    additionalProperties:
+                      description: Secret defines the key of a value.
+                      properties:
+                        valueFrom:
+                          description: ValueSource defines how to find a value's key.
+                          properties:
+                            secretKeyRef:
+                              description: Selects a key of a secret in the pod's
+                                namespace
+                              properties:
+                                key:
+                                  description: The key of the secret to select from.  Must
+                                    be a valid secret key.
+                                  type: string
+                                name:
+                                  default: ""
+                                  description: |-
+                                    Name of the referent.
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  type: string
+                                optional:
+                                  description: Specify whether the Secret or its key
+                                    must be defined
+                                  type: boolean
+                              required:
+                              - key
+                              type: object
+                              x-kubernetes-map-type: atomic
+                          type: object
+                      type: object
+                    description: |-
+                      Librdkafka properties whose values are read from a Secret, for example sasl.username or sasl.password.
+                      A property set in both rdkafka and rdkafkaSecrets takes its value from rdkafkaSecrets.
+                    type: object
+                  tag:
+                    description: Tag name associated to all records coming from this
+                      plugin.
+                    type: string
+                  threaded:
+                    description: Run the input in its own thread instead of the main
+                      event loop, see pollTimeoutMs.
+                    type: boolean
+                  topics:
+                    description: Single entry or list of comma-separated topics that
+                      Fluent Bit will subscribe to.
+                    minLength: 1
+                    type: string
+                required:
+                - brokers
+                - topics
+                type: object
               kubernetesEvents:
                 description: KubernetesEvents defines the KubernetesEvents input plugin
                   configuration

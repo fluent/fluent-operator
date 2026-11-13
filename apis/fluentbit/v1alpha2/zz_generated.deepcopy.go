@@ -1229,6 +1229,11 @@ func (in *InputSpec) DeepCopyInto(out *InputSpec) {
 		*out = new(input.ExecWasi)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Kafka != nil {
+		in, out := &in.Kafka, &out.Kafka
+		*out = new(input.Kafka)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Processors != nil {
 		in, out := &in.Processors, &out.Processors
 		*out = (*in).DeepCopy()
