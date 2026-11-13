@@ -230,7 +230,7 @@ func (o *Output) forwardPlugin(parent *params.PluginStore, loader plugins.Secret
 	params.InsertPairs(parent, "tls_client_private_key_path", o.Forward.TlsClientPrivateKeyPath)
 	params.InsertPairs(parent, "tls_client_private_key_passphrase", o.Forward.TlsClientPrivateKeyPassphrase)
 	params.InsertPairs(parent, "tls_cert_thumbprint", o.Forward.TlsCertThumbprint)
-	params.InsertPairs(parent, "tls_cert_logical_storeName", o.Forward.TlsCertLogicalStoreName)
+	params.InsertPairs(parent, "tls_cert_logical_store_name", o.Forward.TlsCertLogicalStoreName)
 	params.InsertPairs(parent, "tls_cert_use_enterprise_store", o.Forward.TlsCertUseEnterpriseStore)
 	params.InsertPairs(parent, "keepalive", o.Forward.Keepalive)
 	params.InsertPairs(parent, "keepalive_timeout", o.Forward.KeepaliveTimeout)
