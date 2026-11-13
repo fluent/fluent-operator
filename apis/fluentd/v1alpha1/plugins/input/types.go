@@ -349,7 +349,7 @@ func (i *Input) httpPlugin(parent *params.PluginStore, loader plugins.SecretLoad
 	}
 
 	if httpModel.RespondsWithEmptyImg != nil {
-		parent.InsertPairs("responds_with_empty_img", fmt.Sprint(*httpModel.RespondsWithEmptyImg))
+		parent.InsertPairs("respond_with_empty_img", fmt.Sprint(*httpModel.RespondsWithEmptyImg))
 	}
 
 	return parent
