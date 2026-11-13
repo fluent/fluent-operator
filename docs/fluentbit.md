@@ -289,6 +289,7 @@ Filter is the Schema for namespace level filter API
 | logToMetrics | LogToMetrics defines a Log to Metrics Filter configuration. | *[filter.LogToMetrics](plugins/fluentbit/filter/log_to_metrics.md) |
 | wasm | Wasm defines a Wasm configuration. | *[filter.Wasm](plugins/fluentbit/filter/wasm.md) |
 | sysinfo | Sysinfo defines a Sysinfo Filter configuration. | *[filter.Sysinfo](plugins/fluentbit/filter/sysinfo.md) |
+| geoip2 | GeoIP2 defines a GeoIP2 Filter configuration. | *[filter.GeoIP2](plugins/fluentbit/filter/geoip2.md) |
 | customPlugin | CustomPlugin defines a Custom plugin configuration. | *[custom.CustomPlugin](plugins/fluentbit/custom/custom_plugin.md) |
 
 [Back to TOC](#table-of-contents)
