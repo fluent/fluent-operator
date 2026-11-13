@@ -26,6 +26,7 @@ const (
 	defaultParserCfgPath  = "/fluent-bit/etc/parser.conf"
 	defaultWatchDir       = "/fluent-bit/config"
 	defaultPollInterval   = 1 * time.Second
+	defaultReloadDelay    = 1 * time.Second
 )
 
 func main() {
@@ -36,12 +37,15 @@ func main() {
 	var poll bool
 	var pollInterval time.Duration
 	var parserCfgPath string
+	var reloadDelay time.Duration
 	flag.StringVar(&binPath, "b", defaultBinPath, "The fluent bit binary path.")
 	flag.StringVar(&externalPluginPath, "e", "", "Path to external plugin (shared lib)")
 	flag.StringVar(&watchPath, "watch-path", defaultWatchDir, "The path to watch.")
 	flag.BoolVar(&poll, "poll", false, "Use poll watcher instead of ionotify.")
 	flag.DurationVar(&pollInterval, "poll-interval", defaultPollInterval, "Poll interval if using poll watcher.")
 	flag.StringVar(&parserCfgPath, "R", defaultParserCfgPath, "Specify a parser config file")
+	flag.DurationVar(&reloadDelay, "reload-delay", defaultReloadDelay,
+		"How long the watch path has to stay unchanged before the config is reloaded.")
 
 	// Deprecated flags to be removed in one of the next releases.
 	var exitOnFailure bool
@@ -119,24 +123,13 @@ func main() {
 			return fmt.Errorf("failed to watch path %q: %w", watchPath, err)
 		}
 
-		for {
-			select {
-			case <-signalCtx.Done():
-				return nil
-			case <-grpCtx.Done():
-				return nil
-			case event := <-watcher.Events():
-				if !isValidEvent(event) {
-					continue
-				}
-				_ = level.Info(l).Log("msg", "Config file changed, reloading...")
-				if err := cmd.Process.Signal(syscall.SIGHUP); err != nil {
-					return fmt.Errorf("failed to reload config: %w", err)
-				}
-			case err := <-watcher.Errors():
-				return fmt.Errorf("failed the watcher: %w", err)
+		return watchAndReload(signalCtx, grpCtx, watcher, reloadDelay, func() error {
+			_ = level.Info(l).Log("msg", "Config file changed, reloading...")
+			if err := cmd.Process.Signal(syscall.SIGHUP); err != nil {
+				return fmt.Errorf("failed to reload config: %w", err)
 			}
-		}
+			return nil
+		})
 	})
 
 	select {
@@ -154,6 +147,43 @@ func main() {
 	if err := grp.Wait(); err != nil {
 		_ = level.Error(l).Log("msg", "Failure during the run time of fluent-bit", "error", err)
 		os.Exit(1)
+	}
+}
+
+// watchAndReload calls reload once the watched path has been quiet for delay after a change.
+//
+// A single update of a mounted Secret or ConfigMap is a burst of events: the kubelet creates a
+// new timestamped directory, writes the files into it and only then switches the "..data"
+// symlink. Reloading on the first event makes fluent-bit read the config before the switch,
+// so it loads the previous version, and it drops the signals that follow while that reload
+// is running. Waiting for the burst to end gives one reload per update, on the new content.
+func watchAndReload(
+	signalCtx, grpCtx context.Context,
+	watcher filenotify.FileWatcher,
+	delay time.Duration,
+	reload func() error,
+) error {
+	var pending <-chan time.Time
+	for {
+		select {
+		case <-signalCtx.Done():
+			return nil
+		case <-grpCtx.Done():
+			return nil
+		case event := <-watcher.Events():
+			if !isValidEvent(event) {
+				continue
+			}
+			// A new timer per event: the delay counts from the last change.
+			pending = time.After(delay)
+		case <-pending:
+			pending = nil
+			if err := reload(); err != nil {
+				return err
+			}
+		case err := <-watcher.Errors():
+			return fmt.Errorf("failed the watcher: %w", err)
+		}
 	}
 }
 
