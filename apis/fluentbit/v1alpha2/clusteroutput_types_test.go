@@ -444,8 +444,8 @@ func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
 					"trace_id":  "${record['trace_id']}",
 				},
 				StructuredMetadataKeys: []string{
-					"level",
-					"caller",
+					"$kubernetes['labels']",
+					"$kubernetes['annotations']",
 				},
 			},
 		},
@@ -462,7 +462,7 @@ func TestLokiOutputWithStructuredMetadata_Load(t *testing.T) {
     port    3100
     labels    environment=production,job=fluentbit
     structured_metadata    container=${record['kubernetes']['container_name']},pod=${record['kubernetes']['pod_name']},trace_id=${record['trace_id']}
-    structured_metadata_keys    level,caller
+    structured_metadata_map_keys    $kubernetes['labels'],$kubernetes['annotations']
 `
 
 	result, err := outputs.Load(sl)
@@ -497,8 +497,8 @@ func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
 					"trace_id":  "${record['trace_id']}",
 				},
 				StructuredMetadataKeys: []string{
-					"level",
-					"caller",
+					"$kubernetes['labels']",
+					"$kubernetes['annotations']",
 				},
 			},
 		},
@@ -515,7 +515,7 @@ func TestLokiOutputWithStructuredMetadata_LoadAsYaml(t *testing.T) {
     port: 3100
     labels: environment=production,job=fluentbit
     structured_metadata: container=${record['kubernetes']['container_name']},pod=${record['kubernetes']['pod_name']},trace_id=${record['trace_id']}
-    structured_metadata_keys: level,caller
+    structured_metadata_map_keys: $kubernetes['labels'],$kubernetes['annotations']
 `
 
 	result, err := outputs.LoadAsYaml(sl, 0)

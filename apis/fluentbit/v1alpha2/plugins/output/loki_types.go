@@ -61,8 +61,9 @@ type Loki struct {
 	// This is used for high cardinality data that isn't suited for using labels.
 	// Only supported in Loki 3.0+ with schema v13 and TSDB storage.
 	StructuredMetadata map[string]string `json:"structuredMetadata,omitempty"`
-	// Optional list of record keys that will be placed as structured metadata.
-	// This allows using record accessor patterns (e.g. $kubernetes['pod_name']) to reference record keys.
+	// Optional list of record keys whose values are maps, written as structured_metadata_map_keys.
+	// Every key/value pair of those maps is added as structured metadata (e.g. $kubernetes['labels']).
+	// Requires Fluent Bit 4.0+.
 	StructuredMetadataKeys []string `json:"structuredMetadataKeys,omitempty"`
 	*plugins.TLS           `json:"tls,omitempty"`
 	// Include fluentbit networking options for this output-plugin
@@ -164,7 +165,7 @@ func (l *Loki) Params(sl plugins.SecretLoader) (*params.KVs, error) {
 	}
 
 	if len(l.StructuredMetadataKeys) > 0 {
-		kvs.Insert("structured_metadata_keys", strings.Join(l.StructuredMetadataKeys, ","))
+		kvs.Insert("structured_metadata_map_keys", strings.Join(l.StructuredMetadataKeys, ","))
 	}
 
 	return kvs, nil
