@@ -21,7 +21,7 @@ The loki output plugin, allows to ingest your records into a Loki service. <br /
 | autoKubernetesLabels | If set to true, it will add all Kubernetes labels to the Stream labels. | string |
 | tenantIDKey | Specify the name of the key from the original record that contains the Tenant ID. The value of the key is set as X-Scope-OrgID of HTTP header. It is useful to set Tenant ID dynamically. | string |
 | structuredMetadata | Stream structured metadata for API request. It can be multiple comma separated key=value pairs. This is used for high cardinality data that isn't suited for using labels. Only supported in Loki 3.0+ with schema v13 and TSDB storage. | map[string]string |
-| structuredMetadataKeys | Optional list of record keys that will be placed as structured metadata. This allows using record accessor patterns (e.g. $kubernetes['pod_name']) to reference record keys. | []string |
+| structuredMetadataKeys | Optional list of record keys whose values are maps, written as structured_metadata_map_keys. Every key/value pair of those maps is added as structured metadata (e.g. $kubernetes['labels']). Requires Fluent Bit 4.0+. | []string |
 | tls |  | *[plugins.TLS](../tls.md) |
 | networking | Include fluentbit networking options for this output-plugin | *[plugins.Networking](../net.md) |
 | totalLimitSize | Limit the maximum number of Chunks in the filesystem for the current output logical destination. | string |
