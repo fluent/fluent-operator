@@ -307,7 +307,7 @@ If you want to learn more about Fluent-Operator, please refer to the [misc](docs
 
 ### Running
 
-Make sure you have a KUBECONFIG file loaded for your local developement kubernetes cluster.
+Make sure you have a KUBECONFIG file loaded for your local development kubernetes cluster.
 
 1. Install CRDs: `make install`
 2. `export NAMESPACE=something` to set the namespace for the operator
