@@ -708,6 +708,11 @@ func (in *FilterItem) DeepCopyInto(out *FilterItem) {
 		*out = new(filter.Sysinfo)
 		**out = **in
 	}
+	if in.GeoIP2 != nil {
+		in, out := &in.GeoIP2, &out.GeoIP2
+		*out = new(filter.GeoIP2)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)

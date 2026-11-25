@@ -797,3 +797,60 @@ func TestClusterFilterList_Load_Sysinfo(t *testing.T) {
     hostname_key: hostname
 `))
 }
+
+func TestClusterFilterList_Load_GeoIP2(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, "testnamespace")
+
+	filters := ClusterFilterList{
+		Items: []ClusterFilter{
+			{
+				TypeMeta: metav1.TypeMeta{
+					APIVersion: "fluentbit.fluent.io/v1alpha2",
+					Kind:       "ClusterFilter",
+				},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: "filter-geoip2",
+				},
+				Spec: FilterSpec{
+					Match: "nginx.*",
+					FilterItems: []FilterItem{
+						{
+							GeoIP2: &filter.GeoIP2{
+								Database:   "/fluent-bit/geoip/GeoLite2-City.mmdb",
+								LookupKeys: []string{"remote_addr"},
+								Records: []filter.GeoIP2Record{
+									{Key: "country", LookupKey: "remote_addr", Value: "%{country.names.en}"},
+									{Key: "city", LookupKey: "remote_addr", Value: "%{city.names.en}"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	clusterFilters, err := filters.Load(sl)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterFilters).To(Equal(`[Filter]
+    Name    geoip2
+    Match    nginx.*
+    Database    /fluent-bit/geoip/GeoLite2-City.mmdb
+    Lookup_Key    remote_addr
+    Record    country remote_addr %{country.names.en}
+    Record    city remote_addr %{city.names.en}
+`))
+
+	clusterFilters, err = filters.LoadAsYaml(sl, 0)
+	g.Expect(err).NotTo(HaveOccurred())
+	g.Expect(clusterFilters).To(Equal(`filters:
+  - name: geoip2
+    match: "nginx.*"
+    database: /fluent-bit/geoip/GeoLite2-City.mmdb
+    lookup_key: remote_addr
+    record:
+      - country remote_addr %{country.names.en}
+      - city remote_addr %{city.names.en}
+`))
+}

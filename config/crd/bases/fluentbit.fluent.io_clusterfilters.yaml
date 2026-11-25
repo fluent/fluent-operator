@@ -112,6 +112,72 @@ spec:
                           type: object
                           x-kubernetes-preserve-unknown-fields: true
                       type: object
+                    geoip2:
+                      description: GeoIP2 defines a GeoIP2 Filter configuration.
+                      properties:
+                        alias:
+                          description: Alias for the plugin
+                          type: string
+                        database:
+                          description: |-
+                            Path to the MaxMind database file (.mmdb), e.g. /fluent-bit/geoip/GeoLite2-City.mmdb.
+                            The file can be mounted into the Fluent Bit pod with the volumes and volumeMounts of the FluentBit resource.
+                          minLength: 1
+                          type: string
+                        lookupKeys:
+                          description: Keys of the record whose value is an IP address
+                            to look up.
+                          items:
+                            pattern: ^\S+$
+                            type: string
+                          minItems: 1
+                          type: array
+                        records:
+                          description: Keys to append to the record, with the value
+                            looked up in the database.
+                          items:
+                            description: GeoIP2Record appends Key to the record, with
+                              the value found at Value in the database for the IP
+                              address in LookupKey.
+                            properties:
+                              key:
+                                description: Key appended to the record.
+                                pattern: ^\S+$
+                                type: string
+                              lookupKey:
+                                description: Lookup key holding the IP address to
+                                  look up. It must be one of lookupKeys, otherwise
+                                  the value is null.
+                                pattern: ^\S+$
+                                type: string
+                              value:
+                                description: |-
+                                  Path of the value in the database, written as %{path}, e.g. %{country.names.en} or %{location.latitude}.
+                                  The path is at most 63 characters long.
+                                pattern: ^%\{[^\s}]{1,63}\}$
+                                type: string
+                            required:
+                            - key
+                            - lookupKey
+                            - value
+                            type: object
+                          minItems: 1
+                          type: array
+                        retryLimit:
+                          description: 'RetryLimit describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinitely. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
+                          type: string
+                      required:
+                      - database
+                      - lookupKeys
+                      - records
+                      type: object
                     grep:
                       description: Grep defines Grep Filter configuration.
                       properties:

@@ -12,6 +12,7 @@
   - [regex](parser/regex.md)
 - [ClusterFilter](../../fluentbit.md#ClusterFilter)
   - [aws](filter/aws.md)
+  - [geoip2](filter/geoip2.md)
   - [grep](filter/grep.md)
   - [kubernetes](filter/kubernetes.md)
   - [lua](filter/lua.md)
