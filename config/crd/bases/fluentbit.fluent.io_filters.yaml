@@ -966,6 +966,145 @@ spec:
                           format: int64
                           type: integer
                       type: object
+                    typeConverter:
+                      description: TypeConverter defines a Type Converter Filter configuration.
+                      properties:
+                        alias:
+                          description: Alias for the plugin
+                          type: string
+                        floatKeys:
+                          description: Conversions of keys whose value is a float.
+                          items:
+                            description: TypeConversion converts the value of FromKey
+                              to Type and appends it to the record as ToKey.
+                            properties:
+                              fromKey:
+                                description: Key whose value is converted.
+                                pattern: ^\S+$
+                                type: string
+                              toKey:
+                                description: Key the converted value is appended under.
+                                pattern: ^\S+$
+                                type: string
+                              type:
+                                description: Data type the value is converted to.
+                                enum:
+                                - int
+                                - uint
+                                - float
+                                - string
+                                type: string
+                            required:
+                            - fromKey
+                            - toKey
+                            - type
+                            type: object
+                          minItems: 1
+                          type: array
+                        intKeys:
+                          description: Conversions of keys whose value is an integer.
+                          items:
+                            description: TypeConversion converts the value of FromKey
+                              to Type and appends it to the record as ToKey.
+                            properties:
+                              fromKey:
+                                description: Key whose value is converted.
+                                pattern: ^\S+$
+                                type: string
+                              toKey:
+                                description: Key the converted value is appended under.
+                                pattern: ^\S+$
+                                type: string
+                              type:
+                                description: Data type the value is converted to.
+                                enum:
+                                - int
+                                - uint
+                                - float
+                                - string
+                                type: string
+                            required:
+                            - fromKey
+                            - toKey
+                            - type
+                            type: object
+                          minItems: 1
+                          type: array
+                        retryLimit:
+                          description: 'RetryLimit describes how many times fluent-bit
+                            should retry to send data to a specific output. If set
+                            to false fluent-bit will try indefinitely. If set to any
+                            integer N>0 it will try at most N+1 times. Leading zeros
+                            are not allowed (values such as 007, 0150, 01 do not work).
+                            If this property is not defined fluent-bit will use the
+                            default value: 1.'
+                          pattern: ^(((f|F)alse)|(no_limits)|(no_retries)|([1-9]+[0-9]*))$
+                          type: string
+                        strKeys:
+                          description: Conversions of keys whose value is a string.
+                          items:
+                            description: TypeConversion converts the value of FromKey
+                              to Type and appends it to the record as ToKey.
+                            properties:
+                              fromKey:
+                                description: Key whose value is converted.
+                                pattern: ^\S+$
+                                type: string
+                              toKey:
+                                description: Key the converted value is appended under.
+                                pattern: ^\S+$
+                                type: string
+                              type:
+                                description: Data type the value is converted to.
+                                enum:
+                                - int
+                                - uint
+                                - float
+                                - string
+                                type: string
+                            required:
+                            - fromKey
+                            - toKey
+                            - type
+                            type: object
+                          minItems: 1
+                          type: array
+                        uintKeys:
+                          description: Conversions of keys whose value is an unsigned
+                            integer.
+                          items:
+                            description: TypeConversion converts the value of FromKey
+                              to Type and appends it to the record as ToKey.
+                            properties:
+                              fromKey:
+                                description: Key whose value is converted.
+                                pattern: ^\S+$
+                                type: string
+                              toKey:
+                                description: Key the converted value is appended under.
+                                pattern: ^\S+$
+                                type: string
+                              type:
+                                description: Data type the value is converted to.
+                                enum:
+                                - int
+                                - uint
+                                - float
+                                - string
+                                type: string
+                            required:
+                            - fromKey
+                            - toKey
+                            - type
+                            type: object
+                          minItems: 1
+                          type: array
+                      type: object
+                      x-kubernetes-validations:
+                      - message: set at least one of intKeys, uintKeys, floatKeys
+                          and strKeys
+                        rule: has(self.intKeys) || has(self.uintKeys) || has(self.floatKeys)
+                          || has(self.strKeys)
                     wasm:
                       description: Wasm defines a Wasm configuration.
                       properties:

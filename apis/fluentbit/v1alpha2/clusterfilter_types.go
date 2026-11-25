@@ -77,6 +77,8 @@ type FilterItem struct {
 	Wasm *filter.Wasm `json:"wasm,omitempty"`
 	// Sysinfo defines a Sysinfo Filter configuration.
 	Sysinfo *filter.Sysinfo `json:"sysinfo,omitempty"`
+	// TypeConverter defines a Type Converter Filter configuration.
+	TypeConverter *filter.TypeConverter `json:"typeConverter,omitempty"`
 	// CustomPlugin defines a Custom plugin configuration.
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 }

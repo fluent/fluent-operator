@@ -708,6 +708,11 @@ func (in *FilterItem) DeepCopyInto(out *FilterItem) {
 		*out = new(filter.Sysinfo)
 		**out = **in
 	}
+	if in.TypeConverter != nil {
+		in, out := &in.TypeConverter, &out.TypeConverter
+		*out = new(filter.TypeConverter)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.CustomPlugin != nil {
 		in, out := &in.CustomPlugin, &out.CustomPlugin
 		*out = new(custom.CustomPlugin)

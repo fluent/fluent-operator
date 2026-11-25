@@ -22,6 +22,7 @@
   - [record modifier](filter/record_modifier.md)
   - [sysinfo](filter/sysinfo.md)
   - [throttle](filter/throttle.md)
+  - [type converter](filter/type_converter.md)
 - [ClusterOutput](../../fluentbit.md#ClusterOutput)
   - [datadog](output/data_dog.md)
   - [elasticsearch](output/elasticsearch.md)
