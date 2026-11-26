@@ -499,6 +499,124 @@ spec:
                 description: Processors defines the processors configuration
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
+              prometheusRemoteWrite:
+                description: PrometheusRemoteWrite defines the Prometheus Remote Write
+                  input plugin configuration
+                properties:
+                  bufferChunkSize:
+                    description: Size of the chunks allocated to read a request, up
+                      to bufferMaxSize, defaults to 512K.
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  bufferMaxSize:
+                    description: Maximum size of a remote write request, defaults
+                      to 4M.
+                    pattern: ^\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$
+                    type: string
+                  listen:
+                    description: The address to listen on, defaults to 0.0.0.0.
+                    type: string
+                  port:
+                    description: |-
+                      The port for Fluent Bit to listen on, defaults to 8080.
+                      Also add it to the ports of the FluentBit resource so that the Fluent Bit Service exposes it.
+                    format: int32
+                    maximum: 65535
+                    minimum: 1
+                    type: integer
+                  successfulResponseCode:
+                    description: HTTP status code returned for a successfully ingested
+                      request, defaults to 201.
+                    enum:
+                    - 200
+                    - 201
+                    - 204
+                    format: int32
+                    type: integer
+                  tag:
+                    description: Tag name associated to all metrics coming from this
+                      plugin.
+                    type: string
+                  threaded:
+                    description: Run the input in its own thread instead of the main
+                      event loop.
+                    type: boolean
+                  tls:
+                    description: TLS settings of the listener. Set crtFile and keyFile
+                      to accept remote write requests over HTTPS.
+                    properties:
+                      caFile:
+                        description: Absolute path to CA certificate file
+                        type: string
+                      caPath:
+                        description: Absolute path to scan for certificate files
+                        type: string
+                      crtFile:
+                        description: Absolute path to Certificate file
+                        type: string
+                      debug:
+                        description: |-
+                          Set TLS debug verbosity level.
+                          It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
+                        enum:
+                        - 0
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        format: int32
+                        type: integer
+                      keyFile:
+                        description: Absolute path to private Key file
+                        type: string
+                      keyPassword:
+                        description: Optional password for tls.key_file file
+                        properties:
+                          valueFrom:
+                            description: ValueSource defines how to find a value's
+                              key.
+                            properties:
+                              secretKeyRef:
+                                description: Selects a key of a secret in the pod's
+                                  namespace
+                                properties:
+                                  key:
+                                    description: The key of the secret to select from.  Must
+                                      be a valid secret key.
+                                    type: string
+                                  name:
+                                    default: ""
+                                    description: |-
+                                      Name of the referent.
+                                      This field is effectively required, but due to backwards compatibility is
+                                      allowed to be empty. Instances of this type with an empty value here are
+                                      almost certainly wrong.
+                                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    type: string
+                                  optional:
+                                    description: Specify whether the Secret or its
+                                      key must be defined
+                                    type: boolean
+                                required:
+                                - key
+                                type: object
+                                x-kubernetes-map-type: atomic
+                            type: object
+                        type: object
+                      verify:
+                        description: Force certificate validation
+                        type: boolean
+                      vhost:
+                        description: Hostname to be used for TLS SNI extension
+                        type: string
+                    type: object
+                  uri:
+                    description: |-
+                      The HTTP path that accepts remote write requests, e.g. /api/prom/push.
+                      If not set, requests are accepted on any path.
+                    pattern: ^/\S*$
+                    type: string
+                type: object
               prometheusScrapeMetrics:
                 description: PrometheusScrapeMetrics  defines Prometheus Scrape Metrics
                   Input configuration.
