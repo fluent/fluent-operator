@@ -78,6 +78,8 @@ type InputSpec struct {
 	KubernetesEvents *input.KubernetesEvents `json:"kubernetesEvents,omitempty"`
 	// ExecWasi defines the exec wasi input plugin configuration
 	ExecWasi *input.ExecWasi `json:"execWasi,omitempty"`
+	// Kafka defines the Kafka input plugin configuration
+	Kafka *input.Kafka `json:"kafka,omitempty"`
 	// Processors defines the processors configuration
 	// +kubebuilder:pruning:PreserveUnknownFields
 	Processors *plugins.Config `json:"processors,omitempty"`

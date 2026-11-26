@@ -468,6 +468,7 @@ InputSpec defines the desired state of ClusterInput
 | udp | UDP defines the UDP input plugin configuration | *[input.UDP](plugins/fluentbit/input/udp.md) |
 | kubernetesEvents | KubernetesEvents defines the KubernetesEvents input plugin configuration | *[input.KubernetesEvents](plugins/fluentbit/input/kubernetes_events.md) |
 | execWasi | ExecWasi defines the exec wasi input plugin configuration | *[input.ExecWasi](plugins/fluentbit/input/exec_wasi.md) |
+| kafka | Kafka defines the Kafka input plugin configuration | *[input.Kafka](plugins/fluentbit/input/kafka.md) |
 | processors | Processors defines the processors configuration | *plugins.Config |
 
 [Back to TOC](#table-of-contents)
