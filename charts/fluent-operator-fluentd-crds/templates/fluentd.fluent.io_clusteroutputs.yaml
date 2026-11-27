@@ -1197,6 +1197,311 @@ spec:
                       required:
                       - dataStreamName
                       type: object
+                    elasticsearchDynamic:
+                      description: |-
+                        out_es dynamic plugin (elasticsearch_dynamic). It takes the same parameters as elasticsearch,
+                        but host, port, index and logstash values can use placeholders like ${tag_parts[1]} or ${record['key']}.
+                      properties:
+                        bulkMessageRequestThreshold:
+                          description: |-
+                            Optional, Configure bulk_message_request_threshold splitting threshold size.
+                            Default value is -1 (unlimited).
+                            If a bulk message exceeds this threshold, the request is split into multiple smaller requests.
+                          format: int32
+                          type: integer
+                        caFile:
+                          description: Optional, Absolute path to CA certificate file
+                          type: string
+                        clientCert:
+                          description: Optional, Absolute path to client Certificate
+                            file
+                          type: string
+                        clientKey:
+                          description: Optional, Absolute path to client private Key
+                            file
+                          type: string
+                        clientKeyPassword:
+                          description: Optional, password for ClientKey file
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      default: ""
+                                      description: |-
+                                        Name of the referent.
+                                        This field is effectively required, but due to backwards compatibility is
+                                        allowed to be empty. Instances of this type with an empty value here are
+                                        almost certainly wrong.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                              type: object
+                          type: object
+                        cloudAuth:
+                          description: Authenticate towards Elastic Cloud using cloudAuth.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      default: ""
+                                      description: |-
+                                        Name of the referent.
+                                        This field is effectively required, but due to backwards compatibility is
+                                        allowed to be empty. Instances of this type with an empty value here are
+                                        almost certainly wrong.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                              type: object
+                          type: object
+                        cloudId:
+                          description: |-
+                            Authenticate towards Elastic Cloud using CloudId. If set, cloudAuth must
+                            be set as well and host, port, user and password are ignored.
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      default: ""
+                                      description: |-
+                                        Name of the referent.
+                                        This field is effectively required, but due to backwards compatibility is
+                                        allowed to be empty. Instances of this type with an empty value here are
+                                        almost certainly wrong.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                              type: object
+                          type: object
+                        enableIlm:
+                          description: Optional, Enable Index Lifecycle Management
+                            (ILM)
+                          type: boolean
+                        failOnPuttingTemplateRetryExceeded:
+                          description: 'Optional, Indicates whether to fail when max_retry_putting_template
+                            is exceeded. If you have multiple output plugin, you could
+                            use this property to do not fail on fluentd statup (default:
+                            false)'
+                          type: boolean
+                        host:
+                          description: 'The hostname of your Elasticsearch node (default:
+                            localhost).'
+                          type: string
+                        hosts:
+                          description: Hosts defines a list of hosts if you want to
+                            connect to more than one Elasticsearch nodes
+                          type: string
+                        ilmPolicy:
+                          description: Optional, Specify ILM policy contents as Hash
+                          type: string
+                        ilmPolicyId:
+                          description: Optional, Specify ILM policy id
+                          type: string
+                        ilmPolicyOverride:
+                          description: Optional, Specify whether overwriting ilm policy
+                            or not
+                          type: boolean
+                        indexName:
+                          description: IndexName defines the placeholder syntax of
+                            Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section.
+                          type: string
+                        logEs400Reason:
+                          description: Optional, Enable logging of 400 reason without
+                            enabling debug log level
+                          type: boolean
+                        logstashFormat:
+                          description: 'If true, Fluentd uses the conventional index
+                            name format logstash-%Y.%m.%d (default: false). This option
+                            supersedes the index_name option.'
+                          type: boolean
+                        logstashPrefix:
+                          description: 'LogstashPrefix defines the logstash prefix
+                            index name to write events when logstash_format is true
+                            (default: logstash).'
+                          type: string
+                        maxRetryPuttingTemplate:
+                          description: 'Optional, You can specify times of retry putting
+                            template (default: 10)'
+                          format: int32
+                          type: integer
+                        password:
+                          description: Optional, The login credentials to connect
+                            to Elasticsearch
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      default: ""
+                                      description: |-
+                                        Name of the referent.
+                                        This field is effectively required, but due to backwards compatibility is
+                                        allowed to be empty. Instances of this type with an empty value here are
+                                        almost certainly wrong.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                              type: object
+                          type: object
+                        path:
+                          description: 'Path defines the REST API endpoint of Elasticsearch
+                            to post write requests (default: nil).'
+                          type: string
+                        port:
+                          description: 'The port number of your Elasticsearch node
+                            (default: 9200).'
+                          format: int32
+                          maximum: 65535
+                          minimum: 1
+                          type: integer
+                        reconnectOnError:
+                          description: 'Optional, Indicates that the plugin should
+                            reset connection on any error (reconnect on next send)
+                            (default: false)'
+                          type: boolean
+                        reloadAfter:
+                          description: Optional, When ReloadConnections true, this
+                            is the integer number of operations after which the plugin
+                            will reload the connections. The default value is 10000.
+                          format: int32
+                          type: integer
+                        reloadConnections:
+                          description: 'Optional, Automatically reload connection
+                            after 10000 documents (default: true)'
+                          type: boolean
+                        reloadOnFailure:
+                          description: 'Optional, Indicates that the elasticsearch-transport
+                            will try to reload the nodes addresses if there is a failure
+                            while making the request, this can be useful to quickly
+                            remove a dead node from the list of addresses (default:
+                            false)'
+                          type: boolean
+                        requestTimeout:
+                          description: 'Optional, HTTP Timeout (default: 5)'
+                          pattern: ^\d+(s|m|h|d)$
+                          type: string
+                        scheme:
+                          description: 'Specify https if your Elasticsearch endpoint
+                            supports SSL (default: http).'
+                          type: string
+                        snifferClassName:
+                          description: Optional, Provide a different sniffer class
+                            name
+                          type: string
+                        sslVerify:
+                          description: Optional, Force certificate validation
+                          type: boolean
+                        suppressTypeName:
+                          description: Optional, Suppress '[types removal]' warnings
+                            on elasticsearch 7.x
+                          type: boolean
+                        templateOverwrite:
+                          description: 'Optional, Always update the template, even
+                            if it already exists (default: false)'
+                          type: boolean
+                        user:
+                          description: Optional, The login credentials to connect
+                            to Elasticsearch
+                          properties:
+                            valueFrom:
+                              description: ValueSource defines how to find a value's
+                                key.
+                              properties:
+                                secretKeyRef:
+                                  description: Selects a key of a secret in the pod's
+                                    namespace
+                                  properties:
+                                    key:
+                                      description: The key of the secret to select
+                                        from.  Must be a valid secret key.
+                                      type: string
+                                    name:
+                                      default: ""
+                                      description: |-
+                                        Name of the referent.
+                                        This field is effectively required, but due to backwards compatibility is
+                                        allowed to be empty. Instances of this type with an empty value here are
+                                        almost certainly wrong.
+                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                      type: string
+                                    optional:
+                                      description: Specify whether the Secret or its
+                                        key must be defined
+                                      type: boolean
+                                  required:
+                                  - key
+                                  type: object
+                                  x-kubernetes-map-type: atomic
+                              type: object
+                          type: object
+                      type: object
                     format:
                       description: format section
                       properties:

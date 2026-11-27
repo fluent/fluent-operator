@@ -67,6 +67,7 @@ const (
 	KafkaOutputType                   OutputType = "kafka2"
 	ElasticsearchOutputType           OutputType = "elasticsearch"
 	ElasticsearchDataStreamOutputType OutputType = "elasticsearch_data_stream"
+	ElasticsearchDynamicOutputType    OutputType = "elasticsearch_dynamic"
 	OpensearchOutputType              OutputType = "opensearch"
 	S3OutputType                      OutputType = "s3"
 	LokiOutputType                    OutputType = "loki"

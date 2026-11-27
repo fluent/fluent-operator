@@ -18,6 +18,7 @@ Output defines all available output plugins and their parameters
 | http | out_http plugin | *[Http](#http) |
 | elasticsearch | out_es plugin | *[Elasticsearch](#elasticsearch) |
 | elasticsearchDataStream | out_es datastreams plugin | *[ElasticsearchDataStream](#elasticsearchdatastream) |
+| elasticsearchDynamic | out_es dynamic plugin (elasticsearch_dynamic). It takes the same parameters as elasticsearch, but host, port, index and logstash values can use placeholders like ${tag_parts[1]} or ${record['key']}. | *[Elasticsearch](#elasticsearch) |
 | opensearch | out_opensearch plugin | *[Opensearch](#opensearch) |
 | kafka | out_kafka plugin | *[Kafka2](#kafka2) |
 | s3 | out_s3 plugin | *[S3](#s3) |

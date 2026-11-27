@@ -35,6 +35,9 @@ type Output struct {
 	Elasticsearch *Elasticsearch `json:"elasticsearch,omitempty"`
 	// out_es datastreams plugin
 	ElasticsearchDataStream *ElasticsearchDataStream `json:"elasticsearchDataStream,omitempty"`
+	// out_es dynamic plugin (elasticsearch_dynamic). It takes the same parameters as elasticsearch,
+	// but host, port, index and logstash values can use placeholders like ${tag_parts[1]} or ${record['key']}.
+	ElasticsearchDynamic *Elasticsearch `json:"elasticsearchDynamic,omitempty"`
 	// out_opensearch plugin
 	Opensearch *Opensearch `json:"opensearch,omitempty"`
 	// out_kafka plugin
@@ -135,12 +138,17 @@ func (o *Output) Params(loader plugins.SecretLoader) (*params.PluginStore, error
 
 	if o.Elasticsearch != nil {
 		ps.InsertType(string(params.ElasticsearchOutputType))
-		return o.elasticsearchPlugin(ps, loader)
+		return o.elasticsearchPlugin(o.Elasticsearch, ps, loader)
 	}
 
 	if o.ElasticsearchDataStream != nil {
 		ps.InsertType(string(params.ElasticsearchDataStreamOutputType))
 		return o.elasticsearchDataStreamPlugin(ps, loader)
+	}
+
+	if o.ElasticsearchDynamic != nil {
+		ps.InsertType(string(params.ElasticsearchDynamicOutputType))
+		return o.elasticsearchPlugin(o.ElasticsearchDynamic, ps, loader)
 	}
 
 	if o.Opensearch != nil {
@@ -401,22 +409,22 @@ func (o *Output) elasticsearchPluginCommon(cmn *ElasticsearchCommon, parent *par
 	return parent, nil
 }
 
-func (o *Output) elasticsearchPlugin(parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
-	parent, err := o.elasticsearchPluginCommon(&o.Elasticsearch.ElasticsearchCommon, parent, loader)
+func (o *Output) elasticsearchPlugin(es *Elasticsearch, parent *params.PluginStore, loader plugins.SecretLoader) (*params.PluginStore, error) {
+	parent, err := o.elasticsearchPluginCommon(&es.ElasticsearchCommon, parent, loader)
 	if err != nil {
 		return nil, err
 	}
 
-	if o.Elasticsearch.IndexName != nil {
-		parent.InsertPairs("index_name", fmt.Sprint(*o.Elasticsearch.IndexName))
+	if es.IndexName != nil {
+		parent.InsertPairs("index_name", fmt.Sprint(*es.IndexName))
 	}
 
-	if o.Elasticsearch.LogstashFormat != nil {
-		parent.InsertPairs("logstash_format", fmt.Sprint(*o.Elasticsearch.LogstashFormat))
+	if es.LogstashFormat != nil {
+		parent.InsertPairs("logstash_format", fmt.Sprint(*es.LogstashFormat))
 	}
 
-	if o.Elasticsearch.LogstashPrefix != nil {
-		parent.InsertPairs("logstash_prefix", fmt.Sprint(*o.Elasticsearch.LogstashPrefix))
+	if es.LogstashPrefix != nil {
+		parent.InsertPairs("logstash_prefix", fmt.Sprint(*es.LogstashPrefix))
 	}
 
 	return parent, nil
