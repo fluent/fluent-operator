@@ -2778,8 +2778,9 @@ spec:
                     type: object
                   structuredMetadataKeys:
                     description: |-
-                      Optional list of record keys that will be placed as structured metadata.
-                      This allows using record accessor patterns (e.g. $kubernetes['pod_name']) to reference record keys.
+                      Optional list of record keys whose values are maps, written as structured_metadata_map_keys.
+                      Every key/value pair of those maps is added as structured metadata (e.g. $kubernetes['labels']).
+                      Requires Fluent Bit 4.0+.
                     items:
                       type: string
                     type: array
