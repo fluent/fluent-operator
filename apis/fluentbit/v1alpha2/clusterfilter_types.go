@@ -20,7 +20,9 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+	"regexp"
 	"sort"
+	"strings"
 
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins"
 	"github.com/fluent/fluent-operator/v3/apis/fluentbit/v1alpha2/plugins/custom"
@@ -44,8 +46,12 @@ type FilterSpec struct {
 	LogLevel string `json:"logLevel,omitempty"`
 	// A set of filter plugins in order.
 	FilterItems []FilterItem `json:"filters,omitempty"`
-	// An ordinal to influence filter ordering
+	// An ordinal to influence filter ordering. ClusterFilters are ordered within their group, the ones that run before the namespaced Filters and the ones that run after them
 	Ordinal int32 `json:"ordinal,omitempty"`
+	// AfterNamespaceFilters places a ClusterFilter after the namespaced Filters in the pipeline,
+	// so it processes records after they have been through them. ClusterFilters run before the
+	// namespaced Filters by default. Only applies to ClusterFilters, a namespaced Filter that sets it is rejected.
+	AfterNamespaceFilters bool `json:"afterNamespaceFilters,omitempty"`
 }
 
 type FilterItem struct {
@@ -177,14 +183,64 @@ func (list ClusterFilterList) Load(sl plugins.SecretLoader) (string, error) {
 	return buf.String(), nil
 }
 
-func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
-	var buf bytes.Buffer
+// splitByNamespaceFilters splits the list into the ClusterFilters that run before the namespaced
+// Filters and those that run after them (see FilterSpec.AfterNamespaceFilters).
+func (list ClusterFilterList) splitByNamespaceFilters() (before, after ClusterFilterList) {
+	for _, item := range list.Items {
+		if item.Spec.AfterNamespaceFilters {
+			after.Items = append(after.Items, matchNamespacedTags(item))
+		} else {
+			before.Items = append(before.Items, item)
+		}
+	}
+	return before, after
+}
 
-	sort.Sort(FilterByOrdinalAndName(list.Items))
+// namespacedTagPrefix matches the "<md5(namespace)>." prefix that the namespace routing rewrite_tag
+// filter adds to the tags of records that go through namespaced Filters.
+const namespacedTagPrefix = `(?:[0-9a-f]{32}\.)?`
+
+// matchNamespacedTags returns a copy of a ClusterFilter that runs after the namespaced Filters, with
+// its match changed so that it also matches the re-tagged records. Without this a ClusterFilter
+// matching kube.* would never see the records that went through namespaced Filters, because they are
+// tagged <md5(namespace)>.kube.* by then.
+func matchNamespacedTags(item ClusterFilter) ClusterFilter {
+	out := *item.DeepCopy()
+	switch {
+	case out.Spec.MatchRegex != "":
+		// An unanchored regex already matches the prefixed tag, only one anchored at the start needs it.
+		if rest, ok := strings.CutPrefix(out.Spec.MatchRegex, "^"); ok {
+			out.Spec.MatchRegex = "^" + namespacedTagPrefix + rest
+		}
+	case out.Spec.Match != "" && out.Spec.Match != "*":
+		out.Spec.MatchRegex = "^" + namespacedTagPrefix + wildcardToRegex(out.Spec.Match) + "$"
+		out.Spec.Match = ""
+	}
+	return out
+}
+
+// wildcardToRegex converts a Fluent Bit Match pattern, where "*" matches any sequence of characters,
+// to the equivalent regular expression.
+func wildcardToRegex(match string) string {
+	return strings.ReplaceAll(regexp.QuoteMeta(match), `\*`, ".*")
+}
+
+func (list ClusterFilterList) LoadAsYaml(sl plugins.SecretLoader, depth int) (string, error) {
 	if len(list.Items) == 0 {
 		return "", nil
 	}
-	fmt.Fprintf(&buf, "%sfilters:\n", utils.YamlIndent(depth))
+	items, err := list.loadYamlItems(sl, depth)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%sfilters:\n", utils.YamlIndent(depth)) + items, nil
+}
+
+// loadYamlItems renders the filters as YAML list items, without the "filters:" header.
+func (list ClusterFilterList) loadYamlItems(sl plugins.SecretLoader, depth int) (string, error) {
+	var buf bytes.Buffer
+
+	sort.Sort(FilterByOrdinalAndName(list.Items))
 	padding := utils.YamlIndent(depth + 2)
 
 	for _, item := range list.Items {

@@ -305,7 +305,12 @@ func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
 		return "", fmt.Errorf("failed to load inputs: %w", err)
 	}
 
-	filterSections, err := filters.LoadAsYaml(sl, 1)
+	beforeFilters, afterFilters := filters.splitByNamespaceFilters()
+	filterSections, err := beforeFilters.loadYamlItems(sl, 1)
+	if err != nil {
+		return "", fmt.Errorf("failed to load filters: %w", err)
+	}
+	afterFilterSections, err := afterFilters.loadYamlItems(sl, 1)
 	if err != nil {
 		return "", fmt.Errorf("failed to load filters: %w", err)
 	}
@@ -362,24 +367,21 @@ func (cfg ClusterFluentBitConfig) RenderMainConfigInYaml(
 	}
 
 	buf.WriteString(inputSections)
-	// rewriteTagConfigs entries are headerless "filters:" list items (see
-	// generateRewriteTagConfig), so they must share a single "filters:"
-	// header with filterSections/nsFilterSections rather than writing their
-	// own, which would otherwise produce duplicate "filters:" keys.
-	if filterSections == "" && (nsFilterSections != nil || len(rewriteTagConfigs) > 0) {
+	// The cluster filters, rewriteTagConfigs entries (see generateRewriteTagConfig)
+	// and namespaced filters are all headerless "filters:" list items, so they
+	// share a single "filters:" header; one header per section would produce
+	// duplicate "filters:" keys.
+	if len(filters.Items) > 0 || nsFilterSections != nil || len(rewriteTagConfigs) > 0 {
 		fmt.Fprintf(&buf, "%sfilters:\n", utils.YamlIndent(1))
-	} else {
-		// 1. filterSections == "" && nsFilterSections == nil && rewriteTagConfigs empty
-		// 2. filterSections != "" && (nsFilterSections != nil || rewriteTagConfigs non-empty)
-		// 3. filterSections != "" && nsFilterSections == nil && rewriteTagConfigs empty
-		buf.WriteString(filterSections)
 	}
+	buf.WriteString(filterSections)
 	for _, rtc := range rewriteTagConfigs {
 		buf.WriteString(rtc)
 	}
 	for _, filters := range nsFilterSections {
 		buf.WriteString(filters)
 	}
+	buf.WriteString(afterFilterSections)
 	if outputSections == "" && nsOutputSections != nil {
 		fmt.Fprintf(&buf, "%soutputs:\n", utils.YamlIndent(1))
 	} else {
@@ -416,7 +418,12 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(
 		return "", err
 	}
 
-	filterSections, err := filters.Load(sl)
+	beforeFilters, afterFilters := filters.splitByNamespaceFilters()
+	filterSections, err := beforeFilters.Load(sl)
+	if err != nil {
+		return "", err
+	}
+	afterFilterSections, err := afterFilters.Load(sl)
 	if err != nil {
 		return "", err
 	}
@@ -472,6 +479,7 @@ func (cfg ClusterFluentBitConfig) RenderMainConfig(
 	for _, filters := range nsFilterSections {
 		buf.WriteString(filters)
 	}
+	buf.WriteString(afterFilterSections)
 	for _, outputs := range nsOutputSections {
 		buf.WriteString(outputs)
 	}
