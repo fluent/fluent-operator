@@ -122,6 +122,7 @@ ClusterFluentdConfigSpec defines the desired state of ClusterFluentdConfig
 | clusterOutputSelector | Select cluster output plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta) |
 | clusterInputSelector | Select cluster input plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta) |
 | pluginSortOrder | PluginSortOrder controls how child plugins within a label section are ordered by their @id. \"lexicographic\" (default) preserves the original string-comparison behaviour. \"index\" switches to numeric-aware ordering so that a CR with more than nine plugins renders in definition order (e.g. plugin-2 before plugin-10). | string |
+| catchAllFilterOrder | CatchAllFilterOrder controls where filters with the catch-all tag \"**\" go within a label section. \"last\" (default) puts them after the other filters. \"id\" orders them by @id like any other filter, so a \"**\" filter can run between other filters. Matches with \"**\" always stay last. | string |
 
 [Back to TOC](#table-of-contents)
 # ClusterFluentdConfigStatus
@@ -301,6 +302,7 @@ FluentdConfigSpec defines the desired state of FluentdConfig
 | clusterOutputSelector | Select cluster output plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta) |
 | clusterInputSelector | Select cluster input plugins | *[metav1.LabelSelector](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta) |
 | pluginSortOrder | PluginSortOrder controls how child plugins within a label section are ordered by their @id. \"lexicographic\" (default) preserves the original string-comparison behaviour. \"index\" switches to numeric-aware ordering so that a CR with more than nine plugins renders in definition order (e.g. plugin-2 before plugin-10). | string |
+| catchAllFilterOrder | CatchAllFilterOrder controls where filters with the catch-all tag \"**\" go within a label section. \"last\" (default) puts them after the other filters. \"id\" orders them by @id like any other filter, so a \"**\" filter can run between other filters. Matches with \"**\" always stay last. | string |
 
 [Back to TOC](#table-of-contents)
 # FluentdConfigStatus

@@ -580,6 +580,53 @@ func Test_ClusterCfgFilterOrderByIndex(t *testing.T) {
 	}
 }
 
+// Test_ClusterCfgCatchAllFilterOrderById checks that CatchAllFiltersById reaches the label plugin:
+// a "**" filter listed first stays first, while by default it is moved after the other filters.
+func Test_ClusterCfgCatchAllFilterOrderById(t *testing.T) {
+	g := NewGomegaWithT(t)
+	sl := plugins.NewSecretLoader(nil, Fluentd.Namespace, logr.Logger{})
+
+	var clusterFilter fluentdv1alpha1.ClusterFilter
+	g.Expect(ParseIntoObject(`
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: ClusterFilter
+metadata:
+  name: fluentd-filter-catch-all
+spec:
+  filters:
+  - tag: "**"
+    recordTransformer:
+      records:
+      - key: catch_all
+        value: "true"
+  - tag: "app.*"
+    recordTransformer:
+      records:
+      - key: app_marker
+        value: "true"
+`, &clusterFilter)).To(Succeed())
+
+	render := func(byId bool) string {
+		psr := fluentdv1alpha1.NewGlobalPluginResources("main")
+		psr.CombineGlobalInputsPlugins(sl, Fluentd.Spec.GlobalInputs)
+		router, err := psr.BuildCfgRouter(&FluentdClusterFluentdConfig1)
+		g.Expect(err).NotTo(HaveOccurred())
+		resources, _ := psr.PatchAndFilterClusterLevelResources(sl, FluentdClusterFluentdConfig1.GetCfgId(),
+			[]fluentdv1alpha1.ClusterInput{}, []fluentdv1alpha1.ClusterFilter{clusterFilter}, []fluentdv1alpha1.ClusterOutput{FluentdclusterOutput2ES})
+		resources.CatchAllFiltersById = byId
+		g.Expect(psr.WithCfgResources(*router.Label, resources)).To(Succeed())
+		config, err := psr.RenderMainConfig(false)
+		g.Expect(err).NotTo(HaveOccurred())
+		return config
+	}
+
+	config := render(false)
+	g.Expect(strings.Index(config, "catch_all")).To(BeNumerically(">", strings.Index(config, "app_marker")))
+
+	config = render(true)
+	g.Expect(strings.Index(config, "catch_all")).To(BeNumerically("<", strings.Index(config, "app_marker")))
+}
+
 // Test_ClusterCfgInputOrderByIndex asserts that inputs declared in a single CR
 // render in CR definition order. Inputs are not re-sorted by @id in
 // RenderMainConfig, so this acts as a boundary guard for any future change that

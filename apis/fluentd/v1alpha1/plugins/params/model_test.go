@@ -140,3 +140,61 @@ func TestPluginStoreString_NoInterpolationViaBody(t *testing.T) {
 		t.Fatalf("expected the interpolation metacharacter to be escaped (\\#{):\n%s", got)
 	}
 }
+
+// TestPluginStoreString_CatchAllFilterOrder checks where "**" filters and matches
+// render inside a label, with and without CatchAllFiltersById.
+func TestPluginStoreString_CatchAllFilterOrder(t *testing.T) {
+	newLabel := func() *PluginStore {
+		label := NewPluginStore("label")
+		label.InsertPairs("tag", "@main")
+		for _, c := range []struct{ name, tag, id string }{
+			{"match", "**", "cfg::match-0"},
+			{"filter", "**", "cfg::filter-0"},
+			{"match", "app.**", "cfg::match-1"},
+			{"filter", "kube.**", "cfg::filter-1"},
+		} {
+			child := NewPluginStore(c.name)
+			child.InsertPairs("@type", "stdout")
+			child.InsertPairs("tag", c.tag)
+			child.InsertPairs("@id", c.id)
+			label.InsertChilds(child)
+		}
+		return label
+	}
+	directives := func(config string) []string {
+		var got []string
+		for line := range strings.SplitSeq(config, "\n") {
+			line = strings.TrimSpace(line)
+			if strings.HasPrefix(line, "<filter") || strings.HasPrefix(line, "<match") {
+				got = append(got, line)
+			}
+		}
+		return got
+	}
+
+	tests := []struct {
+		name     string
+		filterID bool
+		want     []string
+	}{
+		{
+			name: "catch-all filter goes last by default",
+			want: []string{"<filter kube.**>", "<filter **>", "<match app.**>", "<match **>"},
+		},
+		{
+			name:     "catch-all filter keeps its id order",
+			filterID: true,
+			want:     []string{"<filter **>", "<filter kube.**>", "<match app.**>", "<match **>"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			label := newLabel()
+			label.CatchAllFiltersById = tt.filterID
+			got := directives(label.String())
+			if strings.Join(got, " ") != strings.Join(tt.want, " ") {
+				t.Fatalf("got %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -355,6 +355,7 @@ func (r *FluentdConfigReconciler) ClusterCfgsForFluentd(
 
 		// WithCfgResources will collect all plugins to generate main config
 		cfgResouces.NumericIdSort = cfg.Spec.PluginSortOrder == "index"
+		cfgResouces.CatchAllFiltersById = cfg.Spec.CatchAllFilterOrder == "id"
 		var msg string
 		err = gpr.WithCfgResources(cfgRouterLabel, cfgResouces)
 		if err != nil {
@@ -480,6 +481,7 @@ func (r *FluentdConfigReconciler) CfgsForFluentd(
 
 		// WithCfgResources will collect all plugins to generate main config
 		cfgResouces.NumericIdSort = cfg.Spec.PluginSortOrder == "index"
+		cfgResouces.CatchAllFiltersById = cfg.Spec.CatchAllFilterOrder == "id"
 		var msg string
 		err = gpr.WithCfgResources(cfgRouterLabel, cfgResouces)
 		if err != nil {
