@@ -86,6 +86,37 @@ spec:
       config.fluentd.fluent.io/enabled: "true"
 `
 
+	FluentdInputPrometheus    fluentdv1alpha1.Fluentd
+	FluentdInputPrometheusRaw = `
+apiVersion: fluentd.fluent.io/v1alpha1
+kind: Fluentd
+metadata:
+name: fluentd
+namespace: fluent
+labels:
+  app.kubernetes.io/name: fluentd
+spec:
+  globalInputs:
+  - prometheus:
+      bind: 0.0.0.0
+      port: 2021
+      metricsPath: /metrics
+      aggregatedMetricsPath: /aggregated_metrics
+      contentEncoding: gzip
+  - prometheusMonitor:
+      interval: 10
+      labels:
+        host: fluentd-0
+  - prometheusOutputMonitor:
+      interval: 10
+      gaugeAll: false
+  replicas: 1
+  image: ghcr.io/fluent/fluent-operator/fluentd:v1.19.4
+  fluentdCfgSelector:
+    matchLabels:
+      config.fluentd.fluent.io/enabled: "true"
+`
+
 	FluentdInputTail    fluentdv1alpha1.Fluentd
 	FluentdInputTailRaw = `
 apiVersion: fluentd.fluent.io/v1alpha1
@@ -1264,6 +1295,7 @@ func init() {
 			MustParseIntoObject(FluentdInputTailRaw, &FluentdInputTail)
 			MustParseIntoObject(FluentdInputSampleRaw, &FluentdInputSample)
 			MustParseIntoObject(FluentdInputMonitorAgentRaw, &FluentdInputMonitorAgent)
+			MustParseIntoObject(FluentdInputPrometheusRaw, &FluentdInputPrometheus)
 			MustParseIntoObject(FluentdClusterOutputTagRaw, &FluentdClusterOutputTag)
 			MustParseIntoObject(FluentdClusterFluentdConfig1Raw, &FluentdClusterFluentdConfig1)
 			MustParseIntoObject(FluentdClusterFluentdConfig2Raw, &FluentdClusterFluentdConfig2)

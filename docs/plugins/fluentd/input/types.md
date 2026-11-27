@@ -21,3 +21,6 @@ Input defines all available input plugins and their parameters
 | sample | in_sample plugin | *[Sample](#sample) |
 | customPlugin | Custom plugin type | *[custom.CustomPlugin](../custom/custom.md) |
 | monitorAgent | monitor_agent plugin | *[MonitorAgent](#monitoragent) |
+| prometheus | prometheus plugin, serves the metrics endpoint | *[Prometheus](#prometheus) |
+| prometheusMonitor | prometheus_monitor plugin, collects buffer and retry metrics | *[PrometheusMonitor](#prometheusmonitor) |
+| prometheusOutputMonitor | prometheus_output_monitor plugin, collects output plugin metrics | *[PrometheusOutputMonitor](#prometheusoutputmonitor) |

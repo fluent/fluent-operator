@@ -36,6 +36,12 @@ type Input struct {
 	CustomPlugin *custom.CustomPlugin `json:"customPlugin,omitempty"`
 	// monitor_agent plugin
 	MonitorAgent *MonitorAgent `json:"monitorAgent,omitempty"`
+	// prometheus plugin, serves the metrics endpoint
+	Prometheus *Prometheus `json:"prometheus,omitempty"`
+	// prometheus_monitor plugin, collects buffer and retry metrics
+	PrometheusMonitor *PrometheusMonitor `json:"prometheusMonitor,omitempty"`
+	// prometheus_output_monitor plugin, collects output plugin metrics
+	PrometheusOutputMonitor *PrometheusOutputMonitor `json:"prometheusOutputMonitor,omitempty"`
 }
 
 // DeepCopyInto implements the DeepCopyInto interface.
@@ -102,6 +108,21 @@ func (i *Input) Params(loader plugins.SecretLoader) (*params.PluginStore, error)
 	if i.MonitorAgent != nil {
 		ps.InsertType(string(params.MonitorAgentType))
 		return i.monitorAgentPlugin(ps, loader), nil
+	}
+
+	if i.Prometheus != nil {
+		ps.InsertType(string(params.PrometheusInputType))
+		return i.prometheusPlugin(ps), nil
+	}
+
+	if i.PrometheusMonitor != nil {
+		ps.InsertType(string(params.PrometheusMonitorInputType))
+		return i.prometheusMonitorPlugin(ps), nil
+	}
+
+	if i.PrometheusOutputMonitor != nil {
+		ps.InsertType(string(params.PrometheusOutputMonitorInputType))
+		return i.prometheusOutputMonitorPlugin(ps), nil
 	}
 
 	return nil, errors.New("you must define an input plugin")
