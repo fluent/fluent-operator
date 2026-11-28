@@ -56,3 +56,13 @@ jobs:
             --field tag="${{ steps.release.outputs.tag_name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger Helm chart sync
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          gh workflow run sync-helm-charts.yaml \
+            --repo "${{ github.repository }}" \
+            --ref "${{ github.event.repository.default_branch }}" \
+            --field tag="${{ steps.release.outputs.tag_name }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
